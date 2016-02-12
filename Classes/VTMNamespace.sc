@@ -2,6 +2,7 @@ VTMNamespace {
 	var <parent;
 	var <children;
 	var <key;
+	var <>obj;
 
 	*new{arg parent, key;
 		^super.new.init(parent, key);
@@ -19,5 +20,9 @@ VTMNamespace {
 
 	removeChild{arg childKey;
 		children.removeAt(childKey);
+	}
+
+	send{
+		//destructure query into array of tokens
 	}
 }

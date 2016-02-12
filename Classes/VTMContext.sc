@@ -8,7 +8,7 @@ VTMContext {
 
 	initContext{arg parent_;
 		parent = parent_;
-		namespace = VTMNamespace.new(parent_.namespace);
+		namespace = VTMNamespace.new(parent_.namespace).obj_(parent);
 	}
 
 	add{arg context;
