@@ -1,4 +1,5 @@
-VTMNamespace {
+VTMNamespaceElement {
+	classvar <globalCache;
 	var <parent;
 	var <children;
 	var <key;
@@ -14,6 +15,10 @@ VTMNamespace {
 		children = ();
 	}
 
+	absolutePath{
+		^'an absolute path for this namespace element';
+	}
+
 	addChild{arg child;
 		children.put(child, "myChild" ++ Date.localtime);
 	}
@@ -22,7 +27,17 @@ VTMNamespace {
 		children.removeAt(childKey);
 	}
 
-	send{
+	send{arg addr;
+		var element;
+		element = this.find(addr);
+		if(element.isNil, {
+
+		}, {
+
+		});
+	}
+
+	find{
 		//destructure query into array of tokens
 	}
 }

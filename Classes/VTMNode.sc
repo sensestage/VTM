@@ -19,7 +19,7 @@ VTMNode {
 		name = name_.asSymbol;
 		addr = addr_;
 
-		namespace = VTMNamespace.new(this, name);
+		namespace = VTMNamespaceElement.new(this, name);
 		network = VTMNetwork.new(this);
 
 		moduleHost = VTMModuleHost.new(this);
