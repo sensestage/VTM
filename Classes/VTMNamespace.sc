@@ -1,0 +1,3 @@
+VTMNamespace : Library {
+
+}
