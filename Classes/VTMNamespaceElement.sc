@@ -1,17 +1,23 @@
 VTMNamespaceElement {
-	classvar <globalCache;
+	classvar <namespace; //a global cache?
 	var <parent;
 	var <children;
 	var <key;
-	var <>obj;
+	var <obj;
+	var <searchTokens; // temp getter
 
-	*new{arg parent, key;
-		^super.new.init(parent, key);
+	*new{arg parent, key, obj;
+		^super.new.init(parent, key, obj);
 	}
 
-	init{arg parent_, key_;
+	*initClass{
+		namespace = VTMNamespace;
+	}
+
+	init{arg parent_, key_, obj_;
 		parent = parent_;
 		key = key_;
+		obj = obj_;
 		children = ();
 	}
 
