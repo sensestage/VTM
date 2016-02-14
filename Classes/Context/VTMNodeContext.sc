@@ -8,6 +8,6 @@ VTMNodeContext : VTMContext {
 	}
 
 	node{
-		^namespace.parent;
+		^namespaceElement.parent;
 	}
 }

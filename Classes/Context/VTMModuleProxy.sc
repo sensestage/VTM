@@ -8,6 +8,6 @@ VTMModuleProxy : VTMContext {
 	}
 
 	scene{
-		^namespace.parent;
+		^namespaceElement.parent;
 	}
 }

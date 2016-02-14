@@ -9,7 +9,7 @@ VTMNetwork : VTMNodeProxyContext {
 	}
 
 	nodes{
-		^namespace.children; //Returns objects of type VTMNodeProxy
+		^namespaceElement.children; //Returns objects of type VTMNodeProxy
 	}
 
 	parent{

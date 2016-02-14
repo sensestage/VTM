@@ -8,6 +8,6 @@ VTMSceneOwner : VTMNodeContext {
 	}
 
 	scenes{
-		^namespace.children;
+		^namespaceElement.children;
 	}
 }

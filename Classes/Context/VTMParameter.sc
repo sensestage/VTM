@@ -1,5 +1,5 @@
 VTMParameter : VTMContext {
 	settings{
-		^namespace.children;
+		^namespaceElement.children;
 	}
 }

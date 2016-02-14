@@ -8,10 +8,10 @@ VTMModule : VTMContext {
 	}
 
 	parameters{
-		^namespace.children; // will always return VTMParameter
+		^namespaceElement.children; // will always return VTMParameter
 	}
 
 	host{
-		^namespace.parent; // Will always return VTMModuleOwner
+		^namespaceElement.parent; // Will always return VTMModuleOwner
 	}
 }

@@ -8,6 +8,6 @@ VTMHardwareSetup : VTMNodeContext {
 	}
 
 	hardware{
-		^namespace.children;
+		^namespaceElement.children;
 	}
 }

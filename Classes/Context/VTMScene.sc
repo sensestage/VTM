@@ -8,7 +8,7 @@ VTMScene : VTMContext {
 	}
 
 	owner{
-		^namespace.parent; //Should return object of class ModuleOwner
+		^namespaceElement.parent; //Should return object of class ModuleOwner
 	}
 
 	modules{}

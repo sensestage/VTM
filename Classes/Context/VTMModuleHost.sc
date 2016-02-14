@@ -7,6 +7,6 @@ VTMModuleHost : VTMNodeContext {
 	}
 
 	modules{
-		^namespace.children;
+		^namespaceElement.children;
 	}
 }

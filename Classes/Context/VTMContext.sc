@@ -1,5 +1,5 @@
 VTMContext {
-	var <namespace;
+	var namespaceElement;
 	var <parent;
 
 	*new{arg parent;
@@ -8,14 +8,19 @@ VTMContext {
 
 	initContext{arg parent_;
 		parent = parent_;
-		namespace = VTMNamespaceElement.new(parent_.namespace).obj_(parent);
+		namespaceElement = VTMNamespaceElement.new(parent_.prNamespaceElement).obj_(parent);
 	}
 
 	add{arg context;
-		namespace.addChild(context.namespace);
+		namespaceElement.addChild(context.namespaceElement);
 	}
 
 	remove{arg contextKey;
-		namespace.removeChild(contextKey);
+		namespaceElement.removeChild(contextKey);
+	}
+
+	//this is a form of 'friend' method for other context objects
+	prNamespaceElement{
+		^namespaceElement;
 	}
 }
