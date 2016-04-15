@@ -1,5 +1,4 @@
 VTMNamespaceElement {
-	classvar <namespace; //a global cache?
 	var <parent;
 	var <children;
 	var <key;
@@ -10,15 +9,18 @@ VTMNamespaceElement {
 		^super.new.init(parent, key, obj);
 	}
 
-	*initClass{
-		namespace = VTMNamespace;
+	*namespace{
+		^VTMNamespace.global;
 	}
 
 	init{arg parent_, key_, obj_;
 		parent = parent_;
 		key = key_;
 		obj = obj_;
-		children = ();
+		children = IdentityDictionary.new;
+		//add itself to its parents children
+
+		parent !? { parent.addChild(this) };
 	}
 
 	absolutePath{
@@ -26,7 +28,7 @@ VTMNamespaceElement {
 	}
 
 	addChild{arg child;
-		children.put(child, "myChild" ++ Date.localtime);
+		children.put(child.key, child);
 	}
 
 	removeChild{arg childKey;
@@ -44,6 +46,16 @@ VTMNamespaceElement {
 	}
 
 	find{
+		// if path is relative
+		//   then search child elements
+		// else if path is absolute
+		//   then ask parent
+
+		//try to find match in global namespace cached paths
+
+		//if found return the instance
+		//else do a linked search
+
 		//destructure query into array of tokens
 	}
 }
