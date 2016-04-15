@@ -1,26 +1,42 @@
-VTMContext {
-	var namespaceElement;
-	var <parent;
+VTMContext : VTMContextRoot {
+	var parentContextType;
 
-	*new{arg parent;
-		^super.new.initContext(parent);
+	*isCorrectParentContextType{arg parent;
+		^this.subclassResponsibility(thisMethod);
+	}
+
+	*new{arg name, parent;
+		^super.new(name).initContext(parent);
 	}
 
 	initContext{arg parent_;
 		parent = parent_;
-		namespaceElement = VTMNamespaceElement.new(parent_.prNamespaceElement).obj_(parent);
+		parent.addDependant(this);
+		this.addDependant(parent);
 	}
 
-	add{arg context;
-		namespaceElement.addChild(context.namespaceElement);
+	free{
+		// parent.removeDependant(this);
+		// this.removeDependant(parent);
+		// "FREE: %".format("CONTEXT").postln;
+		super.free;
 	}
 
-	remove{arg contextKey;
-		namespaceElement.removeChild(contextKey);
+	///Method for finding other context elements
+	find{arg path;
+
 	}
 
-	//this is a form of 'friend' method for other context objects
-	prNamespaceElement{
-		^namespaceElement;
+	update{arg theChanged, whatChanged, theChanger, more;
+		// "Context updated: %".format([theChanged, whatChanged, theChanger, more]).postln;
+		//is the parent context is freed we need to free this context too
+		if(theChanged === this.parent, {
+			switch(whatChanged,
+				\freed, {
+					this.free;
+				}
+			);
+		});
+		super.update(theChanged, whatChanged, theChanger, more);
 	}
 }

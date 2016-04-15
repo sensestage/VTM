@@ -1,13 +1,15 @@
 VTMHardwareSetup : VTMNodeContext {
 
+	//can add any type of child to this context
+	*isCorrectChildContextType{arg child; ^true; }
+
 	*new{arg node;
-		^super.new(node).initHardwareSetup;
+		^super.new('hardware', node).initHardwareSetup;
 	}
 
 	initHardwareSetup{
 	}
 
-	hardware{
-		^namespaceElement.children;
-	}
+	hardware{ ^children; }
+	isLeafContext{ ^true; }
 }

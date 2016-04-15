@@ -1,13 +1,17 @@
 //a context that is running on a node
 VTMNodeContext : VTMContext {
-	*new{arg node;
-		^super.new(node).initNodeContext;
+
+	*isCorrectParentContextType{arg parent;
+		^parent.isKindOf(VTMNode);
+	}
+
+	*new{arg name, node;
+		^super.new(name, node).initNodeContext;
 	}
 
 	initNodeContext{
 	}
 
-	node{
-		^namespaceElement.parent;
-	}
+	node{ ^parent; }
+	network { ^this.node.network; }
 }

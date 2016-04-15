@@ -1,19 +1,20 @@
-VTMNetwork : VTMNodeProxyContext {
+VTMNetwork : VTMContextRoot {
+	var <localNode;
 
-	*new{arg node;
-		^super.new(node).initNetwork;
+	*isCorrectChildContextType{arg child;
+		^(
+			child.isKindOf(VTMNode) || child.isKindOf(VTMNodeProxy)
+		);
 	}
 
-	initNetwork{
-
+	*new{arg localNode;
+		^super.new('/').initNetwork(localNode);//using slash as name her for now
 	}
 
-	nodes{
-		^namespaceElement.children; //Returns objects of type VTMNodeProxy
+	initNetwork{arg localNode_;
+		localNode = localNode_;
+		"VTMNetwork initialized".postln;
 	}
 
-	parent{
-		^this; //the network is the global context, so for now we will only return itself.
-	}
-
+	nodes{ ^children; }
 }

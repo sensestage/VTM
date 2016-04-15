@@ -1,13 +1,30 @@
 VTMModuleProxy : VTMContext {
 
-	*new{arg scene;
-		^super.new(scene).initModuleProxy;
+	*isCorrectParentContext{arg parent;
+		^parent.isKindOf(VTMScene);
+	}
+
+	*isCorrectChildContext{arg child;
+		^(
+			child.isKindOf(VTMModuleProxy)
+			|| child.isKindOf(VTMParameterProxy)
+		);
+	}
+
+	*new{arg name, scene;
+		^super.new(name, scene).initModuleProxy;
 	}
 
 	initModuleProxy {
 	}
 
-	scene{
-		^namespaceElement.parent;
+	scene{ ^parent;	}
+
+	subscenes {
+		^children.select(_.isKindOf(VTMScene));
+	}
+
+	parameters {
+		^children.select(_.isKindOf(VTMParameterProxy));
 	}
 }

@@ -1,0 +1,3 @@
+VTMLocalModuleProxy : VTMModuleProxy {
+
+}
