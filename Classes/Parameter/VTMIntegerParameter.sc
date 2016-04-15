@@ -1,0 +1,1 @@
+VTMIntegerParameter : VTMScalarParameter {}

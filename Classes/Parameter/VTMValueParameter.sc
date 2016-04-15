@@ -1,0 +1,3 @@
+VTMValueParameter : VTMParameter {
+	var <value;
+}

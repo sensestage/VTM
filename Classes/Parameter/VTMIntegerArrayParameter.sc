@@ -1,0 +1,1 @@
+VTMIntegerArrayParameter : VTMArrayParameter {}
