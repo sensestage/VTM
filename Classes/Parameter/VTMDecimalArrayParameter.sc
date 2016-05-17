@@ -1,1 +1,1 @@
-VTMDecimalArrayParameter : VTMArrayParameter {}
+VTMDecimalArrayParameter : VTMListParameter {}

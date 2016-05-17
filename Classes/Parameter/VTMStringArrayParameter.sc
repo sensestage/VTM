@@ -1,1 +1,1 @@
-VTMStringArrayParameter : VTMArrayParameter {}
+VTMStringArrayParameter : VTMListParameter {}

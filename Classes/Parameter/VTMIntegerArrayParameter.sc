@@ -1,1 +1,1 @@
-VTMIntegerArrayParameter : VTMArrayParameter {}
+VTMIntegerArrayParameter : VTMListParameter {}
