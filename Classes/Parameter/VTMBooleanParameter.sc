@@ -1,1 +1,4 @@
-VTMBooleanParameter : VTMValueParameter {}
+VTMBooleanParameter : VTMValueParameter {
+
+	toggle{}
+}
