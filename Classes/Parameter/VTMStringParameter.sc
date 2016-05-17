@@ -1,1 +1,3 @@
-VTMStringParameter : VTMValueParameter {}
+VTMStringParameter : VTMValueParameter {
+	var <>regex;
+}

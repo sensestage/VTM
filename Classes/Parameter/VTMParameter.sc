@@ -5,16 +5,19 @@
 
 VTMParameter {
 	var <name;
-	var path, pathThunk; //an OSC valid path.
+	var <path, fullPathThunk; //an OSC valid path.
 	var <description;
-	var <action, hiddenAction;
+	var action, hiddenAction;
 	var <enabled = true;
 	var <responders;
 
 	//factory type constructor
 	//'name' is mandatory. TODO: this may not be the best place to have this check
 	*makeFromDescription{arg name, description;
-		//Determine class from type in description
+		//if type is defined in description
+		//  then determine class from type in description
+		//  else if defaultValue is defined
+		//    then infer class from defaultValue type (only works for ValueParameter classes
 		//if class found
 		//  then
 		//  Run constructor for found class
@@ -40,7 +43,7 @@ VTMParameter {
 		});
 		name = tempName.asSymbol;
 		description = description_;
-		pathThunk = Thunk.new({
+		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
 		});
 		if(description.notNil, {
@@ -65,8 +68,8 @@ VTMParameter {
 	}
 
 	//If path is not defined the name is returned with a leading slash
-	path{
-		^pathThunk.value;
+	fullPath{
+		^fullPathThunk.value;
 	}
 
 	path_{arg str;
@@ -76,15 +79,14 @@ VTMParameter {
 			newPath = newPath.addFirst("/");
 			"Added leading slash for parameter '%'".format(name).warn;
 		});
-		newPath = newPath.asSymbol;
-		pathThunk = Thunk.new({
-			"%/%".format(newPath, name).asSymbol;
+		path = newPath.asSymbol;
+		fullPathThunk = Thunk.new({
+			"%/%".format(path, name).asSymbol;
 		});
 	}
 
 	action_{arg func;
 		//add to hidden action if disabled
-		"Setting action 'enabled; is: %, func: %".format(enabled, func).postln;
 		if(enabled, {
 			action = func;
 		}, {
@@ -92,14 +94,25 @@ VTMParameter {
 		});
 	}
 
+	action{
+		if(enabled, {
+			^action;
+		}, {
+			^hiddenAction;
+		});
+	}
+
 	//Enabled by default.
 	//Will enable action to be run
-	enable{
+	enable{arg doActionWhenEnabled = false;
 		if(hiddenAction.notNil, {
 			action = hiddenAction;
 		});
 		hiddenAction = nil;
 		enabled = true;
+		if(doActionWhenEnabled, {
+			this.doAction;
+		});
 	}
 
 	//Will disable action from being run
@@ -110,6 +123,21 @@ VTMParameter {
 			action = nil;
 		});
 		enabled = false;
+	}
+
+	free{
+		action = nil;
+		description = nil;
+		this.changed(\freed);
+	}
+
+	attributes{
+		^IdentityDictionary[
+			\name -> this.name,
+			\path -> this.path,
+			\action -> this.action,
+			\enabled -> this.enabled
+		];
 	}
 }
 

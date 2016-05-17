@@ -22,12 +22,21 @@ TestVTMParameter : UnitTest {
 		}
 	}
 
-	test_ReturnPathAsPrefixedNameByDefault{
+	test_ReturnFullPathAsPrefixedNameByDefault{
 		var aParameter;
 		aParameter = VTMParameter.new(\myParam);
 		this.assertEquals(
-			aParameter.path, '/myParam',
-			"Parameter returned 'path' with 'name' prefixed with slash"
+			aParameter.fullPath, '/myParam',
+			"Parameter returned 'fullPath' with 'name' prefixed with slash"
+		);
+	}
+
+	test_ReturnPathAsAsNilIfNotSet{
+		var aParameter;
+		aParameter = VTMParameter.new(\myParam);
+		this.assertEquals(
+			aParameter.path, nil,
+			"Parameter returned 'path' as nil"
 		);
 	}
 
@@ -39,13 +48,17 @@ TestVTMParameter : UnitTest {
 		);
 	}
 
-	test_SetAndGetPath{
+	test_SetGetPathAndFullPath{
 		var aParameter = VTMParameter.new('myName');
 		var aPath = '/myPath';
 		aParameter.path = aPath;
 		this.assertEquals(
-			aParameter.path, '/myPath/myName',
+			aParameter.path, '/myPath',
 			"Parameter return correct path"
+		);
+		this.assertEquals(
+			aParameter.fullPath, '/myPath/myName',
+			"Parameter return correct fullPath"
 		);
 	}
 
@@ -53,7 +66,11 @@ TestVTMParameter : UnitTest {
 		var aParameter = VTMParameter.new('myName');
 		aParameter.path = 'myPath';
 		this.assertEquals(
-			aParameter.path, '/myPath/myName',
+			aParameter.path, '/myPath',
+			"Parameter leading path slash was added"
+		);
+		this.assertEquals(
+			aParameter.fullPath, '/myPath/myName',
 			"Parameter leading path slash was added"
 		);
 	}
@@ -102,6 +119,12 @@ TestVTMParameter : UnitTest {
 		aParam.doAction;
 		this.assert(wasRun.not, "Parameter action was prevented to run by disable");
 
+		//We should still be able to acces the action instance
+		this.assert(
+			aParam.action.notNil and: {aParam.action === anAction},
+			"Wasn't able to access parameter action while being disabled"
+		);
+
 		//enable should set 'enabled' true
 		aParam.enable;
 		this.assert(aParam.enabled, "Parameter was enabled again");
@@ -124,6 +147,14 @@ TestVTMParameter : UnitTest {
 		this.assert(aParam.action === anotherAction and: { aValue == 222; },
 			"Parameter action was changed correctly during disabled state"
 		);
+
+		//Action should be run upon enable if optionally defined in enable call
+		wasRun = false;
+		aParam.disable;
+		aParam.action = {arg param; wasRun = true; };
+		aParam.enable(doActionWhenEnabled: true);
+		this.assert(wasRun,
+			"Parameter action was optionally performed on enabled");
 	}
 
 	test_SetVariablesThroughDescription{
@@ -138,8 +169,11 @@ TestVTMParameter : UnitTest {
 		aParam = VTMParameter.new('myName', aDescription);
 
 		//path is set through description
-		this.assertEquals(aParam.path, '/myPath/myName',
+		this.assertEquals(aParam.path, '/myPath',
 			"Path was defined through description"
+		);
+		this.assertEquals(aParam.fullPath, '/myPath/myName',
+			"Full path was defined through description"
 		);
 		//enabled is set through description
 		this.assert(aParam.enabled.not,
@@ -152,5 +186,13 @@ TestVTMParameter : UnitTest {
 		this.assert(wasRun and: {aParam.action === anAction},
 			"Parameter action was set through description"
 		);
+	}
+
+	test_ParameterFree{
+		//Should remove action, path, name and description upon free
+	}
+
+	test_GetAttributes{
+		//Should return an IdentityDictionary with the keys: name, path, action, enabled
 	}
 }
