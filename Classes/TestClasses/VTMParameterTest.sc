@@ -189,10 +189,35 @@ TestVTMParameter : UnitTest {
 	}
 
 	test_ParameterFree{
-		//Should remove action, path, name and description upon free
+		//Should free responders, internal parameters, mappings, and oscInterface
 	}
 
 	test_GetAttributes{
-		//Should return an IdentityDictionary with the keys: name, path, action, enabled
+		var testName = 'myParam';
+		var wasRun = false;
+		var description = IdentityDictionary[
+			\path -> '/myPath/is',
+			\action -> {|p| 11 + 8; },
+			\enabled -> true
+		];
+		var testAttributes;
+		var param = VTMParameter.new(testName, description);
+		// Should return an IdentityDictionary with the keys: name, path, action, enabled
+		testAttributes = description.deepCopy.put(
+			\name, testName
+		);
+		testAttributes.put(\action, description[\action].asCompileString);
+
+		this.assertEquals(
+			param.attributes, testAttributes,
+			"Parameter returned correct attributes"
+		);
+
+		//If the action is not a closed function it should not get returned as attribute
+		param.action = {|p| wasRun = true;};
+		this.assert(
+			param.attributes[\action].isNil,
+			"Parameter returned open function as nil"
+		);
 	}
 }

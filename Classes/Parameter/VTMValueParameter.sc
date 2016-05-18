@@ -77,7 +77,8 @@ VTMValueParameter : VTMParameter {
 		^super.attributes.putAll(IdentityDictionary[
 			\value -> this.value,
 			\defaultValue -> this.defaultValue,
-			\filterRepetitions -> this.filterRepetitions
+			\filterRepetitions -> this.filterRepetitions,
+			\typecheck -> this.typecheck
 		]);
 	}
 }

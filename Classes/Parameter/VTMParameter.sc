@@ -9,7 +9,9 @@ VTMParameter {
 	var <description;
 	var action, hiddenAction;
 	var <enabled = true;
+	var <mappings;
 	var <responders;
+	var <oscInterface;
 
 	//factory type constructor
 	//'name' is mandatory. TODO: this may not be the best place to have this check
@@ -42,7 +44,7 @@ VTMParameter {
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		description = description_;
+		description = description_.deepCopy;
 		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
 		});
@@ -127,44 +129,40 @@ VTMParameter {
 
 	free{
 		action = nil;
-		description = nil;
+		hiddenAction = nil;
+		if(mappings.notNil, {
+			mappings.do(_.free);
+		});
+		mappings = nil;
+
+		if(oscInterface.notNil, {
+			oscInterface.free;
+		});
+		oscInterface = nil;
+
+		if(responders.notNil, {
+			responders.do(_.free);
+		});
+		responders = nil;
+
 		this.changed(\freed);
 	}
 
 	attributes{
+		var aFunction;
+		aFunction = this.action;
+		if(aFunction.isClosed, {
+			//Only return closed functions as attributes
+			aFunction = aFunction.asCompileString;
+		}, {
+			aFunction = nil;
+		});
+
 		^IdentityDictionary[
 			\name -> this.name,
 			\path -> this.path,
-			\action -> this.action,
+			\action -> aFunction,
 			\enabled -> this.enabled
 		];
 	}
 }
-
-
-/*
-Types to implement:
-- Value
-  - Boolean
-  - Generic
-  - Scalar
-    - Integer
-    - Decimal
-  - Option
-  - Symbol
-  - String
-  - Timecode
-  - Dictionary
-    - JSON
-- Message
-- Return
-- Array (encapsulates internal types)
-  - IntegerArray
-  - DecimalArray
-  - GenericArray
-  - StringArray
-  - SymbolArray
-  - etc.
-
-
-*/

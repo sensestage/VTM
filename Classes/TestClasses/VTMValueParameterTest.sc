@@ -232,9 +232,21 @@ TestVTMValueParameter : UnitTest {
 	test_TypeWasInferredFromValueTypeInDescription{}
 
 	test_GetAttributes{
-
+		var description = IdentityDictionary[
+			\path -> '/myValuePath/tester',
+			\action -> {|p| p.value - 12.3; },
+			\enabled -> true,
+			\defaultValue -> -0.2,
+			\value -> 9.9,
+			\typecheck -> false,
+			\filterRepetitions -> true
+		];
+		var testAttributes;
+		var param = VTMValueParameter.new('myValue', description);
+		testAttributes = description.deepCopy.put(\name, 'myValue');
+		testAttributes.put(\action, testAttributes[\action].asCompileString);
+		this.assertEquals(
+			param.attributes, testAttributes, "ValueParameter returned correct attributes"
+		);
 	}
-
-
-
 }

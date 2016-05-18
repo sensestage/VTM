@@ -292,9 +292,82 @@ TestVTMScalarParameter : UnitTest {
 	}
 
 
-	test_SetAttributesInDescription{}
+	test_SetAttributesInDescription{
+		var description = IdentityDictionary[
+			\path -> '/myValuePath/tester',
+			\action -> {|p| p.value * 2.1; },
+			\enabled -> true,
+			\defaultValue -> 1.11,
+			\value -> 0.91,
+			\typecheck -> true,
+			\filterRepetitions -> false,
+			\minVal -> -1100.0,
+			\maxVal -> 1234.0,
+			\stepsize -> 12,
+			\clipmode -> \low
+		];
+		var param = VTMScalarParameter.new('myValue', description);
+		this.assertEquals(
+			param.path, description[\path], "ScalarParameter set path through description"
+		);
+		this.assertEquals(
+			param.fullPath, '/myValuePath/tester/myValue', "ScalarParameter set fullPath through description"
+		);
+		this.assertEquals(
+			param.action, description[\action], "ScalarParameter set action through description"
+		);
+		this.assertEquals(
+			param.enabled, description[\enabled], "ScalarParameter set enabled through description"
+		);
+		this.assertEquals(
+			param.defaultValue, description[\defaultValue], "ScalarParameter set defaultValue through description"
+		);
+		this.assertEquals(
+			param.value, description[\value], "ScalarParameter set value through description"
+		);
+		this.assertEquals(
+			param.typecheck, description[\typecheck], "ScalarParameter set typecheck through description"
+		);
+		this.assertEquals(
+			param.filterRepetitions, description[\filterRepetitions],
+			"ScalarParameter set filterRepetitions through description"
+		);
+		this.assertEquals(
+			param.minVal, description[\minVal], "ScalarParameter set minVal through description"
+		);
+		this.assertEquals(
+			param.maxVal, description[\maxVal], "ScalarParameter set maxVal through description"
+		);
+		this.assertEquals(
+			param.stepsize, description[\stepsize], "ScalarParameter set stepsize through description"
+		);
+		this.assertEquals(
+			param.clipmode, description[\clipmode], "ScalarParameter set clipmode through description"
+		);
+
+
+	}
 
 	test_GetAttributes{
-
+		var description = IdentityDictionary[
+			\path -> '/myValuePath/tester',
+			\action -> {|p| p.value * 2.1; },
+			\enabled -> true,
+			\defaultValue -> 1.11,
+			\value -> 0.91,
+			\typecheck -> true,
+			\filterRepetitions -> false,
+			\minVal -> -1100.0,
+			\maxVal -> 1234.0,
+			\stepsize -> 12,
+			\clipmode -> \low
+		];
+		var testAttributes;
+		var param = VTMScalarParameter.new('myValue', description);
+		testAttributes = description.deepCopy.put(\name, 'myValue');
+		testAttributes.put(\action, testAttributes[\action].asCompileString);
+		this.assertEquals(
+			param.attributes, testAttributes, "ScalarParameter returned correct attributes"
+		);
 	}
 }
