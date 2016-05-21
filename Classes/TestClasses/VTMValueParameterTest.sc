@@ -183,7 +183,8 @@ TestVTMValueParameter : UnitTest {
 		description = (
 			path: '/myPath', defaultValue: 222, value: 333,
 			action: {arg p; wasRun = true},
-			filterRepetitions: true
+			filterRepetitions: true,
+			typecheck: false
 		);
 		param = VTMValueParameter.new('myName', description);
 		this.assert(param.path.notNil,

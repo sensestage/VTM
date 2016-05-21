@@ -9,6 +9,14 @@ TestVTMScalarParameter : UnitTest {
 
 	test_DefaultAttributes{
 		var param = VTMScalarParameter.new('myScalar');
+		//defaultValue should default to the class default value
+		this.assertEquals(
+			param.defaultValue, VTMScalarParameter.defaultValue, "ScalarParameter defaultValue defaults to 0"
+		);
+		//value should default to 0 if value not defined
+		this.assertEquals(
+			param.value, param.defaultValue, "ScalarParameter value defaults to 0"
+		);
 		//stepsize should default to 0
 		this.assertEquals(
 			param.stepsize, 0, "ScalarParameter stepsize defaults to 0"
@@ -17,13 +25,13 @@ TestVTMScalarParameter : UnitTest {
 		this.assertEquals(
 			param.clipmode, \none, "ScalarParameter clipmode defaults to 'none'"
 		);
-		//minVal should default to 0 (this might change later)
-		this.assertEquals(
-			param.minVal, 0, "ScalarParameter minVal defaults to 0"
+		//minVal should default to nil (this might change later)
+		this.assert(
+			param.minVal.isNil, "ScalarParameter minVal defaults to nil"
 		);
-		//maxVal should default to 100 (this might change later)
-		this.assertEquals(
-			param.maxVal, 100, "ScalarParameter minVal defaults to 100"
+		//maxVal should default to nil (this might change later)
+		this.assert(
+			param.maxVal.isNil, "ScalarParameter maxVal defaults to nil"
 		);
 	}
 
@@ -35,6 +43,17 @@ TestVTMScalarParameter : UnitTest {
 		this.assertEquals(
 			param.value, testValue, "ScalarParameter value was set"
 		);
+	}
+
+	test_OnlyTypecheckWhenTypecheckIsTrue{}
+
+	test_OnlyCheckRangesWhenMinValAndMaxValAreDefined{
+		var param = VTMScalarParameter.new('myScalar');
+		var testValue = 50;
+
+		//Should only check higher values when maxVal is not nil
+
+		//Should only check lower values when minVal is not nil
 	}
 
 	test_SetGetAttributes{
@@ -103,6 +122,7 @@ TestVTMScalarParameter : UnitTest {
 		);
 
 		//Should ignore and warn on wrong 'value' type
+		param.clipmode = \none;
 		testValue = 299;
 		param.value = testValue;
 		param.value = \notAValidValueType;
@@ -169,7 +189,7 @@ TestVTMScalarParameter : UnitTest {
 			param.value, param.minVal, "ScalarParameter lower value was clipped in clipmode 'both'"
 		);
 	}
-
+	/*
 	test_StepsizeIncrementAndDecrement{
 		var param = VTMScalarParameter.new('myScalar');
 		var testValue, testStepsize, wasRun, wasCorrectValue;
@@ -277,19 +297,209 @@ TestVTMScalarParameter : UnitTest {
 	}
 
 	test_UpdateValueWhenMinValAndMaxValChange{
-		//Should update the value
+		var wasRun = false;
+		var param = VTMScalarParameter.new('myValue');
+		param.minVal = 0.0;
+		param.maxVal = 3.0;
+		param.action = {|p| wasRun = true; };
+		param.clipmode = \both;
+		param.value = 2.0; //set the value higher than defined maxVal
 
-		//Should not run the action when minVal change
-
+		//Should update the value after maxVal set
 		//Should not run the action when maxVal change
+		param.maxVal = 1.1;
+		this.assertEquals(
+			param.value, param.maxVal,
+			"ScalarParameter value adjusted value when maxVal changed"
+		);
+		this.assert(
+			wasRun.not,
+			"ScalarParameter - adjusting out-of-range value for maxVal did not run action"
+		);
 
+		//Should update the value after minVal set
+		//Should not run the action when minVal change
+		wasRun = false;
+		param.minVal = 0.0;
+		param.maxVal = 5.0;
+		param.value = 1.0;
+		param.minVal = 1.5;
+		this.assertEquals(
+			param.value, param.minVal,
+			"ScalarParameter value adjusted value when minVal changed"
+		);
+		this.assert(
+			wasRun.not,
+			"ScalarParameter - adjusting out-of-range value for minVal did not run action"
+		);
+	}
+
+	test_AllowSettingMinValAndMaxValToNil{
+		var param = VTMScalarParameter.new('myScalar');
+		param.minVal = 0.0;
+		param.maxVal = 1.0;
+
+		//Should allow setting minVal to nil
+		try{
+			param.minVal = nil;
+			this.assert(
+				param.minVal.isNil,
+				"ScalarParameter allowed setting minVal to nil"
+			);
+		} {
+			this.failed(thisMethod,
+				"ScalarParameter failed to allow setting minVal to nil"
+			);
+		};
+
+		//Should allow setting maxVal to nil
+		try{
+			param.maxVal = nil;
+			this.assert(
+				param.maxVal.isNil,
+				"ScalarParameter allowed setting maxVal to nil"
+			);
+		} {
+			this.failed(thisMethod,
+				"ScalarParameter failed to allow setting maxVal to nil"
+			);
+		};
+	}
+
+
+	test_OnlyClipValuesWhenMinValAndMaxValAreDefined{
+		var param = VTMScalarParameter.new('myScalar');
+		var testValue;
+
+		//Should only check for lower value in clipmode 'both' and 'maxVal' is not defined
+		param.clipmode = \both;
+		testValue = 999999.0;
+		param.value = testValue;
+		param.minVal = 0.0;
+		this.assert(
+			param.maxVal.isNil and: {param.value == testValue}
+		);
+
+		//Should only check for higher value in clipmode 'both' and 'minVal' is not defined
+		param.clipmode = \both;
+		testValue = 999999.0;
+		param.value = testValue;
+		param.minVal = nil;
+		param.maxVal = 0.0;
+		this.assert(
+			param.minVal.isNil and: {param.value == testValue}
+		);
 	}
 
 	test_UpdateValueWhenClipmodeChange{
-		//Should update the value
+		var param = VTMScalarParameter.new('myScalar');
+		var wasRun = false;
+		var testValue;
+		param.minVal = -2.0;
+		param.maxVal = 22.0;
+		param.clipmode = \none;
+		param.action = {|p| wasRun = true; };
+		param.value = 25;
 
+		//Should update the higher-than-maxVal-value when clipmode changes from 'none' to 'high'
+		param.clipmode = \high;
+		this.assertEquals(
+			param.value, param.maxVal,
+			"ScalarParameter - adjusted value when clipmode changed to 'high'"
+		);
 		//Should not run the action when clipmode changed
+		this.assert(
+			wasRun.not, "ScalarParameter didn't run action when adjusting the clipmode"
+		);
+
+		//Should update the lower-than-minVal-value when clipmode changes 'none' to 'low'
+		param.clipmode = \none;
+		param.value = -10.0;
+		param.minVal = -5.5;
+		param.minVal = 0.0;
+		param.clipmode = \low;
+		this.assertEquals(
+			param.value, param.minVal,
+			"ScalarParameter - adjusted value clipmode changed to 'low'"
+		);
+
+		//Should not adjust value when it is higher than maxVal, and clipmode is set
+		//to 'low'
+		param.clipmode = \none;
+		param.minVal = 0.0;
+		param.maxVal = 1.2;
+		testValue = 112.0;
+		param.value = testValue;
+		param.clipmode = \low;
+		this.assertEquals(
+			param.value, testValue,
+			"ScalarParameter - did not adjust higher value when clipmode changed to 'low'"
+		);
+
+		//Should not adjust value when it is lower than minVal, and clipmode is set
+		//to 'high'
+		param.clipmode = \none;
+		param.minVal = -1.0;
+		param.maxVal = 300.0;
+		testValue = -500.0;
+		param.value = testValue;
+		param.clipmode = \high;
+		this.assertEquals(
+			param.value, testValue,
+			"ScalarParameter - did not adjust higher value when clipmode changed to 'low'"
+		);
+
+
+		//Should adjust value if value is higher than maxVal and clipmode set to 'both'
+		param.clipmode = \none;
+		param.minVal = 0.0;
+		param.maxVal = 2.0;
+		param.value = 2.222;
+		param.clipmode = \both;
+		this.assertEquals(
+			param.value, param.maxVal,
+			"ScalarParameter adjusted higher value when clipmode set to 'both'"
+		);
+
+		//Should adjust value if value is lower than minVal and clipmode is set to 'both'
+		param.clipmode = \none;
+		param.minVal = -111.0;
+		param.maxVal = 222.0;
+		param.value = -222.999;
+		param.clipmode = \both;
+		this.assertEquals(
+			param.value, param.minVal,
+			"ScalarParameter adjusted lower value when clipmode set to 'both'"
+		);
+
+		//Should not adjust higher value in clipmode transition 'low' to 'none'
+		param.clipmode = \low;
+		param.minVal = 0.0;
+		param.maxVal = 11.0;
+		testValue = 99.0;
+		param.value = testValue;
+		param.clipmode = \none;
+		this.assertEquals(
+			param.value, testValue,
+			"ScalarParameter kept higher value when clipmode went from 'low' 'none'"
+		);
+
+		//Should not adjust lower value in clipmode transition 'high' to 'none'
+		param.clipmode = \high;
+		param.minVal = -1.0;
+		param.maxVal = 146.0;
+		testValue = -99.0;
+		param.value = testValue;
+		param.clipmode = \none;
+		this.assertEquals(
+			param.value, testValue,
+			"ScalarParameter kept higher value when clipmode went from 'low' 'none'"
+		);
+
 	}
+
+
+	test_MinValShouldNotBeLowerThanMaxValAndViceVersa{}
 
 
 	test_SetAttributesInDescription{
@@ -370,4 +580,5 @@ TestVTMScalarParameter : UnitTest {
 			param.attributes, testAttributes, "ScalarParameter returned correct attributes"
 		);
 	}
+	*/
 }
