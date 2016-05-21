@@ -1,4 +1,5 @@
 VTMValueParameter : VTMParameter {
+	classvar <defaultValue;
 	var <value;
 	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
@@ -17,9 +18,6 @@ VTMValueParameter : VTMParameter {
 		if(description.notNil, {
 			if(description.includesKey(\defaultValue), {
 				defaultValue = description[\defaultValue];
-				if(description.includesKey(\value).not, {
-					value = defaultValue;
-				});
 			});
 			if(description.includesKey(\value), {
 				value = description[\value];
@@ -27,6 +25,12 @@ VTMValueParameter : VTMParameter {
 			if(description.includesKey(\filterRepetitions), {
 				filterRepetitions = description[\filterRepetitions];
 			});
+		});
+		if(defaultValue.isNil, {
+			defaultValue = this.class.defaultValue.deepCopy;
+		});
+		if(value.isNil, {
+			value = defaultValue;
 		});
 	}
 

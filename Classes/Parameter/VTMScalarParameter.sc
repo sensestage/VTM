@@ -1,10 +1,14 @@
 VTMScalarParameter : VTMValueParameter {
-	var <minVal = 0;//FIXME: this default value is yet to be decided upon
-	var <maxVal = 100;//FIXME: this default value is yet to be decided upon
+	var <minVal;
+	var <maxVal;
 	var <stepsize = 0;
 	var <clipmode = \none;
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMScalarInterpolator will be
+
+	*initClass{
+		defaultValue = 0.0;
+	}
 
 	//this class will accept numbers, either Integers or Decimals
 	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }
@@ -16,6 +20,9 @@ VTMScalarParameter : VTMValueParameter {
 
 	initScalarParameter{
 		if(description.notNil, {
+			if(description.includesKey(\clipmode), {
+				this.clipmode = description[\clipmode];
+			});
 			if(description.includesKey(\minVal), {
 				this.minVal = description[\minVal];
 			});
@@ -25,31 +32,41 @@ VTMScalarParameter : VTMValueParameter {
 			if(description.includesKey(\stepsize), {
 				this.stepsize = description[\stepsize];
 			});
-			if(description.includesKey(\clipmode), {
-				this.clipmode = description[\clipmode];
-			});
 		});
 	}
 
 	minVal_{ arg val;
-		if(this.class.isValidType(val), {
-			minVal = val;
+		if(val.isNil, {
+			minVal = nil;
 			this.changed(\minVal);
 		}, {
-			"ScalarParameter:minVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
-			).warn;
+			if(this.class.isValidType(val), {
+				minVal = val;
+				this.changed(\minVal);
+				this.value_(this.value);//update the value, might be clipped in the value set method
+			}, {
+				"ScalarParameter:minVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
+					this.fullPath, val, val.class
+				).warn;
+			});
 		});
 	}
 
 	maxVal_{ arg val;
-		if(this.class.isValidType(val), {
-			maxVal = val;
+		if(val.isNil, {
+			maxVal = nil;
 			this.changed(\maxVal);
 		}, {
-			"ScalarParameter:maxVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
-			).warn;
+			if(this.class.isValidType(val), {
+				maxVal = val;
+				this.changed(\maxVal);
+				this.value_(this.value);//update the value, might be clipped in the value set method
+			}, {
+				"ScalarParameter:maxVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
+					this.fullPath, val, val.class
+				).warn;
+			});
+
 		});
 	}
 
@@ -73,7 +90,9 @@ VTMScalarParameter : VTMValueParameter {
 
 	clipmode_{ arg val;
 		if(#['none', 'low', 'high', 'both'].includes(val.asSymbol), {
+			var newVal;
 			clipmode = val.asSymbol;
+			this.value_(this.value);//update the value, might be clipped in the value set method
 			this.changed(\clipmode);
 		}, {
 			"ScalarParameter:clipmode_ '%' - ignoring val because of invalid type: '%[%]'".format(
@@ -83,28 +102,21 @@ VTMScalarParameter : VTMValueParameter {
 	}
 
 	value_{arg val;
-		var newVal;
-		if(this.class.isValidType(val), {
-			switch(clipmode,
-				\none, {
-					newVal = val;
-				},
-				\low, {
-					newVal = val.max(minVal);
-				},
-				\high, {
-					newVal = val.min(maxVal);
-				},
-				\both, {
-					newVal = val.clip(minVal, maxVal);
-				}
-			);
-			super.value_(newVal, omitTypecheck: true);
+		if(typecheck, {
+			if(this.class.isValidType(val), {
+				super.value_(
+					this.prCheckRangeAndClipValue(val),
+					omitTypecheck: true
+				);
+			}, {
+				"ScalarParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
+					this.fullPath, val, val.class
+				).warn;
+			});
 		}, {
-			"ScalarParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
-			).warn;
+			super.value_( this.prCheckRangeAndClipValue(val) );
 		});
+
 	}
 
 	increment{arg doAction = true;
@@ -136,6 +148,39 @@ VTMScalarParameter : VTMValueParameter {
 				\dataspace, dataspace.attributes
 			);
 		});
+		^result;
+	}
+
+	prCheckRangeAndClipValue{arg val;
+		var result;
+		result = val;
+		switch(this.clipmode,
+			\none, {
+				// "NONE CLIPPING".postln;
+			},
+			\low, {
+				// "LOW CLIPPING".postln;
+				if(minVal.notNil and: {val < this.minVal}, {
+					result = val.max(this.minVal);
+				});
+			},
+			\high, {
+				// "HIGH CLIPPING".postln;
+				if(maxVal.notNil and: {val > this.maxVal}, {
+					result = val.min(this.maxVal);
+				});
+			},
+			\both, {
+				// "BOTH CLIPPING".postln;
+				if(minVal.notNil and: {val < this.minVal}, {
+					result = val.max(this.minVal);
+				}, {
+					if(maxVal.notNil and: {val > this.maxVal}, {
+						result = val.min(this.maxVal);
+					});
+				});
+			}
+		);
 		^result;
 	}
 
