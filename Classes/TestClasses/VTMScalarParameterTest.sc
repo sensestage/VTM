@@ -189,7 +189,7 @@ TestVTMScalarParameter : UnitTest {
 			param.value, param.minVal, "ScalarParameter lower value was clipped in clipmode 'both'"
 		);
 	}
-	/*
+
 	test_StepsizeIncrementAndDecrement{
 		var param = VTMScalarParameter.new('myScalar');
 		var testValue, testStepsize, wasRun, wasCorrectValue;
@@ -371,23 +371,38 @@ TestVTMScalarParameter : UnitTest {
 		var param = VTMScalarParameter.new('myScalar');
 		var testValue;
 
-		//Should only check for lower value in clipmode 'both' and 'maxVal' is not defined
+		//Should only check for lower value in clipmode 'both' if 'maxVal' is not defined
 		param.clipmode = \both;
 		testValue = 999999.0;
 		param.value = testValue;
+		param.maxVal = nil;
 		param.minVal = 0.0;
 		this.assert(
-			param.maxVal.isNil and: {param.value == testValue}
+			param.maxVal.isNil and: {param.value == testValue},
+			message: "ScalarParameter didn't clip value when maxVal was nil."
+		);
+		testValue = -999999.0;
+		param.value = testValue;
+		this.assertEquals(
+			param.value, param.minVal,
+			"ScalarParameter clipped value to minVal in clipmode 'both' when maxVal was nil."
 		);
 
-		//Should only check for higher value in clipmode 'both' and 'minVal' is not defined
+		//Should only check for higher value in clipmode 'both' if 'minVal' is not defined
 		param.clipmode = \both;
+		param.minVal = nil;
+		param.maxVal = 1000.0;
+		testValue = -999999.0;
+		param.value = testValue;
+		this.assert(
+			param.minVal.isNil and: {param.value == testValue},
+			message: "ScalarParameter didn't clip value when minVal was nil."
+		);
 		testValue = 999999.0;
 		param.value = testValue;
-		param.minVal = nil;
-		param.maxVal = 0.0;
-		this.assert(
-			param.minVal.isNil and: {param.value == testValue}
+		this.assertEquals(
+			param.value, param.maxVal,
+			"ScalarParameter clipped value to maxVal in clipmode 'both' when minVal was nil."
 		);
 	}
 
@@ -580,5 +595,4 @@ TestVTMScalarParameter : UnitTest {
 			param.attributes, testAttributes, "ScalarParameter returned correct attributes"
 		);
 	}
-	*/
 }
