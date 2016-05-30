@@ -17,17 +17,17 @@ VTMValueParameter : VTMParameter {
 	initValueParameter{
 		if(description.notNil, {
 			if(description.includesKey(\defaultValue), {
-				defaultValue = description[\defaultValue];
+				this.defaultValue_(description[\defaultValue]);
 			});
 			if(description.includesKey(\value), {
-				value = description[\value];
+				this.value_(description[\value]);
 			});
 			if(description.includesKey(\filterRepetitions), {
 				filterRepetitions = description[\filterRepetitions];
 			});
 		});
 		if(defaultValue.isNil, {
-			defaultValue = this.class.defaultValue.deepCopy;
+			this.defaultValue_(this.class.defaultValue.deepCopy);
 		});
 		if(value.isNil, {
 			value = defaultValue;

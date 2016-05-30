@@ -101,8 +101,8 @@ VTMScalarParameter : VTMValueParameter {
 		});
 	}
 
-	value_{arg val;
-		if(typecheck, {
+	value_{arg val, omitTypecheck = false;
+		if(typecheck or: {omitTypecheck.not}, {
 			if(this.class.isValidType(val), {
 				super.value_(
 					this.prCheckRangeAndClipValue(val),
@@ -116,7 +116,20 @@ VTMScalarParameter : VTMValueParameter {
 		}, {
 			super.value_( this.prCheckRangeAndClipValue(val) );
 		});
+	}
 
+	defaultValue_{arg val;
+		if(typecheck, {
+			if(this.class.isValidType(val), {
+				defaultValue = this.prCheckRangeAndClipValue(val);
+			}, {
+				"ScalarParameter:defaultValue_ '%' - ignoring val because of invalid type: '%[%]'".format(
+					this.fullPath, val, val.class
+				).warn;
+			});
+		}, {
+			defaultValue = val;
+		});
 	}
 
 	increment{arg doAction = true;
