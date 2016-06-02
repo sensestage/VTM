@@ -11,7 +11,7 @@ TestVTMScalarParameter : UnitTest {
 		var param = VTMScalarParameter.new('myScalar');
 		//defaultValue should default to the class default value
 		this.assertEquals(
-			param.defaultValue, VTMScalarParameter.defaultValue, "ScalarParameter defaultValue defaults to 0"
+			param.defaultValue, param.prDefaultValueForType, "ScalarParameter defaultValue defaults to 0"
 		);
 		//value should default to 0 if value not defined
 		this.assertEquals(

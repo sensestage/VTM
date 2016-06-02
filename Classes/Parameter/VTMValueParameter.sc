@@ -1,9 +1,12 @@
 VTMValueParameter : VTMParameter {
-	classvar <defaultValue;
 	var <value;
 	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
+
+	prDefaultValueForType{
+		//this.subclassResponsibility(thisMethod);
+	}
 
 	//This is an abstract class, not to be used directly.
 	//Use GenericParameter for parameters that can receive any value type.
@@ -27,10 +30,10 @@ VTMValueParameter : VTMParameter {
 			});
 		});
 		if(defaultValue.isNil, {
-			this.defaultValue_(this.class.defaultValue.deepCopy);
+			this.defaultValue_(this.prDefaultValueForType.deepCopy);
 		});
 		if(value.isNil, {
-			value = defaultValue;
+			this.value_( defaultValue );
 		});
 	}
 
