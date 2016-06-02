@@ -1,1 +1,1 @@
-VTMGenericArrayParameter : VTMListParameter {}
+VTMAnythingArrayParameter : VTMListParameter {}

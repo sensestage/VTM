@@ -1,1 +1,1 @@
-VTMGenericParameter : VTMValueParameter {}
+VTMAnythingParameter : VTMValueParameter {}

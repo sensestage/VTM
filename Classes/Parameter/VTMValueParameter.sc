@@ -9,7 +9,7 @@ VTMValueParameter : VTMParameter {
 	}
 
 	//This is an abstract class, not to be used directly.
-	//Use GenericParameter for parameters that can receive any value type.
+	//Use AnythingParameter for parameters that can receive any value type.
 	*new{arg name, description;
 		^super.new(name, description).initValueParameter;
 	}
