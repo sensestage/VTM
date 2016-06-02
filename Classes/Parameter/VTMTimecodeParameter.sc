@@ -12,10 +12,6 @@ VTMTimecodeParameter : VTMValueParameter {
 		^val.isKindOf(SimpleNumber);
 	}
 
-	isValidFormat{arg val;
-		^this.class.formats.includes(val);
-	}
-
 	*new{arg name, description;
 		^super.new(name, description).initTimecodeParameter;
 	}
