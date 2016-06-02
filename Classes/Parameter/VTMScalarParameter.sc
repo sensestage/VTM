@@ -6,9 +6,7 @@ VTMScalarParameter : VTMValueParameter {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMScalarInterpolator will be
 
-	*initClass{
-		defaultValue = 0.0;
-	}
+	prDefaultValueForType{ ^0.0; }
 
 	//this class will accept numbers, either Integers or Decimals
 	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }

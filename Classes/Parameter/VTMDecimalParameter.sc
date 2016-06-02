@@ -1,7 +1,5 @@
 VTMDecimalParameter : VTMScalarParameter {
-	*initClass{
-		defaultValue = 0.0;
-	}
+	prDefaultValueForType{ ^0.0; }
 
 	minVal_{arg val;
 		if(val.class == Integer, {
