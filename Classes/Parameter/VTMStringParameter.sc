@@ -138,7 +138,15 @@ VTMStringParameter : VTMValueParameter {
 		if(doActionUponClear, {
 			this.doAction;
 		});
+	}
 
+	attributes{
+		var result;
+		result = super.attributes.putAll(IdentityDictionary[
+			\matchPattern -> this.matchPattern,
+			\regex -> this.regex
+		]);
+		^result;
 	}
 
 }
