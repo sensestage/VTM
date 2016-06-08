@@ -31,4 +31,19 @@ TestVTM : UnitTest {
 		"Tearing down a VTMTest".postln;
 	}
 
+	// *makeRandomParameterOfType{arg type;
+	// 	var result;
+	// 	switch(
+	// 		\string, {
+	// 			result = VTMStringParameter.new('myString', (
+	// 				regex:
+	// 			));
+	// 		},
+	// 		\timecode, {},
+	// 		\integer, {},
+	// 		\decimal, {},
+	// 		\boolean, {}
+	// 	);
+	// }
+
 }
