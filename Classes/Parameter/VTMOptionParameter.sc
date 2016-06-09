@@ -120,6 +120,7 @@ VTMOptionParameter : VTMValueParameter {
 				this.value_( options[(indexOfCurrent + 1) % options.size] );
 			}
 		);
+		^this.value;
 	}
 
 	previousOption{
@@ -134,6 +135,6 @@ VTMOptionParameter : VTMValueParameter {
 				this.value_( options[(indexOfCurrent - 1) % options.size] );
 			}
 		);
-
+		^this.value;
 	}
 }
