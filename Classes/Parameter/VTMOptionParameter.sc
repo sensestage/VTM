@@ -117,7 +117,7 @@ VTMOptionParameter : VTMValueParameter {
 				});
 			},
 			\wrap, {
-				this.value_( (indexOfCurrent + 1) % options.size );
+				this.value_( options[(indexOfCurrent + 1) % options.size] );
 			}
 		);
 	}
@@ -131,7 +131,7 @@ VTMOptionParameter : VTMValueParameter {
 				});
 			},
 			\wrap, {
-				this.value_( (indexOfCurrent - 1) % options.size );
+				this.value_( options[(indexOfCurrent - 1) % options.size] );
 			}
 		);
 

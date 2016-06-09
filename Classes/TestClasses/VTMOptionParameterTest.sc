@@ -194,7 +194,52 @@ TestVTMOptionParameter : UnitTest {
 
 	}
 
-	test_IgnoreOtherThanOptions{}
+	test_IgnoreOtherThanDefinedOptions{
+		var testValue = \cc;
+		var desc = (
+			options: [\aa, \bb, \cc, \dd]
+		);
+		var param = VTMOptionParameter.new('myOption', desc);
+		testValue = desc[\options].choose;
+		param.value = testValue;
+		param.value = \xx;
+		this.assertEquals(
+			param.value, testValue,
+			"OptionParameter ignore non-existing option as value"
+		);
+	}
 
-	test_ClearingOptionsUpdatesValue{}
+	test_ClearingOptionsUpdatesValue{
+		var testOptions, testValue, testDefaultValue;
+		var param = VTMOptionParameter.new('myOption', (options: [\aa, \bb, \cc, \dd]));
+		param.value  = \dd;
+
+		testOptions = [\xx, \yy, \zz];
+		param.options = testOptions;
+		this.assertEquals(
+			param.value, testOptions.first,
+			"OptionParameter updated value to first item when current value didn't match the previous options"
+		);
+		this.assertEquals(
+			param.defaultValue, testOptions.first,
+			"OptionParameter updated defaultValue to first item when current value didn't match the previous options"
+		);
+
+		param.options = [\aa, \tt, \yy, \pp];
+		testValue = \yy;
+		testDefaultValue = \pp;
+		param.value = testValue;
+		param.defaultValue = testDefaultValue;
+
+		testOptions = [\xx, \yy, \zz, \ii, \pp];
+		param.options = testOptions;
+		this.assertEquals(
+			param.value, testValue,
+			"OptionParameter kept value when new options included matching item to current value"
+		);
+		this.assertEquals(
+			param.defaultValue, testDefaultValue,
+			"OptionParameter kept defaultValue when new options included matching item to current value"
+		);
+	}
 }
