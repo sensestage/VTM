@@ -137,4 +137,13 @@ VTMOptionParameter : VTMValueParameter {
 		);
 		^this.value;
 	}
+
+	attributes{
+		var result;
+		result = super.attributes.putAll(IdentityDictionary[
+			\options -> this.options,
+			\sequenceMode -> this.sequenceMode
+		]);
+		^result;
+	}
 }

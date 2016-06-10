@@ -104,4 +104,12 @@ VTMSelectionParameter : VTMValueParameter {
 			).warn;
 		});
 	}
+
+	attributes{
+		var result;
+		result = super.attributes.putAll(IdentityDictionary[
+			\options -> this.options
+		]);
+		^result;
+	}
 }
