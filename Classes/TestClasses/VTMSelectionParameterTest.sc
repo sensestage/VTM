@@ -90,4 +90,24 @@ TestVTMSelectionParameter : UnitTest {
 			"SelectionParameter defaultValue becomes empty string when options are set to empty array."
 		);
 	}
+
+	test_IncrementalSelection{
+		var param = VTMSelectionParameter.new('mySelection', (
+			options: [11,22,33,44], value: [33]
+		));
+
+		param.addToSelection(11);
+		param.addToSelection(44);
+		this.assertEquals(
+			param.value, [33,11,44],
+			"SelectionParameter added items to selection correctly"
+		);
+
+		param.removeFromSelection(33);
+		param.removeFromSelection(11);
+		this.assertEquals(
+			param.value, [44],
+			"SelectionParameter incrementally removed items from selection correctly."
+		);
+	}
 }

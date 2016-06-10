@@ -82,4 +82,26 @@ VTMSelectionParameter : VTMValueParameter {
 	value{
 		^value.copy;
 	}
+
+	addToSelection{arg val;
+		if(options.includes(val), {
+			this.value_(this.value.add(val));
+		}, {
+			"SelectionParameter:addToSelection '%' - val not found in option items: '%[%]'".format(
+				this.fullPath, val, val.class
+			).warn;
+		});
+	}
+
+	removeFromSelection{arg val;
+		if(value.includes(val), {
+			var newVal = this.value;
+			newVal.remove(val);
+			this.value_(newVal);
+		}, {
+			"SelectionParameter:removeFromSelection '%' - val not found in selection items: '%[%]'".format(
+				this.fullPath, val, val.class
+			).warn;
+		});
+	}
 }
