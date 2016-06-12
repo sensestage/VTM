@@ -1,1 +1,3 @@
-VTMReturnParameter : VTMParameter {}
+VTMReturnParameter : VTMParameter {
+	type{ ^\return; }
+}

@@ -7,6 +7,8 @@ VTMStringParameter : VTMValueParameter {
 	var <regex = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
+	type{ ^\string; }
+
 	prDefaultValueForType{ ^""; }
 
 	*isValidType{arg val;

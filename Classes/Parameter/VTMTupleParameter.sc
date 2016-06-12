@@ -1,1 +1,4 @@
-VTTupleParameter : VTValueParameter {}
+VTTupleParameter : VTValueParameter {
+	type{ ^\tuple; }
+
+}

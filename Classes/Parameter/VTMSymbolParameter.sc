@@ -1,5 +1,7 @@
 VTMSymbolParameter : VTMValueParameter {
 
+	type{ ^\symbol; }
+
 	defaultValueForType{
 		^'';
 	}

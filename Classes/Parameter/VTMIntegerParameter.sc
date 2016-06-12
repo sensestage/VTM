@@ -1,4 +1,5 @@
 VTMIntegerParameter : VTMScalarParameter {
+	type{ ^\integer; }
 
 	prDefaultValueForType{ ^0; }
 	//this class will accept numbers, either Integers or Floats

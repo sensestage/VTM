@@ -1,1 +1,3 @@
-VTMSchemaParameter : VTMDictionaryParameter {}
+VTMSchemaParameter : VTMDictionaryParameter {
+	type{ ^\schema; }
+}

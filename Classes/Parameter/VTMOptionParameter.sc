@@ -2,6 +2,8 @@ VTMOptionParameter : VTMValueParameter {
 	var options;
 	var <sequenceMode = \clip; //modes: 'clip', 'wrap'
 
+	type{ ^\option; }
+
 	isValidType{arg val; ^true }
 
 	prDefaultValueForType{ ^nil; }

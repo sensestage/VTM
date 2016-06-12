@@ -1,1 +1,3 @@
-VTMAnythingParameter : VTMValueParameter {}
+VTMAnythingParameter : VTMValueParameter {
+	type{ ^\anything; }
+}

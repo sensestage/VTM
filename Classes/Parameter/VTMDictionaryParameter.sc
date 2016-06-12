@@ -1,1 +1,4 @@
-VTMDictionaryParameter : VTMValueParameter {}
+VTMDictionaryParameter : VTMValueParameter {
+	type{ ^\dictionary; }
+
+}

@@ -8,6 +8,8 @@ VTMScalarParameter : VTMValueParameter {
 
 	prDefaultValueForType{ ^0.0; }
 
+	type{ ^\scalar; }
+
 	//this class will accept numbers, either Integers or Decimals
 	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }
 

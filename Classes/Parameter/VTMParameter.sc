@@ -13,19 +13,29 @@ VTMParameter {
 	var <responders;
 	var <oscInterface;
 
+	*typeToClass{arg val;
+		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
+	}
+
+	*classToType{
+		^this.name.asString.findRegexp("^VTM(.+)Parameter$")[1][1].toLower;
+	}
+
+	type{//only the non-abstract classes will implement this methods
+		this.subclassResponsibility(thisMethod);
+	}
+
 	//factory type constructor
-	//'name' is mandatory. TODO: this may not be the best place to have this check
-	*makeFromDescription{arg name, description;
-		//if type is defined in description
-		//  then determine class from type in description
-		//  else if defaultValue is defined
-		//    then infer class from defaultValue type (only works for ValueParameter classes
-		//if class found
-		//  then
-		//  Run constructor for found class
-		//else
-		//  Throw error
-		//  return nil
+	//In description dict 'name' and 'type' is mandatory.
+	*makeFromDescription{arg description;
+		//if 'type' and 'name' is defined in description
+		if(description.includesKey(\type) and: {description.includesKey(\name)}, {
+			var paramClass = description.removeAt(\type);
+			var paramName = description.removeAt(\name);
+			^VTMParameter.typeToClass(paramClass).new(paramName, description);
+		}, {
+			Error("VTMParameter needs name").throw;
+		});
 	}
 
 	//This constructor is not used directly, only for testing purposes

@@ -1,4 +1,6 @@
 VTMDecimalParameter : VTMScalarParameter {
+	type{ ^\decimal; }
+
 	prDefaultValueForType{ ^0.0; }
 
 	minVal_{arg val;

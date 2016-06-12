@@ -1,6 +1,8 @@
 VTMSelectionParameter : VTMValueParameter {
 	var options;
 
+	type{ ^\selection; }
+
 	prDefaultValueForType{ ^[]; }
 
 	isValidType{arg val;
