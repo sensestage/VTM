@@ -164,6 +164,11 @@ VTMScalarParameter : VTMValueParameter {
 		^result;
 	}
 
+	*attributeKeys{
+		^(super.attributeKeys ++ [\minVal, \maxVal, \stepsize, \clipmode, \dataspace]);
+	}
+
+
 	prCheckRangeAndClipValue{arg val;
 		var result;
 		result = val;

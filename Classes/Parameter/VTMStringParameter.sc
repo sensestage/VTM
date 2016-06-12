@@ -151,4 +151,9 @@ VTMStringParameter : VTMValueParameter {
 		^result;
 	}
 
+	*attributeKeys{
+		^(super.attributeKeys ++ [\matchPattern, \regex]);
+	}
+
+
 }

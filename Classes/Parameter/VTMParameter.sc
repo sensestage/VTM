@@ -176,4 +176,8 @@ VTMParameter {
 			\enabled -> this.enabled
 		];
 	}
+
+	*attributeKeys{
+		^[\name, \path, \action, \enabled];
+	}
 }

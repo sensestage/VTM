@@ -92,4 +92,9 @@ VTMValueParameter : VTMParameter {
 			\typecheck -> this.typecheck
 		]);
 	}
+
+	*attributeKeys{
+		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \typecheck]);
+	}
+
 }

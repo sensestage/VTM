@@ -118,4 +118,9 @@ VTMSelectionParameter : VTMValueParameter {
 		]);
 		^result;
 	}
+
+	*attributeKeys{
+		^(super.attributeKeys ++ [\options]);
+	}
+
 }

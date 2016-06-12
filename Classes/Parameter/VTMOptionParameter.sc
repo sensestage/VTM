@@ -148,4 +148,9 @@ VTMOptionParameter : VTMValueParameter {
 		]);
 		^result;
 	}
+
+	*attributeKeys{
+		^(super.attributeKeys ++ [\options, \sequenceMode]);
+	}
+
 }
