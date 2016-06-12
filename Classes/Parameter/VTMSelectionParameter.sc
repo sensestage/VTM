@@ -105,6 +105,10 @@ VTMSelectionParameter : VTMValueParameter {
 		});
 	}
 
+	clear{
+		this.value_(nil);
+	}
+
 	attributes{
 		var result;
 		result = super.attributes.putAll(IdentityDictionary[
