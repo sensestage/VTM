@@ -1,4 +1,4 @@
-TestVTMScalarParameter : UnitTest {
+TestVTMScalarParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMScalarParameterTest".postln;
 	}

@@ -1,4 +1,8 @@
-TestVTM : UnitTest {
+VTMUnitTest : UnitTest {
+
+	*testclassForType{arg val;
+		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
+	}
 
 	*runAll{
 		[

@@ -1,6 +1,26 @@
-TestVTMParameter : UnitTest {
+TestVTMParameter : VTMUnitTest {
+	var testObjectDescriptions;
+
 	setUp{
 		"Setting up a VTMParameterTest".postln;
+		testObjectDescriptions = (
+			//'message': '',
+			//'return': '',
+			//'function': '',
+			//'tuple': '',
+			boolean: (),
+			anything: (),
+			option: (),
+			selection: (),
+			string: (),
+			symbol: (),
+			timecode: (),
+			scalar: (),
+			integer: (),
+			decimal: ()
+			//dictionary: ()
+			//schema: ()
+		);
 	}
 
 	tearDown{

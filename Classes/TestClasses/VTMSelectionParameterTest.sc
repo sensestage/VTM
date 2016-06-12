@@ -1,4 +1,4 @@
-TestVTMSelectionParameter : UnitTest {
+TestVTMSelectionParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMSelectionParameterTest".postln;
 	}
@@ -108,6 +108,15 @@ TestVTMSelectionParameter : UnitTest {
 		this.assertEquals(
 			param.value, [44],
 			"SelectionParameter incrementally removed items from selection correctly."
+		);
+	}
+
+	test_ClearSelection{
+		var param = VTMSelectionParameter.new('mySelection', (options: [11,22,33], value: [22,33]));
+		param.clear;
+		this.assertEquals(
+			param.value, [],
+			"SelectionParameter cleared selection upon correctly"
 		);
 	}
 }

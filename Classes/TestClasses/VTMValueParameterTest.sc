@@ -1,4 +1,4 @@
-TestVTMValueParameter : UnitTest {
+TestVTMValueParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMValueParameterTest".postln;
 	}

@@ -1,4 +1,4 @@
-TestVTMTimecodeParameter : UnitTest {
+TestVTMTimecodeParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMStringParameterTest".postln;
 	}

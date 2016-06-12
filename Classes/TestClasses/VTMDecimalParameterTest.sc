@@ -1,4 +1,4 @@
-TestVTMDecimalParameter : UnitTest {
+TestVTMDecimalParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMDecimalParameterTest".postln;
 	}
