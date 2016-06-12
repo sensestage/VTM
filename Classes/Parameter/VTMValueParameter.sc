@@ -1,17 +1,21 @@
 VTMValueParameter : VTMParameter {
-	var <value;
+	var value;
 	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
 
 	prDefaultValueForType{
-		//this.subclassResponsibility(thisMethod);
+		this.subclassResponsibility(thisMethod);
 	}
 
-	//This is an abstract class, not to be used directly.
+	//This is an abstract class and can not be used directly.
 	//Use AnythingParameter for parameters that can receive any value type.
 	*new{arg name, description;
 		^super.new(name, description).initValueParameter;
+	}
+
+	value{
+		^value;
 	}
 
 	//this class will accept any type
