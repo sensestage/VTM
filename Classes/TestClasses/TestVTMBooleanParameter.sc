@@ -1,4 +1,16 @@
-TestVTMBooleanParameter : VTMUnitTest {
+TestVTMBooleanParameter : TestVTMValueParameter {
+
+	getRandom{arg val, randomParameters, obj;
+		var result;
+		switch(val,
+			\value, { result = 0.5.coin; },
+			{
+				result = super.getRandom(val, randomParameters, obj);
+			}
+		);
+		^result;
+	}
+
 	setUp{
 		"Setting up a VTMDecimalParameterTest".postln;
 	}

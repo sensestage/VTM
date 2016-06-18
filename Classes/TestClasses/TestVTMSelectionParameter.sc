@@ -1,4 +1,21 @@
 TestVTMSelectionParameter : VTMUnitTest {
+
+	getRandom{arg val, desc, obj;
+		var result;
+		switch(val,
+			\value, {
+				if(obj.isNil, {
+					Error("TestVTMSelectionParameter:getRandom needs an object argument to make random selection").throw;
+				}, {
+					result = obj.options.scramble.copyRange(0, rrand(0, obj.size));
+				});
+			},
+			\defaultValue, { result = this.getRandom(\value, desc, obj); },
+			{ result = super.getRandom(val, desc, obj); }
+		);
+		^result;
+	}
+
 	setUp{
 		"Setting up a VTMSelectionParameterTest".postln;
 	}

@@ -1,12 +1,53 @@
 TestVTMParameter : VTMUnitTest {
 	var testClasses;
 
+	getRandom{arg val, desc, obj;
+		var result;
+		var generateRandomString = {
+			var str;
+			var charSet = (0..127).collect(_.asAscii).select(_.isAlphaNum);
+			str = { charSet.choose } ! rrand(2, 16);
+			String.newFrom(str.scramble);
+		};
+		switch(val,
+			\name, { result = generateRandomString.value; },
+			\path, {
+				var pt = {"/" ++ generateRandomString.value} ! rrand(1, 3);
+				result = String.newFrom(pt.flat);
+			},
+			\enabled, {result = 0.5.coin; }
+		);
+		^result;
+	}
+
+	makeParameter{arg description, randomAttributes;
+		var result, desc = description.deepCopy;
+		if(randomAttributes.notNil, {
+			randomAttributes.do({arg item;
+				var val;
+				val = this.getRandom(item);
+				"Generating random for: %".format(item).postln;
+				desc.put(item, val);
+				"GOT : %".format(val).postln;
+			});
+		});
+		// desc.put(\type, VTMParameter.classToType(this.class.name.asString.findRegexp("^Test(.+)$")[1][1]).interpret);
+		"this class: %\n\t_got obj class: %\n\t_ resolveds to: %".format(
+			this.class.name,
+			this.class.name.asString.findRegexp("^Test(.+)$")[1][1],
+			VTMParameter.typeToClass(this.class.name.asString.findRegexp("^Test(.+)$")[1][1])
+		).postln;
+		"DESC before make: %".format(desc).postln;
+		result = VTMParameter.makeFromDescription(desc);
+		^result;
+	}
+
 	setUp{
 		"Setting up a VTMParameterTest".postln;
 		testClasses = [
 			VTMMessageParameter,
 			VTMReturnParameter,
-			//VTMValueParameter, //abstract class
+			//VTMValueParameter, //abstract class, don't test
 			VTMBooleanParameter,
 			VTMTimecodeParameter,
 			VTMSelectionParameter,

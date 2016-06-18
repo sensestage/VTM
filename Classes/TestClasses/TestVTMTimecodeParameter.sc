@@ -1,4 +1,15 @@
 TestVTMTimecodeParameter : VTMUnitTest {
+
+	getRandom{arg val, desc, obj;
+		var result;
+		switch(val,
+			\value, {result = rrand("0:0:0:0:0".asSecs, "354:23:59:59:999".asSecs)},
+			\defaultValue, { result = this.getRandom(\value, desc, obj); },
+			{ result = super.getRandom(val, desc, obj); }
+		);
+		^result;
+	}
+
 	setUp{
 		"Setting up a VTMStringParameterTest".postln;
 	}
