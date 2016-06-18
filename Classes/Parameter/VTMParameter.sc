@@ -17,8 +17,8 @@ VTMParameter {
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
 	}
 
-	*classToType{
-		^this.name.asString.findRegexp("^VTM(.+)Parameter$")[1][1].toLower;
+	*classToType{arg val;
+		^val.name.asString.findRegexp("^VTM(.+)Parameter$")[1][1].toLower;
 	}
 
 	type{//only the non-abstract classes will implement this methods
@@ -29,12 +29,16 @@ VTMParameter {
 	//In description dict 'name' and 'type' is mandatory.
 	*makeFromDescription{arg description;
 		//if 'type' and 'name' is defined in description
-		if(description.includesKey(\type) and: {description.includesKey(\name)}, {
-			var paramClass = description.removeAt(\type);
-			var paramName = description.removeAt(\name);
-			^VTMParameter.typeToClass(paramClass).new(paramName, description);
+		if(description.includesKey(\name), {
+			if(description.includesKey(\type), {
+				var paramClass = description.removeAt(\type);
+				var paramName = description.removeAt(\name);
+				^VTMParameter.typeToClass(paramClass).new(paramName, description);
+			}, {
+				Error("VTMParameter description needs type").throw;
+			})
 		}, {
-			Error("VTMParameter needs name").throw;
+			Error("VTMParameter description needs name").throw;
 		});
 	}
 
