@@ -13,6 +13,8 @@ VTMParameter {
 	var <responders;
 	var <oscInterface;
 
+	var <isSubParameter = false;
+
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
 	}
@@ -61,9 +63,16 @@ VTMParameter {
 		description = description_.deepCopy;
 		// description = IdentityDictionary.newFrom(description_);
 		fullPathThunk = Thunk.new({
-			"/%".format(name).asSymbol;
+			if(isSubParameter, {
+				".%".format(name).asSymbol;
+			}, {
+				"/%".format(name).asSymbol;
+			});
 		});
 		if(description.notNil, {
+			if(description.includesKey(\isSubParameter), {
+				isSubParameter = description[\isSubParameter];
+			});
 			if(description.includesKey(\path), {
 				this.path = description[\path];
 			});
@@ -98,7 +107,11 @@ VTMParameter {
 		});
 		path = newPath.asSymbol;
 		fullPathThunk = Thunk.new({
-			"%/%".format(path, name).asSymbol;
+			if(isSubParameter, {
+				"%.%".format(path, name).asSymbol;
+			}, {
+				"%/%".format(path, name).asSymbol;
+			});
 		});
 	}
 
