@@ -179,7 +179,7 @@ VTMParameter {
 	attributes{
 		var aFunction;
 		aFunction = this.action;
-		if(aFunction.isClosed, {
+		if(aFunction.notNil and: {aFunction.isKindOf(Function)} and: {aFunction.isClosed}, {
 			//Only return closed functions as attributes
 			aFunction = aFunction.asCompileString;
 		}, {
