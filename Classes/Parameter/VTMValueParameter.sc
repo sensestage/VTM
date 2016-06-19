@@ -5,7 +5,8 @@ VTMValueParameter : VTMParameter {
 	var <>defaultValue;
 
 	prDefaultValueForType{
-		this.subclassResponsibility(thisMethod);
+		//this.subclassResponsibility(thisMethod);//this will be uncommented when test class setup is subclass testing
+		^nil;
 	}
 
 	//This is an abstract class and can not be used directly.
