@@ -1,5 +1,5 @@
 VTMModuleFactory{
-	var <host;
+	var <>host;
 
 	*new{arg host;
 		^super.new.init(host);
@@ -9,21 +9,21 @@ VTMModuleFactory{
 		host = host_;
 	}
 
-	build{arg name, description, def;
+	build{arg name, description, definition;
 		var moduleDefinition;
 		var newModule;
 
 		//Load module definition from file if not defined in arg
-		if(def.isNil, {
+		if(definition.isNil, {
 			var defName, defPath;
 			//Module description must define a def name, if not defined in arg
-			if(description.includesKey(\def).not, {
+			if(description.includesKey(\definition).not, {
 				Error("Module % missing module definition").throw;
 				^nil;
 			});
 
 			//Load def from file
-			defName = description[\def];
+			defName = description[\definition];
 			//Search for mod def file
 			defPath = PathName(this.moduleDefinitionsFolder).deepFiles.detect {|path|
 				path.fileNameWithoutExtension == defName;
@@ -53,10 +53,10 @@ VTMModuleFactory{
 			};
 
 		}, {
-			moduleDefinition = def;
+			moduleDefinition = definition;
 		});
 
-		newModule = VTMModule.new(name, host, description, moduleDefinition);
+		newModule = VTMModule.new(name, host, description, definition);
 		^newModule;
 
 	}

@@ -1,12 +1,8 @@
-VTMSceneOwner : VTMNodeContext {
+VTMSceneOwner : VTMDynamicContextManager {
 	var <sceneFactory;
 
-	*isCorrectChildContextType{arg child;
-		^child.isKindOf(VTMScene);
-	}
-
-	*new{arg node;
-		^super.new('scene', node).initSceneOwner;
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initSceneOwner;
 	}
 
 	initSceneOwner{

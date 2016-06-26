@@ -1,15 +1,7 @@
-VTMScene : VTMContext {
+VTMScene : VTMComposableContext {
 
-	*isCorrectChildContextType{arg child;
-		^( child.isKindOf(VTMScene) or: { child.isKindOf(VTMParameterProxy) } );
-	}
-
-	*isCorrectParentContextType{arg parent;
-		^parent.isKindOf(VTMSceneOwner);
-	}
-
-	*new{arg name, owner, description;
-		^super.new(name, owner).initScene(description);
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initScene;
 	}
 
 	initScene{

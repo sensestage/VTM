@@ -1,15 +1,14 @@
-VTMHardwareSetup : VTMNodeContext {
+VTMHardwareSetup : VTMStaticContextManager {
 
-	//can add any type of child to this context
-	*isCorrectChildContextType{arg child; ^true; }
-
-	*new{arg node;
-		^super.new('hardware', node).initHardwareSetup;
+	//a hardware setups parent will be an Application
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initHardwareSetup;
 	}
 
 	initHardwareSetup{
+		//Load hardware setup script/definition, or similar.
+		//Hosts arbitrary number of HardwareDevice contexts
 	}
 
-	hardware{ ^children; }
-	isLeafContext{ ^true; }
+	devices{ ^children; }
 }

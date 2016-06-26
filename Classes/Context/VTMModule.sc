@@ -1,5 +1,4 @@
-VTMModule : VTMContext {
-	var <envir;
+VTMModule : VTMComposableContext {
 	var <description;
 	var <definition;
 	var <parameterOrder;
@@ -7,27 +6,11 @@ VTMModule : VTMContext {
 	var parameters;
 	var submodules;
 
-	*isCorrectChildContextType{arg child;
-		^(
-			child.isKindOf(VTMParameter) ||
-			child.isKindOf(VTMModule)
-		);
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initModule;
 	}
 
-	*isCorrectParentContextType{arg parent;
-		^(
-			parent.isKindOf(VTMModuleHost) ||
-			parent.isKindOf(VTMModule)
-		);
-	}
-
-	*new{arg name, host, description, definition;
-		^super.new(name, host).initModule(description, definition);
-	}
-
-	initModule{arg description_, definition_;
-		description = description_;
-		definition = definition_;
+	initModule{
 		envir = definition.deepCopy;
 		defName = description[\def] ? \none;
 		this.makeParameters;
@@ -59,11 +42,6 @@ VTMModule : VTMContext {
 		super.free;//superclass changes the state
 	}
 
-	//forwarding to runtime environment with this module as first arg.
-	//Module definition functions always has the module as its first arg.
-	execute{arg selector ...args;
-		envir[selector].value(this, *args);
-	}
 
 	//Making parameters depends on if the module's definition specifies
 	//a ~buildParameters function or a ~parameterDescriptions array.
@@ -74,7 +52,6 @@ VTMModule : VTMContext {
 		var parametersToBuild = IdentityDictionary.new;
 		var buildOrder = [];
 
-
 		if(definition.includesKey(\parameterDescriptions), {
 			definition[\parameterDescriptions].pairsDo({arg paramName, paramDesc;
 				// "Adding param: % to build queue: \n\t%".format(
@@ -83,8 +60,8 @@ VTMModule : VTMContext {
 				//Avoid adding identically named parameters, warn if happens
 				if(parametersToBuild.includesKey(paramName), {
 					"Multiple parameters '%' defined for module: '%'".format(paramName, this.name).warn;
-				}, {
-					buildOrder = buildOrder.add(paramName);
+					}, {
+						buildOrder = buildOrder.add(paramName);
 				});
 				parametersToBuild.put(paramName, paramDesc.as(IdentityDictionary));
 			});
@@ -109,12 +86,12 @@ VTMModule : VTMContext {
 		parameterOrder = buildOrder;
 	}
 
-	prInvalidateChildren {
+	prInvalidateChildren{
 		parameters = Thunk({
-				children.select({arg item; item.isKindOf(VTMParameter)});
+			children.select({arg item; item.isKindOf(VTMParameter)});
 		});
 		submodules = Thunk({
-				children.select({arg item; item.isKindOf(VTMModule)});
+			children.select({arg item; item.isKindOf(VTMModule)});
 		});
 	}
 
@@ -163,8 +140,8 @@ VTMModule : VTMContext {
 		var result;
 		if(parent.isKindOf(VTMModule), {
 			result = $.;
-		}, {
-			result = $/;
+			}, {
+				result = $/;
 		});
 		^result;
 	}

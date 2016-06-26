@@ -1,4 +1,4 @@
-VTMNode {
+VTMApplication : VTMStaticContextManager {
 	var <sceneOwner;
 	var <moduleHost;
 	var <hardwareSetup;

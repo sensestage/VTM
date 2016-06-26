@@ -10,7 +10,7 @@ VTMListParameter : VTMValueParameter {
 	}
 
 	prDefaultValueForType{
-		^[];//not sure about the default value here
+		^Dictionary.new;//not sure about the default value here
 	}
 
 	*new{arg name, description;
@@ -30,7 +30,7 @@ VTMListParameter : VTMValueParameter {
 				Error("ListParameters needs itemDescriptions in description. [%]".format(this.fullPath)).throw;
 			});
 		}, {
-			Error("ListParameters need description with mandatory attributes: itemType, itemEnum. [%]".format(this.fullPath)).throw;
+			Error("ListParameters need description with mandatory attributes: itemType, itemDescription. [%]".format(this.fullPath)).throw;
 			^nil;
 		});
 
@@ -90,6 +90,8 @@ VTMListParameter : VTMValueParameter {
 
 				Association.new(itemName, newItemDesc);
 			});
+
+			//Build the item parameter objects
 			items = itemDescriptions.collect({arg itemDesc;
 				VTMParameter.makeFromDescription(itemDesc.value);
 			});

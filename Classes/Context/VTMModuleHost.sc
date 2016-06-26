@@ -1,14 +1,8 @@
-VTMModuleHost : VTMNodeContext {
+VTMModuleHost : VTMDynamicContextManager {
 	var <factory;
 
-	*isCorrectChildContextType{arg child;
-		^(
-			child.isKindOf(VTMModule)
-		);
-	}
-
-	*new{arg node;
-		^super.new('module', node).initModuleHost;
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initModuleHost;
 	}
 
 	initModuleHost {
@@ -34,8 +28,8 @@ VTMModuleHost : VTMNodeContext {
 			//added an extra check here
 			if(newModule.isNil, {
 				Error("Module % failed to build".format(name)).throw;
-			}, {
-				this.loadModule(newModule);
+				}, {
+					this.loadModule(newModule);
 			});
 		} {|err|
 			"Module cue build error".warn;
@@ -83,17 +77,17 @@ VTMModuleHost : VTMNodeContext {
 				"Error reading file".warn;
 				err.postln;
 			};
-		}, {
-			"Module file not found: %".format(pathName).warn;
+			}, {
+				"Module file not found: %".format(pathName).warn;
 		});
 	}
 
 	loadModule{arg module;
 		if(module.isKindOf(VTMModule), {
 			this.addChild(module);
-		}, {|err|
-			"Tried to load object of wrong type: %".format(module).warn;
-			err.postln;
+			}, {|err|
+				"Tried to load object of wrong type: %".format(module).warn;
+				err.postln;
 		});
 	}
 
@@ -102,7 +96,7 @@ VTMModuleHost : VTMNodeContext {
 	//When a module is added, create a query owner responders e.g. '/module/kjeppen?'
 	/*	OSCFunc({arg msg, time, addr, port;
 	var replyPath;
-	//find which node sent the query, ask the network
+	//find which child sent the query, ask the network
 	//....
 	replyPath = "/module/%!".format(module.name).asSymbol;
 

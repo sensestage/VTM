@@ -1,18 +1,7 @@
 VTMModuleProxy : VTMContext {
 
-	*isCorrectParentContext{arg parent;
-		^parent.isKindOf(VTMScene);
-	}
-
-	*isCorrectChildContext{arg child;
-		^(
-			child.isKindOf(VTMModuleProxy)
-			|| child.isKindOf(VTMParameterProxy)
-		);
-	}
-
-	*new{arg name, scene;
-		^super.new(name, scene).initModuleProxy;
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initModuleProxy;
 	}
 
 	initModuleProxy {
