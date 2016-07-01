@@ -1,0 +1,2 @@
+VTMRemoteContextProxyImplementation : VTMContextProxyImplementation {
+}

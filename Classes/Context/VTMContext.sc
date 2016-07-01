@@ -4,7 +4,7 @@ VTMContext {
 	var description;
 	var <definition; //this is not really safe so getter will probably be removed
 	var <children;
-	var <path ; //an OSC valid path.
+	var path ; //an OSC valid path.
 	var fullPathThunk;
 	var <envir;
 	var <addr;
@@ -28,6 +28,7 @@ VTMContext {
 				addr = description[\addr];
 			});
 		});
+		
 		if(definition_.isNil, {
 			definition = IdentityDictionary.new;
 		}, {
@@ -51,11 +52,6 @@ VTMContext {
 		});
 
 		parent = parent_;
-		if(parent.notNil, {
-			//Have parent add this to its children
-			parent.addChild(this);
-		});
-
 		children = IdentityDictionary.new;
 		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
@@ -64,6 +60,11 @@ VTMContext {
 		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
 		});
+
+		if(parent.notNil, {
+			//Make parent add this to its children.
+			parent.addChild(this);
+		});
 	}
 
 	free{
@@ -71,7 +72,7 @@ VTMContext {
 			child.free(key);
 		});
 		this.changed(\freed);
-		this.release;
+		this.release; //Release this as dependant from other objects.
 	}
 
 	addChild{arg context;
@@ -122,14 +123,17 @@ VTMContext {
 		});
 	}
 
+	//Determine if this is a root context, i.e. having no parent.
 	isRoot{
 		^parent.isNil;
 	}
 
+	//Determine is this a lead context, i.e. having no children.
 	isLeaf{
 		^children.isEmpty;
 	}
 
+	//Find the root for this context.
 	root{
 		var result;
 		//search for context root
@@ -140,17 +144,18 @@ VTMContext {
 		^result;
 	}
 
-	//Seatch namespace for context path
-	//can be relative or absolute
-	find{arg path;
+	//Search namespace for context path.
+	//Search path can be relative or absolute.
+	find{arg searchPath;
 
 	}
 
+	//Get the whole child context tree.
 	childTree{
 		^children.collect(_.childTree);
 	}
 
-	//immutable description. Should only be change with 'changeDescription'
+	//immutable description. Should only be changed with 'changeDescription'
 	description{
 		^description.deepCopy;
 	}
@@ -162,15 +167,31 @@ VTMContext {
 	}
 
 	//Save current description to file
-	writeDescription{}
-	//Read description from file
-	readDescription{}
+	writeDescription{
 
-	//forwarding to runtime environment with this module as first arg.
+	}
+
+	//Read description from file
+	readDescription{
+
+	}
+
+	//Call functions in the runtime environment with this module as first arg.
 	//Module definition functions always has the module as its first arg.
-	//Returns the result
+	//The method returns the result from the called function.
 	execute{arg selector ...args;
 		^envir[selector].value(this, *args);
+	}
+
+	makeView{arg description;
+		var viewClass = this.class.viewClass;
+		//override class if defined in description.
+		if(description.notNil, {
+			if(description.includesKey(\viewClass), {
+				viewClass = description[\viewClass];
+				});
+			});
+		^viewClass.new(this, description);
 	}
 
 	update{arg theChanged, whatChanged, theChanger ...args;

@@ -1,0 +1,3 @@
+VTMLocalContextProxyImplementation : VTMContextProxyImplementation {
+	
+}
