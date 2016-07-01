@@ -3,20 +3,16 @@ VTMApplication : VTMStaticContextManager {
 	var <moduleHost;
 	var <hardwareSetup;
 	var <network;
-	var <addr;
-	var <name;
 	var <filePaths;
 	var path;
 
 	var oscResponders;
 
-	*new{arg name, addr;
-		^super.new.init(name, addr);
+	*new{arg name, parent, description, defintion;
+		^super.new(name, parent, description, defintion).initApplication;
 	}
 
-	init{arg name_, addr_;
-		name = name_.asSymbol;
-		addr = addr_;
+	initApplication{
 
 		filePaths = IdentityDictionary.new;
 		filePaths[\vtm] = "VTM_FOLDER".getenv ? PathName(

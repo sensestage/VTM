@@ -4,8 +4,10 @@ VTMContext {
 	var description;
 	var <definition; //this is not really safe so getter will probably be removed
 	var <children;
-	var <path, fullPathThunk; //an OSC valid path.
+	var <path ; //an OSC valid path.
+	var fullPathThunk;
 	var <envir;
+	var <addr;
 	var <oscInterface;
 
 	*new{arg name, parent, description, defintion;
@@ -22,11 +24,30 @@ VTMContext {
 			description = IdentityDictionary.new;
 		}, {
 			description = IdentityDictionary.newFrom(description_);
+			if(description.includesKey(\addr), {
+				addr = description[\addr];
+			});
 		});
 		if(definition_.isNil, {
 			definition = IdentityDictionary.new;
 		}, {
 			definition = IdentityDictionary.newFrom(definition_);
+		});
+
+		if(addr.isNil, {
+			addr = NetAddr.localAddr;
+		}, {
+			// a different address is used. Check if UPD port needs to be opened
+			if(thisProcess.openPorts.includes(addr.port), {
+				"VTMContext - UDP port number already opened for address: %".format(addr).postln;
+			}, {
+				//try to open this port
+				if(thisProcess.openUDPPort(addr.port), {
+					"VTMContext - Opened UDP port number for address: %".format(addr).postln;
+				}, {
+					Error("VTMContext failed to open UDP port number for address: %".format(addr)).throw;
+				});
+			});
 		});
 
 		parent = parent_;
@@ -36,9 +57,9 @@ VTMContext {
 		});
 
 		children = IdentityDictionary.new;
-		envir = Environment.newFrom(definition);
+		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
-		envir.put(\runtimeDescription, this.description );// a runtime description that can be changed
+		envir.put(\runtimeDescription, this.description );// a description that can be changed in runtime.
 
 		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
@@ -71,22 +92,17 @@ VTMContext {
 		^fullPathThunk.value;
 	}
 
-	path_{arg str;
-		var newPath = str.copy.asString;
-		//add leading slash if not defined
-		if(newPath.first != $/, {
-			newPath = newPath.addFirst("/");
-			"Added leading slash for parameter '%'".format(name).warn;
-		});
-		path = newPath.asSymbol;
-		fullPathThunk = Thunk.new({
-			"%/%".format(path, name).asSymbol;
-		});
+	//Can not set path, it is always determined by its place in the namespace
+	//Return only the path, not the name. Use fullPath if that is needed.
+	path{arg str;
+		//Search parents until root node is found and construct path from that
 	}
 
+	//Some objects need to define special separators, e.g. subparameters, submodules etc.
 	leadingSeparator{ ^$/;	}
 
-	parent_{arg newParentContext;
+	//Move this context to another parent context
+	move{arg newParentContext;
 		if(parent.notNil, {
 			parent.moveContext(this, newParentContext);
 		}, {
@@ -95,6 +111,7 @@ VTMContext {
 		});
 	}
 
+	//Move one of children to another parent context
 	moveChild{arg child, newParentContext;
 		var removedChild;
 		removedChild = this.removeChild(child);
@@ -121,6 +138,16 @@ VTMContext {
 			result = result.parent;
 		});
 		^result;
+	}
+
+	//Seatch namespace for context path
+	//can be relative or absolute
+	find{arg path;
+
+	}
+
+	childTree{
+		^children.collect(_.childTree);
 	}
 
 	//immutable description. Should only be change with 'changeDescription'
