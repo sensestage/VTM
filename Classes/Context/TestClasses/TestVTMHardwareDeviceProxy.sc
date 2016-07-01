@@ -1,0 +1,1 @@
+TestVTMHardwareDeviceProxy : UnitTest {}

@@ -1,0 +1,1 @@
+TestVTMHardwareSetup : UnitTest {}
