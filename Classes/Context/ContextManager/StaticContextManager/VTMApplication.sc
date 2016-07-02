@@ -6,6 +6,7 @@ VTMApplication : VTMStaticContextManager {
 	var <filePaths;
 	var path;
 
+
 	var oscResponders;
 
 	*new{arg name, parent, description, defintion;
@@ -13,13 +14,7 @@ VTMApplication : VTMStaticContextManager {
 	}
 
 	initApplication{
-
-		filePaths = IdentityDictionary.new;
-		filePaths[\vtm] = "VTM_FOLDER".getenv ? PathName(
-			PathName(this.class.filenameSymbol.asString).parentPath
-		).parentPath;
-		filePaths[\moduleDefintions] = filePaths[\vtm] +/+ "ModuleDefintions";
-		filePaths[\hardwareDefinitions] = filePaths[\vtm] +/+ "HardwareDefinitions";
+		this.prInitFilePaths;
 
 		network = VTMNetwork(this);
 		moduleHost = VTMModuleHost(this);
@@ -27,14 +22,31 @@ VTMApplication : VTMStaticContextManager {
 		hardwareSetup = VTMHardwareSetup(this);
 
 		this.makeOSCResponders;
+
+		//Discover other application on the network
+		network.discover;
 	}
+
+	prInitFilePaths{
+		filePaths = IdentityDictionary.new;
+		filePaths[\vtm] = PathName(
+			PathName(this.class.filenameSymbol.asString).parentPath
+		).parentPath;
+		filePaths[\moduleDefintions] = filePaths[\vtm] +/+ "ModuleDefintions";
+		filePaths[\hardwareDefinitions] = filePaths[\vtm] +/+ "HardwareDefinitions";
+	}
+
+	
 
 	makeOSCResponders{
 		[
 			OSCFunc({arg msg, time, addr, port;
 				"Got HEI from addr: % [%]".format(addr, port).postln;
 				addr.sendMsg('/hallo', name);
-			}, '/hei')
+			}, '/hei'),
+			OSCFunc({//network discover responder
+
+				}, '/?')
 		];
 	}
 
