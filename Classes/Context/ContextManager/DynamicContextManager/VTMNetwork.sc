@@ -1,25 +1,47 @@
 VTMNetwork : VTMDynamicContextManager {
+	var <application;
+	var <addr;
+	classvar <defaultPort = 57120;
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initNetwork;
+	*new{arg name, application, description, defintion;
+		^super.new(name, nil, description, defintion).initNetwork(application);
 	}
 
-	initNetwork{
+	initNetwork{arg application_;
+		application = application_;
+		addr = NetAddr.localAddr;
+		NetAddr.broadcastFlag = true;
 		"VTMNetwork initialized".postln;
 	}
 
 	discover{
 		//Broadcast network discovery message:
 		//  /? <name> <ip:port>
+		NetAddr("255.255.255.255", this.class.defaultPort).sendMsg(
+			'/?',
+			this.name,
+			this.addr.generateIPString
+		);
 	}
 
 	makeOSCResponders{
 		[
 			OSCFunc({arg msg, time, addr, port;//network discover responder
+				var remoteName, remoteAddr;
 				//> get the name and the address for the app that queries
+				remoteName = msg[1];
+				remoteAddr = NetAddr.newFromIPString(msg[2]);
+				//register this application
+				this.addApplicationProxy(remoteName, remoteAddr);
+
 				//> reply with this name, addr:ip
-				//  > (to the querier) /! <name> <addr:ip>
-				}, '/?'),
+				//<to the querier> /! <name> <addr:ip>
+				this.applicationProxies[\name].sendMsg(
+					'/!',
+					this.name,
+					this.addr.generateIPString
+				);
+			}, '/?'),
 			OSCFunc({arg msg, time, addr, port;//network discover reply
 				//> get the name and the address of the responding app
 				//> Make a ApplicationProxy for this responding app
@@ -28,7 +50,10 @@ VTMNetwork : VTMDynamicContextManager {
 	}
 
 	addApplicationProxy{arg name, addr;
-		this.addChild(name, this, (addr: addr));
+		if(this.applicationProxies.includeKey(name).not, {
+			var newAppProxy = VTMApplicationProxy(name, this, (addr: addr));
+			this.addChild(newAppProxy);
+		});
 	}
 
 	localApplication { ^parent; }

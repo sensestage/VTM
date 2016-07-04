@@ -5,4 +5,8 @@
 		port = port.asInteger;
 		^this.new(hostname, port);
 	}
+
+	generateIPString{
+		^"%:%".format(this.hostname, this.port);
+	}
 }

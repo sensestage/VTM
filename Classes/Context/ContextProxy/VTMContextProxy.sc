@@ -1,6 +1,4 @@
 VTMContextProxy : VTMContext {
-	var targetAddr;
-	var targetPath;
 	var implementation;
 
 	*new{arg name, parent, description, definition;
@@ -9,14 +7,14 @@ VTMContextProxy : VTMContext {
 
 	initContextProxy{
 		var implClass;
-		//deterimine which implementation to use
+		//determine which implementation to use
 		implClass = VTMRemoteContextProxyImplementation;
-		//make implementation of correct type
-		implementation = implClass.new(this);
+		//make implementation of correct type //FIXME: only remote proxy implmentation for now.
+		implementation = VTMRemoteContextProxyImplementation.new(this, description, definition);
 	}
 
-	sendMsg{arg msg ...args;
-		targetAddr.sendMsg(targetPath, msg, *args);
+	sendMsg{arg ...msg;
+		implementation.sendMsg(*msg);
 	}
 }
 

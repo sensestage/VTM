@@ -1,22 +1,24 @@
-VTMApplication : VTMStaticContextManager {
+VTMApplication {
+	var <network;
 	var <sceneOwner;
 	var <moduleHost;
 	var <hardwareSetup;
-	var <network;
 	var <filePaths;
-	var path;
-
+	var <description;
+	var <definition;
 
 	var oscResponders;
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initApplication;
+	//The network[description\definition] is admittedly strange here, but keeping it for now.
+	*new{arg name, description, definition, networkDescription, networkDefinition;
+		^super.new.initApplication(name, description, definition, networkDescription, networkDefinition);
 	}
 
-	initApplication{
+	initApplication{arg name_, description_, definition_, networkDescription_, networkDefinition_;
 		this.prInitFilePaths;
-
-		network = VTMNetwork(this);
+		description = description_;
+		definition = definition_;
+		network = VTMNetwork(name_, this, networkDescription_, networkDefinition_);
 		moduleHost = VTMModuleHost(this);
 		sceneOwner = VTMSceneOwner(this);
 		hardwareSetup = VTMHardwareSetup(this);
@@ -40,17 +42,7 @@ VTMApplication : VTMStaticContextManager {
 
 	}
 
-
 	makeOSCResponders{
-		[
-			OSCFunc({arg msg, time, addr, port;
-				"Got HEI from addr: % [%]".format(addr, port).postln;
-				addr.sendMsg('/hallo', name);
-			}, '/hei'),
-			OSCFunc({//network discover responder
-
-				}, '/?')
-		];
 	}
 
 	runHardwareSetupScript{arg path;
@@ -61,20 +53,8 @@ VTMApplication : VTMStaticContextManager {
 		^filePaths[key];
 	}
 
-	//faking it for the moment
-	parent{
-		^network;
-	}
-
-	leadingSeparator{
-		^$/;
-	}
-
-	path{
-		if(path.isNil, {
-			path = (this.leadingSeparator ++ this.name).asSymbol;
-		});
-		^path;
+	name{
+		^network.name;
 	}
 
 }

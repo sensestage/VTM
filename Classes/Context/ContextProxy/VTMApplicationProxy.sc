@@ -4,6 +4,7 @@ VTMApplicationProxy : VTMContextProxy {
 		^super.new(name, parent, description, defintion).initApplicationProxy;
 	}
 
-	initApplicationProxy{}
+	initApplicationProxy{
+	}
 
 }
