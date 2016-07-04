@@ -60,7 +60,7 @@ VTMNetwork : VTMDynamicContextManager {
 	}
 
 	addApplicationProxy{arg name, addr;
-		if(this.applicationProxies.includeKey(name).not, {
+		if(this.applicationProxies.includesKey(name).not, {
 			var newAppProxy = VTMApplicationProxy(name, this, (addr: addr));
 			"Adding app proxy: % - %".format(name, addr).postln;
 			this.addChild(newAppProxy);
