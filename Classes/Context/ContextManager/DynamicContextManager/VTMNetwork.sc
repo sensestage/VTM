@@ -1,15 +1,13 @@
 VTMNetwork : VTMDynamicContextManager {
 	var <application;
-	var <addr;
 	classvar <defaultPort = 57120;
 
-	*new{arg name, application, description, defintion;
-		^super.new(name, nil, description, defintion).initNetwork(application);
+	*new{arg name, application, description, definition;
+		^super.new(name, nil, description, definition).initNetwork(application);
 	}
 
 	initNetwork{arg application_;
 		application = application_;
-		addr = NetAddr.localAddr;
 		NetAddr.broadcastFlag = true;
 		"VTMNetwork initialized".postln;
 	}

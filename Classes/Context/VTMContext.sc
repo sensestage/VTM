@@ -10,8 +10,8 @@ VTMContext {
 	var <addr;
 	var <oscInterface;
 
-	*new{arg name, parent, description, defintion;
-		^super.new.initContext(name, parent, description, defintion);
+	*new{arg name, parent, description, definition;
+		^super.new.initContext(name, parent, description, definition);
 	}
 
 	initContext{arg name_, parent_, description_, definition_;
@@ -28,13 +28,12 @@ VTMContext {
 				addr = description[\addr];
 			});
 		});
-		
+
 		if(definition_.isNil, {
 			definition = IdentityDictionary.new;
 		}, {
 			definition = IdentityDictionary.newFrom(definition_);
 		});
-
 		if(addr.isNil, {
 			addr = NetAddr.localAddr;
 		}, {
