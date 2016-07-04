@@ -68,4 +68,12 @@ VTMModuleFactory{
 	moduleDefinitionsFolder{
 		^host.node.getFilePathFor(\moduleDefinition);
 	}
+
+	*isDescriptionForRemoteModule{arg desc;
+		^desc.includesKey(\app);
+	}
+
+	*isDescriptionForExistingModule{arg desc;
+		^desc.includesKey(\path);
+	}
 }

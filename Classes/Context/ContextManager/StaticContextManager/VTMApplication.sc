@@ -36,7 +36,10 @@ VTMApplication : VTMStaticContextManager {
 		filePaths[\hardwareDefinitions] = filePaths[\vtm] +/+ "HardwareDefinitions";
 	}
 
-	
+	addPath{arg type, path;
+
+	}
+
 
 	makeOSCResponders{
 		[

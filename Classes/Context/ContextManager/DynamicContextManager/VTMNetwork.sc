@@ -27,9 +27,13 @@ VTMNetwork : VTMDynamicContextManager {
 		];
 	}
 
+	addApplicationProxy{arg name, addr;
+		this.addChild(name, this, (addr: addr));
+	}
+
 	localApplication { ^parent; }
-	
-	remoteApplications{ ^children; }
+
+	applicationProxies{ ^children; }
 
 	applications {
 		var result;

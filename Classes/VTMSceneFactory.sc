@@ -9,22 +9,74 @@ VTMSceneFactory{
 		sceneOwner = sceneOwner_;
 	}
 
-	build{arg sceneCue;
-		var newScene;
-		//When scene owner creates a Module Proxy it queries the network for the orginal module.
-		//First create as response function for the query, oneShot so its removed after response
-		newScene = VTMScene.new(sceneOwner);
-		newScene.moduleNames.do({arg modName;
-			OSCFunc({arg msg, time, addr, port;
-				var modulePath = this.node.network.getNodeNameForAddr(addr);
-				this.addModuleProxy(
-					VTMModuleProxy.new(newScene, modulePath);
-				);
-			}, "/module/%!".format(modName).asSymbol).oneShot;
-			//Then send the query
-			NetAddr("1.2.3.255", 57120).sendMsg("/module/%?".format(modName).asSymbol);
-		});
+	moduleHost{
+		^sceneOwner.application.moduleHost;
 	}
 
+	hardwareSetup{
+		^sceneOwner.application.hardwareSetup;
+	}
+
+	build{arg sceneDescription, sceneDefinition;
+		var newScene, buildResult;
+		var modules = (
+			local: (static: [], dynamic: []),
+			remote: (static: [], dynamic: [])
+		);
+		buildResult = (
+			dependancies: (
+				remote: [],
+				local: []
+			)
+			success: false,
+			errors: []
+		);
+		//>Check if scene description contains a name. Issue error if not.
+		if(sceneDescription.includesKey(\name).not, {
+			buildResult[\errors] = buildResult[\error].add(Error("Scene description must have name"));
+		});
+
+		//>determine the build order by searching the scene description for references
+		//to other modules and find a resolving build order.
+		//>if finding a build order fails
+		//	>then throw build error.
+
+		//>Find out if the scene description has sub scenes.
+		//>For all sub scenes
+		//	>if this context overrides any values for the subscene
+		//		>then overwrite the overriden values in the subscene description
+
+		//if scene description has any module descriptions
+		if(sceneDescription.includesKey(\modules), {
+			//>Separate local and remote modules.
+			//Determine if they are existing or dynamic.
+			//An existing module is referred to using the 'path' keyword. This indicates
+			//that the module already exists. An existing module may be either static
+			//or dynamic.
+
+			//>For all remote scenes
+			//	>contact the host
+			//	>if the host responds
+			//		>then send a remote hosting scene cue to the hosts.
+			//			>if no response throw build error
+
+			//>Separate already existing modules and new modules to be created.
+			//Modules that are already existing on an application will be hosted by the apps module host.
+			//Otherwise they will be hosted by its scene, or scene proxy
+			//>For each existing local module
+			//	>send scene ownership message to module
+			//	>if module host replies with 'module busy/reserved'
+			//		>then throw build error
+			//>For each new local module to be created
+			//	>send module cue to local module host
+			//	>module host replies with a build result, stating the dependancies for that module.
+
+		});
+
+
+		newScene = VTMScene.new(sceneDescription[\name], sceneOwner, sceneDescription, sceneDefinition);
+		buildResult.put(\scene, newScene);
+		^buildResult;
+	}
 
 }

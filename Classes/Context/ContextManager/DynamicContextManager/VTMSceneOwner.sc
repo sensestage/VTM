@@ -13,6 +13,10 @@ VTMSceneOwner : VTMDynamicContextManager {
 		^children;
 	}
 
+	application{
+		^parent;
+	}
+
 	addScene{arg newScene;
 	}
 
@@ -26,5 +30,4 @@ VTMSceneOwner : VTMDynamicContextManager {
 		};
 		this.addScene(newScene);
 	}
-
 }
