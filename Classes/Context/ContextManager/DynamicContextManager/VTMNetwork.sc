@@ -38,7 +38,7 @@ VTMNetwork : VTMDynamicContextManager {
 					//> reply with this name, addr:ip
 					//<to the querier> /! <name> <addr:ip>
 					this.applicationProxies[remoteName].sendMsg(
-						'/!',
+						'!',
 						this.name,
 						this.addr.generateIPString
 					);
@@ -55,7 +55,7 @@ VTMNetwork : VTMDynamicContextManager {
 					this.addApplicationProxy(remoteName, remoteAddr);
 					//> Make a ApplicationProxy for this responding app
 				});
-			}, '/!')
+			}, "/%!".format(this.name).asSymbol)
 		];
 	}
 
