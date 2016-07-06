@@ -27,6 +27,17 @@ VTMApplication {
 
 		//Discover other application on the network
 		network.discover;
+		if(description.notNil, {
+			if(description.includeKey(\openView), {
+				if(description[\openView], {
+					var viewDesc, viewDef;
+					this.makeView(
+						viewDescription: description[\viewDescription],
+						viewDefinition: description[\viewDefinition]
+					);
+				});
+			});
+		});
 	}
 
 	prInitFilePaths{
@@ -57,4 +68,9 @@ VTMApplication {
 		^network.name;
 	}
 
+	makeView{arg parent, bounds, viewDescription, viewDefinition;
+		^VTMApplicationView.new(
+			parent, bounds, this, viewDescription, viewDefinition
+		);
+	}
 }

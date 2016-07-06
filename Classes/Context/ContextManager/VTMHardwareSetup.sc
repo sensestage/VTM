@@ -1,4 +1,4 @@
-VTMHardwareSetup : VTMStaticContextManager {
+VTMHardwareSetup : VTMContextManager {
 
 	//a hardware setups parent will be an Application
 	*new{arg name, parent, description, defintion;

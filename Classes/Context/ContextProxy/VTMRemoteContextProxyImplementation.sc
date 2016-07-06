@@ -8,11 +8,11 @@ VTMRemoteContextProxyImplementation : VTMContextProxyImplementation {
 
 	initRemoteContextProxyImplementation{
 		if(description.notNil, {
-			if(description.includesKey(\addr), {
-				targetAddr = description[\addr];
+			if(description.includesKey(\targetAddr), {
+				targetAddr = description[\targetAddr];
 			});
-			if(description.includesKey(\path), {
-				targetPath = description[\path];
+			if(description.includesKey(\targetPath), {
+				targetPath = description[\targetPath];
 			});
 		});
 		if(targetPath.isNil, {

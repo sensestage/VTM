@@ -1,4 +1,4 @@
-VTMNetwork : VTMDynamicContextManager {
+VTMNetwork : VTMContextManager {
 	var <application;
 	classvar <defaultPort = 57120;
 
@@ -32,6 +32,7 @@ VTMNetwork : VTMDynamicContextManager {
 				remoteName = msg[1];
 				remoteAddr = NetAddr.newFromIPString(msg[2].asString);
 				if(remoteName != this.name, {
+					"Registering new application: %".format([remoteName, remoteAddr]).postln;
 					//register this application
 					this.addApplicationProxy(remoteName, remoteAddr);
 
@@ -45,11 +46,11 @@ VTMNetwork : VTMDynamicContextManager {
 				});
 			}, '/?'),
 			OSCFunc({arg msg, time, addr, port;//network discover reply
-				//> get the name and the address of the responding app
 				var remoteName, remoteAddr;
-				//> get the name and the address for the app that queries
+				//> get the name and the address of the responding app
 				remoteName = msg[1];
 				remoteAddr = NetAddr.newFromIPString(msg[2].asString);
+				"Got response from: %".format([remoteName, remoteAddr]).postln;
 				if(remoteName != this.name, {
 					//register this application
 					this.addApplicationProxy(remoteName, remoteAddr);
@@ -60,8 +61,9 @@ VTMNetwork : VTMDynamicContextManager {
 	}
 
 	addApplicationProxy{arg name, addr;
-		if(this.applicationProxies.includesKey(name).not, {
-			var newAppProxy = VTMApplicationProxy(name, this, (addr: addr));
+		"Network - addApplicationProxy".format([name, addr]).postln;
+		if(this.applicationProxies.includesKey(name).not and: {name != this.name}, {
+			var newAppProxy = VTMApplicationProxy(name, this, (targetAddr: addr));
 			"Adding app proxy: % - %".format(name, addr).postln;
 			this.addChild(newAppProxy);
 		}, {

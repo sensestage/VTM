@@ -1,4 +1,4 @@
-VTMSceneOwner : VTMDynamicContextManager {
+VTMSceneOwner : VTMContextManager {
 	var <sceneFactory;
 
 	*new{arg name, parent, description, defintion;

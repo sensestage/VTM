@@ -7,7 +7,7 @@ VTMContext {
 	var path ; //an OSC valid path.
 	var fullPathThunk;
 	var <envir;
-	var <addr;
+	var <addr; //the address for this object instance.
 	var <oscInterface;
 
 	*new{arg name, parent, description, definition;

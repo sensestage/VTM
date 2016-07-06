@@ -1,4 +1,4 @@
-VTMModuleHost : VTMDynamicContextManager {
+VTMModuleHost : VTMContextManager {
 	var <factory;
 
 	*new{arg name, parent, description, defintion;
