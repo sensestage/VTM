@@ -39,4 +39,6 @@ VTMDecimalParameter : VTMScalarParameter {
 		});
 		super.defaultValue_(val);
 	}
+
+	*defaultViewType{ ^\slider; }
 }

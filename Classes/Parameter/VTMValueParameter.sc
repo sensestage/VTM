@@ -56,6 +56,7 @@ VTMValueParameter : VTMParameter {
 		if(typecheck or: {omitTypecheck.not}, {
 			if(this.class.isValidType(val), {
 				value = val;
+				this.changed(\value);
 			}, {
 				"ValueParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
 					this.fullPath, val, val.class
@@ -63,6 +64,7 @@ VTMValueParameter : VTMParameter {
 			});
 		}, {
 			value = val;
+			this.changed(\value);
 		});
 	}
 

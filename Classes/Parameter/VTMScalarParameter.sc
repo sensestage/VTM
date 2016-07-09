@@ -202,4 +202,6 @@ VTMScalarParameter : VTMValueParameter {
 		^result;
 	}
 
+	*defaultViewType{ ^\slider; }
+
 }

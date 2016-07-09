@@ -197,4 +197,8 @@ VTMParameter {
 	*attributeKeys{
 		^[\name, \path, \action, \enabled];
 	}
+
+	makeView{arg parent, bounds, description, definition;
+		^VTMParameterView.makeFromDescription(parent, bounds, this, description, definition);
+	}
 }
