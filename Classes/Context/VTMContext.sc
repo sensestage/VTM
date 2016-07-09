@@ -77,6 +77,7 @@ VTMContext {
 	addChild{arg context;
 		children.put(context.name, context);
 		context.addDependant(this);
+		this.changed(\addedChild, context.name);
 	}
 
 	removeChild{arg key;
@@ -84,6 +85,7 @@ VTMContext {
 		removedChild = children.removeAt(key);
 		"[%] Removing child '%'".format(this.name, key).postln;
 		removedChild.removeDependant(this);
+		this.changed(\removedChild, key);
 		^removedChild;
 	}
 
