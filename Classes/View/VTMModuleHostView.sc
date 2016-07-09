@@ -1,3 +1,3 @@
-VTMModuleHostView : VTMContextManagerListView {
+VTMModuleHostView : VTMContextManagerView {
 
 }

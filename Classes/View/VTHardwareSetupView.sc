@@ -1,0 +1,1 @@
+VTMHardwareSetupView : VTMContextManagerView {}
