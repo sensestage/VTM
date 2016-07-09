@@ -1,8 +1,8 @@
 VTMModuleHost : VTMContextManager {
 	var <factory;
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initModuleHost;
+	*new{arg network, description, defintion;
+		^super.new('modules', network, description, defintion).initModuleHost;
 	}
 
 	initModuleHost {
@@ -11,6 +11,14 @@ VTMModuleHost : VTMContextManager {
 
 	modules{
 		^children;
+	}
+
+	network{
+		^this.parent;
+	}
+
+	application {
+		^this.network.application;
 	}
 
 	//A description is a dictonary of parameter key/values.
