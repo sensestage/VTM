@@ -4,41 +4,41 @@ VTMApplication {
 	var <moduleHost;
 	var <hardwareSetup;
 	var <filePaths;
-	var <description;
+	var <declaration;
 	var <definition;
 
 	var oscResponders;
 
-	//The network[description\definition] is admittedly strange here, but keeping it for now.
-	*new{arg name, description, definition;
-		^super.new.initApplication(name, description, definition);
+	//The network[declaration\definition] is admittedly strange here, but keeping it for now.
+	*new{arg name, declaration, definition;
+		^super.new.initApplication(name, declaration, definition);
 	}
 
-	initApplication{arg name_, description_, definition_;
+	initApplication{arg name_, declaration_, definition_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
 		var hardwareDesc, hardwareDef;
-		if(description.notNil, {
-			if(description.includesKey(\network), {
-				networkDesc = description[\network][\description];
-				networkDef = description[\network][\definition];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\network), {
+				networkDesc = declaration[\network][\declaration];
+				networkDef = declaration[\network][\definition];
 			});
-			if(description.includesKey(\network), {
-				moduleDesc = description[\module][\description];
-				moduleDef = description[\module][\definition];
+			if(declaration.includesKey(\network), {
+				moduleDesc = declaration[\module][\declaration];
+				moduleDef = declaration[\module][\definition];
 			});
-			if(description.includesKey(\network), {
-				sceneDesc = description[\scene][\description];
-				sceneDef = description[\scene][\definition];
+			if(declaration.includesKey(\network), {
+				sceneDesc = declaration[\scene][\declaration];
+				sceneDef = declaration[\scene][\definition];
 			});
-			if(description.includesKey(\network), {
-				hardwareDesc = description[\hardware][\description];
-				hardwareDef = description[\hardware][\definition];
+			if(declaration.includesKey(\network), {
+				hardwareDesc = declaration[\hardware][\declaration];
+				hardwareDef = declaration[\hardware][\definition];
 			});
 		});
 		this.prInitFilePaths;
-		description = description_;
+		declaration = declaration_;
 		definition = definition_;
 		network = VTMNetwork(name_, this, networkDesc, networkDef);
 		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
@@ -49,13 +49,13 @@ VTMApplication {
 
 		//Discover other application on the network
 		network.discover;
-		if(description.notNil, {
-			if(description.includeKey(\openView), {
-				if(description[\openView], {
+		if(declaration.notNil, {
+			if(declaration.includeKey(\openView), {
+				if(declaration[\openView], {
 					var viewDesc, viewDef;
 					this.makeView(
-						viewDescription: description[\viewDescription],
-						viewDefinition: description[\viewDefinition]
+						viewdeclaration: declaration[\viewdeclaration],
+						viewDefinition: declaration[\viewDefinition]
 					);
 				});
 			});
@@ -90,9 +90,9 @@ VTMApplication {
 		^network.name;
 	}
 
-	makeView{arg parent, bounds, viewDescription, viewDefinition;
+	makeView{arg parent, bounds, viewdeclaration, viewDefinition;
 		^VTMApplicationView.new(
-			parent, bounds, this, viewDescription, viewDefinition
+			parent, bounds, this, viewdeclaration, viewDefinition
 		);
 	}
 }

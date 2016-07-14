@@ -9,19 +9,19 @@ VTMSelectionParameter : VTMValueParameter {
 		^val.isKindOf(Array);
 	}
 
-	*new{arg name, description;
-		^super.new(name, description).initSelectionParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initSelectionParameter;
 	}
 
 	initSelectionParameter{
-		if(description.notNil, {
-			if(description.includesKey(\options), {
-				this.options = description[\options];
-				if(description.includesKey(\defaultValue), {
-					this.defaultValue = description[\defaultValue];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\options), {
+				this.options = declaration[\options];
+				if(declaration.includesKey(\defaultValue), {
+					this.defaultValue = declaration[\defaultValue];
 				});
-				if(description.includesKey(\value), {
-					this.value = description[\value];
+				if(declaration.includesKey(\value), {
+					this.value = declaration[\value];
 				});
 			});
 		});

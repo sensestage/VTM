@@ -2,8 +2,8 @@ VTMNetwork : VTMContextManager {
 	var <application;
 	classvar <defaultPort = 57120;
 
-	*new{arg name, application, description, definition;
-		^super.new(name, nil, description, definition).initNetwork(application);
+	*new{arg name, application, declaration, definition;
+		^super.new(name, nil, declaration, definition).initNetwork(application);
 	}
 
 	initNetwork{arg application_;

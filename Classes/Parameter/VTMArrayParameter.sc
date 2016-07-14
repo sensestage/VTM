@@ -11,25 +11,25 @@ VTMArrayParameter : VTMValueParameter {
 		^[];
 	}
 
-	*new{arg name, description;
-		^super.new(name, description).initArrayParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initArrayParameter;
 	}
 
 	initArrayParameter{
-		if(description.notNil, {
-			if(description.includesKey(\size), {
-				size = description[\size];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\size), {
+				size = declaration[\size];
 			});
-			if(description.includesKey(\fixedSize), {
-				fixedSize = description[\fixedSize];
+			if(declaration.includesKey(\fixedSize), {
+				fixedSize = declaration[\fixedSize];
 			});
-			if(description.includesKey(\itemType), {
-				itemType = description[\itemType];
+			if(declaration.includesKey(\itemType), {
+				itemType = declaration[\itemType];
 			}, {
 				Error("ArrayParameter needs to define itemType. [%]".format(this.fullPath)).throw;
 			});
 		}, {
-			Error("ArrayParameter needs description with mandatory attributes: itemType. [%]".format(this.fullPath)).throw;
+			Error("ArrayParameter needs declaration with mandatory attributes: itemType. [%]".format(this.fullPath)).throw;
 			^nil;
 		});
 	}

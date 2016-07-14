@@ -1,15 +1,15 @@
 VTMScalarParameterView : VTMValueParameterView {
 	var <spec;
 
-	*new{arg parent, bounds, parameter, description, definition;
-		^super.new(parent, bounds, parameter, description, definition).initScalarParameterView;
+	*new{arg parent, bounds, parameter, declaration, definition;
+		^super.new(parent, bounds, parameter, declaration, definition).initScalarParameterView;
 	}
 
 	initScalarParameterView{
 		var min, max;
-		if(description.notNil, {
-			if(description.includesKey(\minVal), { min = description[\minVal]; });
-			if(description.includesKey(\maxVal), { max = description[\maxVal]; });
+		if(declaration.notNil, {
+			if(declaration.includesKey(\minVal), { min = declaration[\minVal]; });
+			if(declaration.includesKey(\maxVal), { max = declaration[\maxVal]; });
 		});
 		if(min.isNil, { min = parameter.minVal; });
 		if(max.isNil, { max = parameter.maxVal; });

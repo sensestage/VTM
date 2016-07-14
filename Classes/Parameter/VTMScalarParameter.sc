@@ -14,23 +14,23 @@ VTMScalarParameter : VTMValueParameter {
 	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }
 
 
-	*new{arg name, description;
-		^super.new(name, description).initScalarParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initScalarParameter;
 	}
 
 	initScalarParameter{
-		if(description.notNil, {
-			if(description.includesKey(\clipmode), {
-				this.clipmode = description[\clipmode];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\clipmode), {
+				this.clipmode = declaration[\clipmode];
 			});
-			if(description.includesKey(\minVal), {
-				this.minVal = description[\minVal];
+			if(declaration.includesKey(\minVal), {
+				this.minVal = declaration[\minVal];
 			});
-			if(description.includesKey(\maxVal), {
-				this.maxVal = description[\maxVal];
+			if(declaration.includesKey(\maxVal), {
+				this.maxVal = declaration[\maxVal];
 			});
-			if(description.includesKey(\stepsize), {
-				this.stepsize = description[\stepsize];
+			if(declaration.includesKey(\stepsize), {
+				this.stepsize = declaration[\stepsize];
 			});
 		});
 	}

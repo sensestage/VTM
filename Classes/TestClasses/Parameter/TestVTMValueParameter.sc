@@ -223,62 +223,62 @@ TestVTMValueParameter : TestVTMParameter {
 
 	}
 
-	test_SetVariablesFromDescription{
-		var param, description, wasRun = false;
-		description = (
+	test_SetVariablesFromdeclaration{
+		var param, declaration, wasRun = false;
+		declaration = (
 			path: '/myPath', defaultValue: 222, value: 333,
 			action: {arg p; wasRun = true},
 			filterRepetitions: true,
 			typecheck: false
 		);
-		param = VTMValueParameter.new('myName', description);
+		param = VTMValueParameter.new('myName', declaration);
 		this.assert(param.path.notNil,
 			"ValueParameter path is notNil");
 		this.assertEquals(
-			param.path, '/myPath', "ValueParameter path was set through description"
+			param.path, '/myPath', "ValueParameter path was set through declaration"
 		);
 
 		this.assert(param.fullPath.notNil,
 			"ValueParameter fullPath is notNil");
 		this.assertEquals(
-			param.fullPath, '/myPath/myName', "ValueParameter fullPath was set through description"
+			param.fullPath, '/myPath/myName', "ValueParameter fullPath was set through declaration"
 		);
 
 		this.assert(param.defaultValue.notNil,
 			"ValueParameter defaultValue is notNil");
 		this.assertEquals(
-			param.defaultValue, 222, "ValueParameter defaultValue was set through description"
+			param.defaultValue, 222, "ValueParameter defaultValue was set through declaration"
 		);
 
 		this.assert(param.value.notNil,
 			"ValueParameter value is notNil");
 		this.assertEquals(
-			param.value, 333, "ValueParameter value was set through description"
+			param.value, 333, "ValueParameter value was set through declaration"
 		);
 
 		param.doAction;
-		this.assert(wasRun, "ValueParameter action was set through description");
+		this.assert(wasRun, "ValueParameter action was set through declaration");
 
 		this.assert(param.filterRepetitions,
-			"ValueParameter filterRepetitions was set through description");
+			"ValueParameter filterRepetitions was set through declaration");
 	}
 
 	test_InitValueToDefaultValueIfNoValueDefined{
-		var param, description;
-		description = (
+		var param, declaration;
+		declaration = (
 			path: '/myPath', defaultValue: 9999
 		);
-		param = VTMValueParameter.new('myName', description);
+		param = VTMValueParameter.new('myName', declaration);
 		//check if value is initialized to defaultValue
 		this.assertEquals(
 			param.value, 9999, "ValueParameter value was initialized to defaultValue"
 		);
 
 	}
-	test_TypeWasInferredFromValueTypeInDescription{}
+	test_TypeWasInferredFromValueTypeIndeclaration{}
 
 	test_GetAttributes{
-		var description = IdentityDictionary[
+		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value - 12.3; },
 			\enabled -> true,
@@ -288,8 +288,8 @@ TestVTMValueParameter : TestVTMParameter {
 			\filterRepetitions -> true
 		];
 		var testAttributes;
-		var param = VTMValueParameter.new('myValue', description);
-		testAttributes = description.deepCopy.put(\name, 'myValue');
+		var param = VTMValueParameter.new('myValue', declaration);
+		testAttributes = declaration.deepCopy.put(\name, 'myValue');
 		testAttributes.put(\action, testAttributes[\action].asCompileString);
 		this.assertEquals(
 			param.attributes, testAttributes, "ValueParameter returned correct attributes"

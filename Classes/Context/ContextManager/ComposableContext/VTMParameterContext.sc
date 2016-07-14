@@ -1,8 +1,8 @@
 VTMParameterContext : VTMComposableContext {
 	var parameter;
 	
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initRemoteSceneProxy;
+	*new{arg name, parent, declaration, defintion;
+		^super.new(name, parent, declaration, defintion).initRemoteSceneProxy;
 	}
 
 	initRemoteSceneProxy{

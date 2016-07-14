@@ -517,8 +517,8 @@ TestVTMScalarParameter : VTMUnitTest {
 	test_MinValShouldNotBeLowerThanMaxValAndViceVersa{}
 
 
-	test_SetAttributesInDescription{
-		var description = IdentityDictionary[
+	test_SetAttributesIndeclaration{
+		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value * 2.1; },
 			\enabled -> true,
@@ -531,50 +531,50 @@ TestVTMScalarParameter : VTMUnitTest {
 			\stepsize -> 12,
 			\clipmode -> \low
 		];
-		var param = VTMScalarParameter.new('myValue', description);
+		var param = VTMScalarParameter.new('myValue', declaration);
 		this.assertEquals(
-			param.path, description[\path], "ScalarParameter set path through description"
+			param.path, declaration[\path], "ScalarParameter set path through declaration"
 		);
 		this.assertEquals(
-			param.fullPath, '/myValuePath/tester/myValue', "ScalarParameter set fullPath through description"
+			param.fullPath, '/myValuePath/tester/myValue', "ScalarParameter set fullPath through declaration"
 		);
 		this.assertEquals(
-			param.action, description[\action], "ScalarParameter set action through description"
+			param.action, declaration[\action], "ScalarParameter set action through declaration"
 		);
 		this.assertEquals(
-			param.enabled, description[\enabled], "ScalarParameter set enabled through description"
+			param.enabled, declaration[\enabled], "ScalarParameter set enabled through declaration"
 		);
 		this.assertEquals(
-			param.defaultValue, description[\defaultValue], "ScalarParameter set defaultValue through description"
+			param.defaultValue, declaration[\defaultValue], "ScalarParameter set defaultValue through declaration"
 		);
 		this.assertEquals(
-			param.value, description[\value], "ScalarParameter set value through description"
+			param.value, declaration[\value], "ScalarParameter set value through declaration"
 		);
 		this.assertEquals(
-			param.typecheck, description[\typecheck], "ScalarParameter set typecheck through description"
+			param.typecheck, declaration[\typecheck], "ScalarParameter set typecheck through declaration"
 		);
 		this.assertEquals(
-			param.filterRepetitions, description[\filterRepetitions],
-			"ScalarParameter set filterRepetitions through description"
+			param.filterRepetitions, declaration[\filterRepetitions],
+			"ScalarParameter set filterRepetitions through declaration"
 		);
 		this.assertEquals(
-			param.minVal, description[\minVal], "ScalarParameter set minVal through description"
+			param.minVal, declaration[\minVal], "ScalarParameter set minVal through declaration"
 		);
 		this.assertEquals(
-			param.maxVal, description[\maxVal], "ScalarParameter set maxVal through description"
+			param.maxVal, declaration[\maxVal], "ScalarParameter set maxVal through declaration"
 		);
 		this.assertEquals(
-			param.stepsize, description[\stepsize], "ScalarParameter set stepsize through description"
+			param.stepsize, declaration[\stepsize], "ScalarParameter set stepsize through declaration"
 		);
 		this.assertEquals(
-			param.clipmode, description[\clipmode], "ScalarParameter set clipmode through description"
+			param.clipmode, declaration[\clipmode], "ScalarParameter set clipmode through declaration"
 		);
 
 
 	}
 
 	test_GetAttributes{
-		var description = IdentityDictionary[
+		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value * 2.1; },
 			\enabled -> true,
@@ -588,8 +588,8 @@ TestVTMScalarParameter : VTMUnitTest {
 			\clipmode -> \low
 		];
 		var testAttributes;
-		var param = VTMScalarParameter.new('myValue', description);
-		testAttributes = description.deepCopy.put(\name, 'myValue');
+		var param = VTMScalarParameter.new('myValue', declaration);
+		testAttributes = declaration.deepCopy.put(\name, 'myValue');
 		testAttributes.put(\action, testAttributes[\action].asCompileString);
 		this.assertEquals(
 			param.attributes, testAttributes, "ScalarParameter returned correct attributes"

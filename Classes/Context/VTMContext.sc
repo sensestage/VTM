@@ -1,7 +1,7 @@
 VTMContext {
 	var <name;
 	var <parent;
-	var description;
+	var declaration;
 	var <definition; //this is not really safe so getter will probably be removed
 	var <children;
 	var path ; //an OSC valid path.
@@ -10,22 +10,22 @@ VTMContext {
 	var <addr; //the address for this object instance.
 	var <oscInterface;
 
-	*new{arg name, parent, description, definition;
-		^super.new.initContext(name, parent, description, definition);
+	*new{arg name, parent, declaration, definition;
+		^super.new.initContext(name, parent, declaration, definition);
 	}
 
-	initContext{arg name_, parent_, description_, definition_;
+	initContext{arg name_, parent_, declaration_, definition_;
 		if(name_.isNil, {
 			Error("Context must have name").throw;
 		}, {
 			name = name_;
 		});
-		if(description_.isNil, {
-			description = IdentityDictionary.new;
+		if(declaration_.isNil, {
+			declaration = IdentityDictionary.new;
 		}, {
-			description = IdentityDictionary.newFrom(description_);
-			if(description.includesKey(\addr), {
-				addr = description[\addr];
+			declaration = IdentityDictionary.newFrom(declaration_);
+			if(declaration.includesKey(\addr), {
+				addr = declaration[\addr];
 			});
 		});
 
@@ -54,7 +54,7 @@ VTMContext {
 		children = IdentityDictionary.new;
 		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
-		envir.put(\runtimeDescription, this.description );// a description that can be changed in runtime.
+		envir.put(\runtimedeclaration, this.declaration );// a declaration that can be changed in runtime.
 
 		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
@@ -156,24 +156,24 @@ VTMContext {
 		^children.collect(_.childTree);
 	}
 
-	//immutable description. Should only be changed with 'changeDescription'
-	description{
-		^description.deepCopy;
+	//immutable declaration. Should only be changed with 'changedeclaration'
+	declaration{
+		^declaration.deepCopy;
 	}
 
-	//If not passed in as argument get the description from current envir.
-	//If passed as argument use only the described keys to change the current description
-	changeDescription{arg newDesc;
-
-	}
-
-	//Save current description to file
-	writeDescription{
+	//If not passed in as argument get the declaration from current envir.
+	//If passed as argument use only the described keys to change the current declaration
+	changedeclaration{arg newDesc;
 
 	}
 
-	//Read description from file
-	readDescription{
+	//Save current declaration to file
+	writedeclaration{
+
+	}
+
+	//Read declaration from file
+	readdeclaration{
 
 	}
 
@@ -184,15 +184,15 @@ VTMContext {
 		^envir[selector].value(this, *args);
 	}
 
-	makeView{arg description;
+	makeView{arg declaration;
 		var viewClass = this.class.viewClass;
-		//override class if defined in description.
-		if(description.notNil, {
-			if(description.includesKey(\viewClass), {
-				viewClass = description[\viewClass];
+		//override class if defined in declaration.
+		if(declaration.notNil, {
+			if(declaration.includesKey(\viewClass), {
+				viewClass = declaration[\viewClass];
 				});
 			});
-		^viewClass.new(this, description);
+		^viewClass.new(this, declaration);
 	}
 
 	update{arg theChanged, whatChanged, theChanger ...args;

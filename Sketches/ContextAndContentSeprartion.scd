@@ -42,7 +42,7 @@ The difference between a 'manager role', and 'being a context' is hard to spot.
 
 What reasons do we have for having the module being a context?
 What reasons do we have for having modules being aware of its parent (the ModuleHost, and its Node)?
-  Network between modules is one thing. But one solution here is to leave inter-module and inter-scene descriptions up to the Factory classes.
+  Network between modules is one thing. But one solution here is to leave inter-module and inter-scene declarations up to the Factory classes.
 Making a module and a parameter as nerdy as focussed as possible is the goal. It is not the Context's resposibility to manage its parent concept.
 they will however be linked in fate, i.e. if the parent context is freed, the child context should also be freed. But this again will be the responsibility of the parent; to free its children.
 

@@ -1,13 +1,13 @@
 VTMView : View {
-	var <description;
+	var <declaration;
 	var <definition;
 
-	*new{arg parent, bounds, description, definition;
-		^super.new(parent, bounds).initVTMView(description, definition);
+	*new{arg parent, bounds, declaration, definition;
+		^super.new(parent, bounds).initVTMView(declaration, definition);
 	}
 
-	initVTMView{arg description_, definition_;
-		description = description_;
+	initVTMView{arg declaration_, definition_;
+		declaration = declaration_;
 		definition = definition_;
 	}
 

@@ -1,18 +1,18 @@
 VTMModule : VTMComposableContext {
-	var <description;
+	var <declaration;
 	var <definition;
 	var <parameterOrder;
 	var <defName;
 	var parameters;
 	var submodules;
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initModule;
+	*new{arg name, parent, declaration, defintion;
+		^super.new(name, parent, declaration, defintion).initModule;
 	}
 
 	initModule{
 		envir = definition.deepCopy;
-		defName = description[\def] ? \none;
+		defName = declaration[\def] ? \none;
 		this.makeParameters;
 
 		//it is only the "real" implementation classes that will know when it
@@ -44,16 +44,16 @@ VTMModule : VTMComposableContext {
 
 
 	//Making parameters depends on if the module's definition specifies
-	//a ~buildParameters function or a ~parameterDescriptions array.
+	//a ~buildParameters function or a ~parameterdeclarations array.
 	//If both are defined they will be combined but the restults of
 	//the ~buildParameters function will override what is declared in
-	//~parameterDescriptions.
+	//~parameterdeclarations.
 	makeParameters{
 		var parametersToBuild = IdentityDictionary.new;
 		var buildOrder = [];
 
-		if(definition.includesKey(\parameterDescriptions), {
-			definition[\parameterDescriptions].pairsDo({arg paramName, paramDesc;
+		if(definition.includesKey(\parameterdeclarations), {
+			definition[\parameterdeclarations].pairsDo({arg paramName, paramDesc;
 				// "Adding param: % to build queue: \n\t%".format(
 				// paramName, paramDesc).postln;
 
@@ -95,10 +95,10 @@ VTMModule : VTMComposableContext {
 		});
 	}
 
-	addParameter{arg parameterName, parameterDescription;
+	addParameter{arg parameterName, parameterdeclaration;
 		var newParameter;
-		newParameter = VTMParameter.makeFromDescription(
-			parameterName, parameterDescription
+		newParameter = VTMParameter.makeFromdeclaration(
+			parameterName, parameterdeclaration
 		);
 		if(newParameter.notNil, {
 			this.addChild(newParameter);

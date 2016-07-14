@@ -1,8 +1,8 @@
 VTMModuleHost : VTMContextManager {
 	var <factory;
 
-	*new{arg network, description, defintion;
-		^super.new('modules', network, description, defintion).initModuleHost;
+	*new{arg network, declaration, defintion;
+		^super.new('modules', network, declaration, defintion).initModuleHost;
 	}
 
 	initModuleHost {
@@ -21,16 +21,16 @@ VTMModuleHost : VTMContextManager {
 		^this.network.application;
 	}
 
-	//A description is a dictonary of parameter key/values.
-	//The description may define the name of a module definition.
+	//A declaration is a dictonary of parameter key/values.
+	//The declaration may define the name of a module definition.
 	//This defintion may be overriden by the optional moduleDefinition argument
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//
-	loadModuleDescription{arg name, description, moduleDefinition;
+	loadModuledeclaration{arg name, declaration, moduleDefinition;
 		var newModule;
 		try{
-			newModule = factory.build(name, description, moduleDefinition);
+			newModule = factory.build(name, declaration, moduleDefinition);
 
 			//The factory may throw error when building the module, but
 			//added an extra check here
@@ -45,16 +45,16 @@ VTMModuleHost : VTMContextManager {
 		};
 	}
 
-	loadModuleJSONCue{arg name, descriptionJSONString, moduleDefinition;
-		var moduleDescription;
+	loadModuleJSONCue{arg name, declarationJSONString, moduleDefinition;
+		var moduledeclaration;
 		//parse JSON string
 		try{
-			moduleDescription = descriptionJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
+			moduledeclaration = declarationJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
 		} {|err|
 			"Module JSON cue parser error".warn;
 			err.postln;
 		};
-		this.loadModuleDescription(name, moduleDescription, moduleDefinition);
+		this.loadModuledeclaration(name, moduledeclaration, moduleDefinition);
 	}
 
 	//can be either a .json file or a .scd file

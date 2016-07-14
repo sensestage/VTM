@@ -20,8 +20,8 @@ TestVTMParameter : VTMUnitTest {
 		^result;
 	}
 
-	makeParameter{arg description, randomAttributes;
-		var result, desc = description.deepCopy;
+	makeParameter{arg declaration, randomAttributes;
+		var result, desc = declaration.deepCopy;
 		if(randomAttributes.notNil, {
 			randomAttributes.do({arg item;
 				var val;
@@ -38,7 +38,7 @@ TestVTMParameter : VTMUnitTest {
 			VTMParameter.typeToClass(this.class.name.asString.findRegexp("^Test(.+)$")[1][1])
 		).postln;
 		"DESC before make: %".format(desc).postln;
-		result = VTMParameter.makeFromDescription(desc);
+		result = VTMParameter.makeFromdeclaration(desc);
 		^result;
 	}
 
@@ -248,36 +248,36 @@ TestVTMParameter : VTMUnitTest {
 
 	}
 
-	test_SetVariablesThroughDescription{
+	test_SetVariablesThroughdeclaration{
 		testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParam, aDescription, anAction;
+			var aParam, adeclaration, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
-			aDescription = (
+			adeclaration = (
 				action: anAction,
 				path: '/myPath',
 				enabled: false,
 			);
-			aParam = testClass.new(name, aDescription);
+			aParam = testClass.new(name, adeclaration);
 
-			//path is set through description
+			//path is set through declaration
 			this.assertEquals(aParam.path, '/myPath',
-				"Path was defined through description"
+				"Path was defined through declaration"
 			);
 			this.assertEquals(aParam.fullPath, "/myPath/%".format(name).asSymbol,
-				"Full path was defined through description"
+				"Full path was defined through declaration"
 			);
-			//enabled is set through description
+			//enabled is set through declaration
 			this.assert(aParam.enabled.not,
-				"Parameter was disabled through description"
+				"Parameter was disabled through declaration"
 			);
 
-			//action is set through description
+			//action is set through declaration
 			aParam.enable; //Reenable parameter
 			aParam.doAction;
 			this.assert(wasRun and: {aParam.action === anAction},
-				"Parameter action was set through description"
+				"Parameter action was set through declaration"
 			);
 		});
 	}
@@ -291,18 +291,18 @@ TestVTMParameter : VTMUnitTest {
 		testClasses.do({arg testClass;
 			var testName = "my%".format(testClass.name).asSymbol;
 			var wasRun = false;
-			var description = IdentityDictionary[
+			var declaration = IdentityDictionary[
 				\path -> '/myPath/is',
 				\action -> {|p| 11 + 8; },
 				\enabled -> true
 			];
 			var testAttributes;
-			var param = testClass.new(testName, description);
+			var param = testClass.new(testName, declaration);
 			// Should return an IdentityDictionary with the keys: name, path, action, enabled
-			testAttributes = description.deepCopy.put(
+			testAttributes = declaration.deepCopy.put(
 				\name, testName
 			);
-			testAttributes.put(\action, description[\action].asCompileString);
+			testAttributes.put(\action, declaration[\action].asCompileString);
 
 			this.assert(
 				param.attributes.keys.sect(Set[\path, \action, \enabled, \name]).notEmpty,

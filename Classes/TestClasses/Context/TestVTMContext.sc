@@ -19,8 +19,8 @@ TestVTMContext : UnitTest {
 		);
 
 		this.assert(
-			context.description == testDesc and: {context.description !== testDesc},
-			"Context set description to equal, but not identical description."
+			context.declaration == testDesc and: {context.declaration !== testDesc},
+			"Context set declaration to equal, but not identical declaration."
 		);
 
 		this.assert(

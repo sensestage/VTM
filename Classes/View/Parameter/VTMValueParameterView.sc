@@ -1,8 +1,8 @@
 VTMValueParameterView : VTMParameterView {
 	var <value;
 
-	*new{arg parent, bounds, parameter, description, definition;
-		^super.new(parent, bounds, parameter, description, definition).initValueParameterView;
+	*new{arg parent, bounds, parameter, declaration, definition;
+		^super.new(parent, bounds, parameter, declaration, definition).initValueParameterView;
 	}
 
 	initValueParameterView{

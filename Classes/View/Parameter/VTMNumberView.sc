@@ -3,8 +3,8 @@ VTMNumberView : VTMScalarParameterView {
 	var round;
 	var <decimals;
 
-	*new{arg parent, bounds, parameter, description, definition;
-		^super.new(parent, bounds, parameter, description, definition).initNumberView;
+	*new{arg parent, bounds, parameter, declaration, definition;
+		^super.new(parent, bounds, parameter, declaration, definition).initNumberView;
 	}
 
 	initNumberView {
@@ -26,7 +26,7 @@ VTMNumberView : VTMScalarParameterView {
 			numberView.step_(1);
 			numberView.scroll_step_(1);
 		}, {
-			this.decimals_(description.atFail(\decimals, {2}));
+			this.decimals_(declaration.atFail(\decimals, {2}));
 			numberView.step_(0.1);
 			numberView.scroll_step_(0.01);
 		});

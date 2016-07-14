@@ -28,7 +28,7 @@ def = Environment.make {
 			]
 		];
 	};
-	~parameterDescriptions = [
+	~parameterdeclarations = [
 		ene: (
 			type: \integer, range: [0, 100], default: 50, action: {arg p;
 				"% - %".format(p.name, p.value).postln;
@@ -56,13 +56,13 @@ def = Environment.make {
 		),
 	];
 };
-~node.moduleHost.loadModuleDescription(name, desc, def);
+~node.moduleHost.loadModuledeclaration(name, desc, def);
 )
 
-~node.moduleHost.modules[\jeger].parameters[\rasky].description;
-~node.moduleHost.modules[\jeger].parameters[\tow].description;
+~node.moduleHost.modules[\jeger].parameters[\rasky].declaration;
+~node.moduleHost.modules[\jeger].parameters[\tow].declaration;
 ~node.moduleHost.modules[\jeger].orderedParameters.collect({arg item; item.name;});
-~node.moduleHost.modules[\jeger].description;
+~node.moduleHost.modules[\jeger].declaration;
 ~node.moduleHost.modules[\jeger].definition;
 ~node.moduleHost.modules[\jeger].defName;
 ~node.moduleHost.modules[\jeger].parameters;

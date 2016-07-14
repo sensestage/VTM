@@ -1,7 +1,7 @@
 VTMContextManager : VTMContext {
 
-	*new{arg name, parent, description, definition;
-		^super.new(name, parent, description, definition).initContextManager;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initContextManager;
 	}
 
 	initContextManager {

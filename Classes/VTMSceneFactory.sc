@@ -17,7 +17,7 @@ VTMSceneFactory{
 		^sceneOwner.application.hardwareSetup;
 	}
 
-	build{arg sceneDescription, sceneDefinition;
+	build{arg scenedeclaration, sceneDefinition;
 		var newScene, buildResult;
 		var modules = (
 			local: (static: [], dynamic: []),
@@ -31,23 +31,23 @@ VTMSceneFactory{
 			success: false,
 			errors: []
 		);
-		//>Check if scene description contains a name. Issue error if not.
-		if(sceneDescription.includesKey(\name).not, {
-			buildResult[\errors] = buildResult[\error].add(Error("Scene description must have name"));
+		//>Check if scene declaration contains a name. Issue error if not.
+		if(scenedeclaration.includesKey(\name).not, {
+			buildResult[\errors] = buildResult[\error].add(Error("Scene declaration must have name"));
 		});
 
-		//>determine the build order by searching the scene description for references
+		//>determine the build order by searching the scene declaration for references
 		//to other modules and find a resolving build order.
 		//>if finding a build order fails
 		//	>then throw build error.
 
-		//>Find out if the scene description has sub scenes.
+		//>Find out if the scene declaration has sub scenes.
 		//>For all sub scenes
 		//	>if this context overrides any values for the subscene
-		//		>then overwrite the overriden values in the subscene description
+		//		>then overwrite the overriden values in the subscene declaration
 
-		//if scene description has any module descriptions
-		if(sceneDescription.includesKey(\modules), {
+		//if scene declaration has any module declarations
+		if(scenedeclaration.includesKey(\modules), {
 			//>Separate local and remote modules.
 			//Determine if they are existing or dynamic.
 			//An existing module is referred to using the 'path' keyword. This indicates
@@ -74,7 +74,7 @@ VTMSceneFactory{
 		});
 
 
-		newScene = VTMScene.new(sceneDescription[\name], sceneOwner, sceneDescription, sceneDefinition);
+		newScene = VTMScene.new(scenedeclaration[\name], sceneOwner, scenedeclaration, sceneDefinition);
 		buildResult.put(\scene, newScene);
 		^buildResult;
 	}

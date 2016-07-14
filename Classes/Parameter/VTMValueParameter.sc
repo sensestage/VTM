@@ -11,8 +11,8 @@ VTMValueParameter : VTMParameter {
 
 	//This is an abstract class and can not be used directly.
 	//Use AnythingParameter for parameters that can receive any value type.
-	*new{arg name, description;
-		^super.new(name, description).initValueParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initValueParameter;
 	}
 
 	value{
@@ -23,15 +23,15 @@ VTMValueParameter : VTMParameter {
 	*isValidType{arg val; ^true; }
 
 	initValueParameter{
-		if(description.notNil, {
-			if(description.includesKey(\defaultValue), {
-				this.defaultValue_(description[\defaultValue]);
+		if(declaration.notNil, {
+			if(declaration.includesKey(\defaultValue), {
+				this.defaultValue_(declaration[\defaultValue]);
 			});
-			if(description.includesKey(\value), {
-				this.value_(description[\value]);
+			if(declaration.includesKey(\value), {
+				this.value_(declaration[\value]);
 			});
-			if(description.includesKey(\filterRepetitions), {
-				filterRepetitions = description[\filterRepetitions];
+			if(declaration.includesKey(\filterRepetitions), {
+				filterRepetitions = declaration[\filterRepetitions];
 			});
 		});
 		if(defaultValue.isNil, {

@@ -1,8 +1,8 @@
 VTMHardwareSetup : VTMContextManager {
 
 	//a hardware setups parent will be an Application
-	*new{arg network, description, defintion;
-		^super.new('hardware', network, description, defintion).initHardwareSetup;
+	*new{arg network, declaration, defintion;
+		^super.new('hardware', network, declaration, defintion).initHardwareSetup;
 	}
 
 	initHardwareSetup{

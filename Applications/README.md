@@ -1,2 +1,2 @@
 #Applications
-In this folder the standard application descriptions are stored.
+In this folder the standard application declarations are stored.

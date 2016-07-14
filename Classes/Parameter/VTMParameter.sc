@@ -6,7 +6,7 @@
 VTMParameter {
 	var <name;
 	var <path, fullPathThunk; //an OSC valid path.
-	var <description;
+	var <declaration;
 	var action, hiddenAction;
 	var <enabled = true;
 	var <mappings;
@@ -28,40 +28,40 @@ VTMParameter {
 	}
 
 	//factory type constructor
-	//In description dict 'name' and 'type' is mandatory.
-	*makeFromDescription{arg description;
-		//if 'type' and 'name' is defined in description
-		if(description.includesKey(\name), {
-			if(description.includesKey(\type), {
-				var paramClass = description.removeAt(\type);
-				var paramName = description.removeAt(\name);
-				^VTMParameter.typeToClass(paramClass).new(paramName, description);
+	//In declaration dict 'name' and 'type' is mandatory.
+	*makeFromdeclaration{arg declaration;
+		//if 'type' and 'name' is defined in declaration
+		if(declaration.includesKey(\name), {
+			if(declaration.includesKey(\type), {
+				var paramClass = declaration.removeAt(\type);
+				var paramName = declaration.removeAt(\name);
+				^VTMParameter.typeToClass(paramClass).new(paramName, declaration);
 			}, {
-				Error("VTMParameter description needs type").throw;
+				Error("VTMParameter declaration needs type").throw;
 			})
 		}, {
-			Error("VTMParameter description needs name").throw;
+			Error("VTMParameter declaration needs name").throw;
 		});
 	}
 
 	//This constructor is not used directly, only for testing purposes
-	*new{arg name, description;
+	*new{arg name, declaration;
 		if(name.notNil, {
-			^super.new.initParameter(name, description);
+			^super.new.initParameter(name, declaration);
 		}, {
 			Error("VTMParameter needs name").throw;
 		});
 	}
 
-	initParameter{arg name_, description_;
+	initParameter{arg name_, declaration_;
 		var tempName = name_.copy.asString;
 		if(tempName.first == $/, {
 			tempName = tempName[1..];
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		description = description_.deepCopy;
-		// description = IdentityDictionary.newFrom(description_);
+		declaration = declaration_.deepCopy;
+		// declaration = IdentityDictionary.newFrom(declaration_);
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
 				".%".format(name).asSymbol;
@@ -69,20 +69,20 @@ VTMParameter {
 				"/%".format(name).asSymbol;
 			});
 		});
-		if(description.notNil, {
-			if(description.includesKey(\isSubParameter), {
-				isSubParameter = description[\isSubParameter];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\isSubParameter), {
+				isSubParameter = declaration[\isSubParameter];
 			});
-			if(description.includesKey(\path), {
-				this.path = description[\path];
+			if(declaration.includesKey(\path), {
+				this.path = declaration[\path];
 			});
-			if(description.includesKey(\action), {
-				"Setting action from description: %".format(description[\action]).postln;
-				this.action_(description[\action]);
+			if(declaration.includesKey(\action), {
+				"Setting action from declaration: %".format(declaration[\action]).postln;
+				this.action_(declaration[\action]);
 			});
-			if(description.includesKey(\enabled), {
+			if(declaration.includesKey(\enabled), {
 				//Is enabled by default so only disabled if defined
-				if(description[\enabled].not, {
+				if(declaration[\enabled].not, {
 					this.disable;
 				})
 			})
@@ -198,7 +198,7 @@ VTMParameter {
 		^[\name, \path, \action, \enabled];
 	}
 
-	makeView{arg parent, bounds, description, definition;
-		^VTMParameterView.makeFromDescription(parent, bounds, this, description, definition);
+	makeView{arg parent, bounds, declaration, definition;
+		^VTMParameterView.makeFromdeclaration(parent, bounds, this, declaration, definition);
 	}
 }

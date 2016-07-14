@@ -9,21 +9,21 @@ VTMModuleFactory{
 		host = host_;
 	}
 
-	build{arg name, description, definition;
+	build{arg name, declaration, definition;
 		var moduleDefinition;
 		var newModule;
 
 		//Load module definition from file if not defined in arg
 		if(definition.isNil, {
 			var defName, defPath;
-			//Module description must define a def name, if not defined in arg
-			if(description.includesKey(\definition).not, {
+			//Module declaration must define a def name, if not defined in arg
+			if(declaration.includesKey(\definition).not, {
 				Error("Module % missing module definition").throw;
 				^nil;
 			});
 
 			//Load def from file
-			defName = description[\definition];
+			defName = declaration[\definition];
 			//Search for mod def file
 			defPath = PathName(this.moduleDefinitionsFolder).deepFiles.detect {|path|
 				path.fileNameWithoutExtension == defName;
@@ -56,7 +56,7 @@ VTMModuleFactory{
 			moduleDefinition = definition;
 		});
 
-		newModule = VTMModule.new(name, host, description, definition);
+		newModule = VTMModule.new(name, host, declaration, definition);
 		^newModule;
 
 	}
@@ -69,11 +69,11 @@ VTMModuleFactory{
 		^host.node.getFilePathFor(\moduleDefinition);
 	}
 
-	*isDescriptionForRemoteModule{arg desc;
+	*isdeclarationForRemoteModule{arg desc;
 		^desc.includesKey(\app);
 	}
 
-	*isDescriptionForExistingModule{arg desc;
+	*isdeclarationForExistingModule{arg desc;
 		^desc.includesKey(\path);
 	}
 }

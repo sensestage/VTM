@@ -1,7 +1,7 @@
 VTMScene : VTMComposableContext {
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initScene;
+	*new{arg name, parent, declaration, defintion;
+		^super.new(name, parent, declaration, defintion).initScene;
 	}
 
 	initScene{

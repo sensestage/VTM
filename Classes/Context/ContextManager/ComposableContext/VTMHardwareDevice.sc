@@ -1,7 +1,7 @@
 VTMHardwareDevice : VTMComposableContext {
 
-	*new{arg name, parent, description, defintion;
-		^super.new(name, parent, description, defintion).initHardwareDevice;
+	*new{arg name, parent, declaration, defintion;
+		^super.new(name, parent, declaration, defintion).initHardwareDevice;
 	}
 
 	initHardwareDevice{

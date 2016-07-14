@@ -4,8 +4,8 @@ VTMContextView : VTMView {
 	var contentView;
 	var headerView;
 
-	*new{arg parent, bounds, context, description, definition;
-		^super.new(parent, bounds, description, definition).initContextView(context);
+	*new{arg parent, bounds, context, declaration, definition;
+		^super.new(parent, bounds, declaration, definition).initContextView(context);
 	}
 
 	initContextView{arg context_;

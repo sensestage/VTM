@@ -29,7 +29,7 @@ TestVTMOptionParameter : VTMUnitTest {
 		);
 	}
 
-	test_SetAttributesThroughDescription{
+	test_SetAttributesThroughdeclaration{
 		var desc = (
 			options: [\aaa, \bbb, \ccc, \ddd],
 			defaultValue: \ddd,
@@ -38,15 +38,15 @@ TestVTMOptionParameter : VTMUnitTest {
 		var param = VTMOptionParameter.new('myOption', desc);
 		this.assertEquals(
 			param.value, desc[\value],
-			"OptionParameter set value through description"
+			"OptionParameter set value through declaration"
 		);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
-			"OptionParameter set defaultValue through description"
+			"OptionParameter set defaultValue through declaration"
 		);
 		this.assertEquals(
 			param.options, desc[\options],
-			"OptionParameter set options through description"
+			"OptionParameter set options through declaration"
 		);
 	}
 

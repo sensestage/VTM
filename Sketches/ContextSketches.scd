@@ -20,5 +20,5 @@
 
 ~node.network.localNode.dump;
 
-//modules are loaded from a description and definition
+//modules are loaded from a declaration and definition
 ~node.moduleHost.loadModule

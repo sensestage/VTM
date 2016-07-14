@@ -1,6 +1,6 @@
 VTMListParameter : VTMValueParameter {
 	var <itemType; //Which parameter type to contain in this class
-	var <itemDescriptions; //The consolidated item descriptionn will be stored here.
+	var <itemdeclarations; //The consolidated item declarationn will be stored here.
 	var <items;
 	var orderThunk;
 	var itemAtThunk, <prItemDict;
@@ -13,24 +13,24 @@ VTMListParameter : VTMValueParameter {
 		^Dictionary.new;//not sure about the default value here
 	}
 
-	*new{arg name, description;
-		^super.new(name, description).initListParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initListParameter;
 	}
 
 	initListParameter{
-		if(description.notNil, {
-			if(description.includesKey(\itemType), {
-				itemType = description[\itemType];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\itemType), {
+				itemType = declaration[\itemType];
 			}, {
-				Error("ListParameters needs itemType in description. [%]".format(this.fullPath)).throw;
+				Error("ListParameters needs itemType in declaration. [%]".format(this.fullPath)).throw;
 			});
-			if(description.includesKey(\itemDescriptions), {
-				itemDescriptions = description[\itemDescriptions];
+			if(declaration.includesKey(\itemdeclarations), {
+				itemdeclarations = declaration[\itemdeclarations];
 			}, {
-				Error("ListParameters needs itemDescriptions in description. [%]".format(this.fullPath)).throw;
+				Error("ListParameters needs itemdeclarations in declaration. [%]".format(this.fullPath)).throw;
 			});
 		}, {
-			Error("ListParameters need description with mandatory attributes: itemType, itemDescription. [%]".format(this.fullPath)).throw;
+			Error("ListParameters need declaration with mandatory attributes: itemType, itemdeclaration. [%]".format(this.fullPath)).throw;
 			^nil;
 		});
 
@@ -51,49 +51,49 @@ VTMListParameter : VTMValueParameter {
 		//This forces one to always make a new list parameter if one is
 		//already made.
 		if(items.isNil, {
-			var itemClass, itemDescriptions, attributeKeys;
+			var itemClass, itemdeclarations, attributeKeys;
 			var baseItemDesc;
 			items = Dictionary.new;
-			itemClass = VTMParameter.typeToClass(description[\itemType]);
-			itemDescriptions = description[\itemDescriptions];
+			itemClass = VTMParameter.typeToClass(declaration[\itemType]);
+			itemdeclarations = declaration[\itemdeclarations];
 
-			//all sub parameters have this base item description
+			//all sub parameters have this base item declaration
 			baseItemDesc = (
 				isSubParameter: true
 			);
 
-			//Expand all the items in the item description, e.g. arrayed keys etc.
-			//All item descriptions should now be expanded into separate Associations
-			itemDescriptions = this.class.prExpanditemDescriptions(description[\itemDescriptions].deepCopy);
-			attributeKeys = itemClass.attributeKeys.asSet.sect(description.keys);
-			itemDescriptions = itemDescriptions.collect({arg itemAssoc, index;
+			//Expand all the items in the item declaration, e.g. arrayed keys etc.
+			//All item declarations should now be expanded into separate Associations
+			itemdeclarations = this.class.prExpanditemdeclarations(declaration[\itemdeclarations].deepCopy);
+			attributeKeys = itemClass.attributeKeys.asSet.sect(declaration.keys);
+			itemdeclarations = itemdeclarations.collect({arg itemAssoc, index;
 				var itemName, itemDesc, newItemDesc;
 				itemName = itemAssoc.key;
 				itemDesc = itemAssoc.value;
 				newItemDesc = itemDesc.deepCopy;
 
-				//add the values from the outer description that applies to all items of this type.
+				//add the values from the outer declaration that applies to all items of this type.
 				//Getting only the keys that pertain to the itemClass, and which are defined in the
-				//description.
-				itemClass.attributeKeys.asSet.sect(description.keys).do({arg attrKey;
-					newItemDesc.put(attrKey, description[attrKey]);
+				//declaration.
+				itemClass.attributeKeys.asSet.sect(declaration.keys).do({arg attrKey;
+					newItemDesc.put(attrKey, declaration[attrKey]);
 				});
 
-				//add the base item desc, overriding some of the outer description values
+				//add the base item desc, overriding some of the outer declaration values
 				newItemDesc.putAll(baseItemDesc.deepCopy);
 				newItemDesc.put(\name, itemName);
 				newItemDesc.put(\path, this.fullPath);//using the owner parameter fullPath
-				newItemDesc.put(\type, description[\itemType]);
+				newItemDesc.put(\type, declaration[\itemType]);
 
-				//override with the values in the itemDescriptions
+				//override with the values in the itemdeclarations
 				newItemDesc.putAll(itemDesc);
 
 				Association.new(itemName, newItemDesc);
 			});
 
 			//Build the item parameter objects
-			items = itemDescriptions.collect({arg itemDesc;
-				VTMParameter.makeFromDescription(itemDesc.value);
+			items = itemdeclarations.collect({arg itemDesc;
+				VTMParameter.makeFromdeclaration(itemDesc.value);
 			});
 
 		}, {
@@ -106,7 +106,7 @@ VTMListParameter : VTMValueParameter {
 		});
 	}
 
-	*prExpanditemDescriptions{arg desc;
+	*prExpanditemdeclarations{arg desc;
 		var result;
 		desc.do({arg item, i;
 			if(item.isKindOf(Association), {
@@ -117,7 +117,7 @@ VTMListParameter : VTMValueParameter {
 						var jDesc = ();
 						item.value.keysValuesDo({arg ke, va;
 							if(va.isArray and: {va.isString.not}, {
-								//expand item description value to arrayed key by wrapped indexing
+								//expand item declaration value to arrayed key by wrapped indexing
 								jDesc.put(
 									ke,
 									va.wrapAt(j)

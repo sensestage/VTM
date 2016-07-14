@@ -56,23 +56,23 @@ TestVTMIntegerParameter : VTMUnitTest {
 		var param = VTMIntegerParameter.new('myInteger', desc);
 		this.assertEquals(
 			param.value, desc[\value].asInteger,
-			"IntegerParameter changed decimal value in description to Integer"
+			"IntegerParameter changed decimal value in declaration to Integer"
 		);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue].asInteger,
-			"IntegerParameter changed decimal defaultValue in description to Integer"
+			"IntegerParameter changed decimal defaultValue in declaration to Integer"
 		);
 		this.assertEquals(
 			param.minVal, desc[\minVal].asInteger,
-			"IntegerParameter changed decimal minVal in description to Integer"
+			"IntegerParameter changed decimal minVal in declaration to Integer"
 		);
 		this.assertEquals(
 			param.maxVal, desc[\maxVal].asInteger,
-			"IntegerParameter changed decimal maxVal in description to Integer"
+			"IntegerParameter changed decimal maxVal in declaration to Integer"
 		);
 		this.assertEquals(
 			param.stepsize, desc[\stepsize].asInteger,
-			"IntegerParameter changed decimal stepsize in description to Integer"
+			"IntegerParameter changed decimal stepsize in declaration to Integer"
 		);
 
 		//Test the setter methods also
@@ -580,8 +580,8 @@ TestVTMIntegerParameter : VTMUnitTest {
 	test_MinValShouldNotBeLowerThanMaxValAndViceVersa{}
 
 
-	test_SetAttributesInDescription{
-		var description = IdentityDictionary[
+	test_SetAttributesIndeclaration{
+		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value * 21; },
 			\enabled -> true,
@@ -594,48 +594,48 @@ TestVTMIntegerParameter : VTMUnitTest {
 			\stepsize -> 12,
 			\clipmode -> \low
 		];
-		var param = VTMIntegerParameter.new('myValue', description);
+		var param = VTMIntegerParameter.new('myValue', declaration);
 		this.assertEquals(
-			param.path, description[\path], "IntegerParameter set path through description"
+			param.path, declaration[\path], "IntegerParameter set path through declaration"
 		);
 		this.assertEquals(
-			param.fullPath, '/myValuePath/tester/myValue', "IntegerParameter set fullPath through description"
+			param.fullPath, '/myValuePath/tester/myValue', "IntegerParameter set fullPath through declaration"
 		);
 		this.assertEquals(
-			param.action, description[\action], "IntegerParameter set action through description"
+			param.action, declaration[\action], "IntegerParameter set action through declaration"
 		);
 		this.assertEquals(
-			param.enabled, description[\enabled], "IntegerParameter set enabled through description"
+			param.enabled, declaration[\enabled], "IntegerParameter set enabled through declaration"
 		);
 		this.assertEquals(
-			param.defaultValue, description[\defaultValue], "IntegerParameter set defaultValue through description"
+			param.defaultValue, declaration[\defaultValue], "IntegerParameter set defaultValue through declaration"
 		);
 		this.assertEquals(
-			param.value, description[\value], "IntegerParameter set value through description"
+			param.value, declaration[\value], "IntegerParameter set value through declaration"
 		);
 		this.assertEquals(
-			param.typecheck, description[\typecheck], "IntegerParameter set typecheck through description"
+			param.typecheck, declaration[\typecheck], "IntegerParameter set typecheck through declaration"
 		);
 		this.assertEquals(
-			param.filterRepetitions, description[\filterRepetitions],
-			"IntegerParameter set filterRepetitions through description"
+			param.filterRepetitions, declaration[\filterRepetitions],
+			"IntegerParameter set filterRepetitions through declaration"
 		);
 		this.assertEquals(
-			param.minVal, description[\minVal], "IntegerParameter set minVal through description"
+			param.minVal, declaration[\minVal], "IntegerParameter set minVal through declaration"
 		);
 		this.assertEquals(
-			param.maxVal, description[\maxVal], "IntegerParameter set maxVal through description"
+			param.maxVal, declaration[\maxVal], "IntegerParameter set maxVal through declaration"
 		);
 		this.assertEquals(
-			param.stepsize, description[\stepsize], "IntegerParameter set stepsize through description"
+			param.stepsize, declaration[\stepsize], "IntegerParameter set stepsize through declaration"
 		);
 		this.assertEquals(
-			param.clipmode, description[\clipmode], "IntegerParameter set clipmode through description"
+			param.clipmode, declaration[\clipmode], "IntegerParameter set clipmode through declaration"
 		);
 	}
 
 	test_GetAttributes{
-		var description = IdentityDictionary[
+		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value * 21; },
 			\enabled -> true,
@@ -649,8 +649,8 @@ TestVTMIntegerParameter : VTMUnitTest {
 			\clipmode -> \low
 		];
 		var testAttributes;
-		var param = VTMIntegerParameter.new('myValue', description);
-		testAttributes = description.deepCopy.put(\name, 'myValue');
+		var param = VTMIntegerParameter.new('myValue', declaration);
+		testAttributes = declaration.deepCopy.put(\name, 'myValue');
 		testAttributes.put(\action, testAttributes[\action].asCompileString);
 		this.assertEquals(
 			param.attributes, testAttributes, "IntegerParameter returned correct attributes"

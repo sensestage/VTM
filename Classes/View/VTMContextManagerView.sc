@@ -1,8 +1,8 @@
 VTMContextManagerView : VTMContextView {
 	var treeView;
 
-	*new{arg parent, bounds, context, description, definition;
-		^super.new(parent, bounds, context, description, definition).initContextManagerView;
+	*new{arg parent, bounds, context, declaration, definition;
+		^super.new(parent, bounds, context, declaration, definition).initContextManagerView;
 	}
 
 	initContextManagerView{

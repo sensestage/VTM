@@ -8,24 +8,24 @@ VTMOptionParameter : VTMValueParameter {
 
 	prDefaultValueForType{ ^nil; }
 
-	*new{arg name, description;
-		^super.new(name, description).initOptionParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initOptionParameter;
 	}
 
 	initOptionParameter{
-		if(description.notNil, {
-			if(description.includesKey(\options), {
-				this.options_(description[\options]);
-				//if the description has defined value or defaultValue this is the time to set those
-				if(description.includesKey(\defaultValue), {
-					this.defaultValue_(description[\defaultValue]);
+		if(declaration.notNil, {
+			if(declaration.includesKey(\options), {
+				this.options_(declaration[\options]);
+				//if the declaration has defined value or defaultValue this is the time to set those
+				if(declaration.includesKey(\defaultValue), {
+					this.defaultValue_(declaration[\defaultValue]);
 				});
-				if(description.includesKey(\value), {
-					this.value_(description[\value]);
+				if(declaration.includesKey(\value), {
+					this.value_(declaration[\value]);
 				});
 			});
-			if(description.includesKey(\sequenceMode), {
-				sequenceMode = description[\sequenceMode];
+			if(declaration.includesKey(\sequenceMode), {
+				sequenceMode = declaration[\sequenceMode];
 			});
 		});
 	}

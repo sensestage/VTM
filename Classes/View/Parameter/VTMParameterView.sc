@@ -1,7 +1,7 @@
 VTMParameterView : View {
 	var parameter;//the VTParameter instance
 	var labelView, outlineView;
-	var description;
+	var declaration;
 	var definition;
 	var <labelMode = \name;
 	var <color;
@@ -33,41 +33,41 @@ VTMParameterView : View {
 		^this.class.viewTypeToClassMappings.findKeyForValue(this.class);
 	}
 
-	*makeFromDescription{arg parent, bounds, parameter, description, definition;
+	*makeFromdeclaration{arg parent, bounds, parameter, declaration, definition;
 		var viewClass;
-		if(description.notNil, {
-			if(description.includesKey(\type), {
-				viewClass = this.viewTypeToClassMappings[description[\type]];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\type), {
+				viewClass = this.viewTypeToClassMappings[declaration[\type]];
 			});
 		});
 
 		if(viewClass.isNil, {
 			viewClass = this.viewTypeToClassMappings[parameter.class.defaultViewType];
 		});
-		^viewClass.new(parent, bounds, parameter, description, definition);
+		^viewClass.new(parent, bounds, parameter, declaration, definition);
 	}
 
 	*prCalculateSize{arg units;
 		^Size(unitWidth, unitHeight * units);
 	}
 
-	*new{arg parent, bounds, parameter, description, definition;
+	*new{arg parent, bounds, parameter, declaration, definition;
 		var viewBounds;
 		viewBounds = bounds ?? { this.prCalculateSize(1).asRect; };
-		^super.new( parent: parent, bounds: viewBounds ).initParameterView(parameter, description, definition);
+		^super.new( parent: parent, bounds: viewBounds ).initParameterView(parameter, declaration, definition);
 	}
 
-	initParameterView{arg parameter_, description_, definition_;
+	initParameterView{arg parameter_, declaration_, definition_;
 		if(parameter_.isNil, {Error("VTMParameterView - needs parameter").throw;});
 		parameter = parameter_;
 		parameter.addDependant(this);
 
-		description = description_ ? IdentityDictionary.new;
+		declaration = declaration_ ? IdentityDictionary.new;
 		definition = definition_ ? Environment.new;
 
-		if(description.notNil, {
-			if(description.includesKey(\labelMode), {
-				labelMode = description[\labelMode];
+		if(declaration.notNil, {
+			if(declaration.includesKey(\labelMode), {
+				labelMode = declaration[\labelMode];
 			});
 		});
 
@@ -77,7 +77,7 @@ VTMParameterView : View {
 				//if alt key is pressed when pressing down the view, the parameter setting window
 				//for this ibjet will open.
 				if(mod == 524288, {
-					"Opening parameter description window: %".format(parameter.path).postln;
+					"Opening parameter declaration window: %".format(parameter.path).postln;
 					result = true;
 				});
 				result;
@@ -113,16 +113,16 @@ VTMParameterView : View {
 		outlineView.drawFunc = {|uview|
 			Pen.use {
 				Pen.addRoundedRect(uview.bounds.insetBy(1,1), 5, 5);
-				Pen.strokeColor_(description[\outlineColor] ? Color.black);
-				Pen.width_(description[\outlineWidth] ? 2);
-				Pen.fillColor_(description.atFail(\color, {Color.cyan.alpha_(0.0)}));
+				Pen.strokeColor_(declaration[\outlineColor] ? Color.black);
+				Pen.width_(declaration[\outlineWidth] ? 2);
+				Pen.fillColor_(declaration.atFail(\color, {Color.cyan.alpha_(0.0)}));
 				Pen.draw(3);//draw both stroke and fill
 			}
 		};
 		labelView !? {labelView.remove;};
 		labelView = StaticText(this, this.class.prCalculateSize(1).asRect.insetAll(labelOffset, 0, 0, 0))
-		.stringColor_(description[\stringColor] ? this.class.stringColor)
-		.font_(description[\font] ? this.class.font.bold_(true).italic_(true))
+		.stringColor_(declaration[\stringColor] ? this.class.stringColor)
+		.font_(declaration[\font] ? this.class.font.bold_(true).italic_(true))
 		.acceptsMouse_(false)
 		.focusColor_(Color.white.alpha_(0.0))
 		.background_(Color.white.alpha_(0.0))
@@ -138,7 +138,7 @@ VTMParameterView : View {
 			\name, { label = parameter.name; },
 			\path, { label = parameter.fullPath; }
 		);
-		description[\labelPrepend] !? {label = description[\labelPrepend] ++ label; };
+		declaration[\labelPrepend] !? {label = declaration[\labelPrepend] ++ label; };
 		{labelView.string_(label).toolTip_("% [%]".format(label, this.type))}.defer;
 	}
 
