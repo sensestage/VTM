@@ -29,7 +29,7 @@ VTMParameter {
 
 	//factory type constructor
 	//In declaration dict 'name' and 'type' is mandatory.
-	*makeFromdeclaration{arg declaration;
+	*makeFromDeclaration{arg declaration;
 		//if 'type' and 'name' is defined in declaration
 		if(declaration.includesKey(\name), {
 			if(declaration.includesKey(\type), {
@@ -199,6 +199,6 @@ VTMParameter {
 	}
 
 	makeView{arg parent, bounds, declaration, definition;
-		^VTMParameterView.makeFromdeclaration(parent, bounds, this, declaration, definition);
+		^VTMParameterView.makeFromDeclaration(parent, bounds, this, declaration, definition);
 	}
 }

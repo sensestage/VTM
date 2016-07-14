@@ -46,7 +46,7 @@ TestVTMSelectionParameter : VTMUnitTest {
 		);
 	}
 
-	test_SetAttributesThroughdeclaration{
+	test_SetAttributesThroughDeclaration{
 		var desc = (
 			options: [\aaa, \bbb, \ccc, \ddd],
 			defaultValue: [\ddd, \ccc],

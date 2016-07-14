@@ -33,7 +33,7 @@ TestVTMBooleanParameter : TestVTMValueParameter {
 		);
 	}
 
-	test_SetAttributesThroughdeclaration{
+	test_SetAttributesThroughDeclaration{
 		var desc = (
 			value: true,
 			defaultValue: false

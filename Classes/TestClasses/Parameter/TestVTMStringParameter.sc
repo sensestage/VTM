@@ -31,7 +31,7 @@ TestVTMStringParameter : VTMUnitTest {
 		);
 	}
 
-	test_SettingAttributesWithdeclaration{
+	test_SettingAttributesWithDeclaration{
 		var desc, param;
 		desc = (
 			value: "heisann.3",

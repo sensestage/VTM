@@ -223,7 +223,7 @@ TestVTMValueParameter : TestVTMParameter {
 
 	}
 
-	test_SetVariablesFromdeclaration{
+	test_SetVariablesFromDeclaration{
 		var param, declaration, wasRun = false;
 		declaration = (
 			path: '/myPath', defaultValue: 222, value: 333,
@@ -275,7 +275,7 @@ TestVTMValueParameter : TestVTMParameter {
 		);
 
 	}
-	test_TypeWasInferredFromValueTypeIndeclaration{}
+	test_TypeWasInferredFromValueTypeInDeclaration{}
 
 	test_GetAttributes{
 		var declaration = IdentityDictionary[

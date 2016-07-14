@@ -32,7 +32,7 @@ TestVTMTimecodeParameter : VTMUnitTest {
 		);
 	}
 
-	test_SettingAttributesThroughdeclaration{
+	test_SettingAttributesThroughDeclaration{
 		var desc = (
 			value: 1000, defaultValue: 3000,
 		);

@@ -69,11 +69,11 @@ VTMModuleFactory{
 		^host.node.getFilePathFor(\moduleDefinition);
 	}
 
-	*isdeclarationForRemoteModule{arg desc;
+	*isDeclarationForRemoteModule{arg desc;
 		^desc.includesKey(\app);
 	}
 
-	*isdeclarationForExistingModule{arg desc;
+	*isDeclarationForExistingModule{arg desc;
 		^desc.includesKey(\path);
 	}
 }

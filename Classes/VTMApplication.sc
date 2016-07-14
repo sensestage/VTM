@@ -54,7 +54,7 @@ VTMApplication {
 				if(declaration[\openView], {
 					var viewDesc, viewDef;
 					this.makeView(
-						viewdeclaration: declaration[\viewdeclaration],
+						viewDeclaration: declaration[\viewDeclaration],
 						viewDefinition: declaration[\viewDefinition]
 					);
 				});
@@ -90,9 +90,9 @@ VTMApplication {
 		^network.name;
 	}
 
-	makeView{arg parent, bounds, viewdeclaration, viewDefinition;
+	makeView{arg parent, bounds, viewDeclaration, viewDefinition;
 		^VTMApplicationView.new(
-			parent, bounds, this, viewdeclaration, viewDefinition
+			parent, bounds, this, viewDeclaration, viewDefinition
 		);
 	}
 }

@@ -27,7 +27,7 @@ VTMModuleHost : VTMContextManager {
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//
-	loadModuledeclaration{arg name, declaration, moduleDefinition;
+	loadModuleDeclaration{arg name, declaration, moduleDefinition;
 		var newModule;
 		try{
 			newModule = factory.build(name, declaration, moduleDefinition);
@@ -46,15 +46,15 @@ VTMModuleHost : VTMContextManager {
 	}
 
 	loadModuleJSONCue{arg name, declarationJSONString, moduleDefinition;
-		var moduledeclaration;
+		var moduleDeclaration;
 		//parse JSON string
 		try{
-			moduledeclaration = declarationJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
+			moduleDeclaration = declarationJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
 		} {|err|
 			"Module JSON cue parser error".warn;
 			err.postln;
 		};
-		this.loadModuledeclaration(name, moduledeclaration, moduleDefinition);
+		this.loadModuleDeclaration(name, moduleDeclaration, moduleDefinition);
 	}
 
 	//can be either a .json file or a .scd file

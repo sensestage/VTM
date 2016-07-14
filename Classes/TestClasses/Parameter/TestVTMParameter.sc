@@ -38,7 +38,7 @@ TestVTMParameter : VTMUnitTest {
 			VTMParameter.typeToClass(this.class.name.asString.findRegexp("^Test(.+)$")[1][1])
 		).postln;
 		"DESC before make: %".format(desc).postln;
-		result = VTMParameter.makeFromdeclaration(desc);
+		result = VTMParameter.makeFromDeclaration(desc);
 		^result;
 	}
 
@@ -248,18 +248,18 @@ TestVTMParameter : VTMUnitTest {
 
 	}
 
-	test_SetVariablesThroughdeclaration{
+	test_SetVariablesThroughDeclaration{
 		testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParam, adeclaration, anAction;
+			var aParam, aDeclaration, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
-			adeclaration = (
+			aDeclaration = (
 				action: anAction,
 				path: '/myPath',
 				enabled: false,
 			);
-			aParam = testClass.new(name, adeclaration);
+			aParam = testClass.new(name, aDeclaration);
 
 			//path is set through declaration
 			this.assertEquals(aParam.path, '/myPath',

@@ -156,24 +156,24 @@ VTMContext {
 		^children.collect(_.childTree);
 	}
 
-	//immutable declaration. Should only be changed with 'changedeclaration'
+	//immutable declaration. Should only be changed with 'changeDeclaration'
 	declaration{
 		^declaration.deepCopy;
 	}
 
 	//If not passed in as argument get the declaration from current envir.
 	//If passed as argument use only the described keys to change the current declaration
-	changedeclaration{arg newDesc;
+	changeDeclaration{arg newDesc;
 
 	}
 
 	//Save current declaration to file
-	writedeclaration{
+	writeDeclaration{
 
 	}
 
 	//Read declaration from file
-	readdeclaration{
+	readDeclaration{
 
 	}
 

@@ -44,16 +44,16 @@ VTMModule : VTMComposableContext {
 
 
 	//Making parameters depends on if the module's definition specifies
-	//a ~buildParameters function or a ~parameterdeclarations array.
+	//a ~buildParameters function or a ~parameterDeclarations array.
 	//If both are defined they will be combined but the restults of
 	//the ~buildParameters function will override what is declared in
-	//~parameterdeclarations.
+	//~parameterDeclarations.
 	makeParameters{
 		var parametersToBuild = IdentityDictionary.new;
 		var buildOrder = [];
 
-		if(definition.includesKey(\parameterdeclarations), {
-			definition[\parameterdeclarations].pairsDo({arg paramName, paramDesc;
+		if(definition.includesKey(\parameterDeclarations), {
+			definition[\parameterDeclarations].pairsDo({arg paramName, paramDesc;
 				// "Adding param: % to build queue: \n\t%".format(
 				// paramName, paramDesc).postln;
 
@@ -95,10 +95,10 @@ VTMModule : VTMComposableContext {
 		});
 	}
 
-	addParameter{arg parameterName, parameterdeclaration;
+	addParameter{arg parameterName, parameterDeclaration;
 		var newParameter;
-		newParameter = VTMParameter.makeFromdeclaration(
-			parameterName, parameterdeclaration
+		newParameter = VTMParameter.makeFromDeclaration(
+			parameterName, parameterDeclaration
 		);
 		if(newParameter.notNil, {
 			this.addChild(newParameter);

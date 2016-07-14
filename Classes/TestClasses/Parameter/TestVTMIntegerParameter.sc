@@ -580,7 +580,7 @@ TestVTMIntegerParameter : VTMUnitTest {
 	test_MinValShouldNotBeLowerThanMaxValAndViceVersa{}
 
 
-	test_SetAttributesIndeclaration{
+	test_SetAttributesInDeclaration{
 		var declaration = IdentityDictionary[
 			\path -> '/myValuePath/tester',
 			\action -> {|p| p.value * 21; },

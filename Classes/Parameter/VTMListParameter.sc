@@ -1,6 +1,6 @@
 VTMListParameter : VTMValueParameter {
 	var <itemType; //Which parameter type to contain in this class
-	var <itemdeclarations; //The consolidated item declarationn will be stored here.
+	var <itemDeclarations; //The consolidated item declarationn will be stored here.
 	var <items;
 	var orderThunk;
 	var itemAtThunk, <prItemDict;
@@ -24,13 +24,13 @@ VTMListParameter : VTMValueParameter {
 			}, {
 				Error("ListParameters needs itemType in declaration. [%]".format(this.fullPath)).throw;
 			});
-			if(declaration.includesKey(\itemdeclarations), {
-				itemdeclarations = declaration[\itemdeclarations];
+			if(declaration.includesKey(\itemDeclarations), {
+				itemDeclarations = declaration[\itemDeclarations];
 			}, {
-				Error("ListParameters needs itemdeclarations in declaration. [%]".format(this.fullPath)).throw;
+				Error("ListParameters needs itemDeclarations in declaration. [%]".format(this.fullPath)).throw;
 			});
 		}, {
-			Error("ListParameters need declaration with mandatory attributes: itemType, itemdeclaration. [%]".format(this.fullPath)).throw;
+			Error("ListParameters need declaration with mandatory attributes: itemType, itemDeclaration. [%]".format(this.fullPath)).throw;
 			^nil;
 		});
 
@@ -51,11 +51,11 @@ VTMListParameter : VTMValueParameter {
 		//This forces one to always make a new list parameter if one is
 		//already made.
 		if(items.isNil, {
-			var itemClass, itemdeclarations, attributeKeys;
+			var itemClass, itemDeclarations, attributeKeys;
 			var baseItemDesc;
 			items = Dictionary.new;
 			itemClass = VTMParameter.typeToClass(declaration[\itemType]);
-			itemdeclarations = declaration[\itemdeclarations];
+			itemDeclarations = declaration[\itemDeclarations];
 
 			//all sub parameters have this base item declaration
 			baseItemDesc = (
@@ -64,9 +64,9 @@ VTMListParameter : VTMValueParameter {
 
 			//Expand all the items in the item declaration, e.g. arrayed keys etc.
 			//All item declarations should now be expanded into separate Associations
-			itemdeclarations = this.class.prExpanditemdeclarations(declaration[\itemdeclarations].deepCopy);
+			itemDeclarations = this.class.prExpanditemDeclarations(declaration[\itemDeclarations].deepCopy);
 			attributeKeys = itemClass.attributeKeys.asSet.sect(declaration.keys);
-			itemdeclarations = itemdeclarations.collect({arg itemAssoc, index;
+			itemDeclarations = itemDeclarations.collect({arg itemAssoc, index;
 				var itemName, itemDesc, newItemDesc;
 				itemName = itemAssoc.key;
 				itemDesc = itemAssoc.value;
@@ -85,15 +85,15 @@ VTMListParameter : VTMValueParameter {
 				newItemDesc.put(\path, this.fullPath);//using the owner parameter fullPath
 				newItemDesc.put(\type, declaration[\itemType]);
 
-				//override with the values in the itemdeclarations
+				//override with the values in the itemDeclarations
 				newItemDesc.putAll(itemDesc);
 
 				Association.new(itemName, newItemDesc);
 			});
 
 			//Build the item parameter objects
-			items = itemdeclarations.collect({arg itemDesc;
-				VTMParameter.makeFromdeclaration(itemDesc.value);
+			items = itemDeclarations.collect({arg itemDesc;
+				VTMParameter.makeFromDeclaration(itemDesc.value);
 			});
 
 		}, {
@@ -106,7 +106,7 @@ VTMListParameter : VTMValueParameter {
 		});
 	}
 
-	*prExpanditemdeclarations{arg desc;
+	*prExpanditemDeclarations{arg desc;
 		var result;
 		desc.do({arg item, i;
 			if(item.isKindOf(Association), {

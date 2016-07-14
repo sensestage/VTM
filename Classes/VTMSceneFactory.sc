@@ -17,7 +17,7 @@ VTMSceneFactory{
 		^sceneOwner.application.hardwareSetup;
 	}
 
-	build{arg scenedeclaration, sceneDefinition;
+	build{arg sceneDeclaration, sceneDefinition;
 		var newScene, buildResult;
 		var modules = (
 			local: (static: [], dynamic: []),
@@ -32,7 +32,7 @@ VTMSceneFactory{
 			errors: []
 		);
 		//>Check if scene declaration contains a name. Issue error if not.
-		if(scenedeclaration.includesKey(\name).not, {
+		if(sceneDeclaration.includesKey(\name).not, {
 			buildResult[\errors] = buildResult[\error].add(Error("Scene declaration must have name"));
 		});
 
@@ -47,7 +47,7 @@ VTMSceneFactory{
 		//		>then overwrite the overriden values in the subscene declaration
 
 		//if scene declaration has any module declarations
-		if(scenedeclaration.includesKey(\modules), {
+		if(sceneDeclaration.includesKey(\modules), {
 			//>Separate local and remote modules.
 			//Determine if they are existing or dynamic.
 			//An existing module is referred to using the 'path' keyword. This indicates
@@ -74,7 +74,7 @@ VTMSceneFactory{
 		});
 
 
-		newScene = VTMScene.new(scenedeclaration[\name], sceneOwner, scenedeclaration, sceneDefinition);
+		newScene = VTMScene.new(sceneDeclaration[\name], sceneOwner, sceneDeclaration, sceneDefinition);
 		buildResult.put(\scene, newScene);
 		^buildResult;
 	}

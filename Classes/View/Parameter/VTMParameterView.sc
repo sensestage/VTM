@@ -33,7 +33,7 @@ VTMParameterView : View {
 		^this.class.viewTypeToClassMappings.findKeyForValue(this.class);
 	}
 
-	*makeFromdeclaration{arg parent, bounds, parameter, declaration, definition;
+	*makeFromDeclaration{arg parent, bounds, parameter, declaration, definition;
 		var viewClass;
 		if(declaration.notNil, {
 			if(declaration.includesKey(\type), {
