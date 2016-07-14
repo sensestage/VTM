@@ -11,6 +11,8 @@ VTMParameter {
 	var <mappings;
 	var <responders;
 	var <oscInterface;
+	var <willStore = true;
+	var <onlyReturn = false;
 
 	var <isSubParameter = false;
 
@@ -37,7 +39,7 @@ VTMParameter {
 				^VTMParameter.typeToClass(paramClass).new(paramName, declaration);
 			}, {
 				Error("VTMParameter declaration needs type").throw;
-			})
+			});
 		}, {
 			Error("VTMParameter declaration needs name").throw;
 		});
@@ -84,7 +86,13 @@ VTMParameter {
 				if(declaration[\enabled].not, {
 					this.disable;
 				})
-			})
+			});
+			if(declaration.includesKey(\willStore), {
+				willStore = declaration[\willStore];
+			});
+			if(declaration.includesKey(\onlyReturn), {
+				onlyReturn = declaration[\onlyReturn];
+			});
 		});
 	}
 
