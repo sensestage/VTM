@@ -40,7 +40,7 @@ VTMUnitTest : UnitTest {
 	// 	switch(
 	// 		\string, {
 	// 			result = VTMStringParameter.new('myString', (
-	// 				regex:
+	// 				pattern:
 	// 			));
 	// 		},
 	// 		\timecode, {},

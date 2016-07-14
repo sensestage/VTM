@@ -18,10 +18,10 @@ TestVTMStringParameter : VTMUnitTest {
 			param.value.class == String and: { param.value == param.defaultValue },
 			"StringParameter value defaults to empty string.\n\tIS: %\n\tSHOULD BE: %".format(param.value, "")
 		);
-		//regex should be empty string by default
+		//pattern should be empty string by default
 		this.assertEquals(
-			param.regex, "",
-			"StringParameter regex is empty string by default"
+			param.pattern, "",
+			"StringParameter pattern is empty string by default"
 		);
 
 		//matchPattern should be true by default
@@ -36,7 +36,7 @@ TestVTMStringParameter : VTMUnitTest {
 		desc = (
 			value: "heisann.3",
 			defaultValue: "heisann.5",
-			regex: "^heisann\\.\\d+$"
+			pattern: "^heisann\\.\\d+$"
 		);
 		param = VTMStringParameter.new('myString', desc);
 		this.assertEquals(
@@ -48,7 +48,7 @@ TestVTMStringParameter : VTMUnitTest {
 			"StringParameter set defaultValue through declaration"
 		);
 		this.assertEquals(
-			param.regex, desc[\regex],
+			param.pattern, desc[\pattern],
 			"StringParameter set value through declaration"
 		);
 	}
@@ -58,7 +58,7 @@ TestVTMStringParameter : VTMUnitTest {
 		desc = (
 			value: 'heisann.3',
 			defaultValue: 'heisann.5',
-			regex: '^heisann\\.\\d+$'
+			pattern: '^heisann\\.\\d+$'
 		);
 		param = VTMStringParameter.new('myString', desc);
 		this.assertEquals(
@@ -70,8 +70,8 @@ TestVTMStringParameter : VTMUnitTest {
 			"StringParameter converted value symbol arg to String"
 		);
 		this.assertEquals(
-			param.regex.class, String,
-			"StringParameter converted regex symbol arg to String"
+			param.pattern.class, String,
+			"StringParameter converted pattern symbol arg to String"
 		);
 	}
 
@@ -80,7 +80,7 @@ TestVTMStringParameter : VTMUnitTest {
 		var desc = (
 			defaultValue: "bingo",
 			value: "bongo",
-			regex: "^b(a|i|o|e|y)ngo$"
+			pattern: "^b(a|i|o|e|y)ngo$"
 		);
 		var param = VTMStringParameter.new('myString', desc);
 
@@ -101,16 +101,16 @@ TestVTMStringParameter : VTMUnitTest {
 		);
 
 		//Should not check pattern is pattern is empty
-		param.regex = "";
+		param.pattern = "";
 		testValue = "baila";
 		param.value_(testValue);
 		this.assertEquals(
 			param.value, testValue,
-			"StringParameter did not check pattern when regex was empty string"
+			"StringParameter did not check pattern when pattern was empty string"
 		);
 
 		//Should not check pattern if matchPattern is false
-		param.regex = "^b(a|i|o|e|y)ngo$";
+		param.pattern = "^b(a|i|o|e|y)ngo$";
 		param.matchPattern = false;
 		testValue = "bokfngo";
 		param.value = testValue;
@@ -122,7 +122,7 @@ TestVTMStringParameter : VTMUnitTest {
 		//Should set pattern to default when matchPattern is turned on
 		//and current value is non-matching
 		param.matchPattern = false;
-		param.regex = "^b(a|i|o|e|y)ngo$";
+		param.pattern = "^b(a|i|o|e|y)ngo$";
 		testValue = "jogge";
 		param.value = testValue;
 		param.matchPattern = true;
@@ -138,7 +138,7 @@ TestVTMStringParameter : VTMUnitTest {
 		var desc = (
 			defaultValue: "bingo",
 			value: "bongo",
-			regex: "^b(a|i|o|e|y)ngo$",
+			pattern: "^b(a|i|o|e|y)ngo$",
 			action: {|p| wasRun = true;}
 		);
 		var param = VTMStringParameter.new('myString', desc);

@@ -1,10 +1,11 @@
 /*
 A StringParameter is where its value is always a string value which may optionally be
-parsed in some way. Its regex value defines a regex pattern that checks the validity of
+parsed in some way. Its pattern value defines a regex pattern that checks the validity of
+
 incoming string values.
 */
 VTMStringParameter : VTMValueParameter {
-	var <regex = ""; //empty string cause no pattern match
+	var <pattern = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
 	type{ ^\string; }
@@ -21,8 +22,8 @@ VTMStringParameter : VTMValueParameter {
 
 	initStringParameter{
 		if(declaration.notNil, {
-			if(declaration.includesKey(\regex), {
-				this.regex_(declaration[\regex]);
+			if(declaration.includesKey(\pattern), {
+				this.pattern_(declaration[\pattern]);
 			});
 			if(declaration.includesKey(\matchPattern), {
 				this.matchPattern_(declaration[\matchPattern]);
@@ -34,8 +35,8 @@ VTMStringParameter : VTMValueParameter {
 		if(val.isKindOf(Boolean), {
 			matchPattern = val;
 			//Check the current value for matching, set to default if not.
-			if(matchPattern and: {regex.notEmpty}, {
-				if(regex.matchRegexp(this.value).not, {
+			if(matchPattern and: {pattern.notEmpty}, {
+				if(pattern.matchRegexp(this.value).not, {
 					this.value_(this.defaultValue);
 				});
 			});
@@ -46,20 +47,20 @@ VTMStringParameter : VTMValueParameter {
 		});
 	}
 
-	regex_{arg val;
+	pattern_{arg val;
 		if(val.class == Symbol, {//Symbols are accepted and converted into strings
 			val = val.asString;
 		});
 		if(typecheck, {
 			if(this.class.isValidType(val), {
-				regex = val;
+				pattern = val;
 			}, {
-				"StringParameter:regex_ '%' - ignoring val because of invalid type: '%[%]'".format(
+				"StringParameter:pattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
 					this.fullPath, val, val.class
 				).warn;
 			});
 		}, {
-			regex = val;
+			pattern = val;
 		});
 	}
 
@@ -69,12 +70,12 @@ VTMStringParameter : VTMValueParameter {
 		});
 		if(typecheck, {
 			if(this.class.isValidType(val), {
-				if(matchPattern and: {regex.isEmpty.not}, {
-					if(regex.matchRegexp(val), {
+				if(matchPattern and: {pattern.isEmpty.not}, {
+					if(pattern.matchRegexp(val), {
 						super.defaultValue_(val);
 					}, {
-						"StringParameter:defaultValue_ '%' - ignoring val because of unmatched regex pattern: '%[%]'".format(
-							this.fullPath, val, regex
+						"StringParameter:defaultValue_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+							this.fullPath, val, pattern
 						).warn;
 					});
 				}, {
@@ -97,12 +98,12 @@ VTMStringParameter : VTMValueParameter {
 		});
 		if(typecheck or: {omitTypecheck.not}, {
 			if(this.class.isValidType(val), {
-				if(matchPattern and: {regex.isEmpty.not}, {
-					if(regex.matchRegexp(val), {
+				if(matchPattern and: {pattern.isEmpty.not}, {
+					if(pattern.matchRegexp(val), {
 						super.value_(val, true);
 					}, {
-						"StringParameter:value_ '%' - ignoring val because of unmatched regex pattern: '%[%]'".format(
-							this.fullPath, val, regex
+						"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+							this.fullPath, val, pattern
 						).warn;
 					});
 				}, {
@@ -114,12 +115,12 @@ VTMStringParameter : VTMValueParameter {
 				).warn;
 			});
 		}, {
-			if(matchPattern and: {regex.isEmpty.not}, {
-				if(regex.matchRegexp(val), {
+			if(matchPattern and: {pattern.isEmpty.not}, {
+				if(pattern.matchRegexp(val), {
 					super.value_(val, true);
 				}, {
-					"StringParameter:value_ '%' - ignoring val because of unmatched regex pattern: '%[%]'".format(
-						this.fullPath, val, regex
+					"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+						this.fullPath, val, pattern
 					).warn;
 				});
 			}, {
@@ -131,7 +132,7 @@ VTMStringParameter : VTMValueParameter {
 	clear{arg doActionUponClear = false;
 		var valToSet;
 		//Set to default if pattern matching is enabled
-		if(matchPattern and: {regex.isEmpty.not}, {
+		if(matchPattern and: {pattern.isEmpty.not}, {
 			valToSet = this.defaultValue;
 		}, {
 			valToSet = "";
@@ -146,13 +147,13 @@ VTMStringParameter : VTMValueParameter {
 		var result;
 		result = super.attributes.putAll(IdentityDictionary[
 			\matchPattern -> this.matchPattern,
-			\regex -> this.regex
+			\pattern -> this.pattern
 		]);
 		^result;
 	}
 
 	*attributeKeys{
-		^(super.attributeKeys ++ [\matchPattern, \regex]);
+		^(super.attributeKeys ++ [\matchPattern, \pattern]);
 	}
 
 
