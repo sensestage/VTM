@@ -12,12 +12,12 @@ VTMParameterView : View {
 
 	*initClass{
 		viewTypeToClassMappings = IdentityDictionary[
-			\slider -> VTMSliderView
-			/*\button -> VTMButtonView,
+			\slider -> VTMSliderView,
 			\number -> VTMNumberView,
+			\toggle -> VTMToggleView
+			/*\button -> VTMButtonView,
 			\textfield -> VTMTextFieldView,
 			\textedit -> VTMTextEditView,
-			\toggle -> VTMToggleView,
 			\label -> VTMLabelView,
 			\option -> VTMOptionParameterView,
 			\message -> VTMMessageParameterView,

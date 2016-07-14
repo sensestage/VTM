@@ -19,4 +19,6 @@ VTMBooleanParameter : VTMValueParameter {
 	toggle{
 		this.value_(this.value.not);
 	}
+
+	*defaultViewType{ ^\toggle; }
 }

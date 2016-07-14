@@ -60,18 +60,22 @@ VTMSliderView : VTMScalarParameterView {
 	}
 
 	update{arg theChanged, whatChanged, whoChangedIt, toValue;
-		super.update(theChanged, whatChanged, whoChangedIt, toValue);
 		if(theChanged === parameter, {
-			if(whatChanged == \value, {
+			switch(whatChanged,
+				\value, {
+					{
+						if(whoChangedIt !== numberView, {
+							numberView.value_(parameter.value.round(round));
+						});
+						if(whoChangedIt !== sliderView, {
+							sliderView.value_(spec.unmap(parameter.value));
+						});
+					}.defer;
+				},
 				{
-					if(whoChangedIt !== numberView, {
-						numberView.value_(parameter.value.round(round));
-					});
-					if(whoChangedIt !== sliderView, {
-						sliderView.value_(spec.unmap(parameter.value));
-					});
-				}.defer;
-			});
+						super.update(theChanged, whatChanged, whoChangedIt, toValue);
+				}
+			);
 		});
 	}
 
