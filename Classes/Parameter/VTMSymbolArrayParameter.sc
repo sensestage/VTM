@@ -1,1 +1,0 @@
-VTMSymbolArrayParameter : VTMListParameter {}
