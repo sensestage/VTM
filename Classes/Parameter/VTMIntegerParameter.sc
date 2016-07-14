@@ -1,4 +1,4 @@
-VTMIntegerParameter : VTMScalarParameter {
+VTMIntegerParameter : VTMNumberParameter {
 	type{ ^\integer; }
 
 	prDefaultValueForType{ ^0; }
@@ -39,5 +39,13 @@ VTMIntegerParameter : VTMScalarParameter {
 			val = val.asInteger;
 		});
 		super.defaultValue_(val);
+	}
+
+	format{
+		^"^-?\\d+$";
+	}
+
+	format_{
+		this.shouldNotImplement(thisMethod);
 	}
 }

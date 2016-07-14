@@ -1,7 +1,6 @@
-//Abstract base for class for parameter classes.
-//This is never instanciated in its own type, but
-//should return an object with type of one of its
-//subclasses
+//base class for parameter classes.
+//Objects of this type has no arguments/values but works
+//more as a 'command' to perform the defined action.
 
 VTMParameter {
 	var <name;

@@ -50,22 +50,14 @@ TestVTMParameter : VTMUnitTest {
 			//VTMValueParameter, //abstract class, don't test
 			VTMBooleanParameter,
 			VTMTimecodeParameter,
-			VTMSelectionParameter,
-			VTMSymbolParameter,
-			VTMOptionParameter,
 			VTMDictionaryParameter,
-			VTMScalarParameter,
+			VTMNumberParameter,
 			// VTMListParameter,
 			VTMAnythingParameter,
 			VTMStringParameter,
 			VTMSchemaParameter,
 			VTMIntegerParameter,
 			VTMDecimalParameter,
-			// VTMAnythingArrayParameter,
-			// VTMSymbolArrayParameter,
-			// VTMIntegerArrayParameter,
-			// VTMStringArrayParameter,
-			// VTMDecimalArrayParameter
 		];
 	}
 

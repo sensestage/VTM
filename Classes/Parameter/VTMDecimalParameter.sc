@@ -1,4 +1,4 @@
-VTMDecimalParameter : VTMScalarParameter {
+VTMDecimalParameter : VTMNumberParameter {
 	type{ ^\decimal; }
 
 	prDefaultValueForType{ ^0.0; }

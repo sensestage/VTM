@@ -3,6 +3,7 @@ VTMValueParameter : VTMParameter {
 	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
+	var <>format;
 
 	prDefaultValueForType{
 		//this.subclassResponsibility(thisMethod);//this will be uncommented when test class setup is subclass testing
