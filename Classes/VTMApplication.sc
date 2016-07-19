@@ -41,9 +41,9 @@ VTMApplication {
 		declaration = declaration_;
 		definition = definition_;
 		network = VTMNetwork(name_, this, networkDesc, networkDef);
+		hardwareSetup = VTMHardwareSetup(network, hardwareDesc, hardwareDef);
 		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
 		sceneOwner = VTMSceneOwner(network, sceneDesc, sceneDef);
-		hardwareSetup = VTMHardwareSetup(network, hardwareDesc, hardwareDef);
 
 		this.makeOSCResponders;
 
