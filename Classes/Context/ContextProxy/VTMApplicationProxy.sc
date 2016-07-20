@@ -6,5 +6,4 @@ VTMApplicationProxy : VTMContextProxy {
 
 	initApplicationProxy{
 	}
-
 }

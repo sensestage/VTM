@@ -7,8 +7,6 @@ VTMApplication {
 	var <declaration;
 	var <definition;
 
-	var oscResponders;
-
 	//The network[declaration\definition] is admittedly strange here, but keeping it for now.
 	*new{arg name, declaration, definition;
 		^super.new.initApplication(name, declaration, definition);
@@ -45,8 +43,6 @@ VTMApplication {
 		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
 		sceneOwner = VTMSceneOwner(network, sceneDesc, sceneDef);
 
-		this.makeOSCResponders;
-
 		//Discover other application on the network
 		network.discover;
 		if(declaration.notNil, {
@@ -62,6 +58,13 @@ VTMApplication {
 		});
 	}
 
+	quit{
+		sceneOwner.free;
+		moduleHost.free;
+		hardwareSetup.free;
+		network.free;
+	}
+
 	prInitFilePaths{
 		filePaths = IdentityDictionary.new;
 		filePaths[\vtm] = PathName(
@@ -69,21 +72,6 @@ VTMApplication {
 		).parentPath;
 		filePaths[\moduleDefintions] = filePaths[\vtm] +/+ "ModuleDefintions";
 		filePaths[\hardwareDefinitions] = filePaths[\vtm] +/+ "HardwareDefinitions";
-	}
-
-	addPath{arg type, path;
-
-	}
-
-	makeOSCResponders{
-	}
-
-	runHardwareSetupScript{arg path;
-		hardwareSetup.addHardware(path);//mock code
-	}
-
-	getFilePathFor{arg key;
-		^filePaths[key];
 	}
 
 	name{

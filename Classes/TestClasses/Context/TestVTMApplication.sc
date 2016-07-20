@@ -1,1 +1,0 @@
-TestVTMApplication : UnitTest {}

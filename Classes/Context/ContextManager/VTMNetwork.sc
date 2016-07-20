@@ -23,6 +23,14 @@ VTMNetwork : VTMContextManager {
 		);
 	}
 
+	free{
+		//When the network instance is freed we notify the other applications about what is happening.
+		this.applicationProxies.do({arg item;
+			item.sendMsg('/applicationQuitting', this.name, this.addr.generateIPString);
+		});
+		super.free;
+	}
+
 	makeOSCResponders{
 		[
 			OSCFunc({arg msg, time, addr, port;//network discover responder
@@ -56,7 +64,18 @@ VTMNetwork : VTMContextManager {
 					this.addApplicationProxy(remoteName, remoteAddr);
 					//> Make a ApplicationProxy for this responding app
 				});
-			}, "/%!".format(this.name).asSymbol)
+			}, "/%!".format(this.name).asSymbol),
+			OSCFunc({arg msg, time, addr, port;
+				var quittingApp;
+				"[%] - Notified that app: % at addr: % is quitting.".format(this.name, msg[1], msg[2]).postln;
+				quittingApp = this.applicationProxies[msg[1].asSymbol];
+				if(quittingApp.notNil, {
+					this.removeChild(msg[1].asSymbol);
+					"\tRemoving quitting app: '%'".format(msg[1]).postln;
+				}, {
+					"\tQuitting app '%' not found, ignoring notification.".format(msg[1]).postln;
+				});
+			}, "%/applicationQuitting".format(this.fullPath).asSymbol)
 		];
 	}
 

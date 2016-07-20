@@ -17,5 +17,3 @@ VTMContextProxy : VTMContext {
 		implementation.sendMsg(*msg);
 	}
 }
-
-/*'/aaa/modules/toglyd', 'db', -10, 'pan', -1.0;*/

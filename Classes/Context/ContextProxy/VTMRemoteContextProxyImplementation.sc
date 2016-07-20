@@ -23,4 +23,5 @@ VTMRemoteContextProxyImplementation : VTMContextProxyImplementation {
 	sendMsg{arg subpath ...msg;
 		targetAddr.sendMsg("%%".format(this.targetPath, subpath), *msg);
 	}
+
 }
