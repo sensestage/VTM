@@ -10,6 +10,14 @@ VTMContext {
 	var <addr; //the address for this object instance.
 	var <oscInterface;
 
+	classvar <contextLevelSeparator = $/;
+	classvar <subContextSeparator = $.;
+	classvar <ownershipIndicator = $~;
+	classvar <hardwareSign = $#;
+	classvar <moduleSign = $%;
+	classvar <sceneSign = $$;
+	classvar <contextCommandSeparator = $:;
+
 	*new{arg name, parent, declaration, definition;
 		^super.new.initContext(name, parent, declaration, definition);
 	}
@@ -64,9 +72,13 @@ VTMContext {
 			//Make parent add this to its children.
 			parent.addChild(this);
 		});
+
+		//make OSC interface
+		oscInterface = VTMContextOSCInterface.new(this);
 	}
 
 	free{
+		this.oscInterface.free; //Free the responders
 		children.keysValuesDo({arg key, child;
 			child.free(key);
 		});
