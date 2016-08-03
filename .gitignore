@@ -16,3 +16,7 @@ tramp
 
 # ctags
 .tags*
+
+
+# vim swap files
+.*.sw[op]
