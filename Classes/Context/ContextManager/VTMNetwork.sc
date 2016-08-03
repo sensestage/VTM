@@ -1,4 +1,4 @@
-VTMNetwork : VTMContextManager {
+VTMNetwork : VTMContext {
 	var <application;
 	classvar <defaultPort = 57120;
 

@@ -9,14 +9,30 @@ VTMContext {
 	var <envir;
 	var <addr; //the address for this object instance.
 	var <oscInterface;
+	var <state;
 
 	classvar <contextLevelSeparator = $/;
-	classvar <subContextSeparator = $.;
+	classvar <subcontextSeparator = $.;
 	classvar <ownershipIndicator = $~;
 	classvar <hardwareSign = $#;
 	classvar <moduleSign = $%;
 	classvar <sceneSign = $$;
 	classvar <contextCommandSeparator = $:;
+
+	*buildFromDeclaration{arg declaration, parent;
+		if(declaration.includesKey(\name), {
+			if(declaration.includesKey(\definition), {
+				var def, name;
+				name = declaration.removeAt(\name);
+				def = declaration.removeAt(\definition);
+				^this.new( name, parent, declaration, def);
+			}, {
+				Error("Context must have definition").throw;
+			});
+		}, {
+			Error("Context must have name").throw;
+		});
+	}
 
 	*new{arg name, parent, declaration, definition;
 		^super.new.initContext(name, parent, declaration, definition);
@@ -29,8 +45,10 @@ VTMContext {
 			name = name_;
 		});
 		if(declaration_.isNil, {
+			"[%]-MAKING NEW DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.new;
 		}, {
+			"[%]-LOADING DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.newFrom(declaration_);
 			if(declaration.includesKey(\addr), {
 				addr = declaration[\addr];
@@ -189,6 +207,14 @@ VTMContext {
 
 	}
 
+	prChangeState{ arg val;
+		var newState;
+		if(state != val, {
+			state = val;
+			this.changed(\state);
+		});
+	}
+
 	//Call functions in the runtime environment with this module as first arg.
 	//Module definition functions always has the module as its first arg.
 	//The method returns the result from the called function.
@@ -219,5 +245,4 @@ VTMContext {
 			});
 		});
 	}
-
 }

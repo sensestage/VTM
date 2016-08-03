@@ -1,3 +1,4 @@
+//children may be Parameter and Module
 VTMModule : VTMComposableContext {
 	var <declaration;
 	var <definition;
@@ -19,29 +20,6 @@ VTMModule : VTMComposableContext {
 		//has been properly initialized
 		this.prChangeState(\initialized);
 	}
-
-	prepare{
-		envir.use{
-			~prepareModule.value(this);
-			this.prChangeState(\prepared);
-		};
-	}
-
-	run{
-		envir.use{
-			~runModule.value(this);
-			this.prChangeState(\running);
-		};
-	}
-
-	free{
-		envir.use{
-			~freeModule.value(this);
-		};
-		// "FREE: %".format("MODULE").postln;
-		super.free;//superclass changes the state
-	}
-
 
 	//Making parameters depends on if the module's definition specifies
 	//a ~buildParameters function or a ~parameterDeclarations array.
@@ -86,15 +64,6 @@ VTMModule : VTMComposableContext {
 		parameterOrder = buildOrder;
 	}
 
-	prInvalidateChildren{
-		parameters = Thunk({
-			children.select({arg item; item.isKindOf(VTMParameter)});
-		});
-		submodules = Thunk({
-			children.select({arg item; item.isKindOf(VTMModule)});
-		});
-	}
-
 	addParameter{arg parameterName, parameterDeclaration;
 		var newParameter;
 		newParameter = VTMParameter.makeFromDeclaration(
@@ -136,19 +105,10 @@ VTMModule : VTMComposableContext {
 		^parameterOrder.collect(this.parameters[_]);
 	}
 
-	leadingSeparator{
-		var result;
-		if(parent.isKindOf(VTMModule), {
-			result = $.;
-			}, {
-				result = $/;
-		});
-		^result;
-	}
-
-	parameters{	^parameters.value; }
-	submodules{	^submodules.value; }
-	isSubmodule{ ^this.host.isKindOf(VTMModule); }
+	parameters{	^nonSubcontexts.value; }
+	submodules{	^subcontexts.value; }
+	isSubmodule{ ^this.isSubcontext; }
+	isParameter{ ^this.isSubcontext.not; }
 	host { ^parent; }
 
 }

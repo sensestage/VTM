@@ -6,38 +6,46 @@ VTMApplication {
 	var <filePaths;
 	var <declaration;
 	var <definition;
+	var <projectFolder;
+	var <applicationFolder;
 
 	//The network[declaration\definition] is admittedly strange here, but keeping it for now.
-	*new{arg name, declaration, definition;
-		^super.new.initApplication(name, declaration, definition);
+	*new{arg name, declaration, definition, projectFolder;
+		^super.new.initApplication(name, declaration, definition, projectFolder);
 	}
 
-	initApplication{arg name_, declaration_, definition_;
+	initApplication{arg name_, declaration_, definition_, projectFolder_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
 		var hardwareDesc, hardwareDef;
-		if(declaration.notNil, {
+		if(definition_.notNil, {
+			definition = Environment.newFrom(definition_.deepCopy);
+		}, {
+			definition = Environment.new;
+		});
+		if(declaration_.notNil, {
+			declaration = Environment.newFrom(declaration_.deepCopy);
 			if(declaration.includesKey(\network), {
 				networkDesc = declaration[\network][\declaration];
 				networkDef = declaration[\network][\definition];
 			});
-			if(declaration.includesKey(\network), {
+			if(declaration.includesKey(\module), {
 				moduleDesc = declaration[\module][\declaration];
 				moduleDef = declaration[\module][\definition];
 			});
-			if(declaration.includesKey(\network), {
+			if(declaration.includesKey(\scene), {
 				sceneDesc = declaration[\scene][\declaration];
 				sceneDef = declaration[\scene][\definition];
 			});
-			if(declaration.includesKey(\network), {
+			if(declaration.includesKey(\hardware), {
 				hardwareDesc = declaration[\hardware][\declaration];
 				hardwareDef = declaration[\hardware][\definition];
 			});
+		}, {
+			declaration = Environment.new;
 		});
 		this.prInitFilePaths;
-		declaration = declaration_;
-		definition = definition_;
 		network = VTMNetwork(name_, this, networkDesc, networkDef);
 		hardwareSetup = VTMHardwareSetup(network, hardwareDesc, hardwareDef);
 		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
@@ -45,15 +53,13 @@ VTMApplication {
 
 		//Discover other application on the network
 		network.discover;
-		if(declaration.notNil, {
-			if(declaration.includeKey(\openView), {
-				if(declaration[\openView], {
-					var viewDesc, viewDef;
-					this.makeView(
-						viewDeclaration: declaration[\viewDeclaration],
-						viewDefinition: declaration[\viewDefinition]
-					);
-				});
+		if(declaration.includesKey(\openView), {
+			if(declaration[\openView], {
+				var viewDesc, viewDef;
+				this.makeView(
+					viewDeclaration: declaration[\viewDeclaration],
+					viewDefinition: declaration[\viewDefinition]
+				);
 			});
 		});
 	}
@@ -63,6 +69,24 @@ VTMApplication {
 		moduleHost.free;
 		hardwareSetup.free;
 		network.free;
+	}
+
+	prLoadProjectFolder{arg pathName;
+		if(pathName.isKindOf(PathName) and: pathName.isFolder, {
+			projectFolder = pathName;
+			this.loadDeclarations;
+			this.loadDefinitions;
+		}, {
+			Error("%:% - Error loading project folder: [%]".format(this.class.name, thisMethod.name, pathName)).throw;
+		});
+	}
+
+	loadDeclarations{
+		[hardwareSetup, moduleHost, sceneOwner, network].do(_.loadDeclarations);
+	}
+
+	loadDefinitions{
+		[hardwareSetup, moduleHost, sceneOwner, network].do(_.loadDefinitions);
 	}
 
 	prInitFilePaths{
@@ -82,5 +106,60 @@ VTMApplication {
 		^VTMApplicationView.new(
 			parent, bounds, this, viewDeclaration, viewDefinition
 		);
+	}
+
+	*makeProjectFolder{arg name, path;
+		var projectFolder,appFolder;
+		projectFolder = path +/+ name;
+		if(File.exists(projectFolder).not, {
+			File.mkdir(projectFolder);
+			appFolder = projectFolder +/+ "Applications"; 
+			File.mkdir(appFolder);
+			["Definitions", "Declarations"].do({arg item;
+				var folder;
+				folder = projectFolder +/+ item;
+				File.mkdir(folder);
+
+				["Modules", "Devices", "Scenes"].do({arg jtem;
+					var subfolder = folder +/+ jtem;
+					File.mkdir(subfolder);
+				});
+			});
+		}, {
+			"Project folder '%' already exists".format(projectFolder).warn;
+		});
+	}
+
+	*makeApplicationFolder{arg name, projectFolder;
+		var appFolder = projectFolder +/+ "Applications" +/+ name;
+		if(File.exists(appFolder).not, {
+			var appStartupFilePath = appFolder +/+ "%_Startup.scd".format(name);
+			var appStartupFile;
+			//Make the application folder
+			File.mkdir(appFolder);
+
+			//Make the application startup file
+			appStartupFile = File.new(appStartupFilePath, "w");
+			if(appStartupFile.isOpen, {
+				appStartupFile.putString("~prepare = {arg app;};\n~free = {arg app;};");
+				appStartupFile.close;
+			}, {
+				"Making new application startup file failed!".warn;
+			});
+
+			//Make folders for declarations and definitions
+			["Definitions", "Declarations"].do({arg item;
+				var folder;
+				folder = appFolder +/+ item;
+				File.mkdir(folder);
+
+				["Modules", "Devices", "Scenes"].do({arg jtem;
+					var subfolder = folder +/+ jtem;
+					File.mkdir(subfolder);
+				});
+			});
+		}, {
+			"Application folder '%' already existst".format(appFolder).warn;
+		});
 	}
 }

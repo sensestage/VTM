@@ -1,0 +1,1 @@
+#Global device declarations

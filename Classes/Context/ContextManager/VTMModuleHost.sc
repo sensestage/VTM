@@ -1,4 +1,4 @@
-VTMModuleHost : VTMContextManager {
+VTMModuleHost : VTMNetworkedContext {
 	var <factory;
 
 	*new{arg network, declaration, defintion;
@@ -11,14 +11,6 @@ VTMModuleHost : VTMContextManager {
 
 	modules{
 		^children;
-	}
-
-	network{
-		^this.parent;
-	}
-
-	application {
-		^this.network.application;
 	}
 
 	//A declaration is a dictonary of parameter key/values.

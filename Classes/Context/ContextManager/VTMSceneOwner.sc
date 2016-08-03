@@ -1,4 +1,4 @@
-VTMSceneOwner : VTMContextManager {
+VTMSceneOwner : VTMNetworkedContext {
 	var <sceneFactory;
 
 	*new{arg network, declaration, defintion;
@@ -11,14 +11,6 @@ VTMSceneOwner : VTMContextManager {
 
 	scenes{
 		^children;
-	}
-
-	network{
-		^this.parent;
-	}
-
-	application{
-		^this.network.application;
 	}
 
 	addScene{arg newScene;

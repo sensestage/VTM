@@ -1,7 +1,8 @@
+//children may be Parameter, Module, ModuleProxy, and Scene
 VTMScene : VTMComposableContext {
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initScene;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initScene;
 	}
 
 	initScene{
@@ -26,7 +27,9 @@ VTMScene : VTMComposableContext {
 		this.removeChild(subsceneName);
 	}
 
-	owner{ ^parent;	}
-	modules{ ^children.select({arg item; item.isKindOf(VTMModuleProxy)}); }
-	subscenes{ ^children.select({arg item; item.isKindOf(VTMScene)}); }
+	modules{	^nonSubcontexts.value; }
+	subscenes{	^subcontexts.value; }
+	isSubscene{ ^this.isSubcontext; }
+	isModule{ ^this.isSubcontext.not; }
+	owner { ^parent; }
 }
