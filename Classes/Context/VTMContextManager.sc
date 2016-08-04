@@ -1,8 +1,8 @@
 VTMNetworkedContext : VTMContext {
-	var <network;
-	var <library;
-	var <definitions /*temp getter*/, <definitionPaths, <isLoadingDefinitions = false;
-	var <declarations /*temp getter*/, <declarationPaths, <isLoadingDeclarations = false;
+	var network;
+	var <library;//temp getter
+	var <definitionPaths, <isLoadingDefinitions = false;
+	var <declarationPaths, <isLoadingDeclarations = false;
 
 	*new{arg name, network, declaration, definition;
 		^super.new(name, network, declaration, definition).initContextManager;
@@ -10,8 +10,18 @@ VTMNetworkedContext : VTMContext {
 
 	initContextManager {
 		library = IdentityDictionary[
-			\definitions -> IdentityDictionary.new,
-			\declarations -> IdentityDictionary.new
+			\definitions -> IdentityDictionary[
+				\global -> IdentityDictionary.new,
+				\project -> IdentityDictionary.new,
+				\application -> IdentityDictionary.new,
+				\runtime -> IdentityDictionary.new
+			],
+			\declarations -> IdentityDictionary[
+				\global -> IdentityDictionary.new,
+				\project -> IdentityDictionary.new,
+				\application -> IdentityDictionary.new,
+				\runtime -> IdentityDictionary.new
+			]
 		];
 		definitionPaths = [];
 		declarationPaths = [];
@@ -29,93 +39,92 @@ VTMNetworkedContext : VTMContext {
 		});
 	}
 
+	network{
+		^this.parent;
+	}
+
 	application{
 		^this.network.application;
 	}
 
-	prAddPath{arg what, pathName, reload = true;
-		var whatArray;
-		switch(what, 
-			\declaration, { whatArray = declarationPaths; },
-			\definition, { whatArray = definitionPaths; },
-			{ Error("%:% - wrong argument 'what': [%]".format(this.class.name, thisMethod.name, what)).throw; }
+	getDeclaration{arg key;
+		^this.prGetLibraryEntry(\declaration, key);
+	}
+
+	getDefinition{arg key;
+		^this.prGetLibraryEntry(\definition, key);
+	}
+
+	//whatToGet is either \declaration or \definition
+	prGetLibraryEntry{arg whatToGet, key;
+		var lib, result;
+		switch(whatToGet, 
+			\declaration, {lib = library[\declarations];},
+			\definition, {lib = library[\definitions];}
 		);
-		if(pathName.isKindOf(PathName), {
-			if(pathName.isFolder, {
-				if(pathName.pathMatch.notEmpty, {
-					whatArray = declarationPaths.add(pathName.asString);
-					if(reload, { this.perform("load%s".format(what.asString.capitalize).asSymbol); });
-					this.changed("%Paths".format(what).asSymbol);
-				}, {
-					Error("%:% - % path is not found: [%]".format(this.class.name, thisMethod.name, what, pathName)).throw;
+		result = lib[\runtime].atFail(key, {
+			lib[\application].atFail(key, {
+				lib[\project].atFail(key, {
+					lib[\global].at(key)
 				});
-			}, {
-				Error("%:% - % path is not a folder: [%]".format(this.class.name, thisMethod.name, what, pathName)).throw;
 			});
+		});
+		^result;
+	}
+
+	loadLibrary{
+		this.prLoadToLibrary(\declarations);
+		this.prLoadToLibrary(\definitions);
+	}
+	
+	//whatToLoad is either \definitions or \declarations
+	prLoadToLibrary{arg whatToLoad; 
+		var folder = VTMApplication.vtmPath.asString;
+		var subfolder = whatToLoad.asString.capitalize +/+ this.name.asString.capitalize;
+		var loaderFunc = {arg loadFolder;
+			var path = PathName(loadFolder);
+			var files = path.entries.select({arg file;
+				file.extension == "scd";
+			});
+			var result = IdentityDictionary.new;
+			files.do({arg item;
+				var name = item.fileNameWithoutExtension;
+				var data = item.fullPath.asString.load;
+				result.put(name.asSymbol, data);
+			});
+			result;
+		};
+		//Load global stuff
+		folder = folder +/+ subfolder;
+		"Loading global % in '%'".format(whatToLoad, folder).postln;
+		library[whatToLoad][\global].putAll(loaderFunc.value(folder));
+
+		//Load project stuff
+		if(this.application.projectFolder.notNil, {
+			folder = this.application.projectFolder +/+ subfolder;
+			"Loading '%' project for app '%' - % at folder '%'".format(
+				this.application.projectFolder.split.last,
+				this.application.name,
+				whatToLoad,
+				folder
+			).postln;
+			library[whatToLoad][\project].putAll(loaderFunc.value(folder));
+		},{
+			"Application '%' is not in a project".postln;
+		});
+
+		//Load application stuff
+		if(this.application.applicationFolder.notNil, {
+			folder = this.application.applicationFolder +/+ subfolder;
+			"Loading % for application '%' in folder '%'".format(
+				whatToLoad,
+				this.application.name,
+				folder
+			).postln;
+			library[whatToLoad][\application].putAll(loaderFunc.value(folder));
 		}, {
-			Error("%:% - Error loading % folder: [%]".format(this.class.name, thisMethod.name, what, pathName)).throw;
+			"Application '%' is not in a folder".postln;
 		});
-	}
-
-	addDeclarationPath{arg pathName, reload = true;
-		this.prAddPath(\declaration, pathName, reload);
-	}
-
-	addDefinitionPath{arg pathName, reload = true;
-		this.prAddPath(\definition, pathName, reload);
-	}
-
-	prRemovePath{arg what, pathString, reload = true;
-		var whatArray;
-		switch(what, 
-			\declaration, { whatArray = declarationPaths; },
-			\definition, { whatArray = definitionPaths; },
-			{ Error("%:% - wrong argument 'what': [%]".format(this.class.name, thisMethod.name, what)).throw; }
-		);
-		if(whatArray.includesEqual(pathString), {
-			whatArray.removeAt(whatArray.indexOfEqual(pathString));
-			if(reload, { this.perform("load%s".format(what.asString.capitalize).asSymbol); });
-			this.changed("%Paths".format(what).asSymbol);
-		}, {
-			"%:% - Did not find path for 'pathString': %".format(this.class.name, thisMethod.name, pathString).warn;
-		});
-	}
-
-	removeDeclarationsPath{arg pathString, reload = true;
-		this.prRemovePath(\declaration, pathString, reload);
-	}
-
-	removeDefintionsPath{arg pathString, reload = true;
-		this.prRemovePath(\definition, pathString, reload);
-	}
-
-	loadDeclarations{
-		//set loading state flag to 'true' in case other threads are trying to read declarations
-		isLoadingDeclarations = true; 
-		"[%] - LOAD DECLARATIONS".format(this.name).postln;
-		declarationPaths.do({arg folder;
-			var folderPath = PathName(folder);
-			folderPath.filesDo({arg aFile;
-				"Loading declaration: %".format(aFile).postln;
-			});
-		});
-		"LOADING DECLARATIONS DONE!".postln;
-		//unset loading state flag
-		isLoadingDeclarations = false;
-	}
-
-	loadDefinitions{
-		//set loading state flag to 'true' in case other threads are trying to read declarations
-		isLoadingDeclarations = true; 
-		"[%] - LOAD DEFINITIONS".format(this.name).postln;
-		declarationPaths.do({arg folder;
-			var folderPath = PathName(folder);
-			folderPath.filesDo({arg aFile;
-				"Loading declaration: %".format(aFile).postln;
-			});
-		});
-		"LOADING DEFINITIONS DONE!".postln;
-		//unset loading state flag
-		isLoadingDeclarations = false;
+		"Resulting LIBRARY: %".format(library[whatToLoad]).postln;
 	}
 }

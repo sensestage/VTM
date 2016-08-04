@@ -10,36 +10,41 @@ VTMApplication {
 	var <applicationFolder;
 
 	//The network[declaration\definition] is admittedly strange here, but keeping it for now.
-	*new{arg name, declaration, definition, projectFolder;
-		^super.new.initApplication(name, declaration, definition, projectFolder);
+	*new{arg name, declaration, definition, projectFolder, applicationFolder;
+		^super.new.initApplication(name, declaration, definition, projectFolder, applicationFolder);
 	}
 
-	*loadApplication{arg applicationFolder, isPartOfProject = false;
-		if(File.exists(applicationFolder), {
+	*loadApplication{arg appFolder, projectFolder;
+		if(File.exists(appFolder), {
 			var appName;
 			var appStartupFilePath;
-			appName = applicationFolder.split.last;
-			appStartupFilePath = applicationFolder +/+ appName ++ "_Startup.scd";
+			appName = appFolder.split.last;
+			appStartupFilePath = appFolder +/+ appName ++ "_Startup.scd";
 			if(File.exists(appStartupFilePath), {
 				var decl, def, env, name;
 				env = appStartupFilePath.standardizePath.load;
 				decl = env[\declaration];
 				def = env[\definition];
 				name = env[\name];
-				^this.new(appName, decl, def);
+				^this.new(appName, decl, def,
+					applicationFolder: appFolder,
+					projectFolder: projectFolder
+				);
 			}, {
 				"loadApplication - Can't find application startup file '%'!".format(appStartupFilePath);
 			});
 		}, {
-			"loadApplication - Can't find application folder '%'!".format(applicationFolder);
+			"loadApplication - Can't find application folder '%'!".format(appFolder);
 		});
 	}
 
-	initApplication{arg name_, declaration_, definition_, projectFolder_;
+	initApplication{arg name_, declaration_, definition_, projectFolder_, appFolder_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
 		var hardwareDesc, hardwareDef;
+		projectFolder = projectFolder_;
+		applicationFolder = appFolder_;
 		if(definition_.notNil, {
 			definition = Environment.newFrom(definition_.deepCopy);
 		}, {
@@ -102,12 +107,10 @@ VTMApplication {
 		});
 	}
 
-	loadDeclarations{
-		[hardwareSetup, moduleHost, sceneOwner, network].do(_.loadDeclarations);
-	}
-
-	loadDefinitions{
-		[hardwareSetup, moduleHost, sceneOwner, network].do(_.loadDefinitions);
+	loadLibrary{
+		[hardwareSetup, moduleHost, sceneOwner].do({arg item;
+			item.loadLibrary;
+		});
 	}
 
 	prInitFilePaths{
@@ -195,5 +198,12 @@ VTMApplication {
 		}, {
 			"Application folder '%' already existst".format(appFolder).warn;
 		});
+	}
+
+	*vtmPath{
+	   	^PathName(PathName( VTMApplication.filenameSymbol.asString ).parentPath).parentPath;
+	}
+
+	applicationPath{
 	}
 }
