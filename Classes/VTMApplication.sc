@@ -14,6 +14,27 @@ VTMApplication {
 		^super.new.initApplication(name, declaration, definition, projectFolder);
 	}
 
+	*loadApplication{arg applicationFolder, isPartOfProject = false;
+		if(File.exists(applicationFolder), {
+			var appName;
+			var appStartupFilePath;
+			appName = applicationFolder.split.last;
+			appStartupFilePath = applicationFolder +/+ appName ++ "_Startup.scd";
+			if(File.exists(appStartupFilePath), {
+				var decl, def, env, name;
+				env = appStartupFilePath.standardizePath.load;
+				decl = env[\declaration];
+				def = env[\definition];
+				name = env[\name];
+				^this.new(appName, decl, def);
+			}, {
+				"loadApplication - Can't find application startup file '%'!".format(appStartupFilePath);
+			});
+		}, {
+			"loadApplication - Can't find application folder '%'!".format(applicationFolder);
+		});
+	}
+
 	initApplication{arg name_, declaration_, definition_, projectFolder_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
@@ -141,7 +162,20 @@ VTMApplication {
 			//Make the application startup file
 			appStartupFile = File.new(appStartupFilePath, "w");
 			if(appStartupFile.isOpen, {
-				appStartupFile.putString("~prepare = {arg app;};\n~free = {arg app;};");
+				appStartupFile.putString("(" ++ Char.nl);
+				appStartupFile.putString("\t" ++ "declaration: ( )," ++ Char.nl);
+				appStartupFile.putString("\t" ++ "definition: (" ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "prepare: {arg app;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application prepare\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "run: {arg app;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application run\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "free: {arg app;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application free\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
+				appStartupFile.putString("\t" ++ ")" ++ Char.nl);
+				appStartupFile.putString(");");
 				appStartupFile.close;
 			}, {
 				"Making new application startup file failed!".warn;
