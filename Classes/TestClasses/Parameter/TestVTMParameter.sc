@@ -45,17 +45,15 @@ TestVTMParameter : VTMUnitTest {
 	setUp{
 		"Setting up a VTMParameterTest".postln;
 		testClasses = [
-			VTMMessageParameter,
-			VTMReturnParameter,
-			//VTMValueParameter, //abstract class, don't test
 			VTMBooleanParameter,
 			VTMTimecodeParameter,
 			VTMDictionaryParameter,
-			VTMNumberParameter,
-			// VTMListParameter,
-			VTMAnythingParameter,
 			VTMStringParameter,
 			VTMSchemaParameter,
+			VTMFunctionParameter,
+			VTMListParameter,
+			VTMArrayParameter,
+			VTMTupleParameter,
 			VTMIntegerParameter,
 			VTMDecimalParameter,
 		];

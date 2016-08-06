@@ -1,4 +1,4 @@
-VTMArrayParameter : VTMValueParameter {
+VTMArrayParameter : VTMCollectionParameter {
 	var <size = 0;
 	var <fixedSize = false;
 	var <itemType;

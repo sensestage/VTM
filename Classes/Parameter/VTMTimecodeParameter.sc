@@ -3,7 +3,7 @@ Class for representing timecode strings in various formats.
 Value can return in mulitple format, milliseconds being the default.
 The value is internally stored as milliseconds in decimals: 1050.20 being 1 second and 50.2 milliseconds
 */
-VTMTimecodeParameter : VTMValueParameter {
+VTMTimecodeParameter : VTMStringParameter {
 	type{ ^\timecode; }
 
 	prDefaultValueForType{

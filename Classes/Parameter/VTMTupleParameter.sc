@@ -1,4 +1,3 @@
-VTTupleParameter : VTValueParameter {
-	type{ ^\tuple; }
+VTMTupleParameter : VTMArrayParameter {
 
 }

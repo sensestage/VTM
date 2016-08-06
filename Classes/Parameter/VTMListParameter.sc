@@ -1,4 +1,4 @@
-VTMListParameter : VTMValueParameter {
+VTMListParameter : VTMCollectionParameter {
 	var <itemType; //Which parameter type to contain in this class
 	var <itemDeclarations; //The consolidated item declarationn will be stored here.
 	var <items;
