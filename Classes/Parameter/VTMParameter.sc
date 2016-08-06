@@ -9,7 +9,6 @@ VTMParameter {
 	var action, hiddenAction;
 	var <enabled = true;
 	var <mappings;
-	var <responders;
 	var <oscInterface;
 	var <willStore = true;
 	var <onlyReturn = false;
@@ -174,11 +173,6 @@ VTMParameter {
 			oscInterface.free;
 		});
 		oscInterface = nil;
-
-		if(responders.notNil, {
-			responders.do(_.free);
-		});
-		responders = nil;
 
 		this.changed(\freed);
 	}
