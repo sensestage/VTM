@@ -16,7 +16,7 @@ VTMArrayParameter : VTMCollectionParameter {
 	}
 
 	initArrayParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\size), {
 				size = declaration[\size];
 			});

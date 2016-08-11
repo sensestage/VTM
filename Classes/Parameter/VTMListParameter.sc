@@ -16,7 +16,7 @@ VTMListParameter : VTMCollectionParameter {
 	}
 
 	initListParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\itemType), {
 				itemType = declaration[\itemType];
 			});

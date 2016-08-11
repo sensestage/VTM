@@ -19,7 +19,7 @@ VTMNumberParameter : VTMValueParameter {
 	}
 
 	initNumberParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\clipmode), {
 				this.clipmode = declaration[\clipmode];
 			});

@@ -24,7 +24,7 @@ VTMValueParameter : VTMParameter {
 	*isValidType{arg val; ^true; }
 
 	initValueParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\defaultValue), {
 				this.defaultValue_(declaration[\defaultValue]);
 			});

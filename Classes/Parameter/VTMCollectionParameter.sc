@@ -9,7 +9,7 @@ VTMCollectionParameter : VTMValueParameter {
 	}
 
 	initCollectionParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\itemDeclarations), {
 				itemDeclarations = declaration[\itemDeclarations];
 			});

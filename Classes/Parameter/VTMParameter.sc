@@ -72,7 +72,7 @@ VTMParameter {
 				"/%".format(name).asSymbol;
 			});
 		});
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\isSubParameter), {
 				isSubParameter = declaration[\isSubParameter];
 			});

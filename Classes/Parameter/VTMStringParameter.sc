@@ -21,7 +21,7 @@ VTMStringParameter : VTMValueParameter {
 	}
 
 	initStringParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\pattern), {
 				this.pattern_(declaration[\pattern]);
 			});
