@@ -1,5 +1,6 @@
 VTMCollectionParameter : VTMValueParameter {
 	var <items;
+	var <itemDeclarations;
 	var <maxLength;
 	var <minLength;
 
@@ -8,7 +9,11 @@ VTMCollectionParameter : VTMValueParameter {
 	}
 
 	initCollectionParameter{
-		items = List.new;
+		if(declaration.notNil, {
+			if(declaration.includesKey(\itemDeclarations), {
+				itemDeclarations = declaration[\itemDeclarations];
+			});
+		});
 	}
 
 	addItem{arg val;

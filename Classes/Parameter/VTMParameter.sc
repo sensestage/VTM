@@ -12,7 +12,6 @@ VTMParameter {
 	var <oscInterface;
 	var <>willStore = true;
 	var <>onlyReturn = false;
-
 	var <isSubParameter = false;
 
 	*typeToClass{arg val;
