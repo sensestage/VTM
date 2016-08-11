@@ -5,6 +5,7 @@ VTMContextOSCInterface {
 	*new{arg context;
 		^super.new.initContextOSCInterface(context);
 	}
+
 	initContextOSCInterface{arg context_;
 		context = context_;
 		responders = IdentityDictionary.new;
@@ -15,7 +16,16 @@ VTMContextOSCInterface {
 
 		//start responders
 	}
-	start{}
-	free{}
-	stop{}
+
+	enable{
+		responders.do(_.enable);
+	}
+
+	disable{
+		responders.do(_.enable);
+	}
+
+	free{
+		responders.do(_.free);
+	}
 }
