@@ -59,7 +59,11 @@ VTMParameter {
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		declaration = declaration_.deepCopy;
+		if(declaration_.notNil, {
+			declaration = declaration_.deepCopy;
+		}, {
+			declaration = IdentityDictionary.new;
+		});
 		// declaration = IdentityDictionary.newFrom(declaration_);
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
