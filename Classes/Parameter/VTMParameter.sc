@@ -1,6 +1,6 @@
 //base class for parameter classes.
 //Objects of this type has no arguments/values but works
-//more as a 'command' to perform the defined action.
+//as a 'command' to perform the defined action.
 
 VTMParameter {
 	var <name;
@@ -10,8 +10,8 @@ VTMParameter {
 	var <enabled = true;
 	var <mappings;
 	var <oscInterface;
-	var <willStore = true;
-	var <onlyReturn = false;
+	var <>willStore = true;
+	var <>onlyReturn = false;
 
 	var <isSubParameter = false;
 
