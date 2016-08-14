@@ -41,6 +41,9 @@ VTMSchemaParameter : VTMDictionaryParameter {
 		^result;
 	}
 	type{ ^\schema; }
+	prDefaultValueForType{
+		^[];
+	}
 	validate{arg val;
 		^true;//temp always validate to true
 	}

@@ -10,7 +10,7 @@ VTMListParameter : VTMCollectionParameter {
 	type{ ^\list; }
 
 	prDefaultValueForType{
-		^Dictionary.new;//not sure about the default value here
+		^[];
 	}
 
 	*new{arg name, declaration;

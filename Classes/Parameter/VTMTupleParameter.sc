@@ -8,4 +8,7 @@ VTMTupleParameter : VTMArrayParameter {
 	}
 
 	type{ ^\tuple; }
+	prDefaultValueForType{
+		^[];
+	}
 }

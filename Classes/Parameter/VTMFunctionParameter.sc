@@ -4,4 +4,9 @@ VTMFunctionParameter : VTMStringParameter {
 	}
 
 	type{ ^\function; }
+
+	prDefaultValueForType{
+		//pass through function
+		^"{arg val; val;}";
+	}
 }

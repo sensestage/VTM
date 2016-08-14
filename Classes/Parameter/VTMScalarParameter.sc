@@ -6,8 +6,6 @@ VTMNumberParameter : VTMValueParameter {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
-	prDefaultValueForType{ ^0.0; }
-
 	*new{arg name, declaration;
 		^super.new(name, declaration).initNumberParameter;
 	}
