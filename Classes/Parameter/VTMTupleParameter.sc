@@ -7,4 +7,5 @@ VTMTupleParameter : VTMArrayParameter {
 		^result;
 	}
 
+	type{ ^\tuple; }
 }

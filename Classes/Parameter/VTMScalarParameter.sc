@@ -8,9 +8,6 @@ VTMNumberParameter : VTMValueParameter {
 
 	prDefaultValueForType{ ^0.0; }
 
-	type{ ^\number; }
-
-
 	*new{arg name, declaration;
 		^super.new(name, declaration).initNumberParameter;
 	}

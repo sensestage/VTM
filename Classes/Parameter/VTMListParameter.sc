@@ -7,6 +7,8 @@ VTMListParameter : VTMCollectionParameter {
 		^(val.isArray and: val.isString.not);
 	}
 
+	type{ ^\list; }
+
 	prDefaultValueForType{
 		^Dictionary.new;//not sure about the default value here
 	}

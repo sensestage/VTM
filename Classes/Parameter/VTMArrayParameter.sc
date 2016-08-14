@@ -7,6 +7,8 @@ VTMArrayParameter : VTMCollectionParameter {
 		^(val.isArray and: {val.isString.not});
 	}
 
+	type{ ^\array; }
+
 	prDefaultValueForType{
 		^[];
 	}
