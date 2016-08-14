@@ -27,7 +27,7 @@ VTMDecimalParameter : VTMNumberParameter {
 	value_{arg val;
 		if(val.class == Integer, {
 			val = val.asFloat;
-			super.value_(val, omitTypecheck: true);
+			super.value_(val);
 		}, {
 			super.value_(val);
 		});

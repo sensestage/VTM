@@ -1,6 +1,5 @@
 VTMValueParameter : VTMParameter {
 	var value;
-	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
 	var <>format;
@@ -53,20 +52,9 @@ VTMValueParameter : VTMParameter {
 		});
 	}
 
-	value_{arg val, omitTypecheck = false; //don't do typecheck if already performed in subclass
-		if(typecheck or: {omitTypecheck.not}, {
-			if(this.class.isValidType(val), {
-				value = val;
-				this.changed(\value);
-			}, {
-				"ValueParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
-			value = val;
-			this.changed(\value);
-		});
+	value_{arg val;
+		value = val;
+		this.changed(\value);
 	}
 
 	valueAction_{arg val;
@@ -92,13 +80,12 @@ VTMValueParameter : VTMParameter {
 		^super.attributes.putAll(IdentityDictionary[
 			\value -> this.value,
 			\defaultValue -> this.defaultValue,
-			\filterRepetitions -> this.filterRepetitions,
-			\typecheck -> this.typecheck
+			\filterRepetitions -> this.filterRepetitions
 		]);
 	}
 
 	*attributeKeys{
-		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \typecheck]);
+		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions]);
 	}
 
 }

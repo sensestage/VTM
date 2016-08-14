@@ -101,35 +101,14 @@ VTMNumberParameter : VTMValueParameter {
 		});
 	}
 
-	value_{arg val, omitTypecheck = false;
-		if(typecheck or: {omitTypecheck.not}, {
-			if(this.class.isValidType(val), {
-				super.value_(
-					this.prCheckRangeAndClipValue(val),
-					omitTypecheck: true
-				);
-			}, {
-				"NumberParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
-			super.value_( this.prCheckRangeAndClipValue(val) );
-		});
+	value_{arg val;
+		super.value_(
+			this.prCheckRangeAndClipValue(val)
+		);
 	}
 
 	defaultValue_{arg val;
-		if(typecheck, {
-			if(this.class.isValidType(val), {
-				defaultValue = this.prCheckRangeAndClipValue(val);
-			}, {
-				"NumberParameter:defaultValue_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
-			defaultValue = val;
-		});
+		defaultValue = this.prCheckRangeAndClipValue(val);
 	}
 
 	increment{arg doAction = true;

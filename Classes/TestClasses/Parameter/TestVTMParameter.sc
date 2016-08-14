@@ -1,8 +1,8 @@
 TestVTMParameter : VTMUnitTest {
-	var <testClasses;
+	classvar <testClasses;
 
-	setUp{
-		"Setting up a VTMParameterTest".postln;
+
+	*initClass{
 		testClasses = [
 			VTMBooleanParameter,
 			VTMStringParameter,
@@ -18,12 +18,16 @@ TestVTMParameter : VTMUnitTest {
 		];
 	}
 
+	setUp{
+		"Setting up a VTMParameterTest".postln;
+	}
+
 	tearDown{
 		"Tearing down a VTMParameterTest".postln;
 	}
 
 	test_ShouldErrorIfNameNotDefined{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			try{
 				var aParameter;
 				aParameter = testClass.new();
@@ -41,7 +45,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_SettingName{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var aParameter, name = "my%".format(testClass.name).asSymbol;
 			aParameter = testClass.new(name);
 			this.assertEquals(
@@ -52,7 +56,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_ReturnFullPathAsPrefixedNameByDefault{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var aParameter, name = "my%".format(testClass.name).asSymbol;
 			aParameter = testClass.new(name);
 			this.assertEquals(
@@ -63,7 +67,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_ReturnPathAsAsNilIfNotSet{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var aParameter, name = "my%".format(testClass.name).asSymbol;
 			aParameter = testClass.new(name);
 			this.assertEquals(
@@ -75,7 +79,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_RemoveLeadingSlashInNameIfDefined{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var aParameter, name = "my%".format(testClass.name).asSymbol;
 			aParameter = testClass.new("/%".format(name).asSymbol);
 			this.assertEquals(
@@ -86,7 +90,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_SetGetPathAndFullPath{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
 			var aParameter = testClass.new(name);
 			var aPath = '/myPath';
@@ -104,7 +108,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_AddLeadingSlashToPathIfNotDefined{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
 			var aParameter = testClass.new(name);
 			aParameter.path = 'myPath';
@@ -120,7 +124,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_SetAndDoActionWithParamAsArg{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
 			var aParameter = testClass.new(name);
 			var wasRun = false;
@@ -138,7 +142,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_SetGetRemoveEnableAndDisableAction{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
 			var aParam = testClass.new(name);
 			var wasRun, aValue;
@@ -209,7 +213,7 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_SetVariablesThroughDeclaration{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
 			var aParam, aDeclaration, anAction;
 			var wasRun = false;
@@ -248,7 +252,7 @@ TestVTMParameter : VTMUnitTest {
 //
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var testName = "my%".format(testClass.name).asSymbol;
 			var wasRun = false;
 			var declaration = IdentityDictionary[

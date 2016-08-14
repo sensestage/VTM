@@ -155,10 +155,6 @@ VTMListParameter : VTMCollectionParameter {
 		^result;
 	}
 
-	value_{arg val, omitTypecheck = false;
-
-	}
-
 	defaultValue {
 		var result = Dictionary.new;
 		items.collect({arg item;
