@@ -25,12 +25,7 @@ VTMArrayParameter : VTMCollectionParameter {
 			});
 			if(declaration.includesKey(\itemType), {
 				itemType = declaration[\itemType];
-			}, {
-				Error("ArrayParameter needs to define itemType. [%]".format(this.fullPath)).throw;
 			});
-		}, {
-			Error("ArrayParameter needs declaration with mandatory attributes: itemType. [%]".format(this.fullPath)).throw;
-			^nil;
 		});
 	}
 
