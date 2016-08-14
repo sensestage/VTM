@@ -33,5 +33,15 @@ VTMSchemaParameter : VTMDictionaryParameter {
 	var <schema;
 	var <properties;
 
+	isValidType{arg val;
+		var result = false;
+		if(super.isValidType(val), {
+			result = this.validate(val);
+		});
+		^result;
+	}
 	type{ ^\schema; }
+	validate{arg val;
+		^true;//temp always validate to true
+	}
 }

@@ -19,8 +19,10 @@ VTMValueParameter : VTMParameter {
 		^value;
 	}
 
-	//this class will accept any type
-	*isValidType{arg val; ^true; }
+	//only non-abstract sub classes will implement this.
+	isValidType{arg val; 
+		this.subclassResponsibility(thisMethod);
+   	}
 
 	initValueParameter{
 		if(declaration.notEmpty, {

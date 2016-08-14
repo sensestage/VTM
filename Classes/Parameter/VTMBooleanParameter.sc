@@ -4,8 +4,8 @@ VTMBooleanParameter : VTMValueParameter {
 
 	type{ ^\boolean; }
 
-	*isValidType{arg val;
-		^(val.isKindOf(Boolean));
+	isValidType{arg val;
+		^val.isKindOf(Boolean);
 	}
 
 	*new{arg name, declaration;

@@ -10,9 +10,6 @@ VTMNumberParameter : VTMValueParameter {
 
 	type{ ^\number; }
 
-	//this class will accept numbers, either Integers or Decimals
-	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }
-
 
 	*new{arg name, declaration;
 		^super.new(name, declaration).initNumberParameter;
@@ -40,7 +37,7 @@ VTMNumberParameter : VTMValueParameter {
 			minVal = nil;
 			this.changed(\minVal);
 		}, {
-			if(this.class.isValidType(val), {
+			if(this.isValidType(val), {
 				minVal = val;
 				this.changed(\minVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
@@ -57,7 +54,7 @@ VTMNumberParameter : VTMValueParameter {
 			maxVal = nil;
 			this.changed(\maxVal);
 		}, {
-			if(this.class.isValidType(val), {
+			if(this.isValidType(val), {
 				maxVal = val;
 				this.changed(\maxVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
@@ -72,7 +69,7 @@ VTMNumberParameter : VTMValueParameter {
 
 	stepsize_{ arg val;
 		var newVal = val;
-		if(this.class.isValidType(val), {
+		if(this.isValidType(val), {
 			if(newVal.isNegative, {
 				newVal = newVal.abs;
 				"NumberParameter:stepsize_ '%' - val converted to positive value".format(

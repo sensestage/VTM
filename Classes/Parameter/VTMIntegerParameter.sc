@@ -1,4 +1,7 @@
 VTMIntegerParameter : VTMNumberParameter {
+	isValidType{arg val;
+		val.isKindOf(Integer);
+	}
 	type{ ^\integer; }
 
 	prDefaultValueForType{ ^0; }

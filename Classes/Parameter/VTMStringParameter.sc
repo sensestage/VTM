@@ -12,7 +12,7 @@ VTMStringParameter : VTMValueParameter {
 
 	prDefaultValueForType{ ^""; }
 
-	*isValidType{arg val;
+	isValidType{arg val;
 		^val.isKindOf(String);
 	}
 
