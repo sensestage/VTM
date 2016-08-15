@@ -1,4 +1,5 @@
 VTMBooleanParameter : VTMValueParameter {
+	var whenToDoAction = \change;
 
 	prDefaultValueForType{ ^false; }
 
@@ -18,6 +19,18 @@ VTMBooleanParameter : VTMValueParameter {
 
 	toggle{
 		this.value_(this.value.not);
+	}
+
+	doActionOn{arg when;
+		if([\rising, \falling, \change].includes(when), {
+			whenToDoAction = when;
+		}, {
+			"%:% - Uknown option %.\n\tAlternatives are 'rising', 'fallin', and 'change'".format(
+				this.class.name,
+				thisMethod.name,
+				when
+			).warn;
+		});
 	}
 
 	*defaultViewType{ ^\toggle; }
