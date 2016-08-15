@@ -41,6 +41,7 @@ TestVTMValueParameter : TestVTMParameter {
 			this.assertEquals(
 				param.value, testValue, "Parameter value was set [%]".format(testClass.name)
 			);
+			param.free;
 		});
 	}
 
@@ -56,11 +57,11 @@ TestVTMValueParameter : TestVTMParameter {
 			this.assertEquals(
 				param.defaultValue, testValue, "Parameter defaultValue was set [%]".format(testClass.name)
 			);
-
 			this.assertEquals(
 				param.value, testValue,
 				"Parameter value was set to defined defaultValue when value was not defined [%]".format(testClass.name)
 			);
+			param.free;
 		} {|err|
 			this.failed(
 				thisMethod,
@@ -94,141 +95,140 @@ TestVTMValueParameter : TestVTMParameter {
 				wasRun,
 				"Parameter action was run upon reset when defined to do so [%]".format(testClass.name)
 			);
+			param.free;
+		});
+	}
+
+	test_DefaultValueShouldNotBeNil{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue, wasRun;
+			var name = "my%".format(class.name);
+			var param;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			param = class.new(name);
+			this.assert(
+				param.defaultValue.notNil,
+				"Parameter did not initialize defaultValue to nil [%]".format(
+					class.name
+				)
+			);
+			param.free;
 		});
 	}
 //
-//	test_PreventDefaultValueAsNil{
-//		//not sure yet if this should be tested in this class
-//	}
-//
-//	test_SetGetTypecheckOnAndOff{
-//		var wasRun;
-//		var param = VTMValueParameter.new('myName');
-//		//Typecheck should be set. This won't have any efect on
-//		//ValueParameter class, as it will accept any type.
-//		param.typecheck = false;
-//		this.assert(param.typecheck.not, "ValueParameter typecheck was turned off");
-//		param.typecheck = true;
-//		this.assert(param.typecheck, "ValueParameter typecheck was turned on");
-//	}
-//
-//	test_Typechecking{
-//		var param = VTMValueParameter.new('myName');
-//
-//		//Should be on by default
-//		this.assert(
-//			param.typecheck, "ValueParameter type is on by default");
-//
-//		//Should accept any type
-//		param.value = 11;
-//		this.assertEquals(
-//			param.value, 11, "ValueParameter accepted Integer"
-//		);
-//
-//		param.value = 9.9;
-//		this.assertFloatEquals(
-//			param.value, 9.9, "ValueParameter accepted Float"
-//		);
-//
-//		param.value = \tester;
-//		this.assertEquals(
-//			param.value, \tester, "ValueParameter accepted Symbol"
-//		);
-//
-//		param.value = "another tester";
-//		this.assertEquals(
-//			param.value,
-//			"another tester",
-//			"ValueParameter accepted String"
-//		);
-//
-//		param.value = ["array", 'of', "1 2 3", 11, [34, 2], 0.3, -1.2];
-//		this.assertEquals(
-//			param.value,
-//			["array", 'of', "1 2 3", 11, [34, 2], 0.3, -1.2],
-//			"ValueParameter array of various types"
-//		);
-//
-//		param.value = (hei: 33, hallo: "334", bing: \hehe);
-//		this.assertEquals(
-//			param.value,
-//			(hei: 33, hallo: "334", bing: \hehe),
-//			"ValueParameter dictionary type"
-//		);
-//
-//		//ValueParameter can even be set to nil..
-//		param.value = nil;
-//		this.assertEquals(
-//			param.value,
-//			nil,
-//			"ValueParameter dictionary type"
-//		);
-//	}
-//
-//	test_AccessValueInAction{
-//		var param = VTMValueParameter.new('myName');
-//		var val = 33, gotValue = false;
-//		param.action = {arg p;
-//			gotValue = p === param and: {p.value == val};
-//		};
-//		param.value_(val);
-//		param.doAction;
-//		this.assert(gotValue, "ValueParameter got value in action");
-//	}
-//
-//	test_ValueAction{
-//		var param = VTMValueParameter.new('myName');
-//		var wasRun, testValue, gotUpdatedValue;
-//		//should run action when setting valueAction
-//		testValue = 222;
-//		wasRun = false;
-//		gotUpdatedValue = false;
-//		param.action = {arg p;
-//			wasRun = true;
-//			gotUpdatedValue = p.value == testValue;
-//		};
-//		param.value = 111;
-//		param.valueAction_(testValue);
-//		this.assert(
-//			wasRun and: {gotUpdatedValue},
-//			"ValueParameter valueAction set correct value and passed it into action"
-//		);
-//
-//	}
-//
-//	test_FilterRepeatingValues{
-//		var param = VTMValueParameter.new('myName');
-//		var wasRun = false;
-//		var aValue = "a test string", anotherValue = "a test string";
-//		var anAction = {arg p;
-//			wasRun = true;
-//		};
-//		param.filterRepetitions = true;
-//
-//		//Action should not be run when input value are equal to current value
-//		param.value = aValue;
-//		param.valueAction_(anotherValue);
-//		this.assert(
-//			wasRun.not, "ValueParameter action was prevented to run since values where equal"
-//		);
-//
-//		//Filter repetitions is based on equality, not idenity, so value will be set to new
-//		//object instance, but the action won't be run.
-//		//It is only the action we want to prevent from happening.
-//		//This test only works when using object of types that are separate object instances,
-//		//such as Array, Strings, Dictionaries etc.
-//		//This test proves false if input is primitive objects such as Integers, Float, Symbol,
-//		//in which the actual object isn't actually changed.
-//		//This might have to do with some kind of behind-the-scenes optimization(?)
-//		this.assert(
-//			(param.value == aValue)
-//			&& (param.value !== aValue)
-//			&& (param.value === anotherValue),
-//			"ValueParameter value is still equal to the first value, but a different instance";
-//		);
-//
-//	}
-//
+	test_Typechecking{
+		var wrongValuesForType = (
+			integer: \hei,
+			decimal: \hei,
+			string: 432,
+			boolean: 1,
+			array: \bingo,
+			list: \halo,
+			dictionary: -0.93,
+			function: 123,
+			schema: \hei,
+			tuple: \halo
+		);
+		this.class.testClasses.do({arg class;
+			var testClass, testValue, wasRun;
+			var name = "my%".format(class.name);
+			var param;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			param = class.new(name);
+			testValue = wrongValuesForType[class.type];
+			try{
+				this.assert(
+					param.isValidType(testValue).not,
+					"Parameter value input of wrong type failed validation check corretly [%]".format(class.name)
+				);
+			} {|err|
+				this.failed(
+					thisMethod,
+					"Parameter input value validation failed by unknown error. [%]\n\t%".format(class.name, err.errorString)
+				);
+			};
+		});
+	}
+
+	test_AccessValueInAction{
+		this.class.testClasses.do({arg class;
+			try{
+				var testClass, testValue, wasRun;
+				var name = "my%".format(class.name);
+				var param, gotValue = false, gotParamPassed = false;
+				testClass = VTMUnitTest.testclassForType( class.type );
+				param = class.new(name);
+				testValue = testClass.makeRandomValue;
+				param.value = testValue;
+				param.action = {arg p;
+					gotParamPassed = p === param;
+					gotValue = p.value == testValue;
+				};
+				param.doAction;
+				this.assert(gotParamPassed,
+				   	"ValueParameter got param passed in action [%]".format(class.name));
+				this.assert(gotValue,
+				   	"ValueParameter got value in action [%]".format(class.name));
+				param.free;
+			} {|err|
+				this.failed(
+					thisMethod,
+					"Parameter test failed unknown error [%]\n\t%".format(
+						class.name,
+						err.errorString
+					)
+				);
+			};
+		});
+	}
+
+	test_ValueAction{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param, wasRun, gotUpdatedValue;
+			wasRun = false;
+			gotUpdatedValue = false;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testValue = testClass.makeRandomValue;
+			param = class.new(name);
+			param.action = {arg p;
+				wasRun = true;
+				gotUpdatedValue = p.value == testValue;
+			};
+			param.value = testClass.makeRandomValue;
+			param.valueAction_(testValue);
+			this.assert(
+				wasRun and: {gotUpdatedValue},
+				"ValueParameter valueAction set correct value and passed it into action"
+			);
+			param.free;
+		});
+	}
+
+	test_FilterRepeatingValues{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param;
+			var wasRun = false;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testValue = testClass.makeRandomValue;
+			param = class.new(name);
+			param.filterRepetitions = true;
+			param.action = {arg p;
+				wasRun = true;
+			};
+			//Action should not be run when input value are equal to current value
+			param.value = testValue;
+			param.valueAction_(testValue);
+			this.assert(
+				wasRun.not, "ValueParameter action was prevented to run since values where equal"
+			);
+		});
+
+	}
+
 //	test_SetVariablesFromDeclaration{
 //		var param, declaration, wasRun = false;
 //		declaration = (
@@ -269,19 +269,6 @@ TestVTMValueParameter : TestVTMParameter {
 //			"ValueParameter filterRepetitions was set through declaration");
 //	}
 //
-//	test_InitValueToDefaultValueIfNoValueDefined{
-//		var param, declaration;
-//		declaration = (
-//			path: '/myPath', defaultValue: 9999
-//		);
-//		param = VTMValueParameter.new('myName', declaration);
-//		//check if value is initialized to defaultValue
-//		this.assertEquals(
-//			param.value, 9999, "ValueParameter value was initialized to defaultValue"
-//		);
-//
-//	}
-//	test_TypeWasInferredFromValueTypeInDeclaration{}
 //
 //	test_GetAttributes{
 //		var declaration = IdentityDictionary[
