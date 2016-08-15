@@ -1,4 +1,9 @@
-TestVTMSchemaParameter : VTMUnitTest {
+TestVTMSchemaParameter : TestVTMDictionaryParameter {
+
+	*makeRandomValue{arg params;
+		^super.makeRandomValue(params);
+	}
+
 	setUp{
 		"Setting up a VTMSchemaParameterTest".postln;
 	}

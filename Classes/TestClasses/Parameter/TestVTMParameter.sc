@@ -1,7 +1,5 @@
 TestVTMParameter : VTMUnitTest {
 	classvar <testClasses;
-
-
 	*initClass{
 		testClasses = [
 			VTMBooleanParameter,
@@ -16,6 +14,119 @@ TestVTMParameter : VTMUnitTest {
 			VTMSchemaParameter,
 			VTMTupleParameter
 		];
+	}
+
+	*generateRandomAttributes{arg description;
+		var result = IdentityDictionary.new;
+		if(description.notNil, {
+			description.do({arg item;
+				if(item.isKindOf(Symbol), {
+					result.add(this.prConstructAttribute(item));
+				});
+				if(item.isKindOf(Association), {
+					result.add(
+						this.prConstructAttribute(item.key, item.value);
+					);
+				});
+			});
+		});
+		^result;
+	}
+
+	*prConstructAttribute{arg key, data;
+		var result;
+		if(data.notNil, {
+			//if it is a function it will return whatever
+			if(data.isKindOf(Function), {
+				result = data.value;
+			}, {
+				//If it is a \random -> (minVal: 7) i.e. \random Assiciation
+				//the class random function will be used
+				if(data.isKindOf(Association) and: {data.key == \random}, {
+					result = this.prMakeRandomAttribute(key, data.value);
+				}, {
+					//If it is defined otherwise, use that value
+					result = data;
+				});
+			});
+		}, {
+			//If it is nil we make a random attribute with
+			//undefined parameters.
+			result = this.prMakeRandomAttribute(key);
+		});
+		^Association.new(key, result);
+	}
+
+	*makeRandomString{arg params;
+		var minLength, maxLength, makeSpaces;
+		if(params.notNil and: { params.isKindOf(Dictionary) }, {
+			minLength = params[\minLength] ? 1;
+			maxLength = params[\maxLength] ? 15;
+			makeSpaces = params[\makeSpaces] ? false;
+		}, {
+			minLength = 1; maxLength = 15; makeSpaces = false;
+		});
+		^String.newFrom(
+			rrand(minLength, maxLength).collect({
+				(0..127).collect(_.asAscii).select({arg it;
+					var v;
+					if(makeSpaces, {
+						v = it.isAlphaNum || (it == Char.space);
+					}, {
+						v = it.isAlphaNum;
+					});
+					v;
+				}).choose;
+			});
+		);
+	}
+
+	*makeRandomBoolean {arg params;
+		var chance = 0.5;
+		if(params.notNil and: {params.isKindOf(Dictionary)}, {
+			chance = params[\chance] ? 0.5;
+		});
+		^chance.coin;
+	}
+
+	*makeRandomInteger{arg params;
+		^this.makeRandomDecimal(params).asInteger;
+	}
+
+	*makeRandomDecimal{arg params;
+		var minVal = -2147483648.0;//32 bits random
+		var maxVal = 2147483647.0;
+		if(params.notNil, {
+			minVal = params[\minVal] ? minVal;
+			maxVal = params[\maxVal] ? maxVal;
+		});
+		^rrand(minVal, maxVal);
+	}
+
+	*prMakeRandomAttribute{arg key, params;
+		var result;
+		switch(key,
+			\name, {result = this.makeRandomString.value(params)},
+			\path, {
+				var minLevels, maxLevels;
+				if(params.notNil and: { params.isKindOf(Dictionary) },{
+					minLevels = params[\minLevels] ? 1;
+					maxLevels = params[\maxLevels] ? 3;
+				}, {
+					minLevels = 1;
+					maxLevels = 3;
+				});
+				result = rrand(minLevels,maxLevels).collect({
+					"/%".format(this.makeRandomString.value(params));
+				});
+				result = String.newFrom(result.flat)
+			},
+			\enabled, {result = this.makeRandomBoolean.value(params)},
+			\willStore, {result = this.makeRandomBoolean.value(params)},
+			\onlyReturn, {result = this.makeRandomBoolean.value(params)},
+			{result = nil;}
+		);
+		^result;
 	}
 
 	setUp{

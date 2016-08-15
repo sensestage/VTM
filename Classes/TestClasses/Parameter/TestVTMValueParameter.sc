@@ -1,20 +1,25 @@
 TestVTMValueParameter : TestVTMParameter {
-	classvar <testClasses;
-	*initClass{
-		testClasses = [
-			VTMBooleanParameter,
-			VTMStringParameter,
-			VTMListParameter,
-			VTMDictionaryParameter,
-			VTMArrayParameter,
-			VTMFunctionParameter,
-			VTMTimecodeParameter,
-			VTMSelectionParameter,
-			VTMDecimalParameter,
-			VTMIntegerParameter,
-			VTMSchemaParameter,
-			VTMTupleParameter
-		];
+
+	*generateRandomAttributes{arg description;
+		var result = super.generateRandomAttributes(description);
+		^result;
+	}
+
+	*makeRandomValue{arg params;
+		^this.subclassResponsibility(thisMethod);
+	}
+	
+	*prMakeRandomAttribute{arg key, params;
+		var result;
+		result = super.prMakeRandomAttribute(key, params);
+		if(result.isNil, {
+			switch(key,
+				\filterRepetitions, { result = this.makeRandomBoolean(params); },
+				\value, { result = this.makeRandomValue(params); },
+				\defaultValue, { result = this.makeRandomValue(params); }
+			);
+		});
+		^result;
 	}
 
 	setUp{
@@ -26,49 +31,71 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_SetGetValue{
-		testClasses.do({arg class;
+		this.class.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( param.type );
-			testValue = testClass.new().getRandom(\value);
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testValue = testClass.makeRandomValue;
 			param.value = testValue;
 			this.assertEquals(
 				param.value, testValue, "Parameter value was set [%]".format(testClass.name)
 			);
 		});
 	}
-//
-//	test_SetDefaultValue{
-//		var param = VTMValueParameter.new('myName');
-//		param.defaultValue = 22;
-//		this.assertEquals(
-//			param.defaultValue, 22, "Parameter defaultValue was set"
-//		);
-//	}
-//
-//	test_ResetSetValueToDefault{
-//		var wasRun;
-//		var param = VTMValueParameter.new('myName');
-//		//After reset the value should be the default value
-//		param.defaultValue = 22;
-//		param.value = 11;
-//		param.reset;
-//		this.assertEquals(
-//			param.value, 22, "Parameter set to default value upon reset"
-//		);
-//
-//		//Should do action if optionally defined
-//		wasRun = false;
-//		param.defaultValue = 44;
-//		param.value = 33;
-//		param.action = {arg p; wasRun = true; };
-//		param.reset(doActionUponReset: true);
-//		this.assert(
-//			param.value == 44 and: {wasRun},
-//			"Action was optionally run and parameter value was reset to default value"
-//		);
-//	}
+
+	test_SetGetDefaultValue{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param;
+			try{
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testValue = testClass.makeRandomValue;
+			param = class.new(name, declaration: (defaultValue: testValue));
+			this.assertEquals(
+				param.defaultValue, testValue, "Parameter defaultValue was set [%]".format(testClass.name)
+			);
+
+			this.assertEquals(
+				param.value, testValue,
+				"Parameter value was set to defined defaultValue when value was not defined [%]".format(testClass.name)
+			);
+		} {|err|
+			this.failed(
+				thisMethod,
+				"Unknown test fail for %\n\t%".format(class, err.errorString)
+			);
+		};
+		});
+	}
+
+	test_ResetSetValueToDefault{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue, wasRun;
+			var name = "my%".format(class.name);
+			var param;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testValue = testClass.makeRandomValue;
+			param = class.new(name);
+			param.value = testClass.makeRandomValue;
+			param.defaultValue = testClass.makeRandomValue;
+			param.reset;
+			this.assertEquals(
+				param.value, param.defaultValue,
+				"Parameter value was set to defaultValue upon reset[%]".format(testClass.name)
+			);
+			wasRun = false;
+			param.action_({arg p; wasRun = true;});
+			param.value = testClass.makeRandomValue;
+			param.defaultValue = testClass.makeRandomValue;
+			param.reset(doActionUponReset: true);
+			this.assert(
+				wasRun,
+				"Parameter action was run upon reset when defined to do so [%]".format(testClass.name)
+			);
+		});
+	}
 //
 //	test_PreventDefaultValueAsNil{
 //		//not sure yet if this should be tested in this class

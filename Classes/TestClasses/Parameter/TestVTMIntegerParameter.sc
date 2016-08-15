@@ -1,4 +1,9 @@
-TestVTMIntegerParameter : VTMUnitTest {
+TestVTMIntegerParameter : TestVTMNumberParameter {
+
+	*makeRandomValue{arg params;
+		^this.makeRandomInteger(params);
+	}
+
 	setUp{
 		"Setting up a VTMIntegerParameterTest".postln;
 	}

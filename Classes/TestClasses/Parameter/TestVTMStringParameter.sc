@@ -1,4 +1,9 @@
-TestVTMStringParameter : VTMUnitTest {
+TestVTMStringParameter : TestVTMValueParameter {
+
+	*makeRandomValue{arg params;
+		^this.makeRandomString(params);
+	}
+
 	setUp{
 		"Setting up a VTMStringParameterTest".postln;
 	}
