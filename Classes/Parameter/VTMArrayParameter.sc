@@ -1,3 +1,9 @@
+/*
+ArrayParameters has items with a defined type.
+Differing from ListParameter in that it doesn't make the actual internal
+sub-parameters, but rather constructs a subparameter interface
+to its internal items(i.e. array elements).
+*/
 VTMArrayParameter : VTMCollectionParameter {
 	var <size = 0;
 	var <fixedSize = false;
@@ -7,7 +13,7 @@ VTMArrayParameter : VTMCollectionParameter {
 		^(val.isArray and: {val.isString.not});
 	}
 
-	type{ ^\array; }
+	*type{ ^\array; }
 
 	prDefaultValueForType{
 		^[];

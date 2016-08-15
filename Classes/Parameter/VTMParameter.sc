@@ -22,8 +22,12 @@ VTMParameter {
 		^val.name.asString.findRegexp("^VTM(.+)Parameter$")[1][1].toLower;
 	}
 
-	type{//only the non-abstract classes will implement this methods
+	*type{
 		this.subclassResponsibility(thisMethod);
+	}
+
+	type{
+		^this.class.type;
 	}
 
 	//factory type constructor

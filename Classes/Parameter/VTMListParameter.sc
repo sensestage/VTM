@@ -1,3 +1,6 @@
+/*
+A ListParameter will have items with arbitrary types.
+*/
 VTMListParameter : VTMCollectionParameter {
 	var <itemType; //Which parameter type to contain in this class
 	var orderThunk;
@@ -7,7 +10,7 @@ VTMListParameter : VTMCollectionParameter {
 		^(val.isArray and: val.isString.not);
 	}
 
-	type{ ^\list; }
+	*type{ ^\list; }
 
 	prDefaultValueForType{
 		^[];
@@ -145,22 +148,6 @@ VTMListParameter : VTMCollectionParameter {
 				res = Association.new(item, ());
 			});
 			res;
-		});
-		^result;
-	}
-
-	value{
-		var result = Dictionary.new;
-		items.collect({arg item;
-			result.put(item.name, item.value);
-		});
-		^result;
-	}
-
-	defaultValue {
-		var result = Dictionary.new;
-		items.collect({arg item;
-			result.put(item.name, item.value);
 		});
 		^result;
 	}

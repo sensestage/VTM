@@ -3,7 +3,7 @@ VTMFunctionParameter : VTMStringParameter {
 		^(val.isKindOf(String) and: val.interpret.isKindOf(Function));
 	}
 
-	type{ ^\function; }
+	*type{ ^\function; }
 
 	prDefaultValueForType{
 		//pass through function

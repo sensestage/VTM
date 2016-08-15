@@ -40,7 +40,7 @@ VTMSchemaParameter : VTMDictionaryParameter {
 		});
 		^result;
 	}
-	type{ ^\schema; }
+	*type{ ^\schema; }
 	prDefaultValueForType{
 		^[];
 	}

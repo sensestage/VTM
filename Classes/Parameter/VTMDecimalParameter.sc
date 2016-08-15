@@ -1,6 +1,6 @@
 VTMDecimalParameter : VTMNumberParameter {
 	isValidType{arg val; val.isKindOf(Float);}
-	type{ ^\decimal; }
+	*type{ ^\decimal; }
 
 	prDefaultValueForType{ ^0.0; }
 

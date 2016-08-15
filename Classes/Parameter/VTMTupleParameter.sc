@@ -1,4 +1,4 @@
-VTMTupleParameter : VTMArrayParameter {
+VTMTupleParameter : VTMListParameter {
 	isValidType{arg val;
 		var result = false;
 		if(super.isValidType(val), {
@@ -7,7 +7,7 @@ VTMTupleParameter : VTMArrayParameter {
 		^result;
 	}
 
-	type{ ^\tuple; }
+	*type{ ^\tuple; }
 	prDefaultValueForType{
 		^[];
 	}

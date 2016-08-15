@@ -4,6 +4,6 @@ VTMDictionaryParameter : VTMCollectionParameter {
 		^val.isKindOf(Dictionary);
 	}
 	value{^value.copy}
-	type{ ^\dictionary; }
+	*type{ ^\dictionary; }
 
 }

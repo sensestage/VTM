@@ -2,7 +2,7 @@ VTMIntegerParameter : VTMNumberParameter {
 	isValidType{arg val;
 		val.isKindOf(Integer);
 	}
-	type{ ^\integer; }
+	*type{ ^\integer; }
 
 	prDefaultValueForType{ ^0; }
 	//this class will accept numbers, either Integers or Floats

@@ -8,7 +8,7 @@ VTMStringParameter : VTMValueParameter {
 	var <pattern = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
-	type{ ^\string; }
+	*type{ ^\string; }
 
 	prDefaultValueForType{ ^""; }
 

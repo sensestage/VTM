@@ -3,7 +3,7 @@ VTMBooleanParameter : VTMValueParameter {
 
 	prDefaultValueForType{ ^false; }
 
-	type{ ^\boolean; }
+	*type{ ^\boolean; }
 
 	isValidType{arg val;
 		^val.isKindOf(Boolean);
