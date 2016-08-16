@@ -33,12 +33,13 @@ VTMParameter {
 	//factory type constructor
 	//In declaration dict 'name' and 'type' is mandatory.
 	*makeFromDeclaration{arg declaration;
+		var decl = declaration.deepCopy;
 		//if 'type' and 'name' is defined in declaration
-		if(declaration.includesKey(\name), {
-			if(declaration.includesKey(\type), {
-				var paramClass = declaration.removeAt(\type);
-				var paramName = declaration.removeAt(\name);
-				^VTMParameter.typeToClass(paramClass).new(paramName, declaration);
+		if(decl.includesKey(\name), {
+			if(decl.includesKey(\type), {
+				var paramClass = decl.removeAt(\type);
+				var paramName = decl.removeAt(\name);
+				^VTMParameter.typeToClass(paramClass).new(paramName, decl);
 			}, {
 				Error("VTMParameter declaration needs type").throw;
 			});
@@ -198,12 +199,13 @@ VTMParameter {
 			\name -> this.name,
 			\path -> this.path,
 			\action -> aFunction,
-			\enabled -> this.enabled
+			\enabled -> this.enabled,
+			\type -> this.type
 		];
 	}
 
 	*attributeKeys{
-		^[\name, \path, \action, \enabled];
+		^[\name, \path, \action, \enabled, \type];
 	}
 
 	makeView{arg parent, bounds, declaration, definition;

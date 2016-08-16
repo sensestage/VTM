@@ -36,18 +36,21 @@ TestVTMParameter : VTMUnitTest {
 	*prConstructAttribute{arg key, data;
 		var result;
 		if(data.notNil, {
-			//if it is a function it will return whatever
-			if(data.isKindOf(Function), {
-				result = data.value;
+			if(data.isKindOf(Association) and: {data.key == \random}, {
+				switch(data.key,
+					//If it is a \random -> (minVal: 7) i.e. \random Assiciation
+					//the class' random function will be used
+					\random, {
+						result = this.prMakeRandomAttribute(key, data.value);
+					},
+					//use the result of the function
+					\function, {
+						result = data.value;
+					}
+				);
 			}, {
-				//If it is a \random -> (minVal: 7) i.e. \random Assiciation
-				//the class random function will be used
-				if(data.isKindOf(Association) and: {data.key == \random}, {
-					result = this.prMakeRandomAttribute(key, data.value);
-				}, {
-					//If it is defined otherwise, use that value
-					result = data;
-				});
+				//If it is defined otherwise, use that value
+				result = data;
 			});
 		}, {
 			//If it is nil we make a random attribute with
@@ -60,7 +63,7 @@ TestVTMParameter : VTMUnitTest {
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		switch(key,
-			\name, {result = this.makeRandomString.value(params)},
+			\name, {result = this.makeRandomString.value(params).asSymbol},
 			\path, {
 				var minLevels, maxLevels;
 				if(params.notNil and: { params.isKindOf(Dictionary) },{
@@ -73,7 +76,7 @@ TestVTMParameter : VTMUnitTest {
 				result = rrand(minLevels,maxLevels).collect({
 					"/%".format(this.makeRandomString.value(params));
 				});
-				result = String.newFrom(result.flat)
+				result = String.newFrom(result.flat).asSymbol;
 			},
 			\enabled, {result = this.makeRandomBoolean.value(params)},
 			\willStore, {result = this.makeRandomBoolean.value(params)},

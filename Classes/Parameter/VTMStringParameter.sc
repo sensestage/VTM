@@ -114,6 +114,4 @@ VTMStringParameter : VTMValueParameter {
 	*attributeKeys{
 		^(super.attributeKeys ++ [\matchPattern, \pattern]);
 	}
-
-
 }

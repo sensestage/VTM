@@ -226,67 +226,75 @@ TestVTMValueParameter : TestVTMParameter {
 				wasRun.not, "ValueParameter action was prevented to run since values where equal"
 			);
 		});
-
 	}
 
-//	test_SetVariablesFromDeclaration{
-//		var param, declaration, wasRun = false;
-//		declaration = (
-//			path: '/myPath', defaultValue: 222, value: 333,
-//			action: {arg p; wasRun = true},
-//			filterRepetitions: true,
-//			typecheck: false
-//		);
-//		param = VTMValueParameter.new('myName', declaration);
-//		this.assert(param.path.notNil,
-//			"ValueParameter path is notNil");
-//		this.assertEquals(
-//			param.path, '/myPath', "ValueParameter path was set through declaration"
-//		);
-//
-//		this.assert(param.fullPath.notNil,
-//			"ValueParameter fullPath is notNil");
-//		this.assertEquals(
-//			param.fullPath, '/myPath/myName', "ValueParameter fullPath was set through declaration"
-//		);
-//
-//		this.assert(param.defaultValue.notNil,
-//			"ValueParameter defaultValue is notNil");
-//		this.assertEquals(
-//			param.defaultValue, 222, "ValueParameter defaultValue was set through declaration"
-//		);
-//
-//		this.assert(param.value.notNil,
-//			"ValueParameter value is notNil");
-//		this.assertEquals(
-//			param.value, 333, "ValueParameter value was set through declaration"
-//		);
-//
-//		param.doAction;
-//		this.assert(wasRun, "ValueParameter action was set through declaration");
-//
-//		this.assert(param.filterRepetitions,
-//			"ValueParameter filterRepetitions was set through declaration");
-//	}
-//
-//
-//	test_GetAttributes{
-//		var declaration = IdentityDictionary[
-//			\path -> '/myValuePath/tester',
-//			\action -> {|p| p.value - 12.3; },
-//			\enabled -> true,
-//			\defaultValue -> -0.2,
-//			\value -> 9.9,
-//			\typecheck -> false,
-//			\filterRepetitions -> true
-//		];
-//		var testAttributes;
-//		var param = VTMValueParameter.new('myValue', declaration);
-//		testAttributes = declaration.deepCopy.put(\name, 'myValue');
-//		testAttributes.put(\action, testAttributes[\action].asCompileString);
-//		this.assertEquals(
-//			param.attributes, testAttributes, "ValueParameter returned correct attributes"
-//		);
-//	}
+	test_SetVariablesFromDeclaration{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param;
+			var testDeclaration, wasRun = false;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testDeclaration = testClass.generateRandomAttributes(
+				[
+					\value,
+					\defaultValue,
+					\path,
+					\action -> {arg p; wasRun = true; },
+					\filterRepetitions,
+					\name,
+					\type -> class.type
+				]
+			);
+			param = VTMParameter.makeFromDeclaration(testDeclaration);
+			[\value, \defaultValue, \path, \name, \filterRepetitions].do({arg item;
+				this.assertEquals(
+					param.perform(item), testDeclaration[item],
+					"Parameter set % through declaration [%]".format(item, class.name)
+				);
+			});
+			param.doAction;
+			this.assert(
+				wasRun,
+				"Parameter action was set through declaration [%]".format(class.name)
+			);
+			param.free;
+		});
+	}
 
+
+	test_GetAttributes{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param;
+			var testDeclaration, testAttributes;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testDeclaration = testClass.generateRandomAttributes(
+				[
+					\value,
+					\defaultValue,
+					\path,
+					\action -> {arg p; 1 + 1 },
+					\filterRepetitions,
+					\name,
+					\type -> class.type,
+					\enabled -> true
+				]
+			);
+			param = VTMParameter.makeFromDeclaration(testDeclaration);
+			testAttributes = testDeclaration.deepCopy;
+			testAttributes.put(\action, testDeclaration[\action].asCompileString);
+			this.assert(
+				testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
+			   	"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
+			);
+//			this.assertEquals(
+//				testAttributes.sect(param.attributes),
+//			   	testAttributes,
+//			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
+//			);
+			param.free;
+		});
+	}
 }
