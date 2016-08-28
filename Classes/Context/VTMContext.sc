@@ -42,13 +42,13 @@ VTMContext {
 		if(name_.isNil, {
 			Error("Context must have name").throw;
 		}, {
-			name = name_;
+			name = name_.asSymbol;
 		});
 		if(declaration_.isNil, {
-			"[%]-MAKING NEW DECLARATION".format(this.name).postln;
+			// "[%]-MAKING NEW DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.new;
 		}, {
-			"[%]-LOADING DECLARATION".format(this.name).postln;
+			// "[%]-LOADING DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.newFrom(declaration_);
 			if(declaration.includesKey(\addr), {
 				addr = declaration[\addr];
@@ -80,7 +80,7 @@ VTMContext {
 		children = IdentityDictionary.new;
 		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
-		envir.put(\runtimedeclaration, this.declaration );// a declaration that can be changed in runtime.
+		// envir.put(\runtimedeclaration, this.declaration );// a declaration that can be changed in runtime.
 
 		fullPathThunk = Thunk.new({
 			"/%".format(name).asSymbol;
@@ -93,6 +93,21 @@ VTMContext {
 
 		//make OSC interface
 		oscInterface = VTMContextOSCInterface.new(this);
+	}
+
+	//The context that calls prepare can issue a condition to use for handling
+	//asynchronous events. If no condition is passed as argument the context will
+	//make its own condition instance.
+	prepare{arg condition;
+		"Trying to prepare '%'".format(this.network.name).postln;
+		if(envir.includesKey(\prepare), {
+			var cond = condition !? {Condition.new};
+			this.execute(\prepare, cond);
+		});
+	}
+
+	run{
+
 	}
 
 	free{

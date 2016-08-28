@@ -37,7 +37,7 @@ VTMNetwork : VTMContext {
 				var remoteName, remoteAddr;
 				"Got network query: %".format([msg, time, addr, port]).postln;
 				//> get the name and the address for the app that queries
-				remoteName = msg[1];
+				remoteName = msg[1].asSymbol;
 				remoteAddr = NetAddr.newFromIPString(msg[2].asString);
 				if(remoteName != this.name, {
 					"Registering new application: %".format([remoteName, remoteAddr]).postln;
