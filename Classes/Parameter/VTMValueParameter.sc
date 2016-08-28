@@ -3,6 +3,8 @@ VTMValueParameter : VTMParameter {
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
 	var <>format;
+	var <options;
+	var <restrictValueToOptions = false;
 
 	prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
@@ -33,7 +35,14 @@ VTMValueParameter : VTMParameter {
 			if(declaration.includesKey(\filterRepetitions), {
 				filterRepetitions = declaration[\filterRepetitions];
 			});
+			if(declaration.includesKey(\options), {
+				options = declaration[\options].asArray;
+			});
+			if(declaration.includesKey(\restrictValueToOptions), {
+				restrictValueToOptions = declaration[\restrictValueToOptions];
+			});
 		});
+		options = options ? [];
 		if(defaultValue.isNil, {
 			this.defaultValue_(this.prDefaultValueForType.deepCopy);
 		});
@@ -52,8 +61,37 @@ VTMValueParameter : VTMParameter {
 		});
 	}
 
+	options_{arg val;
+		//All options must be valid
+		if(val.isKindOf(SequenceableCollection), {
+			if(val.every({arg it; this.isValidType(it)}), {
+				options = val;
+			}, {
+				"%:% - % All options must be valid. [%]".format(
+					this.class.name,
+					thisMethod.name, 
+					this.name,
+					val
+				).warn;
+			});
+		}, {
+			"%:% - % Options must be an array. [%]".format(
+				this.class.name,
+				thisMethod.name, 
+				this.name,
+				val
+			).warn;
+		});
+	}
+
 	value_{arg val;
-		value = val;
+		if(restrictValueToOptions, {
+			if(options.includes(val), {
+				value = val;
+			});
+		}, {
+			value = val;
+		});
 		this.changed(\value);
 	}
 

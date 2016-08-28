@@ -114,13 +114,20 @@ TestVTMParameter : VTMUnitTest {
 
 	test_SettingName{
 		this.class.testClasses.do({arg testClass;
-			var param, name = "my%".format(testClass.name).asSymbol;
-			param = testClass.new(name);
-			this.assertEquals(
-				param.name, name,
-				"Parameter returned 'name' correctly[%]".format(testClass)
-			);
-			param.free;
+			try{
+				var param, name = "my%".format(testClass.name).asSymbol;
+				param = testClass.new(name);
+				this.assertEquals(
+					param.name, name,
+					"Parameter returned 'name' correctly[%]".format(testClass)
+				);
+				param.free;
+			} {|err| 
+				this.failed(thisMethod,
+					"Parameter test failed due to unknown error. [%]\n\t%".format(
+						testClass, err.errorString);
+				)
+			};
 		});
 	}
 
