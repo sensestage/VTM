@@ -170,13 +170,13 @@ VTMApplication {
 				appStartupFile.putString("\t" ++ "declaration: ( )," ++ Char.nl);
 				appStartupFile.putString("\t" ++ "definition: (" ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "prepare: {arg app;" ++ Char.nl);
-				appStartupFile.putString("\t\t\t" ++ "\"Application prepare\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application '%' prepare\".postln;".format(name) ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "run: {arg app;" ++ Char.nl);
-				appStartupFile.putString("\t\t\t" ++ "\"Application run\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application '%' run\".postln;".format(name) ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "free: {arg app;" ++ Char.nl);
-				appStartupFile.putString("\t\t\t" ++ "\"Application free\".postln;" ++ Char.nl);
+				appStartupFile.putString("\t\t\t" ++ "\"Application '%' free\".postln;".format(name) ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "}," ++ Char.nl);
 				appStartupFile.putString("\t" ++ ")" ++ Char.nl);
 				appStartupFile.putString(");");
