@@ -31,10 +31,10 @@ VTMApplication {
 					projectFolder: projectFolder
 				);
 			}, {
-				"loadApplication - Can't find application startup file '%'!".format(appStartupFilePath);
+				"loadApplication - Can't find application startup file '%'!".format(appStartupFilePath).warn;
 			});
 		}, {
-			"loadApplication - Can't find application folder '%'!".format(appFolder);
+			"loadApplication - Can't find application folder '%'!".format(appFolder).warn;
 		});
 	}
 
@@ -45,6 +45,7 @@ VTMApplication {
 		var hardwareDesc, hardwareDef;
 		projectFolder = projectFolder_;
 		applicationFolder = appFolder_;
+
 		if(definition_.notNil, {
 			definition = Environment.newFrom(definition_.deepCopy);
 		}, {
@@ -137,7 +138,7 @@ VTMApplication {
 		projectFolder = path +/+ name;
 		if(File.exists(projectFolder).not, {
 			File.mkdir(projectFolder);
-			appFolder = projectFolder +/+ "Applications"; 
+			appFolder = projectFolder +/+ "Applications";
 			File.mkdir(appFolder);
 			["Definitions", "Declarations"].do({arg item;
 				var folder;
