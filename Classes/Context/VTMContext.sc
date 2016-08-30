@@ -4,7 +4,7 @@ VTMContext {
 	var declaration;
 	var <definition; //this is not really safe so getter will probably be removed
 	var <children;
-	var path ; //an OSC valid path.
+	var path; //an OSC valid path.
 	var fullPathThunk;
 	var <envir;
 	var <addr; //the address for this object instance.

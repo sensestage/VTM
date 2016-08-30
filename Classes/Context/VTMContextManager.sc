@@ -85,12 +85,17 @@ VTMNetworkedContext : VTMContext {
 		var subfolder = whatToLoad.asString.capitalize +/+ this.name.asString.capitalize;
 		var loaderFunc = {arg loadFolder, libraryLevel;
 			var path = PathName(loadFolder);
-			var files = path.entries.select({arg file;
-				file.extension == "scd";
-			});
+			var files, whatToLoadSingular = whatToLoad.asString.drop(-1);
 			var result = IdentityDictionary.new;
+			path.filesDo({arg file;
+				if(file.extension == "scd", {
+					if("^.+_%$".format(whatToLoadSingular).matchRegexp(file.fileNameWithoutExtension), {
+						files = files.add(file);
+					});
+				});
+			});
 			files.do({arg item;
-				var name = item.fileNameWithoutExtension;
+				var name = item.fileNameWithoutExtension.findRegexp("(.+)_.+$")[1][1];
 				var data;
 				//FIXME: Add check if it compiles here.
 				try{
@@ -108,7 +113,7 @@ VTMNetworkedContext : VTMContext {
 					data.put(\libraryLevel, libraryLevel);
 					result.put(name.asSymbol, data);
 				} {|err|
-					"Could not compile % in file '%'".format(whatToLoad.asString.drop(-1), item.fullPath.asString).warn;
+					"Could not compile % in file '%'".format(whatToLoadSingular, item.fullPath.asString).warn;
 				};
 			});
 			result;
