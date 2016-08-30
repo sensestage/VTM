@@ -3,7 +3,19 @@ Test setup with three applications running on the same computer.
 */
 TestVTMApplication : UnitTest {
 
-	test_ApplicationStartup{
+	test_StartApplication{}
+
+	test_InitModuleHost{}
+
+	test_InitSceneOwner{}
+
+	test_InitHardwareSetup{}
+
+	test_FilePaths{
+		//Project paths, global paths, and project paths
+	}
+
+	test_RegisterNetworkApplicationsOnStartup{
 		var result, aaa, bbb, ccc;
 		aaa = VTMApplication.new('aaa');
 		1.wait;
@@ -35,6 +47,8 @@ TestVTMApplication : UnitTest {
 		bbb.quit;
 		ccc.quit;
 	}
+
+	test_LoadApplication{}
 
 	test_StartAppFromFolder{
 		//App is defined in the folder aaa.

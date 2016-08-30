@@ -1,15 +1,34 @@
 VTMApplication {
+	//The environment where all Application level things are happening.
+	var <envir;
+
+	//The object that handles communication with other applications on the network.
 	var <network;
+
+	//Manages scenes
 	var <sceneOwner;
+
+	//Host local static modules
 	var <moduleHost;
+
+	// All hardware devices are managed by this object.
 	var <hardwareSetup;
-	var <filePaths;
+
+	//The loaded declaration of setting for the application.
 	var <declaration;
+
+	//A prototype of an environment (that will be copied into 'envir', where you e.g. can add special functonality
+	//for the application.
 	var <definition;
+
 	var <projectFolder;
+
+	//The folder where the application files are stored.
 	var <applicationFolder;
 
-	//The network[declaration\definition] is admittedly strange here, but keeping it for now.
+	//Used for handling async events.
+	var condition;
+
 	*new{arg name, declaration, definition, projectFolder, applicationFolder;
 		^super.new.initApplication(name, declaration, definition, projectFolder, applicationFolder);
 	}
@@ -51,28 +70,29 @@ VTMApplication {
 		}, {
 			definition = Environment.new;
 		});
+		envir = definition.deepCopy;
 		if(declaration_.notNil, {
 			declaration = Environment.newFrom(declaration_.deepCopy);
 			if(declaration.includesKey(\network), {
 				networkDesc = declaration[\network][\declaration];
 				networkDef = declaration[\network][\definition];
 			});
-			if(declaration.includesKey(\module), {
-				moduleDesc = declaration[\module][\declaration];
-				moduleDef = declaration[\module][\definition];
+			if(declaration.includesKey(\moduleHost), {
+				moduleDesc = declaration[\moduleHost][\declaration];
+				moduleDef = declaration[\moduleHost][\definition];
 			});
-			if(declaration.includesKey(\scene), {
-				sceneDesc = declaration[\scene][\declaration];
-				sceneDef = declaration[\scene][\definition];
+			if(declaration.includesKey(\sceneOwner), {
+				sceneDesc = declaration[\sceneOwner][\declaration];
+				sceneDef = declaration[\sceneOwner][\definition];
 			});
-			if(declaration.includesKey(\hardware), {
-				hardwareDesc = declaration[\hardware][\declaration];
-				hardwareDef = declaration[\hardware][\definition];
+			if(declaration.includesKey(\hardwareSetup), {
+				hardwareDesc = declaration[\hardwareSetup][\declaration];
+				hardwareDef = declaration[\hardwareSetup][\definition];
 			});
 		}, {
 			declaration = Environment.new;
 		});
-		this.prInitFilePaths;
+
 		network = VTMNetwork(name_, this, networkDesc, networkDef);
 		hardwareSetup = VTMHardwareSetup(network, hardwareDesc, hardwareDef);
 		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
@@ -89,13 +109,48 @@ VTMApplication {
 				);
 			});
 		});
+
+		condition = Condition.new;
+		fork{
+			this.prepare;
+			this.run;
+		}
+	}
+
+	//Call functions in the runtime environment with the application as first arg.
+	//The method returns the result from the called function.
+	execute{arg selector ...args;
+		^envir[selector].value(this, *args);
+	}
+
+
+	prepare{
+		//Start hardware devices
+
+		//Start modules
+		moduleHost.prepare(condition);
+
+		//Start scenes
+
+		//Prepare its own envir last as it may depend on other things
+		//to be initialized first.
+		this.execute(\prepare, condition);
+	}
+
+	run{
+
+	}
+
+	free{
+		this.execute(\free, condition);
+		sceneOwner.free(condition);
+		moduleHost.free(condition);
+		hardwareSetup.free(condition);
+		network.free(condition);
 	}
 
 	quit{
-		sceneOwner.free;
-		moduleHost.free;
-		hardwareSetup.free;
-		network.free;
+		this.free;
 	}
 
 	prLoadProjectFolder{arg pathName;
@@ -112,15 +167,6 @@ VTMApplication {
 		[hardwareSetup, moduleHost, sceneOwner].do({arg item;
 			item.loadLibrary;
 		});
-	}
-
-	prInitFilePaths{
-		filePaths = IdentityDictionary.new;
-		filePaths[\vtm] = PathName(
-			PathName(this.class.filenameSymbol.asString).parentPath
-		).parentPath;
-		filePaths[\moduleDefintions] = filePaths[\vtm] +/+ "ModuleDefintions";
-		filePaths[\hardwareDefinitions] = filePaths[\vtm] +/+ "HardwareDefinitions";
 	}
 
 	name{
@@ -202,7 +248,7 @@ VTMApplication {
 	}
 
 	*vtmPath{
-	   	^PathName(PathName( VTMApplication.filenameSymbol.asString ).parentPath).parentPath;
+		^PathName(PathName( VTMApplication.filenameSymbol.asString ).parentPath).parentPath;
 	}
 
 	applicationPath{

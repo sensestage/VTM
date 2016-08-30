@@ -19,25 +19,26 @@ VTMModuleHost : VTMNetworkedContext {
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//
-	loadModuleDeclaration{arg name, declaration, moduleDefinition;
+	loadModuleDeclaration{arg declaration, moduleDefinition;
 		var newModule;
 		try{
-			newModule = factory.build(name, declaration, moduleDefinition);
+			newModule = factory.build(declaration, moduleDefinition);
 
 			//The factory may throw error when building the module, but
 			//added an extra check here
 			if(newModule.isNil, {
 				Error("Module % failed to build".format(name)).throw;
-				}, {
-					this.loadModule(newModule);
+			}, {
+				this.loadModule(newModule);
 			});
 		} {|err|
-			"Module cue build error".warn;
+			"Module build error for module name: '%'".format(declaration[\name]).warn;
 			err.throw;
 		};
+		^newModule;
 	}
 
-	loadModuleJSONCue{arg name, declarationJSONString, moduleDefinition;
+	loadModuleJSONCue{arg declarationJSONString, moduleDefinition;
 		var moduleDeclaration;
 		//parse JSON string
 		try{
@@ -46,7 +47,7 @@ VTMModuleHost : VTMNetworkedContext {
 			"Module JSON cue parser error".warn;
 			err.postln;
 		};
-		this.loadModuleDeclaration(name, moduleDeclaration, moduleDefinition);
+		this.loadModuleDeclaration(moduleDeclaration, moduleDefinition);
 	}
 
 	//can be either a .json file or a .scd file
@@ -77,18 +78,33 @@ VTMModuleHost : VTMNetworkedContext {
 				"Error reading file".warn;
 				err.postln;
 			};
-			}, {
-				"Module file not found: %".format(pathName).warn;
+		}, {
+			"Module file not found: %".format(pathName).warn;
 		});
 	}
 
 	loadModule{arg module;
 		if(module.isKindOf(VTMModule), {
 			this.addChild(module);
-			}, {|err|
-				"Tried to load object of wrong type: %".format(module).warn;
-				err.postln;
+		}, {|err|
+			"Tried to load object of wrong type: %".format(module).warn;
+			err.postln;
 		});
+	}
+
+	prepare{arg condition;
+		forkIfNeeded{
+			if(declaration.includesKey(\modules), {
+				declaration[\modules].do({arg modDec;
+					var mod;
+					mod = this.loadModuleDeclaration(modDec);
+					if(mod.notNil, {
+						mod.prepare(condition);
+						mod.run(condition);
+					});
+				});
+			});
+		};
 	}
 
 

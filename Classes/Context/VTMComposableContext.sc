@@ -9,27 +9,6 @@ VTMComposableContext : VTMContext {
 		"VTMComposableContext initialized".postln;
 	}
 
-	prepare{
-		envir.use{
-			~prepare.value(this);
-			this.prChangeState(\prepared);
-		};
-	}
-
-	run{
-		envir.use{
-			~run.value(this);
-			this.prChangeState(\running);
-		};
-	}
-
-	free{
-		envir.use{
-			~free.value(this);
-		};
-		super.free;//superclass changes the state
-	}
-
 	subcontexts{	^subcontexts.value; }
 	nonSubcontexts{	^nonSubcontexts.value; }
 	isSubcontext{ ^this.parent.isKindOf(this.class); }

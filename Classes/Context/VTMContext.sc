@@ -56,9 +56,9 @@ VTMContext {
 		});
 
 		if(definition_.isNil, {
-			definition = IdentityDictionary.new;
+			definition = Environment.new;
 		}, {
-			definition = IdentityDictionary.newFrom(definition_);
+			definition = Environment.newFrom(definition_);
 		});
 		if(addr.isNil, {
 			addr = NetAddr.localAddr;
@@ -99,9 +99,10 @@ VTMContext {
 	//asynchronous events. If no condition is passed as argument the context will
 	//make its own condition instance.
 	prepare{arg condition;
-		"Trying to prepare '%'".format(this.network.name).postln;
+		"Trying to prepare '%'".format(this.name).postln;
 		if(envir.includesKey(\prepare), {
 			var cond = condition !? {Condition.new};
+			"I was super super super".postln;
 			this.execute(\prepare, cond);
 		});
 	}

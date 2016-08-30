@@ -1,20 +1,15 @@
 //children may be Parameter and Module
 VTMModule : VTMComposableContext {
-	var <declaration;
-	var <definition;
 	var <parameterOrder;
-	var <defName;
 	var parameters;
 	var submodules;
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initModule;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initModule;
 	}
 
 	initModule{
-		envir = definition.deepCopy;
-		defName = declaration[\def] ? \none;
-		this.makeParameters;
+		// this.makeParameters;
 
 		//it is only the "real" implementation classes that will know when it
 		//has been properly initialized
