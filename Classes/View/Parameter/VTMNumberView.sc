@@ -1,4 +1,4 @@
-VTMNumberView : VTMScalarParameterView {
+VTMNumberView : VTMNumberParameterView {
 	var numberView;
 	var round;
 	var <decimals;

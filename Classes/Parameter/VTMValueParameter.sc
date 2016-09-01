@@ -1,16 +1,16 @@
 VTMValueParameter : VTMParameter {
 	var value;
-	var <>typecheck = true;//for checking type when value is set, adds overhead and safety.
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
+	var <>format;
+	var <options;
+	var <restrictValueToOptions = false;
 
 	prDefaultValueForType{
-		//this.subclassResponsibility(thisMethod);//this will be uncommented when test class setup is subclass testing
-		^nil;
+		this.subclassResponsibility(thisMethod);
 	}
 
 	//This is an abstract class and can not be used directly.
-	//Use AnythingParameter for parameters that can receive any value type.
 	*new{arg name, declaration;
 		^super.new(name, declaration).initValueParameter;
 	}
@@ -19,11 +19,13 @@ VTMValueParameter : VTMParameter {
 		^value;
 	}
 
-	//this class will accept any type
-	*isValidType{arg val; ^true; }
+	//only non-abstract sub classes will implement this.
+	isValidType{arg val; 
+		this.subclassResponsibility(thisMethod);
+   	}
 
 	initValueParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\defaultValue), {
 				this.defaultValue_(declaration[\defaultValue]);
 			});
@@ -33,7 +35,14 @@ VTMValueParameter : VTMParameter {
 			if(declaration.includesKey(\filterRepetitions), {
 				filterRepetitions = declaration[\filterRepetitions];
 			});
+			if(declaration.includesKey(\options), {
+				options = declaration[\options].asArray;
+			});
+			if(declaration.includesKey(\restrictValueToOptions), {
+				restrictValueToOptions = declaration[\restrictValueToOptions];
+			});
 		});
+		options = options ? [];
 		if(defaultValue.isNil, {
 			this.defaultValue_(this.prDefaultValueForType.deepCopy);
 		});
@@ -52,20 +61,38 @@ VTMValueParameter : VTMParameter {
 		});
 	}
 
-	value_{arg val, omitTypecheck = false; //don't do typecheck if already performed in subclass
-		if(typecheck or: {omitTypecheck.not}, {
-			if(this.class.isValidType(val), {
-				value = val;
-				this.changed(\value);
+	options_{arg val;
+		//All options must be valid
+		if(val.isKindOf(SequenceableCollection), {
+			if(val.every({arg it; this.isValidType(it)}), {
+				options = val;
 			}, {
-				"ValueParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
+				"%:% - % All options must be valid. [%]".format(
+					this.class.name,
+					thisMethod.name, 
+					this.name,
+					val
 				).warn;
 			});
 		}, {
-			value = val;
-			this.changed(\value);
+			"%:% - % Options must be an array. [%]".format(
+				this.class.name,
+				thisMethod.name, 
+				this.name,
+				val
+			).warn;
 		});
+	}
+
+	value_{arg val;
+		if(restrictValueToOptions, {
+			if(options.includes(val), {
+				value = val;
+			});
+		}, {
+			value = val;
+		});
+		this.changed(\value);
 	}
 
 	valueAction_{arg val;
@@ -91,13 +118,12 @@ VTMValueParameter : VTMParameter {
 		^super.attributes.putAll(IdentityDictionary[
 			\value -> this.value,
 			\defaultValue -> this.defaultValue,
-			\filterRepetitions -> this.filterRepetitions,
-			\typecheck -> this.typecheck
+			\filterRepetitions -> this.filterRepetitions
 		]);
 	}
 
 	*attributeKeys{
-		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \typecheck]);
+		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions]);
 	}
 
 }

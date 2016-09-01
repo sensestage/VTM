@@ -1,5 +1,8 @@
-VTMIntegerParameter : VTMScalarParameter {
-	type{ ^\integer; }
+VTMIntegerParameter : VTMNumberParameter {
+	isValidType{arg val;
+		^val.isKindOf(Integer);
+	}
+	*type{ ^\integer; }
 
 	prDefaultValueForType{ ^0; }
 	//this class will accept numbers, either Integers or Floats
@@ -39,5 +42,13 @@ VTMIntegerParameter : VTMScalarParameter {
 			val = val.asInteger;
 		});
 		super.defaultValue_(val);
+	}
+
+	format{
+		^"^-?\\d+$";
+	}
+
+	format_{
+		this.shouldNotImplement(thisMethod);
 	}
 }

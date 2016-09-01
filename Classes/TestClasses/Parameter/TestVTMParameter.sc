@@ -1,72 +1,93 @@
 TestVTMParameter : VTMUnitTest {
-	var testClasses;
+	classvar <testClasses;
+	*initClass{
+		testClasses = [
+			VTMBooleanParameter,
+			VTMStringParameter,
+			VTMListParameter,
+			VTMDictionaryParameter,
+			VTMArrayParameter,
+			VTMFunctionParameter,
+			VTMTimecodeParameter,
+			VTMDecimalParameter,
+			VTMIntegerParameter,
+			VTMSchemaParameter,
+			VTMTupleParameter
+		];
+	}
 
-	getRandom{arg val, desc, obj;
-		var result;
-		var generateRandomString = {
-			var str;
-			var charSet = (0..127).collect(_.asAscii).select(_.isAlphaNum);
-			str = { charSet.choose } ! rrand(2, 16);
-			String.newFrom(str.scramble);
-		};
-		switch(val,
-			\name, { result = generateRandomString.value; },
-			\path, {
-				var pt = {"/" ++ generateRandomString.value} ! rrand(1, 3);
-				result = String.newFrom(pt.flat);
-			},
-			\enabled, {result = 0.5.coin; }
-		);
+	*generateRandomAttributes{arg description;
+		var result = IdentityDictionary.new;
+		if(description.notNil, {
+			description.do({arg item;
+				if(item.isKindOf(Symbol), {
+					result.add(this.prConstructAttribute(item));
+				});
+				if(item.isKindOf(Association), {
+					result.add(
+						this.prConstructAttribute(item.key, item.value);
+					);
+				});
+			});
+		});
 		^result;
 	}
 
-	makeParameter{arg declaration, randomAttributes;
-		var result, desc = declaration.deepCopy;
-		if(randomAttributes.notNil, {
-			randomAttributes.do({arg item;
-				var val;
-				val = this.getRandom(item);
-				"Generating random for: %".format(item).postln;
-				desc.put(item, val);
-				"GOT : %".format(val).postln;
+	*prConstructAttribute{arg key, data;
+		var result;
+		if(data.notNil, {
+			if(data.isKindOf(Association) and: {data.key == \random}, {
+				switch(data.key,
+					//If it is a \random -> (minVal: 7) i.e. \random Assiciation
+					//the class' random function will be used
+					\random, {
+						result = this.prMakeRandomAttribute(key, data.value);
+					},
+					//use the result of the function
+					\function, {
+						result = data.value;
+					}
+				);
+			}, {
+				//If it is defined otherwise, use that value
+				result = data;
 			});
+		}, {
+			//If it is nil we make a random attribute with
+			//undefined parameters.
+			result = this.prMakeRandomAttribute(key);
 		});
-		// desc.put(\type, VTMParameter.classToType(this.class.name.asString.findRegexp("^Test(.+)$")[1][1]).interpret);
-		"this class: %\n\t_got obj class: %\n\t_ resolveds to: %".format(
-			this.class.name,
-			this.class.name.asString.findRegexp("^Test(.+)$")[1][1],
-			VTMParameter.typeToClass(this.class.name.asString.findRegexp("^Test(.+)$")[1][1])
-		).postln;
-		"DESC before make: %".format(desc).postln;
-		result = VTMParameter.makeFromDeclaration(desc);
+		^Association.new(key, result);
+	}
+
+	*prMakeRandomAttribute{arg key, params;
+		var result;
+		switch(key,
+			\name, {result = this.makeRandomString.value(params).asSymbol},
+			\path, {
+				var minLevels, maxLevels;
+				if(params.notNil and: { params.isKindOf(Dictionary) },{
+					minLevels = params[\minLevels] ? 1;
+					maxLevels = params[\maxLevels] ? 3;
+				}, {
+					minLevels = 1;
+					maxLevels = 3;
+				});
+				result = rrand(minLevels,maxLevels).collect({
+					"/%".format(this.makeRandomString.value(params));
+				});
+				result = String.newFrom(result.flat).asSymbol;
+			},
+			\enabled, {result = this.makeRandomBoolean.value(params)},
+			\willStore, {result = this.makeRandomBoolean.value(params)},
+			\onlyReturn, {result = this.makeRandomBoolean.value(params)},
+			{result = nil;}
+		);
 		^result;
 	}
 
 	setUp{
 		"Setting up a VTMParameterTest".postln;
-		testClasses = [
-			VTMMessageParameter,
-			VTMReturnParameter,
-			//VTMValueParameter, //abstract class, don't test
-			VTMBooleanParameter,
-			VTMTimecodeParameter,
-			VTMSelectionParameter,
-			VTMSymbolParameter,
-			VTMOptionParameter,
-			VTMDictionaryParameter,
-			VTMScalarParameter,
-			// VTMListParameter,
-			VTMAnythingParameter,
-			VTMStringParameter,
-			VTMSchemaParameter,
-			VTMIntegerParameter,
-			VTMDecimalParameter,
-			// VTMAnythingArrayParameter,
-			// VTMSymbolArrayParameter,
-			// VTMIntegerArrayParameter,
-			// VTMStringArrayParameter,
-			// VTMDecimalArrayParameter
-		];
 	}
 
 	tearDown{
@@ -74,153 +95,176 @@ TestVTMParameter : VTMUnitTest {
 	}
 
 	test_ShouldErrorIfNameNotDefined{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			try{
-				var aParameter;
-				aParameter = testClass.new();
+				var param;
+				param = testClass.new();
 				this.failed(
 					thisMethod,
 					"Parameter should fail if name not defined [%]".format(testClass)
 				);
+				param.free;
 			} {|err|
 				this.passed(thisMethod,
 					"Parameter failed correctly when name was not defined. [%]".format(testClass)
 				)
 			}
+		});
+	}
 
+	test_SettingName{
+		this.class.testClasses.do({arg testClass;
+			try{
+				var param, name = "my%".format(testClass.name).asSymbol;
+				param = testClass.new(name);
+				this.assertEquals(
+					param.name, name,
+					"Parameter returned 'name' correctly[%]".format(testClass)
+				);
+				param.free;
+			} {|err| 
+				this.failed(thisMethod,
+					"Parameter test failed due to unknown error. [%]\n\t%".format(
+						testClass, err.errorString);
+				)
+			};
 		});
 	}
 
 	test_ReturnFullPathAsPrefixedNameByDefault{
-		testClasses.do({arg testClass;
-			var aParameter, name = "my%".format(testClass.name).asSymbol;
-			aParameter = testClass.new(name);
+		this.class.testClasses.do({arg testClass;
+			var param, name = "my%".format(testClass.name).asSymbol;
+			param = testClass.new(name);
 			this.assertEquals(
-				aParameter.fullPath, "/%".format(name).asSymbol,
+				param.fullPath, "/%".format(name).asSymbol,
 				"Parameter returned 'fullPath' with 'name' prefixed with slash [%]".format(testClass)
 			);
+			param.free;
 		});
 	}
 
 	test_ReturnPathAsAsNilIfNotSet{
-		testClasses.do({arg testClass;
-			var aParameter, name = "my%".format(testClass.name).asSymbol;
-			aParameter = testClass.new(name);
+		this.class.testClasses.do({arg testClass;
+			var param, name = "my%".format(testClass.name).asSymbol;
+			param = testClass.new(name);
 			this.assertEquals(
-				aParameter.path, nil,
+				param.path, nil,
 				"Parameter returned 'path' as nil. [%]".format(testClass)
 			);
-
+			param.free;
 		});
 	}
 
 	test_RemoveLeadingSlashInNameIfDefined{
-		testClasses.do({arg testClass;
-			var aParameter, name = "my%".format(testClass.name).asSymbol;
-			aParameter = testClass.new("/%".format(name).asSymbol);
+		this.class.testClasses.do({arg testClass;
+			var param, name = "my%".format(testClass.name).asSymbol;
+			param = testClass.new("/%".format(name).asSymbol);
 			this.assertEquals(
-				aParameter.name, name,
+				param.name, name,
 				"Parameter: Uneccesary leading slash in name removed. [%]".format(testClass)
 			);
+			param.free;
 		});
 	}
 
 	test_SetGetPathAndFullPath{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParameter = testClass.new(name);
+			var param = testClass.new(name);
 			var aPath = '/myPath';
-			aParameter.path = aPath;
+			param.path = aPath;
 			this.assertEquals(
-				aParameter.path, '/myPath',
+				param.path, '/myPath',
 				"Parameter return correct path [%]".format(testClass.name)
 			);
 			this.assertEquals(
-				aParameter.fullPath, "/myPath/%".format(name).asSymbol,
+				param.fullPath, "/myPath/%".format(name).asSymbol,
 				"Parameter return correct fullPath [%]".format(testClass)
 			);
-
+			param.free;
 		});
 	}
 
 	test_AddLeadingSlashToPathIfNotDefined{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParameter = testClass.new(name);
-			aParameter.path = 'myPath';
+			var param = testClass.new(name);
+			param.path = 'myPath';
 			this.assertEquals(
-				aParameter.path, '/myPath',
+				param.path, '/myPath',
 				"Parameter leading path slash was added. [%]".format(testClass)
 			);
 			this.assertEquals(
-				aParameter.fullPath, "/myPath/%".format(name).asSymbol,
+				param.fullPath, "/myPath/%".format(name).asSymbol,
 				"Parameter leading path slash was added. [%]".format(testClass)
 			);
+			param.free;
 		});
 	}
 
 	test_SetAndDoActionWithParamAsArg{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParameter = testClass.new(name);
+			var param = testClass.new(name);
 			var wasRun = false;
-			var gotParamAsArg;
-			aParameter.action = {arg param;
+			var gotParamAsArg = false;
+			param.action = {arg param;
 				wasRun = true;
-				gotParamAsArg = param === aParameter;
+				gotParamAsArg = param === param;
 			};
-			aParameter.doAction;
+			param.doAction;
 			this.assert(
 				wasRun and: {gotParamAsArg},
 				"Parameter action was set, run and got passed itself as arg. [%]".format(testClass.name)
 			);
+			param.free;
 		});
 	}
 
 	test_SetGetRemoveEnableAndDisableAction{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParam = testClass.new(name);
+			var param = testClass.new(name);
 			var wasRun, aValue;
 			var anAction, anotherAction;
 			anAction = {arg param; wasRun = true; };
 			anotherAction = {arg param; wasRun = true; };
 
 			//action should point to identical action as defined
-			aParam.action = anAction;
+			param.action = anAction;
 			this.assert(
-				anAction === aParam.action, "Parameter action point to correct action");
+				anAction === param.action, "Parameter action point to correct action");
 
 			//Remove action
-			aParam.action = nil;
-			this.assert(aParam.action.isNil, "Removed Parameter action succesfully");
+			param.action = nil;
+			this.assert(param.action.isNil, "Removed Parameter action succesfully");
 
 			//should be enabled by default
-			this.assert( aParam.enabled, "Parameter should be enabled by default" );
+			this.assert( param.enabled, "Parameter should be enabled by default" );
 
 			//disable should set 'enabled' false
-			aParam.disable;
-			this.assert( aParam.enabled.not, "Parameter should be disabled by calling '.disable'" );
+			param.disable;
+			this.assert( param.enabled.not, "Parameter should be disabled by calling '.disable'" );
 
 			//disable should prevent action from being run
 			wasRun = false;
-			aParam.action = anAction;
-			aParam.doAction;
+			param.action = anAction;
+			param.doAction;
 			this.assert(wasRun.not, "Parameter action was prevented to run by disable");
 
 			//We should still be able to acces the action instance
 			this.assert(
-				aParam.action.notNil and: {aParam.action === anAction},
+				param.action.notNil and: {param.action === anAction},
 				"Wasn't able to access parameter action while being disabled"
 			);
 
 			//enable should set 'enabled' true
-			aParam.enable;
-			this.assert(aParam.enabled, "Parameter was enabled again");
+			param.enable;
+			this.assert(param.enabled, "Parameter was enabled again");
 
 			//enable should allow action to be run
 			wasRun = false;
-			aParam.doAction;
+			param.doAction;
 			this.assert(wasRun, "Parameter enabled, reenabled action to run");
 
 			//If another action is set when parameter is disabled, the
@@ -228,30 +272,31 @@ TestVTMParameter : VTMUnitTest {
 			//again
 			anAction = {arg param; aValue = 111;};
 			anotherAction = {arg param; aValue = 222;};
-			aParam.action = anAction;
-			aParam.disable;
-			aParam.action = anotherAction;
-			aParam.enable;
-			aParam.doAction;
-			this.assert(aParam.action === anotherAction and: { aValue == 222; },
+			param.action = anAction;
+			param.disable;
+			param.action = anotherAction;
+			param.enable;
+			param.doAction;
+			this.assert(param.action === anotherAction and: { aValue == 222; },
 				"Parameter action was changed correctly during disabled state"
 			);
 
 			//Action should be run upon enable if optionally defined in enable call
 			wasRun = false;
-			aParam.disable;
-			aParam.action = {arg param; wasRun = true; };
-			aParam.enable(doActionWhenEnabled: true);
+			param.disable;
+			param.action = {arg param; wasRun = true; };
+			param.enable(doActionWhenEnabled: true);
 			this.assert(wasRun,
 				"Parameter action was optionally performed on enabled");
+			param.free;
 		});
 
 	}
 
 	test_SetVariablesThroughDeclaration{
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var aParam, aDeclaration, anAction;
+			var param, aDeclaration, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
 			aDeclaration = (
@@ -259,36 +304,37 @@ TestVTMParameter : VTMUnitTest {
 				path: '/myPath',
 				enabled: false,
 			);
-			aParam = testClass.new(name, aDeclaration);
+			param = testClass.new(name, aDeclaration);
 
 			//path is set through declaration
-			this.assertEquals(aParam.path, '/myPath',
+			this.assertEquals(param.path, '/myPath',
 				"Path was defined through declaration"
 			);
-			this.assertEquals(aParam.fullPath, "/myPath/%".format(name).asSymbol,
+			this.assertEquals(param.fullPath, "/myPath/%".format(name).asSymbol,
 				"Full path was defined through declaration"
 			);
 			//enabled is set through declaration
-			this.assert(aParam.enabled.not,
+			this.assert(param.enabled.not,
 				"Parameter was disabled through declaration"
 			);
 
 			//action is set through declaration
-			aParam.enable; //Reenable parameter
-			aParam.doAction;
-			this.assert(wasRun and: {aParam.action === anAction},
+			param.enable; //Reenable parameter
+			param.doAction;
+			this.assert(wasRun and: {param.action === anAction},
 				"Parameter action was set through declaration"
 			);
+			param.free;
 		});
 	}
-
-	test_ParameterFree{
-		//Should free responders, internal parameters, mappings, and oscInterface
-	}
-
+//
+//	test_ParameterFree{
+//		//Should free responders, internal parameters, mappings, and oscInterface
+//	}
+//
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
-		testClasses.do({arg testClass;
+		this.class.testClasses.do({arg testClass;
 			var testName = "my%".format(testClass.name).asSymbol;
 			var wasRun = false;
 			var declaration = IdentityDictionary[
@@ -315,6 +361,7 @@ TestVTMParameter : VTMUnitTest {
 				param.attributes[\action].isNil,
 				"Parameter returned open function as nil. [%]".format(testClass.name)
 			);
+			param.free;
 		});
 
 	}

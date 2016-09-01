@@ -1,25 +1,17 @@
-VTMScalarParameter : VTMValueParameter {
+VTMNumberParameter : VTMValueParameter {
 	var <minVal;
 	var <maxVal;
 	var <stepsize = 0;
 	var <clipmode = \none;
 	var <dataspace;//Optional instance of VTMDataspace
-	var <scheduler;//Where instances of VTMScalarInterpolator will be
-
-	prDefaultValueForType{ ^0.0; }
-
-	type{ ^\scalar; }
-
-	//this class will accept numbers, either Integers or Decimals
-	*isValidType{arg val; ^val.isKindOf(SimpleNumber); }
-
+	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
 	*new{arg name, declaration;
-		^super.new(name, declaration).initScalarParameter;
+		^super.new(name, declaration).initNumberParameter;
 	}
 
-	initScalarParameter{
-		if(declaration.notNil, {
+	initNumberParameter{
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\clipmode), {
 				this.clipmode = declaration[\clipmode];
 			});
@@ -40,12 +32,12 @@ VTMScalarParameter : VTMValueParameter {
 			minVal = nil;
 			this.changed(\minVal);
 		}, {
-			if(this.class.isValidType(val), {
+			if(this.isValidType(val), {
 				minVal = val;
 				this.changed(\minVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"ScalarParameter:minVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
+				"NumberParameter:minVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
 					this.fullPath, val, val.class
 				).warn;
 			});
@@ -57,12 +49,12 @@ VTMScalarParameter : VTMValueParameter {
 			maxVal = nil;
 			this.changed(\maxVal);
 		}, {
-			if(this.class.isValidType(val), {
+			if(this.isValidType(val), {
 				maxVal = val;
 				this.changed(\maxVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"ScalarParameter:maxVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
+				"NumberParameter:maxVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
 					this.fullPath, val, val.class
 				).warn;
 			});
@@ -72,17 +64,17 @@ VTMScalarParameter : VTMValueParameter {
 
 	stepsize_{ arg val;
 		var newVal = val;
-		if(this.class.isValidType(val), {
+		if(this.isValidType(val), {
 			if(newVal.isNegative, {
 				newVal = newVal.abs;
-				"ScalarParameter:stepsize_ '%' - val converted to positive value".format(
+				"NumberParameter:stepsize_ '%' - val converted to positive value".format(
 					this.fullPath
 				).warn;
 			});
 			stepsize = newVal;
 			this.changed(\stepsize);
 		}, {
-			"ScalarParameter:stepsize_ '%' - ignoring val because of invalid type: '%[%]'".format(
+			"NumberParameter:stepsize_ '%' - ignoring val because of invalid type: '%[%]'".format(
 				this.fullPath, val, val.class
 			).warn;
 		});
@@ -95,41 +87,20 @@ VTMScalarParameter : VTMValueParameter {
 			this.value_(this.value);//update the value, might be clipped in the value set method
 			this.changed(\clipmode);
 		}, {
-			"ScalarParameter:clipmode_ '%' - ignoring val because of invalid type: '%[%]'".format(
+			"NumberParameter:clipmode_ '%' - ignoring val because of invalid type: '%[%]'".format(
 				this.fullPath, val, val.class
 			).warn;
 		});
 	}
 
-	value_{arg val, omitTypecheck = false;
-		if(typecheck or: {omitTypecheck.not}, {
-			if(this.class.isValidType(val), {
-				super.value_(
-					this.prCheckRangeAndClipValue(val),
-					omitTypecheck: true
-				);
-			}, {
-				"ScalarParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
-			super.value_( this.prCheckRangeAndClipValue(val) );
-		});
+	value_{arg val;
+		super.value_(
+			this.prCheckRangeAndClipValue(val)
+		);
 	}
 
 	defaultValue_{arg val;
-		if(typecheck, {
-			if(this.class.isValidType(val), {
-				defaultValue = this.prCheckRangeAndClipValue(val);
-			}, {
-				"ScalarParameter:defaultValue_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
-			defaultValue = val;
-		});
+		defaultValue = this.prCheckRangeAndClipValue(val);
 	}
 
 	increment{arg doAction = true;

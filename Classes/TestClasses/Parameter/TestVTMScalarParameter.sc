@@ -1,54 +1,54 @@
-TestVTMScalarParameter : VTMUnitTest {
+TestVTMNumberParameter : TestVTMValueParameter {
 	setUp{
-		"Setting up a VTMScalarParameterTest".postln;
+		"Setting up a VTMNumberParameterTest".postln;
 	}
 
 	tearDown{
-		"Tearing down a VTMScalarParameterTest".postln;
+		"Tearing down a VTMNumberParameterTest".postln;
 	}
 
 	test_DefaultAttributes{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		//defaultValue should default to the class default value
 		this.assertEquals(
-			param.defaultValue, param.prDefaultValueForType, "ScalarParameter defaultValue defaults to 0"
+			param.defaultValue, param.prDefaultValueForType, "NumberParameter defaultValue defaults to 0"
 		);
 		//value should default to 0 if value not defined
 		this.assertEquals(
-			param.value, param.defaultValue, "ScalarParameter value defaults to 0"
+			param.value, param.defaultValue, "NumberParameter value defaults to 0"
 		);
 		//stepsize should default to 0
 		this.assertEquals(
-			param.stepsize, 0, "ScalarParameter stepsize defaults to 0"
+			param.stepsize, 0, "NumberParameter stepsize defaults to 0"
 		);
 		//clipmode should default to 'none'
 		this.assertEquals(
-			param.clipmode, \none, "ScalarParameter clipmode defaults to 'none'"
+			param.clipmode, \none, "NumberParameter clipmode defaults to 'none'"
 		);
 		//minVal should default to nil (this might change later)
 		this.assert(
-			param.minVal.isNil, "ScalarParameter minVal defaults to nil"
+			param.minVal.isNil, "NumberParameter minVal defaults to nil"
 		);
 		//maxVal should default to nil (this might change later)
 		this.assert(
-			param.maxVal.isNil, "ScalarParameter maxVal defaults to nil"
+			param.maxVal.isNil, "NumberParameter maxVal defaults to nil"
 		);
 	}
 
 	test_SetGetValue{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue = 50;
 		//SetGet 'value'
 		param.value = testValue;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter value was set"
+			param.value, testValue, "NumberParameter value was set"
 		);
 	}
 
 	test_OnlyTypecheckWhenTypecheckIsTrue{}
 
 	test_OnlyCheckRangesWhenMinValAndMaxValAreDefined{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue = 50;
 
 		//Should only check higher values when maxVal is not nil
@@ -57,44 +57,44 @@ TestVTMScalarParameter : VTMUnitTest {
 	}
 
 	test_SetGetAttributes{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue;
 		//SetGet 'minVal'
 		testValue = -2;
 		param.minVal = testValue;
 		this.assertEquals(
-			param.minVal, testValue, "ScalarParameter minVal was set"
+			param.minVal, testValue, "NumberParameter minVal was set"
 		);
 		//SetGet 'maxVal'
 		testValue = 200;
 		param.maxVal = testValue;
 		this.assertEquals(
-			param.maxVal, testValue, "ScalarParameter maxVal was set"
+			param.maxVal, testValue, "NumberParameter maxVal was set"
 		);
 		//SetGet 'stepsize'
 		testValue = 11;
 		param.stepsize = testValue;
 		this.assertEquals(
-			param.stepsize, testValue, "ScalarParameter stepsize was set"
+			param.stepsize, testValue, "NumberParameter stepsize was set"
 		);
 		//SetGet 'clipmode'
 		testValue = \high;
 		param.clipmode = testValue;
 		this.assertEquals(
-			param.clipmode, testValue, "ScalarParameter clipmode was set"
+			param.clipmode, testValue, "NumberParameter clipmode was set"
 		);
 	}
 
 	test_IgnoreAndWarnOnWrongTypes{
 		var testValue;
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 
 		//Should ignore and warn on wrong 'minVal' type
 		testValue = -100;
 		param.minVal = testValue;
 		param.minVal = \notAValidValue;
 		this.assertEquals(
-			param.minVal, testValue, "ScalarParameter minVal wasn't changed by val of invalid type"
+			param.minVal, testValue, "NumberParameter minVal wasn't changed by val of invalid type"
 		);
 
 		//Should ignore and warn on wrong 'maxVal' type
@@ -102,7 +102,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.maxVal = testValue;
 		param.maxVal = \notAValidValue;
 		this.assertEquals(
-			param.maxVal, testValue, "ScalarParameter maxVal wasn't changed by val of invalid type"
+			param.maxVal, testValue, "NumberParameter maxVal wasn't changed by val of invalid type"
 		);
 
 		//Should ignore and warn on wrong 'stepsize' type
@@ -110,7 +110,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.stepsize = testValue;
 		param.stepsize = \notAValidValue;
 		this.assertEquals(
-			param.stepsize, testValue, "ScalarParameter stepsize wasn't changed by val of invalid type"
+			param.stepsize, testValue, "NumberParameter stepsize wasn't changed by val of invalid type"
 		);
 
 		//Should ignore and warn on wrong 'clipmode' type
@@ -118,7 +118,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = testValue;
 		param.clipmode = 4321;
 		this.assertEquals(
-			param.clipmode, testValue, "ScalarParameter clipmode wasn't changed by val of invalid type"
+			param.clipmode, testValue, "NumberParameter clipmode wasn't changed by val of invalid type"
 		);
 
 		//Should ignore and warn on wrong 'value' type
@@ -127,12 +127,12 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.value = testValue;
 		param.value = \notAValidValueType;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter value wasn't changed by val of invalid type"
+			param.value, testValue, "NumberParameter value wasn't changed by val of invalid type"
 		);
 	}
 
 	test_Clipmode{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue;
 		param.minVal = 0.0;
 		param.maxVal = 1.0;
@@ -142,12 +142,12 @@ TestVTMScalarParameter : VTMUnitTest {
 		testValue = -0.1;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter lower value was not clipped in clipmode 'none'"
+			param.value, testValue, "NumberParameter lower value was not clipped in clipmode 'none'"
 		);
 		testValue = 1.01;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter higher value was not clipped in clipmode 'none'"
+			param.value, testValue, "NumberParameter higher value was not clipped in clipmode 'none'"
 		);
 
 		//Should clip larger values than maxVal when clipmode == high
@@ -155,12 +155,12 @@ TestVTMScalarParameter : VTMUnitTest {
 		testValue = 1.5;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, param.maxVal, "ScalarParameter higher value was clipped in clipmode 'high'"
+			param.value, param.maxVal, "NumberParameter higher value was clipped in clipmode 'high'"
 		);
 		testValue = -2.3;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter lower value was not clipped in clipmode 'high'"
+			param.value, testValue, "NumberParameter lower value was not clipped in clipmode 'high'"
 		);
 
 		//Should clip smaller values than minVal when clipmode == low
@@ -168,12 +168,12 @@ TestVTMScalarParameter : VTMUnitTest {
 		testValue = 3.0;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, testValue, "ScalarParameter higher value was not clipped in clipmode 'low'"
+			param.value, testValue, "NumberParameter higher value was not clipped in clipmode 'low'"
 		);
 		testValue = -3.1;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, param.minVal, "ScalarParameter lower value was clipped in clipmode 'low'"
+			param.value, param.minVal, "NumberParameter lower value was clipped in clipmode 'low'"
 		);
 
 		//Should clip all values outside range when clipmode == both
@@ -181,17 +181,17 @@ TestVTMScalarParameter : VTMUnitTest {
 		testValue = 1.1;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, param.maxVal, "ScalarParameter higher value was clipped in clipmode 'both'"
+			param.value, param.maxVal, "NumberParameter higher value was clipped in clipmode 'both'"
 		);
 		testValue = -0.2;
 		param.value = testValue;
 		this.assertEquals(
-			param.value, param.minVal, "ScalarParameter lower value was clipped in clipmode 'both'"
+			param.value, param.minVal, "NumberParameter lower value was clipped in clipmode 'both'"
 		);
 	}
 
 	test_StepsizeIncrementAndDecrement{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue, testStepsize, wasRun, wasCorrectValue;
 		param.minVal = 0;
 		param.maxVal = 10;
@@ -202,7 +202,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		testStepsize = -1;
 		param.stepsize = testStepsize;
 		this.assertEquals(
-			param.stepsize, testStepsize.abs, "ScalarParameter converted negative stepsize to positive"
+			param.stepsize, testStepsize.abs, "NumberParameter converted negative stepsize to positive"
 		);
 
 		//Should increment according to stepsize
@@ -212,7 +212,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.value = testValue;
 		{ param.increment; } ! 3; // increment 3 times
 		this.assertEquals(
-			param.value, testValue + (testStepsize * 3), "ScalarParameter value was incremented correctly"
+			param.value, testValue + (testStepsize * 3), "NumberParameter value was incremented correctly"
 		);
 
 		//Should run action send new value to it
@@ -228,7 +228,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.stepsize = testStepsize;
 		param.increment;
 		this.assert(
-			wasRun and: {wasCorrectValue}, "ScalarParameter ran action with correct value"
+			wasRun and: {wasCorrectValue}, "NumberParameter ran action with correct value"
 		);
 
 		//Should decrement according to stepsize
@@ -238,7 +238,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.stepsize = testStepsize;
 		{param.decrement} ! 2;
 		this.assertEquals(
-			param.value, testValue - (testStepsize * 2), "ScalarParameter value was decremented correctly"
+			param.value, testValue - (testStepsize * 2), "NumberParameter value was decremented correctly"
 		);
 
 		//Should not increment outside range if clipped
@@ -251,7 +251,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \both;
 		{ param.increment; } ! 5;
 		this.assertEquals(
-			param.value, param.maxVal, "ScalarParameter value was clipped when incremented more than maxVal"
+			param.value, param.maxVal, "NumberParameter value was clipped when incremented more than maxVal"
 		);
 
 		//Should not decrement outside range if clipped
@@ -264,7 +264,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \both;
 		{ param.decrement; } ! 5;
 		this.assertEquals(
-			param.value, param.minVal, "ScalarParameter value was clipped when decremented more than minVal"
+			param.value, param.minVal, "NumberParameter value was clipped when decremented more than minVal"
 		);
 
 		//Should disable doAction optionally when incrementing
@@ -277,7 +277,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.increment(doAction: false);
 		this.assert(
 			param.value == (testValue + testStepsize) and: {wasRun.not},
-			"ScalarParameter value was incremented with optional doAction false causing action not to be run"
+			"NumberParameter value was incremented with optional doAction false causing action not to be run"
 		);
 
 		//Should disable doAction optionally when decrementing
@@ -290,7 +290,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.decrement(doAction: false);
 		this.assert(
 			param.value == (testValue - testStepsize) and: {wasRun.not},
-			"ScalarParameter value was decremented with optional doAction false causing action not to be run"
+			"NumberParameter value was decremented with optional doAction false causing action not to be run"
 		)
 
 
@@ -298,7 +298,7 @@ TestVTMScalarParameter : VTMUnitTest {
 
 	test_UpdateValueWhenMinValAndMaxValChange{
 		var wasRun = false;
-		var param = VTMScalarParameter.new('myValue');
+		var param = VTMNumberParameter.new('myValue');
 		param.minVal = 0.0;
 		param.maxVal = 3.0;
 		param.action = {|p| wasRun = true; };
@@ -310,11 +310,11 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.maxVal = 1.1;
 		this.assertEquals(
 			param.value, param.maxVal,
-			"ScalarParameter value adjusted value when maxVal changed"
+			"NumberParameter value adjusted value when maxVal changed"
 		);
 		this.assert(
 			wasRun.not,
-			"ScalarParameter - adjusting out-of-range value for maxVal did not run action"
+			"NumberParameter - adjusting out-of-range value for maxVal did not run action"
 		);
 
 		//Should update the value after minVal set
@@ -326,16 +326,16 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.minVal = 1.5;
 		this.assertEquals(
 			param.value, param.minVal,
-			"ScalarParameter value adjusted value when minVal changed"
+			"NumberParameter value adjusted value when minVal changed"
 		);
 		this.assert(
 			wasRun.not,
-			"ScalarParameter - adjusting out-of-range value for minVal did not run action"
+			"NumberParameter - adjusting out-of-range value for minVal did not run action"
 		);
 	}
 
 	test_AllowSettingMinValAndMaxValToNil{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		param.minVal = 0.0;
 		param.maxVal = 1.0;
 
@@ -344,11 +344,11 @@ TestVTMScalarParameter : VTMUnitTest {
 			param.minVal = nil;
 			this.assert(
 				param.minVal.isNil,
-				"ScalarParameter allowed setting minVal to nil"
+				"NumberParameter allowed setting minVal to nil"
 			);
 		} {
 			this.failed(thisMethod,
-				"ScalarParameter failed to allow setting minVal to nil"
+				"NumberParameter failed to allow setting minVal to nil"
 			);
 		};
 
@@ -357,18 +357,18 @@ TestVTMScalarParameter : VTMUnitTest {
 			param.maxVal = nil;
 			this.assert(
 				param.maxVal.isNil,
-				"ScalarParameter allowed setting maxVal to nil"
+				"NumberParameter allowed setting maxVal to nil"
 			);
 		} {
 			this.failed(thisMethod,
-				"ScalarParameter failed to allow setting maxVal to nil"
+				"NumberParameter failed to allow setting maxVal to nil"
 			);
 		};
 	}
 
 
 	test_OnlyClipValuesWhenMinValAndMaxValAreDefined{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var testValue;
 
 		//Should only check for lower value in clipmode 'both' if 'maxVal' is not defined
@@ -379,13 +379,13 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.minVal = 0.0;
 		this.assert(
 			param.maxVal.isNil and: {param.value == testValue},
-			message: "ScalarParameter didn't clip value when maxVal was nil."
+			message: "NumberParameter didn't clip value when maxVal was nil."
 		);
 		testValue = -999999.0;
 		param.value = testValue;
 		this.assertEquals(
 			param.value, param.minVal,
-			"ScalarParameter clipped value to minVal in clipmode 'both' when maxVal was nil."
+			"NumberParameter clipped value to minVal in clipmode 'both' when maxVal was nil."
 		);
 
 		//Should only check for higher value in clipmode 'both' if 'minVal' is not defined
@@ -396,18 +396,18 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.value = testValue;
 		this.assert(
 			param.minVal.isNil and: {param.value == testValue},
-			message: "ScalarParameter didn't clip value when minVal was nil."
+			message: "NumberParameter didn't clip value when minVal was nil."
 		);
 		testValue = 999999.0;
 		param.value = testValue;
 		this.assertEquals(
 			param.value, param.maxVal,
-			"ScalarParameter clipped value to maxVal in clipmode 'both' when minVal was nil."
+			"NumberParameter clipped value to maxVal in clipmode 'both' when minVal was nil."
 		);
 	}
 
 	test_UpdateValueWhenClipmodeChange{
-		var param = VTMScalarParameter.new('myScalar');
+		var param = VTMNumberParameter.new('myNumber');
 		var wasRun = false;
 		var testValue;
 		param.minVal = -2.0;
@@ -420,11 +420,11 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \high;
 		this.assertEquals(
 			param.value, param.maxVal,
-			"ScalarParameter - adjusted value when clipmode changed to 'high'"
+			"NumberParameter - adjusted value when clipmode changed to 'high'"
 		);
 		//Should not run the action when clipmode changed
 		this.assert(
-			wasRun.not, "ScalarParameter didn't run action when adjusting the clipmode"
+			wasRun.not, "NumberParameter didn't run action when adjusting the clipmode"
 		);
 
 		//Should update the lower-than-minVal-value when clipmode changes 'none' to 'low'
@@ -435,7 +435,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \low;
 		this.assertEquals(
 			param.value, param.minVal,
-			"ScalarParameter - adjusted value clipmode changed to 'low'"
+			"NumberParameter - adjusted value clipmode changed to 'low'"
 		);
 
 		//Should not adjust value when it is higher than maxVal, and clipmode is set
@@ -448,7 +448,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \low;
 		this.assertEquals(
 			param.value, testValue,
-			"ScalarParameter - did not adjust higher value when clipmode changed to 'low'"
+			"NumberParameter - did not adjust higher value when clipmode changed to 'low'"
 		);
 
 		//Should not adjust value when it is lower than minVal, and clipmode is set
@@ -461,7 +461,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \high;
 		this.assertEquals(
 			param.value, testValue,
-			"ScalarParameter - did not adjust higher value when clipmode changed to 'low'"
+			"NumberParameter - did not adjust higher value when clipmode changed to 'low'"
 		);
 
 
@@ -473,7 +473,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \both;
 		this.assertEquals(
 			param.value, param.maxVal,
-			"ScalarParameter adjusted higher value when clipmode set to 'both'"
+			"NumberParameter adjusted higher value when clipmode set to 'both'"
 		);
 
 		//Should adjust value if value is lower than minVal and clipmode is set to 'both'
@@ -484,7 +484,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \both;
 		this.assertEquals(
 			param.value, param.minVal,
-			"ScalarParameter adjusted lower value when clipmode set to 'both'"
+			"NumberParameter adjusted lower value when clipmode set to 'both'"
 		);
 
 		//Should not adjust higher value in clipmode transition 'low' to 'none'
@@ -496,7 +496,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \none;
 		this.assertEquals(
 			param.value, testValue,
-			"ScalarParameter kept higher value when clipmode went from 'low' 'none'"
+			"NumberParameter kept higher value when clipmode went from 'low' 'none'"
 		);
 
 		//Should not adjust lower value in clipmode transition 'high' to 'none'
@@ -508,7 +508,7 @@ TestVTMScalarParameter : VTMUnitTest {
 		param.clipmode = \none;
 		this.assertEquals(
 			param.value, testValue,
-			"ScalarParameter kept higher value when clipmode went from 'low' 'none'"
+			"NumberParameter kept higher value when clipmode went from 'low' 'none'"
 		);
 
 	}
@@ -531,43 +531,43 @@ TestVTMScalarParameter : VTMUnitTest {
 			\stepsize -> 12,
 			\clipmode -> \low
 		];
-		var param = VTMScalarParameter.new('myValue', declaration);
+		var param = VTMNumberParameter.new('myValue', declaration);
 		this.assertEquals(
-			param.path, declaration[\path], "ScalarParameter set path through declaration"
+			param.path, declaration[\path], "NumberParameter set path through declaration"
 		);
 		this.assertEquals(
-			param.fullPath, '/myValuePath/tester/myValue', "ScalarParameter set fullPath through declaration"
+			param.fullPath, '/myValuePath/tester/myValue', "NumberParameter set fullPath through declaration"
 		);
 		this.assertEquals(
-			param.action, declaration[\action], "ScalarParameter set action through declaration"
+			param.action, declaration[\action], "NumberParameter set action through declaration"
 		);
 		this.assertEquals(
-			param.enabled, declaration[\enabled], "ScalarParameter set enabled through declaration"
+			param.enabled, declaration[\enabled], "NumberParameter set enabled through declaration"
 		);
 		this.assertEquals(
-			param.defaultValue, declaration[\defaultValue], "ScalarParameter set defaultValue through declaration"
+			param.defaultValue, declaration[\defaultValue], "NumberParameter set defaultValue through declaration"
 		);
 		this.assertEquals(
-			param.value, declaration[\value], "ScalarParameter set value through declaration"
+			param.value, declaration[\value], "NumberParameter set value through declaration"
 		);
 		this.assertEquals(
-			param.typecheck, declaration[\typecheck], "ScalarParameter set typecheck through declaration"
+			param.typecheck, declaration[\typecheck], "NumberParameter set typecheck through declaration"
 		);
 		this.assertEquals(
 			param.filterRepetitions, declaration[\filterRepetitions],
-			"ScalarParameter set filterRepetitions through declaration"
+			"NumberParameter set filterRepetitions through declaration"
 		);
 		this.assertEquals(
-			param.minVal, declaration[\minVal], "ScalarParameter set minVal through declaration"
+			param.minVal, declaration[\minVal], "NumberParameter set minVal through declaration"
 		);
 		this.assertEquals(
-			param.maxVal, declaration[\maxVal], "ScalarParameter set maxVal through declaration"
+			param.maxVal, declaration[\maxVal], "NumberParameter set maxVal through declaration"
 		);
 		this.assertEquals(
-			param.stepsize, declaration[\stepsize], "ScalarParameter set stepsize through declaration"
+			param.stepsize, declaration[\stepsize], "NumberParameter set stepsize through declaration"
 		);
 		this.assertEquals(
-			param.clipmode, declaration[\clipmode], "ScalarParameter set clipmode through declaration"
+			param.clipmode, declaration[\clipmode], "NumberParameter set clipmode through declaration"
 		);
 
 
@@ -588,11 +588,11 @@ TestVTMScalarParameter : VTMUnitTest {
 			\clipmode -> \low
 		];
 		var testAttributes;
-		var param = VTMScalarParameter.new('myValue', declaration);
+		var param = VTMNumberParameter.new('myValue', declaration);
 		testAttributes = declaration.deepCopy.put(\name, 'myValue');
 		testAttributes.put(\action, testAttributes[\action].asCompileString);
 		this.assertEquals(
-			param.attributes, testAttributes, "ScalarParameter returned correct attributes"
+			param.attributes, testAttributes, "NumberParameter returned correct attributes"
 		);
 	}
 }

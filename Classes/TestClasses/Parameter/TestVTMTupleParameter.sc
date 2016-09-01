@@ -1,12 +1,8 @@
-TestVTMTupleParameter : TestVTMValueParameter {
+TestVTMTupleParameter : TestVTMListParameter {
 
-	getRandom{arg val, desc, obj;
+	*makeRandomValue{arg params;
 		var result;
-		switch(val,
-			\value, {result = [11, 9.0, \hei]},
-			\defaultValue, { result = this.getRandom(\value, desc, obj); },
-			{ result = super.getRandom(val, desc, obj); }
-		);
+		result = super.makeRandomValue(params);
 		^result;
 	}
 

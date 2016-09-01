@@ -1,12 +1,16 @@
-TestVTMTimecodeParameter : VTMUnitTest {
+TestVTMTimecodeParameter : TestVTMValueParameter {
 
-	getRandom{arg val, desc, obj;
+	*makeRandomValue{arg params;
 		var result;
-		switch(val,
-			\value, {result = rrand("0:0:0:0:0".asSecs, "354:23:59:59:999".asSecs)},
-			\defaultValue, { result = this.getRandom(\value, desc, obj); },
-			{ result = super.getRandom(val, desc, obj); }
-		);
+		var minTime, maxTime;
+		if(params.notNil, {
+			minTime = params[\minTime] ? "0:0:0:0:0".asSecs;
+			maxTime = params[\maxTime] ? "354:23:59:59:999".asSecs;
+		}, {
+			minTime = "0:0:0:0:0".asSecs;
+			maxTime = "354:23:59:59:999".asSecs;
+		});
+		result = rrand(minTime, maxTime);
 		^result;
 	}
 

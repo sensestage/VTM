@@ -5,6 +5,7 @@ VTMContextOSCInterface {
 	*new{arg context;
 		^super.new.initContextOSCInterface(context);
 	}
+
 	initContextOSCInterface{arg context_;
 		context = context_;
 		responders = IdentityDictionary.new;
@@ -16,24 +17,15 @@ VTMContextOSCInterface {
 		//start responders
 	}
 
-	start{
+	enable{
+		responders.do(_.enable);
+	}
+
+	disable{
 		responders.do(_.enable);
 	}
 
 	free{
-		responders.do(_.clear);
 		responders.do(_.free);
-	}
-
-	addResponder{arg msgPath, resp;
-		responders = responders.put(msgPath, resp);
-	}
-
-	removeResponder{arg msgPath;
-		responders.removeAt(msgPath);
-	}
-
-	stop{
-		responders.do(_.disable);
 	}
 }

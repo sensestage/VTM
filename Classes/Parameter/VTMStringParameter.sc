@@ -8,11 +8,11 @@ VTMStringParameter : VTMValueParameter {
 	var <pattern = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
-	type{ ^\string; }
+	*type{ ^\string; }
 
 	prDefaultValueForType{ ^""; }
 
-	*isValidType{arg val;
+	isValidType{arg val;
 		^val.isKindOf(String);
 	}
 
@@ -21,7 +21,7 @@ VTMStringParameter : VTMValueParameter {
 	}
 
 	initStringParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\pattern), {
 				this.pattern_(declaration[\pattern]);
 			});
@@ -41,26 +41,19 @@ VTMStringParameter : VTMValueParameter {
 				});
 			});
 		}, {
-			"StringParameter:matchPattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
+			"StringParameter:matchPattern_ '%' - ignoring val because of non-matching pattern: '%[%]'".format(
 				this.fullPath, val, val.class
 			).warn;
 		});
 	}
 
 	pattern_{arg val;
-		if(val.class == Symbol, {//Symbols are accepted and converted into strings
-			val = val.asString;
-		});
-		if(typecheck, {
-			if(this.class.isValidType(val), {
-				pattern = val;
-			}, {
-				"StringParameter:pattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
-				).warn;
-			});
-		}, {
+		if(val.isString, {
 			pattern = val;
+		}, {
+			"StringParameter:pattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
+				this.fullPath, val, val.class
+			).warn;
 		});
 	}
 
@@ -68,64 +61,30 @@ VTMStringParameter : VTMValueParameter {
 		if(val.class == Symbol, {//Symbols are accepted and converted into strings
 			val = val.asString;
 		});
-		if(typecheck, {
-			if(this.class.isValidType(val), {
-				if(matchPattern and: {pattern.isEmpty.not}, {
-					if(pattern.matchRegexp(val), {
-						super.defaultValue_(val);
-					}, {
-						"StringParameter:defaultValue_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
-							this.fullPath, val, pattern
-						).warn;
-					});
-				}, {
-					super.defaultValue_(val);
-				});
+		if(matchPattern and: {pattern.isEmpty.not}, {
+			if(pattern.matchRegexp(val), {
+				super.defaultValue_(val);
 			}, {
-				"StringParameter:defaultValue_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
+				"StringParameter:defaultValue_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+					this.fullPath, val, pattern
 				).warn;
 			});
 		}, {
 			super.defaultValue_(val);
 		});
-
 	}
 
-	value_{arg val, omitTypecheck = false;
-		if(val.class == Symbol, {//Symbols are accepted and converted into strings
-			val = val.asString;
-		});
-		if(typecheck or: {omitTypecheck.not}, {
-			if(this.class.isValidType(val), {
-				if(matchPattern and: {pattern.isEmpty.not}, {
-					if(pattern.matchRegexp(val), {
-						super.value_(val, true);
-					}, {
-						"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
-							this.fullPath, val, pattern
-						).warn;
-					});
-				}, {
-					super.value_(val, true);
-				});
+	value_{arg val;
+		if(matchPattern and: {pattern.isEmpty.not}, {
+			if(pattern.matchRegexp(val), {
+				super.value_(val, true);
 			}, {
-				"StringParameter:value_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
+				"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+					this.fullPath, val, pattern
 				).warn;
 			});
 		}, {
-			if(matchPattern and: {pattern.isEmpty.not}, {
-				if(pattern.matchRegexp(val), {
-					super.value_(val, true);
-				}, {
-					"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
-						this.fullPath, val, pattern
-					).warn;
-				});
-			}, {
-				super.value_(val);
-			});
+			super.value_(val, true);
 		});
 	}
 
@@ -155,6 +114,4 @@ VTMStringParameter : VTMValueParameter {
 	*attributeKeys{
 		^(super.attributeKeys ++ [\matchPattern, \pattern]);
 	}
-
-
 }

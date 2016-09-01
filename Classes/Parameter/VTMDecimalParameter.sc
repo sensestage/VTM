@@ -1,5 +1,6 @@
-VTMDecimalParameter : VTMScalarParameter {
-	type{ ^\decimal; }
+VTMDecimalParameter : VTMNumberParameter {
+	isValidType{arg val; ^val.isKindOf(Float);}
+	*type{ ^\decimal; }
 
 	prDefaultValueForType{ ^0.0; }
 
@@ -27,7 +28,7 @@ VTMDecimalParameter : VTMScalarParameter {
 	value_{arg val;
 		if(val.class == Integer, {
 			val = val.asFloat;
-			super.value_(val, omitTypecheck: true);
+			super.value_(val);
 		}, {
 			super.value_(val);
 		});

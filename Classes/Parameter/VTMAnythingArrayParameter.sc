@@ -1,1 +1,0 @@
-VTMAnythingArrayParameter : VTMListParameter {}

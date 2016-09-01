@@ -1,4 +1,4 @@
-VTMSliderView : VTMScalarParameterView {
+VTMSliderView : VTMNumberParameterView {
 	var numberView;
 	var sliderView;
 	var round;

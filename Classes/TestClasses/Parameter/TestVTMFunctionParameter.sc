@@ -1,11 +1,8 @@
 TestVTMFunctionParameter : TestVTMValueParameter {
 
-	getRandom{arg val, desc, obj;
+	*makeRandomValue{arg params;
 		var result;
-		switch(val,
-			\value, {result = "{ 1.0.rand }"},
-			\defaultValue, { result = this.getRandom(val, desc, obj); }
-		);
+		result = "{arg param; param;}";//temporary pass-through function
 		^result;
 	}
 }

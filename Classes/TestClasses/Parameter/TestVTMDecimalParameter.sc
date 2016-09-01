@@ -1,4 +1,9 @@
-TestVTMDecimalParameter : VTMUnitTest {
+TestVTMDecimalParameter : TestVTMNumberParameter {
+
+	*makeRandomValue{arg params;
+		^this.makeRandomDecimal(params);
+	}
+
 	setUp{
 		"Setting up a VTMDecimalParameterTest".postln;
 	}

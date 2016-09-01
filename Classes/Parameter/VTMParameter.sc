@@ -1,7 +1,6 @@
-//Abstract base for class for parameter classes.
-//This is never instanciated in its own type, but
-//should return an object with type of one of its
-//subclasses
+//base class for parameter classes.
+//Objects of this type has no arguments/values but works
+//as a 'command' to perform the defined action.
 
 VTMParameter {
 	var <name;
@@ -10,9 +9,9 @@ VTMParameter {
 	var action, hiddenAction;
 	var <enabled = true;
 	var <mappings;
-	var <responders;
 	var <oscInterface;
-
+	var <>willStore = true;
+	var <>onlyReturn = false;
 	var <isSubParameter = false;
 
 	*typeToClass{arg val;
@@ -23,22 +22,27 @@ VTMParameter {
 		^val.name.asString.findRegexp("^VTM(.+)Parameter$")[1][1].toLower;
 	}
 
-	type{//only the non-abstract classes will implement this methods
+	*type{
 		this.subclassResponsibility(thisMethod);
+	}
+
+	type{
+		^this.class.type;
 	}
 
 	//factory type constructor
 	//In declaration dict 'name' and 'type' is mandatory.
 	*makeFromDeclaration{arg declaration;
+		var decl = declaration.deepCopy;
 		//if 'type' and 'name' is defined in declaration
-		if(declaration.includesKey(\name), {
-			if(declaration.includesKey(\type), {
-				var paramClass = declaration.removeAt(\type);
-				var paramName = declaration.removeAt(\name);
-				^VTMParameter.typeToClass(paramClass).new(paramName, declaration);
+		if(decl.includesKey(\name), {
+			if(decl.includesKey(\type), {
+				var paramClass = decl.removeAt(\type);
+				var paramName = decl.removeAt(\name);
+				^VTMParameter.typeToClass(paramClass).new(paramName, decl);
 			}, {
 				Error("VTMParameter declaration needs type").throw;
-			})
+			});
 		}, {
 			Error("VTMParameter declaration needs name").throw;
 		});
@@ -60,7 +64,11 @@ VTMParameter {
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		declaration = declaration_.deepCopy;
+		if(declaration_.notNil, {
+			declaration = declaration_.deepCopy;
+		}, {
+			declaration = IdentityDictionary.new;
+		});
 		// declaration = IdentityDictionary.newFrom(declaration_);
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
@@ -69,7 +77,7 @@ VTMParameter {
 				"/%".format(name).asSymbol;
 			});
 		});
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\isSubParameter), {
 				isSubParameter = declaration[\isSubParameter];
 			});
@@ -85,7 +93,13 @@ VTMParameter {
 				if(declaration[\enabled].not, {
 					this.disable;
 				})
-			})
+			});
+			if(declaration.includesKey(\willStore), {
+				willStore = declaration[\willStore];
+			});
+			if(declaration.includesKey(\onlyReturn), {
+				onlyReturn = declaration[\onlyReturn];
+			});
 		});
 	}
 
@@ -168,11 +182,6 @@ VTMParameter {
 		});
 		oscInterface = nil;
 
-		if(responders.notNil, {
-			responders.do(_.free);
-		});
-		responders = nil;
-
 		this.changed(\freed);
 	}
 
@@ -190,12 +199,13 @@ VTMParameter {
 			\name -> this.name,
 			\path -> this.path,
 			\action -> aFunction,
-			\enabled -> this.enabled
+			\enabled -> this.enabled,
+			\type -> this.type
 		];
 	}
 
 	*attributeKeys{
-		^[\name, \path, \action, \enabled];
+		^[\name, \path, \action, \enabled, \type];
 	}
 
 	makeView{arg parent, bounds, declaration, definition;

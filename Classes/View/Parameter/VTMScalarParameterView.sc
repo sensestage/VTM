@@ -1,11 +1,11 @@
-VTMScalarParameterView : VTMValueParameterView {
+VTMNumberParameterView : VTMValueParameterView {
 	var <spec;
 
 	*new{arg parent, bounds, parameter, declaration, definition;
-		^super.new(parent, bounds, parameter, declaration, definition).initScalarParameterView;
+		^super.new(parent, bounds, parameter, declaration, definition).initNumberParameterView;
 	}
 
-	initScalarParameterView{
+	initNumberParameterView{
 		var min, max;
 		if(declaration.notNil, {
 			if(declaration.includesKey(\minVal), { min = declaration[\minVal]; });

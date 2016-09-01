@@ -1,7 +1,8 @@
-VTMListParameter : VTMValueParameter {
+/*
+A ListParameter will have items with arbitrary types.
+*/
+VTMListParameter : VTMCollectionParameter {
 	var <itemType; //Which parameter type to contain in this class
-	var <itemDeclarations; //The consolidated item declarationn will be stored here.
-	var <items;
 	var orderThunk;
 	var itemAtThunk, <prItemDict;
 
@@ -9,8 +10,10 @@ VTMListParameter : VTMValueParameter {
 		^(val.isArray and: val.isString.not);
 	}
 
+	*type{ ^\list; }
+
 	prDefaultValueForType{
-		^Dictionary.new;//not sure about the default value here
+		^[];
 	}
 
 	*new{arg name, declaration;
@@ -18,21 +21,15 @@ VTMListParameter : VTMValueParameter {
 	}
 
 	initListParameter{
-		if(declaration.notNil, {
+		if(declaration.notEmpty, {
 			if(declaration.includesKey(\itemType), {
 				itemType = declaration[\itemType];
-			}, {
-				Error("ListParameters needs itemType in declaration. [%]".format(this.fullPath)).throw;
 			});
-			if(declaration.includesKey(\itemDeclarations), {
-				itemDeclarations = declaration[\itemDeclarations];
-			}, {
-				Error("ListParameters needs itemDeclarations in declaration. [%]".format(this.fullPath)).throw;
-			});
-		}, {
-			Error("ListParameters need declaration with mandatory attributes: itemType, itemDeclaration. [%]".format(this.fullPath)).throw;
-			^nil;
 		});
+		//Using decimal as default item type so 
+		//that list parameter can be made using empty declaration.
+		itemType = itemType ? \decimal;
+		itemDeclarations = [ () ];
 
 		//build the internal parameters
 		this.prBuildItemParameters;
@@ -48,14 +45,13 @@ VTMListParameter : VTMValueParameter {
 
 	prBuildItemParameters{
 		//Check if the items are already built.
-		//This forces one to always make a new list parameter if one is
+		//This forces you to always make a new list parameter if one is
 		//already made.
 		if(items.isNil, {
 			var itemClass, itemDeclarations, attributeKeys;
 			var baseItemDesc;
 			items = Dictionary.new;
-			itemClass = VTMParameter.typeToClass(declaration[\itemType]);
-			itemDeclarations = declaration[\itemDeclarations];
+			itemClass = VTMParameter.typeToClass(itemType);
 
 			//all sub parameters have this base item declaration
 			baseItemDesc = (
@@ -64,7 +60,7 @@ VTMListParameter : VTMValueParameter {
 
 			//Expand all the items in the item declaration, e.g. arrayed keys etc.
 			//All item declarations should now be expanded into separate Associations
-			itemDeclarations = this.class.prExpanditemDeclarations(declaration[\itemDeclarations].deepCopy);
+			itemDeclarations = this.class.prExpanditemDeclarations(itemDeclarations);
 			attributeKeys = itemClass.attributeKeys.asSet.sect(declaration.keys);
 			itemDeclarations = itemDeclarations.collect({arg itemAssoc, index;
 				var itemName, itemDesc, newItemDesc;
@@ -156,33 +152,11 @@ VTMListParameter : VTMValueParameter {
 		^result;
 	}
 
-	value{
-		var result = Dictionary.new;
-		items.collect({arg item;
-			result.put(item.name, item.value);
-		});
-		^result;
-	}
-
-	value_{arg val, omitTypecheck = false;
-
-	}
-
-	defaultValue {
-		var result = Dictionary.new;
-		items.collect({arg item;
-			result.put(item.name, item.value);
-		});
-		^result;
-	}
-
 	itemOrder{
 		^orderThunk.value;
 	}
 
 	at{arg itemName;
-		"Checingkngkng: %".format(prItemDict).postln;
-
 		^prItemDict.at(itemName)
 	}
 }

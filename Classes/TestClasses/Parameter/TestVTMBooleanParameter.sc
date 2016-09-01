@@ -1,14 +1,7 @@
 TestVTMBooleanParameter : TestVTMValueParameter {
 
-	getRandom{arg val, randomParameters, obj;
-		var result;
-		switch(val,
-			\value, { result = 0.5.coin; },
-			{
-				result = super.getRandom(val, randomParameters, obj);
-			}
-		);
-		^result;
+	*makeRandomValue{arg params;
+		^this.makeRandomBoolean(params);
 	}
 
 	setUp{

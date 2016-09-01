@@ -1,3 +1,0 @@
-VTMMessageParameter : VTMParameter {
-	type{ ^\message; }
-}
