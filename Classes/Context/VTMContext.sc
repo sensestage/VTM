@@ -109,21 +109,28 @@ VTMContext {
 	//The ~prepare stage is where the module definition defines and creates its
 	//parameters.
 	prepare{arg condition;
-		"Trying to prepare '%'".format(this.name).postln;
+		// "Trying to prepare '%'".format(this.name).postln;
 		if(envir.includesKey(\prepare), {
 			var cond = condition !? {Condition.new};
 			this.execute(\prepare, cond);
 		});
 	}
 
-	run{
-
+	run{arg condition;
+		if(envir.includesKey(\run), {
+			var cond = condition !? {Condition.new};
+			this.execute(\run, cond);
+		});
 	}
 
-	free{
+	free{arg condition;
+		var cond = condition !? {Condition.new};
+		if(envir.includesKey(\free), {
+			this.execute(\free, cond);
+		});
 		this.oscInterface.free; //Free the responders
 		children.keysValuesDo({arg key, child;
-			child.free(key);
+			child.free(key, condition);
 		});
 		this.changed(\freed);
 		this.release; //Release this as dependant from other objects.
