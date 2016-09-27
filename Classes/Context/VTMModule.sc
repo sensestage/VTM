@@ -1,7 +1,6 @@
 //children may be Parameter and Module
 VTMModule : VTMComposableContext {
-	var <parameterOrder;
-	var parameters;
+
 	var submodules;
 
 	*new{arg name, parent, declaration, definition;
@@ -100,7 +99,6 @@ VTMModule : VTMComposableContext {
 		^parameterOrder.collect(this.parameters[_]);
 	}
 
-	parameters{	^nonSubcontexts.value; }
 	submodules{	^subcontexts.value; }
 	isSubmodule{ ^this.isSubcontext; }
 	isParameter{ ^this.isSubcontext.not; }
