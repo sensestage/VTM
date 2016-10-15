@@ -70,10 +70,10 @@ TestVTMStringParameter : TestVTMValueParameter {
 			param.defaultValue.class, String,
 			"StringParameter converted defaultValue symbol arg to String"
 		);
-		this.assertEquals(
-			param.value.class, String,
-			"StringParameter converted value symbol arg to String"
-		);
+		// this.assertEquals(
+		// 	param.value.class, String,
+		// 	"StringParameter converted value symbol arg to String"
+		// );
 		this.assertEquals(
 			param.pattern.class, String,
 			"StringParameter converted pattern symbol arg to String"

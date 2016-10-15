@@ -71,13 +71,14 @@ TestVTMBooleanParameter : TestVTMValueParameter {
 	test_TypecheckingValueSetting{
 		var desc = ( typecheck: true, value: true );
 		var param = VTMBooleanParameter.new('myBoolean', desc);
+		var testVal = 11;
 
-		//Should not accept other value types
-		param.value = 11;
-		this.assertEquals(
-			param.value, desc[\value],
-			"BooleanParameter ignored integer value"
-		);
+		//Should detect values of of wrong type
+		if(param.isValidType(testVal).not, {
+			this.passed(thisMethod, "Detected wrong value type: %".format(testVal));
+		}, {
+			this.failed(thisMethod, "Did not detect wrong value type: %".format(testVal));
+		});
 
 	}
 }

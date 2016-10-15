@@ -150,51 +150,51 @@ TestVTMIntegerParameter : TestVTMNumberParameter {
 		);
 	}
 
-	test_IgnoreAndWarnOnWrongTypes{
-		var testValue;
-		var param = VTMIntegerParameter.new('myInteger');
-
-		//Should ignore and warn on wrong 'minVal' type
-		testValue = -100;
-		param.minVal = testValue;
-		param.minVal = \notAValidValue;
-		this.assertEquals(
-			param.minVal, testValue, "IntegerParameter minVal wasn't changed by val of invalid type"
-		);
-
-		//Should ignore and warn on wrong 'maxVal' type
-		testValue = 300;
-		param.maxVal = testValue;
-		param.maxVal = \notAValidValue;
-		this.assertEquals(
-			param.maxVal, testValue, "IntegerParameter maxVal wasn't changed by val of invalid type"
-		);
-
-		//Should ignore and warn on wrong 'stepsize' type
-		testValue = 11;
-		param.stepsize = testValue;
-		param.stepsize = \notAValidValue;
-		this.assertEquals(
-			param.stepsize, testValue, "IntegerParameter stepsize wasn't changed by val of invalid type"
-		);
-
-		//Should ignore and warn on wrong 'clipmode' type
-		testValue = \low;
-		param.clipmode = testValue;
-		param.clipmode = 4321;
-		this.assertEquals(
-			param.clipmode, testValue, "IntegerParameter clipmode wasn't changed by val of invalid type"
-		);
-
-		//Should ignore and warn on wrong 'value' type
-		param.clipmode = \none;
-		testValue = 299;
-		param.value = testValue;
-		param.value = \notAValidValueType;
-		this.assertEquals(
-			param.value, testValue, "IntegerParameter value wasn't changed by val of invalid type"
-		);
-	}
+	// test_IgnoreAndWarnOnWrongTypes{
+	// 	var testValue;
+	// 	var param = VTMIntegerParameter.new('myInteger');
+	//
+	// 	//Should ignore and warn on wrong 'minVal' type
+	// 	testValue = -100;
+	// 	param.minVal = testValue;
+	// 	param.minVal = \notAValidValue;
+	// 	this.assertEquals(
+	// 		param.minVal, testValue, "IntegerParameter minVal wasn't changed by val of invalid type"
+	// 	);
+	//
+	// 	//Should ignore and warn on wrong 'maxVal' type
+	// 	testValue = 300;
+	// 	param.maxVal = testValue;
+	// 	param.maxVal = \notAValidValue;
+	// 	this.assertEquals(
+	// 		param.maxVal, testValue, "IntegerParameter maxVal wasn't changed by val of invalid type"
+	// 	);
+	//
+	// 	//Should ignore and warn on wrong 'stepsize' type
+	// 	testValue = 11;
+	// 	param.stepsize = testValue;
+	// 	param.stepsize = \notAValidValue;
+	// 	this.assertEquals(
+	// 		param.stepsize, testValue, "IntegerParameter stepsize wasn't changed by val of invalid type"
+	// 	);
+	//
+	// 	//Should ignore and warn on wrong 'clipmode' type
+	// 	testValue = \low;
+	// 	param.clipmode = testValue;
+	// 	param.clipmode = 4321;
+	// 	this.assertEquals(
+	// 		param.clipmode, testValue, "IntegerParameter clipmode wasn't changed by val of invalid type"
+	// 	);
+	//
+	// 	//Should ignore and warn on wrong 'value' type
+	// 	param.clipmode = \none;
+	// 	testValue = 299;
+	// 	param.value = testValue;
+	// 	param.value = \notAValidValueType;
+	// 	this.assertEquals(
+	// 		param.value, testValue, "IntegerParameter value wasn't changed by val of invalid type"
+	// 	);
+	// }
 
 	test_Clipmode{
 		var param = VTMIntegerParameter.new('myInteger');
@@ -592,7 +592,6 @@ TestVTMIntegerParameter : TestVTMNumberParameter {
 			\enabled -> true,
 			\defaultValue -> 111,
 			\value -> 91,
-			\typecheck -> true,
 			\filterRepetitions -> false,
 			\minVal -> -1100,
 			\maxVal -> 1234,
@@ -619,9 +618,6 @@ TestVTMIntegerParameter : TestVTMNumberParameter {
 			param.value, declaration[\value], "IntegerParameter set value through declaration"
 		);
 		this.assertEquals(
-			param.typecheck, declaration[\typecheck], "IntegerParameter set typecheck through declaration"
-		);
-		this.assertEquals(
 			param.filterRepetitions, declaration[\filterRepetitions],
 			"IntegerParameter set filterRepetitions through declaration"
 		);
@@ -646,7 +642,6 @@ TestVTMIntegerParameter : TestVTMNumberParameter {
 			\enabled -> true,
 			\defaultValue -> 111,
 			\value -> 91,
-			\typecheck -> true,
 			\filterRepetitions -> false,
 			\minVal -> -1100,
 			\maxVal -> 1234,
@@ -655,8 +650,13 @@ TestVTMIntegerParameter : TestVTMNumberParameter {
 		];
 		var testAttributes;
 		var param = VTMIntegerParameter.new('myValue', declaration);
-		testAttributes = declaration.deepCopy.put(\name, 'myValue');
+		declaration.put(\name, 'myValue');
+		declaration.put(\type, param.type);
+
+		testAttributes = declaration.deepCopy;
 		testAttributes.put(\action, testAttributes[\action].asCompileString);
+		// "TestAttr: %".format(testAttributes.keys.asArray.sort).postln;
+		// "paramAttr: %".format(param.attributes.keys.asArray.sort).postln;
 		this.assertEquals(
 			param.attributes, testAttributes, "IntegerParameter returned correct attributes"
 		);
