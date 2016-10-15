@@ -1,7 +1,7 @@
 VTMParameterAttribute : VTMContext {
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initParameterAttribute;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initParameterAttribute;
 	}
 
 	initParameterAttribute{

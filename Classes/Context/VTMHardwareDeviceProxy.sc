@@ -1,7 +1,7 @@
 VTMHardwareDeviceProxy : VTMContextProxy {
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initHardwareDeviceProxy;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initHardwareDeviceProxy;
 	}
 
 	initHardwareDeviceProxy {

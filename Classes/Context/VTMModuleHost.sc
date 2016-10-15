@@ -1,8 +1,8 @@
 VTMModuleHost : VTMNetworkedContext {
 	var <factory;
 
-	*new{arg network, declaration, defintion;
-		^super.new('modules', network, declaration, defintion).initModuleHost;
+	*new{arg network, declaration, definition;
+		^super.new('modules', network, declaration, definition).initModuleHost;
 	}
 
 	initModuleHost {
@@ -15,7 +15,7 @@ VTMModuleHost : VTMNetworkedContext {
 
 	//A declaration is a dictonary of parameter key/values.
 	//The declaration may define the name of a module definition.
-	//This defintion may be overriden by the optional moduleDefinition argument
+	//This definition may be overriden by the optional moduleDefinition argument
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//

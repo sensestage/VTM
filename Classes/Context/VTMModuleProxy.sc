@@ -1,7 +1,7 @@
 VTMModuleProxy : VTMContextProxy {
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initModuleProxy;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initModuleProxy;
 	}
 
 	initModuleProxy {

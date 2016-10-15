@@ -1,7 +1,7 @@
 VTMParameterProxy : VTMContextProxy {
 
-	*new{arg name, parent, declaration, defintion;
-		^super.new(name, parent, declaration, defintion).initParameterProxy;
+	*new{arg name, parent, declaration, definition;
+		^super.new(name, parent, declaration, definition).initParameterProxy;
 	}
 
 	initParameterProxy{
