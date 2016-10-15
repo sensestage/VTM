@@ -99,7 +99,7 @@ VTMApplication {
 		sceneOwner = VTMSceneOwner(network, sceneDesc, sceneDef);
 
 		//Discover other application on the network
-		network.discover;
+		//network.discover;
 		if(declaration.includesKey(\openView), {
 			if(declaration[\openView], {
 				var viewDesc, viewDef;

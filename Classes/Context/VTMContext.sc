@@ -159,7 +159,7 @@ VTMContext {
 	removeChild{arg key;
 		var removedChild;
 		removedChild = children.removeAt(key);
-		"[%] Removing child '%'".format(this.name, key).postln;
+		//"[%] Removing child '%'".format(this.name, key).postln;
 		removedChild.removeDependant(this);
 		this.changed(\removedChild, key);
 		^removedChild;
