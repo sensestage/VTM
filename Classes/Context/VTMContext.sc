@@ -264,6 +264,22 @@ VTMContext {
 
 	}
 
+	loadDeclaration{arg declarationName;
+		if(envir.includesKey(\declarations), {
+			var newDeclaration;
+			newDeclaration = envir[\declarations].detect({arg item; item.key == declarationName;});
+			if(newDeclaration.notNil, {
+				newDeclaration = newDeclaration.value;
+				newDeclaration.removeAt(\comment);
+				this.setParameter(*newDeclaration.asKeyValuePairs);
+			}, {
+				"Declaration '%' for '%' not found".format(declarationName, this.fullPath).warn;
+			});
+		}, {
+			"No declaration stored in '%' not found".format(declarationName, this.fullPath).warn;
+		});
+	}
+
 	prChangeState{ arg val;
 		var newState;
 		if(state != val, {
@@ -278,10 +294,15 @@ VTMContext {
 	setParameter{arg ...args;
 		if(args.size > 2, {
 			args.pairsDo({arg paramName, paramVal;
-				this.setParameter(paramName, paramVal);
+				if(this.parameters.includesKey(paramName), {
+					this.setParameter(paramName, paramVal);
+				});
 			});
 		}, {
-			parameterManager.parameters[args[0]].valueAction_(*args[1]);
+			var param = parameterManager.parameters[args[0]];
+			if(param.notNil, {
+				param.valueAction_(*args[1]);
+			});
 		});
 	}
 

@@ -14,6 +14,11 @@ VTMLibrary.loadGlobalLibrary;
 
 ~mod.setParameter(\freq, rrand(220, 430));
 
+~mod.setParameter(\freq, rrand(220, 430), \phase, 2pi.rand);
+
+~mod.loadDeclaration(\coolSound);
+~mod.loadDeclaration(\evenMoreCoolSound);
+
 
 ~mod.execute(\hey, \88, 2221);
 
