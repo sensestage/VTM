@@ -9,6 +9,10 @@
 
 	~initSynthArgs = [\freq, \phase];
 };
+~free = {arg module, condition;
+	fork{1.0.wait; condition.unhang};
+	condition.hang;
+};
 ~parameters = [
 	(
 		name: \freq,
