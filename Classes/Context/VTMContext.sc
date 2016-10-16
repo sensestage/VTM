@@ -10,13 +10,7 @@ VTMContext {
 	var <addr; //the address for this object instance.
 	var <oscInterface;
 	var <state;
-	var <parameterOrder;
-
-	//Parameters are usually defined in the context definition.
-	//It is the definition;s (i.e. the designers) responsibility to define
-	//the parameters and connect their actions to the proper context.
-	//Parameter can be added at runtime.
-	var <parameters;
+	var <parameterManager;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
@@ -87,7 +81,10 @@ VTMContext {
 		children = IdentityDictionary.new;
 		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
-		parameters = IdentityDictionary.new;
+
+		parameterManager = VTMContextParameterManager(this);
+
+
 		// envir.put(\runtimedeclaration, this.declaration );// a declaration that can be changed in runtime.
 
 		fullPathThunk = Thunk.new({
@@ -114,6 +111,9 @@ VTMContext {
 			var cond = condition !? {Condition.new};
 			this.execute(\prepare, cond);
 		});
+		if(definition.includesKey(\parameters), {
+			parameterManager.loadParameterDeclarations(definition[\parameters]);
+		});
 	}
 
 	run{arg condition;
@@ -136,19 +136,19 @@ VTMContext {
 		this.release; //Release this as dependant from other objects.
 	}
 
-	prBuildParameters{arg params;
-		var result;
-		params.do({arg parameterDeclaration;
-			result = VTMParameter.makeFromDeclaration(parameterDeclaration);
-			if(result.isNil, {
-				"Building parameter failed, from declaration: %".formats(
-					parameterDeclaration
-				).postln;
-			}, {
-				parameters.put(result.name, result);
-			});
-		});
-	}
+	// prBuildParameters{arg params;
+	// 	var result;
+	// 	params.do({arg parameterDeclaration;
+	// 		result = VTMParameter.makeFromDeclaration(parameterDeclaration);
+	// 		if(result.isNil, {
+	// 			"Building parameter failed, from declaration: %".formats(
+	// 				parameterDeclaration
+	// 			).postln;
+	// 			}, {
+	// 				parameters.put(result.name, result);
+	// 		});
+	// 	});
+	// }
 
 	addChild{arg context;
 		children.put(context.name, context);
@@ -260,6 +260,9 @@ VTMContext {
 			this.changed(\state);
 		});
 	}
+
+	parameters{ ^parameterManager.parameters; }
+	parameterOrder{ ^parameterManager.order; }
 
 	//Call functions in the runtime environment with this module as first arg.
 	//Module definition functions always has the module as its first arg.

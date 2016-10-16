@@ -29,6 +29,9 @@ VTMApplication {
 	//Used for handling async events.
 	var condition;
 
+	//The scsynth for this application
+	var <server;
+
 	*new{arg name, declaration, definition, projectFolder, applicationFolder;
 		^super.new.initApplication(name, declaration, definition, projectFolder, applicationFolder);
 	}
@@ -112,8 +115,8 @@ VTMApplication {
 
 		condition = Condition.new;
 		fork{
-			this.prepare;
-			this.run;
+			this.prepare(condition);
+			this.run(condition);
 		}
 	}
 
@@ -123,18 +126,57 @@ VTMApplication {
 		^envir[selector].value(this, *args);
 	}
 
+	prepare{arg cond;
+		var condition = cond ? Condition.new;
+		forkIfNeeded{
+			//boot scsynth if defined
+			if(declaration.includesKey(\startServer), {
+				var serverOptions;
+				if(declaration[\startServer], {
 
-	prepare{
-		//Start hardware devices
+					if(declaration.includesKey(\serverOptions), {
+						serverOptions = ServerOptions.new;
+						declaration[\serverOptions].keysValuesDo({arg opt, val;
+							serverOptions.perform(opt.asSetter, val);
+						});
+					});
+					condition.test = false;
+					// server = Server(
+					// 	this.name,
+					// 	NetAddr(this.addr.hostname, this.addr.port + 10),
+					// 	serverOptions
+					// );
+					//change to this.bootServer later in order to use multiple apps on one computer
+					server = Server.default;
+					if(serverOptions.notNil, {
+						server.options = serverOptions;
+					});
+					// server.doWhenBooted(
+					// 	onComplete: {
+					// 		condition.test = true;
+					// 		condition.signal;
+					// 	}
+					// );
+					server.waitForBoot(
+						onFailure: {
+							Error("ScSynth server failed to boot").throw;
+						}
+					);
+				})
+			});
 
-		//Start modules
-		moduleHost.prepare(condition);
+			//Start hardware devices
 
-		//Start scenes
+			//Start modules
+			//			moduleHost.prepare(condition);
 
-		//Prepare its own envir last as it may depend on other things
-		//to be initialized first.
-		this.execute(\prepare, condition);
+			//Start scenes
+
+			//Prepare its own envir last as it may depend on other things
+			//to be initialized first.
+			//			this.execute(\prepare, condition);
+
+		};
 	}
 
 	run{
@@ -172,6 +214,8 @@ VTMApplication {
 	name{
 		^network.name;
 	}
+
+	addr{ ^network.addr; }
 
 	makeView{arg parent, bounds, viewDeclaration, viewDefinition;
 		^VTMApplicationView.new(
