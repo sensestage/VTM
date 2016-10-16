@@ -3,14 +3,15 @@
 ~prepare = {arg module, condition;
 	~server;
 	~source = {|magi, freq, unstabl, rate, grains, dur|
-        b=LocalBuf(1e4,2).clear;
-        i=SinGrain.ar(Dust.ar(grains),dur,freq);
-        j=Sweep.ar(BufRd.ar(2,b,Saw.ar(freq,unstabl,0)),rate);
-        k=BufWr.ar(SinOsc.ar([SinOsc.ar(0.1*b)*0.1,magi]),b,j);
-        l=BufRd.ar(2,b,j)/2;
-        //Splay.ar(l/i); // yepp
-        Splay.ar(l); // clean
-        //Splay.ar(l*i); // cheese
+        var buf, sines, sweeper, bufWr, bufRd, bus0, bus1;
+        buf=LocalBuf(1e4,2).clear;
+        sines=SinGrain.ar(Dust.ar(grains),dur,freq);
+        sweeper=Sweep.ar(BufRd.ar(2,b,Saw.ar(freq,unstabl,0)),rate);
+        bufWr=BufWr.ar(SinOsc.ar([SinOsc.ar(0.1*b)*0.1,magi]),b,j);
+        bufRd=BufRd.ar(2,b,j)/2;
+        bus0=Splay.ar(l);
+        bus1=Splay.ar(l%i)*0.2;
+        bus0+bus1;
 	};
 };
 ~free = {arg module, condition;
@@ -25,7 +26,7 @@
 		},
 		minVal: 0.01,
 		maxVal: 20,
-		defaultValue: 0.5,
+		defaultValue: 0.05,
 	),
     (
 		name: \freq,
@@ -34,7 +35,7 @@
 		},
 		minVal: 0,
 		maxVal: 2000,
-		defaultValue: 5,
+		defaultValue: 2,
 	),
     (
 		name: \unstabl,
@@ -61,7 +62,7 @@
 		},
 		minVal: 0.1,
 		maxVal: 10,
-		defaultValue: 1,
+		defaultValue: 10,
         clipmode: \both
 	),
     (
@@ -71,7 +72,7 @@
 		},
 		minVal: 0.01,
 		maxVal: 5,
-		defaultValue: 1,
+		defaultValue: 2,
         clipmode: \both
 	)
 ];
