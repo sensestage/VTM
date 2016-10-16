@@ -20,7 +20,6 @@ VTMModule : VTMComposableContext {
 		}, {
 			actualDeclaration = declaration;
 		});
-
 		^super.new(name, parent, actualDeclaration, actualDefinition).initModule;
 	}
 
