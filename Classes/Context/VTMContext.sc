@@ -275,8 +275,14 @@ VTMContext {
 	parameters{ ^parameterManager.parameters; }
 	parameterOrder{ ^parameterManager.order; }
 
-	setParameter{arg paramName ...args;
-		parameterManager.parameters[paramName].valueAction_(*args);
+	setParameter{arg ...args;
+		if(args.size > 2, {
+			args.pairsDo({arg paramName, paramVal;
+				this.setParameter(paramName, paramVal);
+			});
+		}, {
+			parameterManager.parameters[args[0]].valueAction_(*args[1]);
+		});
 	}
 
 	//Call functions in the runtime environment with this module as first arg.
