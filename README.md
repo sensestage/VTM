@@ -21,3 +21,4 @@ VTM - system for Verdensteatret
 * `git clone https://github.com/blacksound/VTM.git`
 * Add the VTM folder path to under `- includePaths` in the `sclang_conf.yaml` file.
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
+  - for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM` under includePaths

@@ -1,8 +1,17 @@
 ~prototypes = ['AudioSource'];
 ~prepare = {arg module, condition;
-	~source = {|freq = 440, phase = 0|
+	~casper = {arg val;
+		"CASPER CHANGED: %".format(val).postln;
+	};
+	~source = {|freq, phase|
 		SinOsc.ar(freq, phase);
 	};
+
+	~initSynthArgs = [\freq, \phase];
+};
+~free = {arg module, condition;
+	fork{1.0.wait; condition.unhang};
+	condition.hang;
 };
 ~parameters = [
 	(
@@ -11,13 +20,23 @@
 		action: {|p| ~output.set(\freq, p.value);},
 		minVal: 20,
 		maxVal: 20000,
+		defaultValue: 1000
 	),
 	(
 		name: \phase,
 		type: \decimal,
 		action: {|p| ~output.set(\phase, p.value); },
 		minVal: 0,
-		maxVal: 2pi
+		maxVal: 2pi,
+		defaultValue: 0.0
+	),
+	(
+		name: \sideeffect,
+		type: \decimal,
+		action: {|p| ~casper.value(p.value); },
+		minVal: 0,
+		maxVal: 10.0,
+		defaultValue: 0.2
 	)
 ];
 ~declarations = [

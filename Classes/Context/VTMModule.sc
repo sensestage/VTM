@@ -33,7 +33,7 @@ VTMModule : VTMComposableContext {
 				var audioModule, audioSource;
 				audioModule = Environment.new;
 				audioModule.use{
-					~prepare = {arg ...args;
+					~prepare = {arg module, cond;
 						// "PREPARE AUDIO MODULE".postln;
 						~server = Server.default;
 					};
@@ -41,13 +41,24 @@ VTMModule : VTMComposableContext {
 
 				audioSource = Environment.new(proto: audioModule);
 				audioSource.use{
-					~prepare = {arg ...args;
+					~prepare = {arg module, cond;
 						// "PREPARE AUDIO SOURCE: server: %".format(~server).postln;
 						~output = NodeProxy.audio(~server, 2);
 						~play = {
+							var extraArgs = IdentityDictionary.new;
 							// "PLAYING with source: %".format(~source).postln;
-							~output.source = ~source;
-							~output.play
+							// ~output.source = ~source;
+
+							if(module.envir.includesKey(\initSynthArgs), {
+								module.envir[\initSynthArgs].do({arg item;
+									var param = module.parameters[item];
+									extraArgs.put(param.name, param.value);
+								});
+							});
+							extraArgs = extraArgs.asKeyValuePairs;
+							"Extra ARGS: %".format(extraArgs).postln;
+							~output.put(0, ~source, extraArgs: extraArgs);
+							~output.play;
 						};
 						~stop = {
 							// "STOPPING".postln;

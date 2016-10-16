@@ -2,19 +2,20 @@ VTMLibrary.at(\definitions, \SinOsc);
 
 VTMLibrary.loadGlobalLibrary;
 
-
 //Make a simple module that is running all by itself.
-
 (
 ~mod = VTMModule.new('testModule', definition: \SinOsc);
-~mod.prepare;
+~mod.prepare(onReady: {"JAJAJAJ".postln;});
 )
 
-~mod.play;
+~mod.play();
 ~mod.stop;
+~mod.free(onFreed: {"DODODO".postln;});
 
 ~mod.setParameter(\freq, rrand(220, 430));
 
+
+~mod.execute(\hey, \88, 2221);
 
 ~mod.parameters[\freq].valueAction_(rrand(220, 440));
 

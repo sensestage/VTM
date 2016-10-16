@@ -106,37 +106,45 @@ VTMContext {
 	//make its own condition instance.
 	//The ~prepare stage is where the module definition defines and creates its
 	//parameters.
-	prepare{arg condition;
-
-		//Load the the prototypes
-
-		if(envir.includesKey(\prepare), {
-			var cond = condition !? {Condition.new};
-			this.execute(\prepare, cond);
-		});
-		if(definition.includesKey(\parameters), {
-			parameterManager.loadParameterDeclarations(definition[\parameters]);
-		});
+	prepare{arg condition, onReady;
+		forkIfNeeded{
+			//Load the the prototypes
+			if(envir.includesKey(\prepare), {
+				var cond = condition ?? {Condition.new};
+				this.execute(\prepare, cond);
+			});
+			if(definition.includesKey(\parameters), {
+				parameterManager.loadParameterDeclarations(definition[\parameters]);
+			});
+			onReady.value(this);
+		};
 	}
 
-	run{arg condition;
-		if(envir.includesKey(\run), {
-			var cond = condition !? {Condition.new};
-			this.execute(\run, cond);
-		});
+	run{arg condition, onRunning;
+		forkIfNeeded{
+			if(envir.includesKey(\run), {
+				var cond = condition ?? {Condition.new};
+				this.execute(\run, cond);
+			});
+			onRunning.value(this);
+		};
 	}
 
-	free{arg condition;
-		var cond = condition !? {Condition.new};
-		if(envir.includesKey(\free), {
-			this.execute(\free, cond);
-		});
-		this.oscInterface.free; //Free the responders
-		children.keysValuesDo({arg key, child;
-			child.free(key, condition);
-		});
-		this.changed(\freed);
-		this.release; //Release this as dependant from other objects.
+	free{arg condition, onFreed;
+		forkIfNeeded{
+			var cond = condition ?? {Condition.new};
+			if(envir.includesKey(\free), {
+				this.execute(\free, cond);
+			});
+			this.oscInterface.free; //Free the responders
+			children.keysValuesDo({arg key, child;
+				child.free(key, cond);
+			});
+			parameterManager.free;
+			this.changed(\freed);
+			this.release; //Release this as dependant from other objects.
+			onFreed.value(this);
+		};
 	}
 
 	// prBuildParameters{arg params;

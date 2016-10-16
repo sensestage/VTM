@@ -86,7 +86,7 @@ VTMParameter {
 				this.path = declaration[\path];
 			});
 			if(declaration.includesKey(\action), {
-				"Setting action from declaration: %".format(declaration[\action]).postln;
+				// "Setting action from declaration: %".format(declaration[\action]).postln;
 				this.action_(declaration[\action]);
 			});
 			if(declaration.includesKey(\enabled), {
