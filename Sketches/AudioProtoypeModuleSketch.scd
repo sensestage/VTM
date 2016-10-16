@@ -1,6 +1,9 @@
 VTMLibrary.at(\definitions, \SinOsc);
-//Make a simple module that is running all by itself.
 
+VTMLibrary.loadGlobalLibrary;
+
+
+//Make a simple module that is running all by itself.
 
 (
 ~mod = VTMModule.new('testModule', definition: \SinOsc);
@@ -24,3 +27,6 @@ VTMLibrary.at(\definitions, \SinOsc, \declarations).do(_.postln);
 ~mod = VTMModule.new('testModule', declaration: 'CoolSound', definition: \SinOsc);
 ~mod.prepare;
 )
+
+
+Platform.userAppSupportDir

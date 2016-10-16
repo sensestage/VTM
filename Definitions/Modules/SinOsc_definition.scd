@@ -8,7 +8,7 @@
 	(
 		name: \freq,
 		type: \decimal,
-		action: {|p| ~output.set(\freq, p.value); },
+		action: {|p| ~output.set(\freq, p.value);},
 		minVal: 20,
 		maxVal: 20000,
 	),
