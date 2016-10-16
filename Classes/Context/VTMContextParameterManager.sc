@@ -19,6 +19,7 @@ VTMContextParameterManager {
 				var newParam;
 				paramDeclaration.put(\path, context.fullPath);
 				newParam = VTMParameter.makeFromDeclaration(paramDeclaration);
+				newParam.envir = context.envir;
 				if(newParam.notNil, {
 					this.addParameter(newParam);
 				}, {

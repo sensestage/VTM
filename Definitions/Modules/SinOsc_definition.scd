@@ -1,7 +1,6 @@
 ~prototypes = ['AudioSource'];
 ~prepare = {arg module, condition;
-	"Preparing SinOsc".postln;
-	~source = {|freq, phase|
+	~source = {|freq = 440, phase = 0|
 		SinOsc.ar(freq, phase);
 	};
 };
@@ -20,4 +19,8 @@
 		minVal: 0,
 		maxVal: 2pi
 	)
+];
+~declarations = [
+	\coolSound -> (freq: 88, phase: 0.2, comment: "Denne er kul"),
+	\evenMoreCoolSound -> (freq: 208, phase: 0.1, comment: "Denne er enda kulere!")
 ];
