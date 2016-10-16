@@ -2,9 +2,7 @@ VTMLibrary.at(\definitions, \SinOsc);
 
 VTMLibrary.loadGlobalLibrary;
 
-
 //Make a simple module that is running all by itself.
-
 (
 ~mod = VTMModule.new('testModule', definition: \SinOsc);
 ~mod.prepare;
@@ -12,6 +10,7 @@ VTMLibrary.loadGlobalLibrary;
 
 ~mod.play;
 ~mod.stop;
+~mod.free;
 
 ~mod.setParameter(\freq, rrand(220, 430));
 
