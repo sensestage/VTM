@@ -12,6 +12,7 @@
 			9
 		)!2
 	};
+	~initSynthArgs= [\freq, \lag, \decay, \wild];
 };
 ~parameters = [
 	(
