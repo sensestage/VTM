@@ -6,12 +6,13 @@
 				PinkNoise.ar(1),
 				Impulse.ar(LFDNoise1.kr(wild).exprange(0.005, 10*wild)),
 				1,
-				1/freq.clip(0.0001, 1).lag(lag),
+				1/freq.clip(1, 10000).lag(lag),
 				decay
 			),
 			9
 		)!2
 	};
+	~initSynthArgs= [\freq, \lag, \decay, \wild];
 };
 ~parameters = [
 	(

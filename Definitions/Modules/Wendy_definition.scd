@@ -10,6 +10,7 @@
 			)
 		);
 	};
+	~initSynthArgs= [\rate, \cutoff];
 };
 ~parameters = [
 	(
