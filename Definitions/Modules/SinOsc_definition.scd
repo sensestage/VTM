@@ -1,5 +1,6 @@
 ~prototypes = ['AudioSource'];
 ~prepare = {arg module, condition;
+	"Preparing SinOsc".postln;
 	~source = {|freq, phase|
 		SinOsc.ar(freq, phase);
 	};

@@ -11,13 +11,11 @@ VTMNetworkedContext : VTMContext {
 	initContextManager {
 		library = IdentityDictionary[
 			\definitions -> IdentityDictionary[
-				\global -> IdentityDictionary.new,
 				\project -> IdentityDictionary.new,
 				\application -> IdentityDictionary.new,
 				\runtime -> IdentityDictionary.new
 			],
 			\declarations -> IdentityDictionary[
-				\global -> IdentityDictionary.new,
 				\project -> IdentityDictionary.new,
 				\application -> IdentityDictionary.new,
 				\runtime -> IdentityDictionary.new
@@ -66,7 +64,7 @@ VTMNetworkedContext : VTMContext {
 		result = lib[\runtime].atFail(key, {
 			lib[\application].atFail(key, {
 				lib[\project].atFail(key, {
-					lib[\global].at(key)
+					VTMLibrary.at(whatToGet, key);
 				});
 			});
 		});
@@ -81,47 +79,13 @@ VTMNetworkedContext : VTMContext {
 
 	//whatToLoad is either \definitions or \declarations
 	prLoadToLibrary{arg whatToLoad;
-		var folder = VTMApplication.vtmPath.asString;
+		var folder = VTMLibrary.vtmPath.asString;
 		var subfolder = whatToLoad.asString.capitalize +/+ this.name.asString.capitalize;
-		var loaderFunc = {arg loadFolder, libraryLevel;
-			var path = PathName(loadFolder);
-			var files, whatToLoadSingular = whatToLoad.asString.drop(-1);
-			var result = IdentityDictionary.new;
-			path.filesDo({arg file;
-				if(file.extension == "scd", {
-					if("^.+_%$".format(whatToLoadSingular).matchRegexp(file.fileNameWithoutExtension), {
-						files = files.add(file);
-					});
-				});
-			});
-			files.do({arg item;
-				var name = item.fileNameWithoutExtension.findRegexp("(.+)_.+$")[1][1];
-				var data;
-				//FIXME: Add check if it compiles here.
-				try{
-					data = thisProcess.interpreter.compileFile(item.fullPath.asString);
-					if(data.isNil, {Error("").throw;});
-					switch(whatToLoad,
-						\definitions, {
-							data = Environment.make(data);
-						},
-						\descriptions, {
-							data = data.value;
-						}
-					);
-					data.put(\pathName, PathName(item.fullPath.asString));
-					data.put(\libraryLevel, libraryLevel);
-					result.put(name.asSymbol, data);
-				} {|err|
-					"Could not compile % in file '%'".format(whatToLoadSingular, item.fullPath.asString).warn;
-				};
-			});
-			result;
-		};
-		//Load global stuff
-		folder = folder +/+ subfolder;
-		"Loading global % in '%'".format(whatToLoad, folder).postln;
-		library[whatToLoad][\global].putAll(loaderFunc.value(folder, \global));
+
+		// //Load global stuff
+		// folder = folder +/+ subfolder;
+		// "Loading global % in '%'".format(whatToLoad, folder).postln;
+		// library[whatToLoad][\global].putAll(VTMLibrary.loaderFunc(folder, \global));
 
 		//Load project stuff
 		if(this.application.projectFolder.notNil, {
@@ -132,7 +96,7 @@ VTMNetworkedContext : VTMContext {
 				whatToLoad,
 				folder
 			).postln;
-			library[whatToLoad][\project].putAll(loaderFunc.value(folder, \project));
+			library[whatToLoad][\project].putAll(VTMLibrary.loaderFunc(folder, \project));
 		},{
 			"Application '%' is not in a project".postln;
 		});
@@ -145,7 +109,7 @@ VTMNetworkedContext : VTMContext {
 				this.application.name,
 				folder
 			).postln;
-			library[whatToLoad][\application].putAll(loaderFunc.value(folder, \application));
+			library[whatToLoad][\application].putAll(VTMLibrary.loaderFunc(folder, \application));
 		}, {
 			"Application '%' is not in a folder".postln;
 		});

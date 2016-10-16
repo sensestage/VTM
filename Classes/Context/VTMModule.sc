@@ -4,7 +4,21 @@ VTMModule : VTMComposableContext {
 	var submodules;
 
 	*new{arg name, parent, declaration, definition;
-		^super.new(name, parent, declaration, definition).initModule;
+		var actualDefinition, actualDeclaration;
+		//Check if either definition or declaration are Symobol, in which case
+		//they will be looked up in the global vtm library
+		if(definition.isKindOf(Symbol), {
+			actualDefinition = VTMLibrary.at(\definitions, definition);
+		}, {
+			actualDefinition = definition;
+		});
+		if(definition.isKindOf(Symbol), {
+			actualDeclaration = VTMLibrary.at(\declarations, declaration);
+		}, {
+			actualDeclaration = definition;
+		});
+
+		^super.new(name, parent, actualDeclaration, actualDefinition).initModule;
 	}
 
 	initModule{

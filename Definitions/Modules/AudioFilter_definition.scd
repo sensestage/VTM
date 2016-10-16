@@ -19,7 +19,7 @@
 };
 ~parameters = [
 	(
-		name: \mix, type: \decimal, defaultValue: 1.0
+		name: \mix, type: \decimal, defaultValue: 1.0,
 		action: {|p| ~output.set(\mix, p.value); }
 	)
 ];

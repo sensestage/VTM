@@ -291,10 +291,6 @@ VTMApplication {
 		});
 	}
 
-	*vtmPath{
-		^PathName(PathName( VTMApplication.filenameSymbol.asString ).parentPath).parentPath;
-	}
-
 	applicationPath{
 	}
 }
