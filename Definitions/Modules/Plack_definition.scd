@@ -54,5 +54,5 @@
 ~declarations= [
 	\banjo -> (freq: 300, wild: 2, lag: 1, decay: 1, comment: "country&western"),
 	\noise -> (freq: 3, wild: 4, comment: "noisy irregular rhythm"),
-	\metal -> (freq: 40, wild: 90, decay: 0.9, lag: 10, "metallic sounding")
+	\metal -> (freq: 40, wild: 90, decay: 0.9, lag: 10, comment: "metallic sounding")
 ];
