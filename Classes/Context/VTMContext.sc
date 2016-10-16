@@ -135,6 +135,7 @@ VTMContext {
 		children.keysValuesDo({arg key, child;
 			child.free(key, condition);
 		});
+		parameterManager.free;
 		this.changed(\freed);
 		this.release; //Release this as dependant from other objects.
 	}

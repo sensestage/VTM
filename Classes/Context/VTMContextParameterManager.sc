@@ -59,4 +59,10 @@ VTMContextParameterManager {
 		});
 
 	}
+
+	free{
+		parameters.do(_.free);
+		order = nil;
+		parameters = nil;
+	}
 }
