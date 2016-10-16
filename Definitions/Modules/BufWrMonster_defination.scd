@@ -3,7 +3,7 @@
 ~prepare = {arg module, condition;
 	~server;
 	~source = {|magi, freq, unstabl, rate, grains, dur|
-        b=LocalBuf(1e6,2).clear;
+        b=LocalBuf(1e4,2).clear;
         i=SinGrain.ar(Dust.ar(grains),dur,freq);
         j=Sweep.ar(BufRd.ar(2,b,Saw.ar(freq,unstabl,0)),rate);
         k=BufWr.ar(SinOsc.ar([SinOsc.ar(0.1*b)*0.1,magi]),b,j);
