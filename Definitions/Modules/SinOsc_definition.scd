@@ -1,8 +1,5 @@
 ~prototypes = ['AudioSource'];
 ~prepare = {arg module, condition;
-	~server;
-	~buffer = Buffer.read(~server, "lyd.wav", action: {condition.unhang;});
-	condition.hang;
 	~source = {|freq, phase|
 		SinOsc.ar(freq, phase);
 	};
