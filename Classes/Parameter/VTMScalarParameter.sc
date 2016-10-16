@@ -99,6 +99,28 @@ VTMNumberParameter : VTMValueParameter {
 		);
 	}
 
+	rampValue{arg targetValue, time, curve = \lin;
+		if(scheduler.isPlaying, {
+			scheduler.stop;
+		});
+		scheduler = fork{
+			var stream, val;
+			stream = Env([this.value, targetValue], [time]).asPseg.asStream;
+			val = stream.next;
+			loop{
+				if(val.isNil, {
+					this.valueAction_(targetValue);
+					thisThread.stop;
+				});
+				// "Setting '%' ramped value: %".format(this.fullPath, val).postln;
+				this.valueAction_(val);
+				0.05.wait;
+				val = stream.next;
+			};
+		};
+	}
+
+
 	defaultValue_{arg val;
 		defaultValue = this.prCheckRangeAndClipValue(val);
 	}

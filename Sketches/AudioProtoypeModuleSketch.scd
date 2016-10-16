@@ -12,9 +12,15 @@ VTMLibrary.loadGlobalLibrary;
 ~mod.stop;
 ~mod.free(onFreed: {"DODODO".postln;});
 
+~mod.parameters[\freq].rampValue(rrand(220, 740), rrand(0.2, 4));
+
+~mod.parameters[\sideeffect].rampValue(false, 1);
+
 ~mod.setParameter(\freq, rrand(220, 430));
 
 ~mod.setParameter(\freq, rrand(220, 430), \phase, 2pi.rand);
+
+~mod.rampParameter();
 
 ~mod.loadDeclaration(\coolSound);
 ~mod.loadDeclaration(\evenMoreCoolSound);
@@ -23,6 +29,7 @@ VTMLibrary.loadGlobalLibrary;
 ~mod.execute(\hey, \88, 2221);
 
 ~mod.parameters[\freq].valueAction_(rrand(220, 440));
+
 
 
 ~mod.parameters[\freq].value
@@ -36,3 +43,8 @@ VTMLibrary.at(\definitions, \SinOsc, \declarations).do(_.postln);
 
 
 Platform.userAppSupportDir
+
+'/myModule/freq:ramp', 440, 3000
+
+a = fork {5.wait; "heu".postln;};
+a.isPlaying

@@ -5,6 +5,7 @@ VTMValueParameter : VTMParameter {
 	var <>format;
 	var <options;
 	var <restrictValueToOptions = false;
+	var scheduler;
 
 	prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
@@ -20,7 +21,7 @@ VTMValueParameter : VTMParameter {
 	}
 
 	//only non-abstract sub classes will implement this.
-	isValidType{arg val; 
+	isValidType{arg val;
 		this.subclassResponsibility(thisMethod);
    	}
 
@@ -49,6 +50,7 @@ VTMValueParameter : VTMParameter {
 		if(value.isNil, {
 			this.value_( defaultValue );
 		});
+		scheduler = Routine{};
 	}
 
 	//set value to default
@@ -69,7 +71,7 @@ VTMValueParameter : VTMParameter {
 			}, {
 				"%:% - % All options must be valid. [%]".format(
 					this.class.name,
-					thisMethod.name, 
+					thisMethod.name,
 					this.name,
 					val
 				).warn;
@@ -77,7 +79,7 @@ VTMValueParameter : VTMParameter {
 		}, {
 			"%:% - % Options must be an array. [%]".format(
 				this.class.name,
-				thisMethod.name, 
+				thisMethod.name,
 				this.name,
 				val
 			).warn;
@@ -106,6 +108,16 @@ VTMValueParameter : VTMParameter {
 			this.value_(val);
 			this.doAction;
 		});
+	}
+
+	rampValue{arg val, time;
+		if(scheduler.isPlaying, {
+			scheduler.stop;
+		});
+		scheduler = fork{
+			time.wait;
+			this.valueAction_(val);
+		};
 	}
 
 	free{

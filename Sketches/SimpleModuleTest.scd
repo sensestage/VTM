@@ -48,3 +48,6 @@ definition = Environment.make({
 
 ~parameters[0].key
 ~parameters[0].value
+
+a = Env([11, 22], [3]).postln.asPseg.asStream;
+a.next;
