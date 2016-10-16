@@ -4,7 +4,7 @@
 		"CASPER CHANGED: %".format(val).postln;
 	};
 	~source = {|freq, phase|
-		SinOsc.ar(freq, phase);
+		SinOsc.ar(freq.poll(label: \freq), phase.poll(label: \phase));
 	};
 
 	~initSynthArgs = [\freq, \phase];
