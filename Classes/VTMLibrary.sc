@@ -5,10 +5,10 @@ VTMLibrary : Library{
 	}
 
 	*initClass{
-		this.prLoadGlobalLibrary;
+		this.loadGlobalLibrary;
 	}
 
-	*prLoadGlobalLibrary{
+	*loadGlobalLibrary{
 		[\definitions, \declarations].do({arg whatToLoad;
 			var data;
 			data = this.loaderFunc(this.vtmPath, \global, whatToLoad);

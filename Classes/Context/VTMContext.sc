@@ -59,7 +59,8 @@ VTMContext {
 		if(definition_.isNil, {
 			definition = Environment.new;
 		}, {
-			definition = Environment.newFrom(definition_);
+			// definition = Environment.newFrom(definition_);
+			definition = definition_;
 		});
 		if(addr.isNil, {
 			addr = NetAddr.localAddr;
@@ -79,7 +80,7 @@ VTMContext {
 
 		parent = parent_;
 		children = IdentityDictionary.new;
-		envir = Environment.newFrom(definition.deepCopy);
+		envir = definition;//Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
 
 		parameterManager = VTMContextParameterManager(this);
@@ -106,7 +107,9 @@ VTMContext {
 	//The ~prepare stage is where the module definition defines and creates its
 	//parameters.
 	prepare{arg condition;
-		// "Trying to prepare '%'".format(this.name).postln;
+
+		//Load the the prototypes
+
 		if(envir.includesKey(\prepare), {
 			var cond = condition !? {Condition.new};
 			this.execute(\prepare, cond);
@@ -264,11 +267,40 @@ VTMContext {
 	parameters{ ^parameterManager.parameters; }
 	parameterOrder{ ^parameterManager.order; }
 
+	setParameter{arg paramName ...args;
+		parameterManager.parameters[paramName].valueAction_(*args);
+	}
+
 	//Call functions in the runtime environment with this module as first arg.
 	//Module definition functions always has the module as its first arg.
 	//The method returns the result from the called function.
 	execute{arg selector ...args;
-		^envir[selector].value(this, *args);
+		// "EXECUTE -envir: % \n\thasProto: %".format(envir, envir.proto).postln;
+		if(envir.proto.notNil, {
+			this.executeWithPrototypes(selector, *args);
+		}, {
+			^envir[selector].value(this, *args);
+		});
+	}
+
+	executeWithPrototypes{arg selector ...args;
+		var funcList, nextProto, result;
+		//Make a function stack of the proto functions
+		// "EVAL STACK FUNCS: sel: % args: %".format(selector, args).postln;
+		nextProto = envir;
+		while({nextProto.notNil}, {
+			if(nextProto.includesKey(selector), {
+				funcList = funcList.add(nextProto[selector]);
+			});
+			nextProto = nextProto.proto;
+		});
+		envir.use{
+			funcList.reverseDo({arg item;
+				//last one to evaluate is the the one that returns result
+				result = item.valueEnvir(this, *args);
+			});
+		};
+		^result;
 	}
 
 	makeView{arg declaration;
@@ -277,8 +309,8 @@ VTMContext {
 		if(declaration.notNil, {
 			if(declaration.includesKey(\viewClass), {
 				viewClass = declaration[\viewClass];
-				});
 			});
+		});
 		^viewClass.new(this, declaration);
 	}
 

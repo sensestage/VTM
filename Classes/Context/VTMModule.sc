@@ -12,13 +12,97 @@ VTMModule : VTMComposableContext {
 		}, {
 			actualDefinition = definition;
 		});
-		if(definition.isKindOf(Symbol), {
+
+		actualDefinition = this.makeDefinitionEnvironment(actualDefinition);
+
+		if(declaration.isKindOf(Symbol), {
 			actualDeclaration = VTMLibrary.at(\declarations, declaration);
 		}, {
-			actualDeclaration = definition;
+			actualDeclaration = declaration;
 		});
 
 		^super.new(name, parent, actualDeclaration, actualDefinition).initModule;
+	}
+
+	*makeDefinitionEnvironment{arg definition;
+		//----Temp hack for audio modules hackaton:
+		var result, prototypes;
+		if(definition.includesKey(\prototypes), {
+			prototypes = definition[\prototypes];
+			if(prototypes.first == 'AudioSource', {
+				var audioModule, audioSource;
+				audioModule = Environment.new;
+				audioModule.use{
+					~prepare = {arg ...args;
+						// "PREPARE AUDIO MODULE".postln;
+						~server = Server.default;
+					};
+				};
+
+				audioSource = Environment.new(proto: audioModule);
+				audioSource.use{
+					~prepare = {arg ...args;
+						// "PREPARE AUDIO SOURCE: server: %".format(~server).postln;
+						~output = NodeProxy.audio(~server, 2);
+						~play = {
+							// "PLAYING with source: %".format(~source).postln;
+							~output.source = ~source;
+							~output.play
+						};
+						~stop = {
+							// "STOPPING".postln;
+							~output.stop
+						};
+					};
+					~free = {
+						~output.stop;
+						~output.clear;
+					};
+				};
+				result = Environment.new(proto: audioSource);
+				result.putAll(definition);
+			});
+		}, {
+			result = definition;
+		});
+
+		///-----End temp hackaton hack
+
+
+		// var result, tempDef;
+		// if(definition.isKindOf(Symbol), {
+		// 	tempDef = VTMLibrary.at(\definitions, definition);
+		// 	}, {
+		// 		tempDef = definition;
+		// });
+		// //Find and load the prototypes for this definition
+		// if(definition.includesKey(\prototypes), {
+		// 	var protoLoaderFunc;
+		// 	protoLoaderFunc = {arg protoDefName;
+		// 		var res;
+		// 		res = VTMLibrary.at(\definitions, protoDefName);
+		// 		if(res.includesKey(\prototypes), {
+		// 			protoLoaderFunc.value(res);
+		// 		});
+		// 		res;
+		// 	};
+		// 	if(definition[\prototypes].isArray, {
+		// 		//Load all prototypes and its prototypes
+		// 		definition[\prototypes].do({arg item;
+		// 			result = protoLoaderFunc.value(item);
+		// 		});
+		// 		}, {
+		// 			"Prototypes must be array of Symbols".warn;
+		// 	})
+		// });
+		^result;
+	}
+
+	*loadPrototypesForDefinition{arg definition;
+		var result, envirs;
+		definition[\prototypes].collect({arg item;
+			envirs = envirs.add(item);
+		});
 	}
 
 	initModule{
@@ -86,9 +170,18 @@ VTMModule : VTMComposableContext {
 	// 	});
 	// }
 
+	play{
+		this.execute(\play);
+	} //temp for module definition hackaton
+
+	stop{
+		this.execute(\stop);
+	} //temp for module definition hackaton
+
+
 	addSubmodule{arg newSubmodule;
 		if(newSubmodule.isKindOf(VTMModule), {
-			"ADDING SUBMODULE".postln;
+			// "ADDING SUBMODULE".postln;
 			this.addChild(newSubmodule);
 			this.prInvalidateChildren;
 		});

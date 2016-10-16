@@ -13,6 +13,7 @@ VTMParameter {
 	var <>willStore = true;
 	var <>onlyReturn = false;
 	var <isSubParameter = false;
+	var >envir;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -104,7 +105,11 @@ VTMParameter {
 	}
 
 	doAction{
-		action.value(this);
+		if(envir.notNil, {
+			envir.use{action.value(this)};
+		}, {
+			action.value(this);
+		});
 	}
 
 	//If path is not defined the name is returned with a leading slash
