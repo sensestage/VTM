@@ -2,22 +2,25 @@
 
 ~prepare = {arg module, condition;
 	~server;
-	~source = {|magi, freq, unstabl, rate, grains, dur|
-        var buf, sines, sweeper, bufWr, bufRd, bus0, bus1;
+	~source = {|magi, freq, unstabl, rate, grains, dur, lag|
+        var buf, sines, sweeper, bufWr, bufRd, clean, modulo;
         buf=LocalBuf(1e4,2).clear;
-        sines=SinGrain.ar(Dust.ar(grains),dur,freq);
-        sweeper=Sweep.ar(BufRd.ar(2,b,Saw.ar(freq,unstabl,0)),rate);
-        bufWr=BufWr.ar(SinOsc.ar([SinOsc.ar(0.1*b)*0.1,magi]),b,j);
-        bufRd=BufRd.ar(2,b,j)/2;
-        bus0=Splay.ar(l);
-        bus1=Splay.ar(l%i)*0.2;
-        bus0+bus1;
+        sines=SinGrain.ar(Dust.ar(grains),dur.lag2(lag),freq.lag2(lag));
+        sweeper=Sweep.ar(BufRd.ar(2,buf,Saw.ar(freq.lag2(lag),unstabl.lag2(lag),0)),rate.lag2(lag));
+        bufWr=BufWr.ar(SinOsc.ar([SinOsc.ar(0.1*buf)*0.1,magi.lag2(lag)]),buf,sweeper);
+        bufRd=BufRd.ar(2,buf,sweeper)/2;
+        clean=Splay.ar(bufRd);
+        modulo=Splay.ar(bufRd%sines)*0.2;
+        Splay.ar(clean+modulo);
 	};
 };
+
 ~free = {arg module, condition;
-	b.free({condition.unhang});
-	condition.hang;
+    "freeing BufWrMonster".postln;
 };
+
+~initSynthArgs = [\magi, \freq, \unstabl, \rate, \dur, \lag];
+
 ~parameters = [
 	(
 		name: \magi,
@@ -44,7 +47,7 @@
 		},
 		minVal: 1,
 		maxVal: 500,
-		defaultValue: 200,
+		defaultValue: 300,
 	),
     (
 		name: \rate,
@@ -53,7 +56,7 @@
 		},
 		minVal: 1,
 		maxVal: 2e4,
-		defaultValue: 4e3
+		defaultValue: 300
 	),
     (
 		name: \grains,
@@ -74,6 +77,17 @@
 		maxVal: 5,
 		defaultValue: 2,
         clipmode: \both
+	),
+    (
+		name: \lag,
+		type: \decimal,
+		action: {|p| ~output.set(\lag, p.value);
+		},
+		minVal: 0.001,
+		maxVal: 60,
+		defaultValue: 0.001,
+        clipmode: \low
 	)
 ];
+
 
