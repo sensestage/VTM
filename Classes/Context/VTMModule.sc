@@ -43,6 +43,9 @@ VTMModule : VTMComposableContext {
 					~prepare = {arg module, cond;
 						// "PREPARE AUDIO SOURCE: server: %".format(~server).postln;
 						~output = NodeProxy.audio(~server, 2);
+						//add volume parameter
+						module.parameterManager();
+
 						~play = {
 							var extraArgs = IdentityDictionary.new;
 							// "PLAYING with source: %".format(~source).postln;
@@ -55,7 +58,7 @@ VTMModule : VTMComposableContext {
 								});
 							});
 							extraArgs = extraArgs.asKeyValuePairs;
-							"Extra ARGS: %".format(extraArgs).postln;
+							// "Extra ARGS: %".format(extraArgs).postln;
 							~output.put(0, ~source, extraArgs: extraArgs);
 							~output.play;
 						};
@@ -70,6 +73,20 @@ VTMModule : VTMComposableContext {
 					};
 				};
 				result = Environment.new(proto: audioSource);
+				//----mod def hackaton hack for volume parameter
+				"Adding volume parameter hack".postln;
+				if(definition.includesKey(\parameters).not, {
+					definition.put(\parameters, []);
+				});
+				//Add volume parameter first
+				definition[\parameters] = [(
+					name: \volume, type: \decimal,
+					minVal: -96.0, maxVal: 6, clipmode: \both,
+					defaultValue: -96.0,
+					action: {|p| ~output.vol_(p.value.dbamp)};
+				)] ++ definition[\parameters];
+
+				//---end mod def hackaton hack
 				result.putAll(definition);
 			});
 		}, {
