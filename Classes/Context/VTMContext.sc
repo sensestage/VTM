@@ -148,8 +148,14 @@ VTMContext {
 			parameterManager.free;
 			this.changed(\freed);
 			this.release; //Release this as dependant from other objects.
+			definition = nil;
+			declaration = nil;
 			onFreed.value(this);
 		};
+	}
+
+	reset{
+		this.parameters.do(_.reset(true));
 	}
 
 	// prBuildParameters{arg params;
