@@ -19,7 +19,7 @@ VTMNumberView : VTMNumberParameterView {
 		.normalColor_(this.class.stringColor)
 		.align_(\right);
 
-		this.prAddAltClickInterceptor(numberView);//all topmost views need to set this
+		// this.prAddAltClickInterceptor(numberView);//all topmost views need to set this
 
 		if(parameter.type == \integer, {
 			this.decimals_(0);

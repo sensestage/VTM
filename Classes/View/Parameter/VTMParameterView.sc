@@ -89,10 +89,10 @@ VTMParameterView : View {
 		this.bounds_(this.bounds);
 	}
 
-	prAddAltClickInterceptor{arg argView;
-		//if alt key is pressed when pressing down the view, the action will be propagated to the next view
-		argView.addAction( {arg v,x,y,mod; mod != 524288 }, \mouseDownAction);
-	}
+	// prAddAltClickInterceptor{arg argView;
+	// 	//if alt key is pressed when pressing down the view, the action will be propagated to the next view
+	// 	argView.addAction( {arg v,x,y,mod; mod != 524288 }, \mouseDownAction);
+	// }
 
 	close{
 		action = nil;
@@ -127,8 +127,8 @@ VTMParameterView : View {
 		.focusColor_(Color.white.alpha_(0.0))
 		.background_(Color.white.alpha_(0.0))
 		.canFocus_(false);
-		this.prAddAltClickInterceptor(labelView);
-		this.prAddAltClickInterceptor(outlineView);
+		// this.prAddAltClickInterceptor(labelView);
+		// this.prAddAltClickInterceptor(outlineView);
 		this.refreshLabel;
 	}
 

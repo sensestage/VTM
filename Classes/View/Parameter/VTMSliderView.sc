@@ -25,6 +25,7 @@ VTMSliderView : VTMNumberParameterView {
 		.thumbSize_(3)
 		.action_({arg slid;
 			var newValue;
+			"SLIDER".postln;
 			newValue = spec.map(slid.value);
 			parameter.valueAction_(newValue, false);
 			parameter.changed(\value, slid);
@@ -39,10 +40,10 @@ VTMSliderView : VTMNumberParameterView {
 		//.normalColor_(this.class.stringColor)
 		.canFocus_(true)
 		.align_(\right)
-		.action_({arg v; parameter.valueAction_(v.value, false).changed(\value, v)});
+		.action_({arg v; "TEXT".postln; parameter.valueAction_(v.value, false).changed(\value, v)});
 
-		this.prAddAltClickInterceptor(sliderView);
-		this.prAddAltClickInterceptor(numberView);
+		// this.prAddAltClickInterceptor(sliderView);
+		// this.prAddAltClickInterceptor(numberView);
 
 		if(parameter.type == \integer, {
 			this.decimals_(0);
