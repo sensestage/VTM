@@ -3,8 +3,16 @@ VTMContextView : VTMView {
 	var labelView;
 	var contentView;
 	var headerView;
+	var parameterManagerView;
+	classvar <unitSize;
+	classvar <defaultWidth;
 
-	*new{arg parent, bounds, context, declaration, definition;
+	*initClass{
+		unitSize = Size(150, 25);
+		defaultWidth = unitSize.width;
+	}
+
+	*new{arg parent, bounds, declaration, definition, context;
 		^super.new(parent, bounds, declaration, definition).initContextView(context);
 	}
 
@@ -12,29 +20,42 @@ VTMContextView : VTMView {
 		context = context_;
 		context.addDependant(this);
 
-		this.prInitLabelView;
-		contentView = View(this).layout_(HLayout(StaticText().string_("context content view")));
-		headerView = View(this);
+		labelView = StaticText().string_(context.name).font_(this.font);
+		labelView.background_(Color.green);
+
+		parameterManagerView = VTMContextParameterManagerView.new(this);
+
+		contentView = View(this).layout_(
+			VLayout(
+				[parameterManagerView.background_(Color.yellow), align: \topLeft],
+				// StaticText().string_("context content view").font_(this.font).background_(Color.cyan)
+			).spacing_(0).margins_(0);
+		);
+
+		headerView = View(this).background_(Color.blue);
+		headerView.layout_(
+			HLayout(
+				[labelView.fixedSize_(Size(150, 25)), align: \topLeft]
+			).spacing_(0).margins_(0);
+		);
+		headerView.minWidth_(this.class.defaultWidth);
+		headerView.maxHeight_(25);
+
 		this.layout_(
 			VLayout(
-				HLayout(
-					[labelView.maxSize_(Size(200,25)), align: \topLeft],
-					[headerView.maxHeight_(25), align: \top]
-				),
+				headerView,
 				contentView
-			)
+			).spacing_(0).margins_(0);
 		);
-		this.layout.spacing_(3).margins_(3);
+		this.minWidth_(this.class.defaultWidth);
+		this.layout.spacing_(0).margins_(0);
 		/*this.refreshLabel;*/
 		this.refresh;
 	}
 
-	prInitLabelView{
-		labelView = StaticText().string_(context.name);
-	}
-
 	free{
 		context.removeDependant(this);
+		{this.remove;}.defer;
 	}
 
 	refreshLabel{
@@ -74,7 +95,7 @@ VTMContextView : VTMView {
 
 	//pull style update
 	update{arg theChanged, whatChanged, whoChangedIt, toValue;
-		//"Dependant update: % % % %".format(theChanged, whatChanged, whoChangedIt, toValue).postln;
+		"Dependant update: % % % %".format(theChanged, whatChanged, whoChangedIt, toValue).postln;
 		if(theChanged === context, {//only update the view if the parameter changed
 			switch(whatChanged,
 				//\enabled, { this.enabled_(context.enabled); },
@@ -82,7 +103,7 @@ VTMContextView : VTMView {
 				\name, { this.refreshLabel; },
 				\freed, { this.free; }
 			);
-			this.refresh;
+			{this.refresh;}.defer;
 		}, {
 			super.update(theChanged, whatChanged, whoChangedIt, toValue);
 		});

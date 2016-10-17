@@ -19,6 +19,11 @@ VTMContext {
 	classvar <moduleSign = $%;
 	classvar <sceneSign = $$;
 	classvar <contextCommandSeparator = $:;
+	classvar <viewClass;
+
+	*initClass{
+		viewClass = VTMContextView;
+	}
 
 	*buildFromDeclaration{arg declaration, parent;
 		if(declaration.includesKey(\name), {
@@ -264,7 +269,7 @@ VTMContext {
 
 	}
 
-	loadDeclaration{arg declarationName;
+	loadDeclaration{arg declarationName, ramping;
 		if(envir.includesKey(\declarations), {
 			var newDeclaration;
 			newDeclaration = envir[\declarations].detect({arg item; item.key == declarationName;});
@@ -272,6 +277,14 @@ VTMContext {
 				newDeclaration = newDeclaration.value;
 				newDeclaration.removeAt(\comment);
 				this.setParameter(*newDeclaration.asKeyValuePairs);
+				if(ramping.isNil, {
+					this.setParameter(*newDeclaration.asKeyValuePairs);
+				}, {
+					newDeclaration = newDeclaration.asKeyValuePairs.flop.collect({arg item;
+						item.add(ramping);
+					}).flatten;
+					this.rampParameter(*newDeclaration);
+				});
 			}, {
 				"Declaration '%' for '%' not found".format(declarationName, this.fullPath).warn;
 			});
@@ -303,6 +316,17 @@ VTMContext {
 			if(param.notNil, {
 				param.valueAction_(*args[1]);
 			});
+		});
+	}
+
+	rampParameter{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
+		var param;
+		if(args.size > 3, {
+			args.clump(3).do({arg item;
+
+			})
+		}, {
+
 		});
 	}
 
@@ -338,7 +362,7 @@ VTMContext {
 		^result;
 	}
 
-	makeView{arg declaration;
+	makeView{arg parent, bounds, declaration, definition;
 		var viewClass = this.class.viewClass;
 		//override class if defined in declaration.
 		if(declaration.notNil, {
@@ -346,7 +370,7 @@ VTMContext {
 				viewClass = declaration[\viewClass];
 			});
 		});
-		^viewClass.new(this, declaration);
+		^viewClass.new(parent, bounds, declaration, definition, this);
 	}
 
 	update{arg theChanged, whatChanged, theChanger ...args;

@@ -33,7 +33,7 @@ VTMParameterView : View {
 		^this.class.viewTypeToClassMappings.findKeyForValue(this.class);
 	}
 
-	*makeFromDeclaration{arg parent, bounds, parameter, declaration, definition;
+	*makeFromDeclaration{arg parent, bounds, declaration, definition, parameter;
 		var viewClass;
 		if(declaration.notNil, {
 			if(declaration.includesKey(\type), {
@@ -44,20 +44,20 @@ VTMParameterView : View {
 		if(viewClass.isNil, {
 			viewClass = this.viewTypeToClassMappings[parameter.class.defaultViewType];
 		});
-		^viewClass.new(parent, bounds, parameter, declaration, definition);
+		^viewClass.new(parent, bounds, declaration, definition, parameter);
 	}
 
 	*prCalculateSize{arg units;
 		^Size(unitWidth, unitHeight * units);
 	}
 
-	*new{arg parent, bounds, parameter, declaration, definition;
+	*new{arg parent, bounds, declaration, definition, parameter;
 		var viewBounds;
 		viewBounds = bounds ?? { this.prCalculateSize(1).asRect; };
-		^super.new( parent: parent, bounds: viewBounds ).initParameterView(parameter, declaration, definition);
+		^super.new( parent: parent, bounds: viewBounds ).initParameterView(declaration, definition, parameter);
 	}
 
-	initParameterView{arg parameter_, declaration_, definition_;
+	initParameterView{arg declaration_, definition_, parameter_;
 		if(parameter_.isNil, {Error("VTMParameterView - needs parameter").throw;});
 		parameter = parameter_;
 		parameter.addDependant(this);

@@ -6,7 +6,17 @@ VTMLibrary.loadGlobalLibrary;
 (
 ~mod = VTMModule.new('testModule', definition: \SinOsc);
 ~mod.prepare(onReady: {"JAJAJAJ".postln;});
+w = Window.new();
+v = ~mod.makeView(w);
+w.front;
 )
+
+v.refresh;
+v.front;
+v.close;
+
+VTMContext.viewClass;
+VTMModule.viewClass
 
 ~mod.play();
 ~mod.stop;

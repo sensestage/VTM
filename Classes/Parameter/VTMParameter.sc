@@ -214,6 +214,6 @@ VTMParameter {
 	}
 
 	makeView{arg parent, bounds, declaration, definition;
-		^VTMParameterView.makeFromDeclaration(parent, bounds, this, declaration, definition);
+		^VTMParameterView.makeFromDeclaration(parent, bounds, declaration, definition, this);
 	}
 }
