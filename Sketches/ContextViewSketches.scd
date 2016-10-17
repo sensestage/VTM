@@ -9,6 +9,8 @@ v = ~mod.makeView(w, Rect(0,0,250,250));
 w.front;
 )
 
+~mod.parameterManager.addParameter(VTMDecimalParameter('volume', (minVal: -96, maxVal: 6, defaultValue: -96)), 0);
+
 ~mod.parameterOrder
 ~mod.parameters[\freq].makeView.front;
 ~mod.parameters[\freq].rampValue(rrand(200, 1000), 5)
@@ -26,8 +28,8 @@ v.sizeHint;
 VTMContext.viewClass;
 VTMModule.viewClass
 
-~mod.play();
-~mod.stop;
+~mod.play(3);
+~mod.stop(3);
 ~mod.free(onFreed: {"DODODO".postln;});
 
 (hei: 3)[\heif]

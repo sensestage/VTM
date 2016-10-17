@@ -46,7 +46,7 @@ VTMModule : VTMComposableContext {
 						//add volume parameter
 						module.parameterManager();
 
-						~play = {
+						~play = {arg module, fadeTime = 0;
 							var extraArgs = IdentityDictionary.new;
 							// "PLAYING with source: %".format(~source).postln;
 							// ~output.source = ~source;
@@ -60,11 +60,11 @@ VTMModule : VTMComposableContext {
 							extraArgs = extraArgs.asKeyValuePairs;
 							// "Extra ARGS: %".format(extraArgs).postln;
 							~output.put(0, ~source, extraArgs: extraArgs);
-							~output.play;
+							~output.play(fadeTime: fadeTime);
 						};
-						~stop = {
+						~stop = {arg module, fadeTime = 0;
 							// "STOPPING".postln;
-							~output.stop
+							~output.stop(fadeTime)
 						};
 					};
 					~free = {
@@ -197,12 +197,12 @@ VTMModule : VTMComposableContext {
 	// 	});
 	// }
 
-	play{
-		this.execute(\play);
+	play{arg ...args;
+		this.execute(\play, *args);
 	} //temp for module definition hackaton
 
-	stop{
-		this.execute(\stop);
+	stop{arg ...args;
+		this.execute(\stop, *args);
 	} //temp for module definition hackaton
 
 
