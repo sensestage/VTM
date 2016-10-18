@@ -41,9 +41,9 @@ VTM - system for Verdensteatret
 
 
 ### shotdown.py for raspberry pi
-
-* use the following script
-´#!/bin/python
+* use the following python script
+```python
+#!/bin/python
 import RPi.GPIO as GPIO
 import os
 pin= 3
@@ -54,9 +54,10 @@ try:
 	os.system("sudo halt -p")
 except:
 	pass
-GPIO.cleanup()´
+GPIO.cleanup()
+```
 
 * edit crontab
-  - ´crontab -e´
+  - `crontab -e`
   - #and add the following…
-  - ´@reboot python /home/pi/shutdown.py´
+  - `@reboot python /home/pi/shutdown.py`
