@@ -28,22 +28,22 @@ VTM - system for Verdensteatret
 
 ###install jessie on raspberry pi
 
-* sudo raspi-config - go to advanced options and select update
+* `sudo raspi-config` - go to advanced options and select update
 * enable VNC (in raspi-config)
 * set GPU mem to more than default
 
-###usb problem solving:
-
-* ls /dev/
-  - sudo mkdir /media/usb
-  - sudo mount -t vfat -o uid=pi,gid=pi /dev/sda1 /media/usb
-  - ls /media/usb
+###how to solve problem with reading a usb stick/drive:
+* mounting usb
+  - `ls /dev/`
+  - `sudo mkdir /media/usb`
+  - `sudo mount -t vfat -o uid=pi,gid=pi /dev/sda1 /media/usb`
+  - `ls /media/usb`
 
 
 ### shotdown.py for raspberry pi
 
 * use the following script
-#!/bin/python
+´#!/bin/python
 import RPi.GPIO as GPIO
 import os
 pin= 3
@@ -54,9 +54,9 @@ try:
 	os.system("sudo halt -p")
 except:
 	pass
-GPIO.cleanup()
+GPIO.cleanup()´
 
 * edit crontab
-  - crontab -e
+  - ´crontab -e´
   - #and add the following…
-  - @reboot python /home/pi/shutdown.py
+  - ´@reboot python /home/pi/shutdown.py´
