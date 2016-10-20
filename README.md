@@ -67,8 +67,6 @@ GPIO.cleanup()
   - #and add the following…
   - `@reboot python /home/pi/shutdown.py`
 
-
-
 ###additional
 
 ##### if needed.. build and include sc3-plugins on raspberry pi
@@ -85,7 +83,7 @@ GPIO.cleanup()
   - `cmake -L -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon"`
   - `-DCMAKE_CXX_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon" -DSC_PATH=../../supercollider/`
   - `-DCMAKE_INSTALL_PREFIX=~/supercolliderStandaloneRPI2/share/user/Extensions/sc3-plugins ..`
-  - `make -j 4`  - ! leave out flag --> ~~-j <-- 4~~ on single core rpi models __(zero,1,2)__
+  - `make -j 4` leave out flag ~~-j 4~~ on single core rpi models _(zero,1,2)_
   - `sudo make install`
   - `cd ~/supercolliderStandaloneRPI2/share/system/Extensions/`
   - `sudo chown -R pi SC3plugins`
@@ -97,8 +95,6 @@ GPIO.cleanup()
   - `rm -rf SC3plugins/share`
   - `rm -rf SC3plugins/local`
 
+###logo
 
-  | `VTM  ` | ` `
- --- | --- | ---
- *_* | `   ` | `**_**`
-  |  |
+![alt text](https://oddodd.org/lib/VTM.png "VTM")
