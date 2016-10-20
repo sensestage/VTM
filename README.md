@@ -26,14 +26,17 @@ VTM - system for Verdensteatret
 #general raspberry pi instructions
 
 ###install jessie on raspberry pi and amend settings
+
 * burn image or etch .zip to SD card <https://www.etcher.io/>
 * boot raspberry ...
 * `sudo raspi-config` - go to advanced options and select update
 * enable VNC (in raspi-config)
-* set gpu_mem to `192`, `448` or `944` via the desktop environment or edit in `/boot/config.txt`
+* set gpu_mem to `192` via the desktop environment or edit in `/boot/config.txt`
 
-###how to solve problem with reading a usb stick/drive:
+###how to solve problem with mounting a usb drive:
 
+* `lsusb` - should do the trick
+* if not then ..
 * mounting usb
   - `ls /dev/`
   - `sudo mkdir /media/usb`
@@ -64,7 +67,9 @@ GPIO.cleanup()
   - #and add the following…
   - `@reboot python /home/pi/shutdown.py`
 
-###additional instructions
+
+
+###additional
 
 ##### if needed.. build and include sc3-plugins on raspberry pi
 * if not already done, install cmake
@@ -80,7 +85,7 @@ GPIO.cleanup()
   - `cmake -L -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon"`
   - `-DCMAKE_CXX_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon" -DSC_PATH=../../supercollider/`
   - `-DCMAKE_INSTALL_PREFIX=~/supercolliderStandaloneRPI2/share/user/Extensions/sc3-plugins ..`
-  - `make -j 4` leave out flag j 4 on single core rpi models (zero,1,2)
+  - `make -j 4`  - ! leave out flag --> ~~-j <-- 4~~ on single core rpi models __(zero,1,2)__
   - `sudo make install`
   - `cd ~/supercolliderStandaloneRPI2/share/system/Extensions/`
   - `sudo chown -R pi SC3plugins`
@@ -91,3 +96,9 @@ GPIO.cleanup()
   - `rm -rf SC3plugins/lib`
   - `rm -rf SC3plugins/share`
   - `rm -rf SC3plugins/local`
+
+
+  | `VTM  ` | ` `
+ --- | --- | ---
+ *_* | `   ` | `**_**`
+  |  |
