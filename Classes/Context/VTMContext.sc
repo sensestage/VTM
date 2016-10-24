@@ -19,11 +19,7 @@ VTMContext {
 	classvar <moduleSign = $%;
 	classvar <sceneSign = $$;
 	classvar <contextCommandSeparator = $:;
-	classvar <viewClass;
-
-	*initClass{
-		viewClass = VTMContextView;
-	}
+	classvar <viewClassSymbol = 'VTMContextView';
 
 	*buildFromDeclaration{arg declaration, parent;
 		if(declaration.includesKey(\name), {
@@ -369,7 +365,7 @@ VTMContext {
 	}
 
 	makeView{arg parent, bounds, declaration, definition;
-		var viewClass = this.class.viewClass;
+		var viewClass = this.class.viewClassSymbol.asClass;
 		//override class if defined in declaration.
 		if(declaration.notNil, {
 			if(declaration.includesKey(\viewClass), {
