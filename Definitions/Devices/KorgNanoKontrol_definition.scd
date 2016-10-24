@@ -30,5 +30,5 @@
 		var data = item.value;
 		~device.addComponent(item.key, data[\chan], data[\number], \control);
 	});
-	~device.trace(true);
+	// ~device.trace(true);
 };

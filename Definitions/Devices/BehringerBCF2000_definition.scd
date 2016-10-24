@@ -17,5 +17,5 @@
 			buttonSide: [number: (96..99), chan: 0].flop.collect(Event.newFrom(_))
 		)
 	);
-	~device.trace(true);
+	// ~device.trace(true);
 };

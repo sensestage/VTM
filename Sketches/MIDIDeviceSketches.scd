@@ -67,3 +67,13 @@ var declaration = (
 
 MIDIFunc.trace
 NetAddr.localAddr
+
+
+
+(
+
+~ting1 = VTMApplication(\ting1,
+
+);
+
+)

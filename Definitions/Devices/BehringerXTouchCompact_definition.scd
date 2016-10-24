@@ -195,5 +195,5 @@
 		var data = item.value;
 		~device.addComponent(item.key, data[\chan], data[\number], data[\msgType]);
 	});
-	~device.trace(true);
+	// ~device.trace(true);
 };
