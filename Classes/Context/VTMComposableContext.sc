@@ -23,6 +23,14 @@ VTMComposableContext : VTMContext {
 		);
 	}
 
+	*loadPrototypesForDefinition{arg definition;
+		var result, envirs;
+		definition[\prototypes].collect({arg item;
+			envirs = envirs.add(item);
+		});
+	}
+
+
 	prInvalidateChildren{
 		subcontexts = Thunk({
 			children.select({arg item; item.isSubcontext; });

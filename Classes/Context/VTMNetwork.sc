@@ -2,6 +2,8 @@ VTMNetwork : VTMContext {
 	var <application;
 	classvar <defaultPort = 57120;
 
+	classvar >sendToAllAction;
+
 	*new{arg name, application, declaration, definition;
 		^super.new(name, nil, declaration, definition).initNetwork(application);
 	}
@@ -99,5 +101,9 @@ VTMNetwork : VTMContext {
 		result = this.remoteApplications.copy;
 		result.put(this.localApplication.name, this.localApplication);
 		^result;
+	}
+
+	*sendToAll{arg ...args;
+		sendToAllAction.value(*args);
 	}
 }

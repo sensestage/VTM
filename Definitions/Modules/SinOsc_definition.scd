@@ -4,7 +4,8 @@
 		"CASPER CHANGED: %".format(val).postln;
 	};
 	~source = {|freq, phase|
-		SinOsc.ar(freq.poll(label: \freq), phase.poll(label: \phase));
+		// SinOsc.ar(freq.poll(label: \freq), phase.poll(label: \phase));
+		SinOsc.ar(freq, phase);
 	};
 
 	~initSynthArgs = [\freq, \phase];
@@ -17,7 +18,7 @@
 	(
 		name: \freq,
 		type: \decimal,
-		action: {|p| ~output.set(\freq, p.value);},
+		action: {|p| ~output.set(\freq, p.value.postln);},
 		minVal: 20,
 		maxVal: 20000,
 		defaultValue: 1000
@@ -29,17 +30,15 @@
 		minVal: 0,
 		maxVal: 2pi,
 		defaultValue: 0.0
-	),
+	)/*,
 	(
 		name: \sideeffect,
-		type: \decimal,
+		type: \boolean,
 		action: {|p| ~casper.value(p.value); },
-		minVal: 0,
-		maxVal: 10.0,
-		defaultValue: 0.2
-	)
+		defaultValue: true
+	)*/
 ];
 ~declarations = [
-	\coolSound -> (freq: 88, phase: 0.2, comment: "Denne er kul"),
-	\evenMoreCoolSound -> (freq: 208, phase: 0.1, comment: "Denne er enda kulere!")
+	\coolSound -> (freq: 808, phase: 0.2, comment: "Denne er kul"),
+	\evenMoreCoolSound -> (freq: 308, phase: 0.1, comment: "Denne er enda kulere!")
 ];

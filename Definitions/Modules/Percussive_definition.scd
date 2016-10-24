@@ -8,7 +8,7 @@
         init=BPF.ar(Impulse.ar({ rrand(1.0, 2.0) }*tempo ! 2), (0..1).nthPrime * freq, 0.01)*40;
         trig= HPZ2.ar(delaytime);
         din= Latch.ar(delaytime, PulseDivider.ar(trig, 2, #[0, 1]));
-        delayed= DelayN.ar([init,init], maxDelayTime, din, 1, 0);
+        delayed= DelayN.ar([init,init], 1, din, 1, 0);
         4.do { |i| delayed = DelayN.ar(RLPF.ar(delayed, resFreq, 0.3), 1, 1 / (2**i), 1, delayed * 0.5) };
         sig=XFade2.ar(delayed[0], delayed[1], Ramp.ar(ToggleFF.ar(trig), lagTime, 2, -1));
         sig*0.05;
