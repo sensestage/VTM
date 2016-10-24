@@ -6,19 +6,95 @@ VTM - system for Verdensteatret
 * UnitTesting quark
 * sc3-plugins
 
-###Install VTM
+###install VTM
 
 * Install supercollider
 * `git clone https://github.com/blacksound/VTM.git`
 * Add the path to the VTM folder under `- includePaths` in the `sclang_conf.yaml` file.
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
   - On OS X it is usually in `~/Library/Application Support/SuperCollider`.
-  
+
 ###install VTM on a raspberry pi
 
-* first install supercollider from <https://github.com/redFrik/supercolliderStandaloneRPI2>
+* first install supercollider from <https://github.com/redFrik/supercolliderStandaloneRPI2> (now includes sc3-plugins)
 * then start sclang and do `Quarks.install("UnitTesting")`
 * `git clone https://github.com/blacksound/VTM.git`
 * Add the VTM folder path to under `- includePaths` in the `sclang_conf.yaml` file.
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
   - for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM/Classes` under includePaths
+
+#general raspberry pi instructions
+
+###install jessie on raspberry pi and amend settings
+
+* burn image or etch .zip to SD card <https://www.etcher.io/>
+* boot raspberry ...
+* `sudo raspi-config` - go to advanced options and select update
+* enable VNC (in raspi-config)
+* set gpu_mem to `192` via the desktop environment or edit in `/boot/config.txt`
+
+###how to solve problem with mounting a usb drive:
+
+* `lsusb` - should do the trick
+* if not then ..
+* mounting usb
+  - `ls /dev/`
+  - `sudo mkdir /media/usb`
+  - `sudo mount -t vfat -o uid=pi,gid=pi /dev/sda1 /media/usb`
+  - `ls /media/usb`
+
+
+###shotdown.py for raspberry pi
+
+* use the following python script
+```python
+#!/bin/python
+import RPi.GPIO as GPIO
+import os
+pin= 3
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(pin, GPIO.IN)
+try:
+	GPIO.wait_for_edge(pin, GPIO.FALLING)
+	os.system("sudo halt -p")
+except:
+	pass
+GPIO.cleanup()
+```
+
+* then edit crontab
+  - `crontab -e`
+  - #and add the following…
+  - `@reboot python /home/pi/shutdown.py`
+
+###additional
+
+##### if needed.. build and include sc3-plugins on raspberry pi
+* if not already done, install cmake
+  - `sudo apt-get update && sudo apt-get upgrade`
+  - then `sudo apt-get install cmake`
+* see <https://github.com/redFrik/supercolliderStandaloneRPI2/blob/master/BUILDING_NOTES.md>
+  - `git clone --recursive git://github.com/supercollider/supercollider --depth 1`
+  - `git clone --recursive https://github.com/supercollider/sc3-plugins.git --depth 1`
+  - `cd sc3-plugins`
+  - `mkdir build && cd build`
+  - `export CC=/usr/bin/gcc-4.8`
+  - `export CXX=/usr/bin/g++-4.8`
+  - `cmake -L -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon"`
+  - `-DCMAKE_CXX_FLAGS="-march=armv7-a -mtune=cortex-a8 -mfloat-abi=hard -mfpu=neon" -DSC_PATH=../../supercollider/`
+  - `-DCMAKE_INSTALL_PREFIX=~/supercolliderStandaloneRPI2/share/user/Extensions/sc3-plugins ..`
+  - `make -j 4` leave out flag ~~-j 4~~ on single core rpi models _(zero,1,2)_
+  - `sudo make install`
+  - `cd ~/supercolliderStandaloneRPI2/share/system/Extensions/`
+  - `sudo chown -R pi SC3plugins`
+  - `sudo chgrp -R pi SC3plugins`
+  - `mkdir SC3plugins/bin`
+  - `mv SC3plugins/lib/SuperCollider/plugins/*.so SC3plugins/bin/`
+  - `mv SC3plugins/share/SuperCollider/Extensions/SC3plugins/* SC3plugins/`
+  - `rm -rf SC3plugins/lib`
+  - `rm -rf SC3plugins/share`
+  - `rm -rf SC3plugins/local`
+
+###logo
+
+![alt text](https://oddodd.org/lib/VTM.png "VTM")
