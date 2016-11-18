@@ -1,4 +1,5 @@
 VTMUnitTest : UnitTest {
+	classvar <>reportAllErrors = false;
 
 	*testclassForType{arg val;
 		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -33,6 +34,41 @@ VTMUnitTest : UnitTest {
 
 	tearDown{
 		"Tearing down a VTMTest".postln;
+	}
+
+
+	run { | reset = true, report = true, reportAllErrors = false|
+		var function;
+		if(reset) { this.class.reset };
+		if(report) { ("RUNNING UNIT TEST" + this).inform };
+		this.class.forkIfNeeded {
+			this.findTestMethods.do { |method|
+				this.setUp;
+				currentMethod = method;
+				if(this.class.reportAllErrors, {
+					try{
+						this.perform(method.name);
+					} {|err|
+						this.failed(method,
+							"ERROR: during test: \n\t%".format(err.errorString)
+						)
+					};
+				}, {
+					this.perform(method.name);
+				});
+				//{
+
+				// unfortunately this removes the interesting part of the call stack
+				//}.try({ |err|
+				//	("ERROR during test"+method).postln;
+				//	err.throw;
+				//});
+
+				this.tearDown;
+			};
+			if(report) { this.class.report };
+			nil
+		};
 	}
 
 	*makeRandomString{arg params;

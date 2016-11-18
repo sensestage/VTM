@@ -10,6 +10,10 @@ VTMNumberParameter : VTMValueParameter {
 		^super.new(name, declaration).initNumberParameter;
 	}
 
+	isValidType{arg val;
+		^val.isKindOf(SimpleNumber);
+	}
+
 	initNumberParameter{
 		if(declaration.notEmpty, {
 			if(declaration.includesKey(\clipmode), {

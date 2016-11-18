@@ -1,5 +1,20 @@
 TestVTMValueParameter : TestVTMParameter {
 
+	*initClass{
+		testClasses = [
+			VTMBooleanParameter,
+			VTMStringParameter,
+			// VTMListParameter,
+			// VTMDictionaryParameter,
+			// VTMArrayParameter,
+			VTMTimecodeParameter,
+			VTMDecimalParameter,
+			VTMIntegerParameter
+			// VTMSchemaParameter,
+			// VTMTupleParameter
+		];
+	}
+
 	*generateRandomAttributes{arg description;
 		var result = super.generateRandomAttributes(description);
 		^result;
@@ -9,6 +24,16 @@ TestVTMValueParameter : TestVTMParameter {
 		^this.subclassResponsibility(thisMethod);
 	}
 
+	*makeRandomEnum{arg params;
+		var minRand = 5, maxRand = 10;
+		^rrand(minRand, maxRand).collect({arg i;
+			[
+				[i + 1, this.makeRandomString.asSymbol].choose,
+				this.makeRandomValue
+			];
+		}).flatten;
+	}
+
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		result = super.prMakeRandomAttribute(key, params);
@@ -16,7 +41,8 @@ TestVTMValueParameter : TestVTMParameter {
 			switch(key,
 				\filterRepetitions, { result = this.makeRandomBoolean(params); },
 				\value, { result = this.makeRandomValue(params); },
-				\defaultValue, { result = this.makeRandomValue(params); }
+				\defaultValue, { result = this.makeRandomValue(params); },
+				\enum, { result = this.makeRandomEnum(params); }
 			);
 		});
 		^result;
@@ -51,23 +77,23 @@ TestVTMValueParameter : TestVTMParameter {
 			var name = "my%".format(class.name);
 			var param;
 			try{
-			testClass = VTMUnitTest.testclassForType( class.type );
-			testValue = testClass.makeRandomValue;
-			param = class.new(name, declaration: (defaultValue: testValue));
-			this.assertEquals(
-				param.defaultValue, testValue, "Parameter defaultValue was set [%]".format(testClass.name)
-			);
-			this.assertEquals(
-				param.value, testValue,
-				"Parameter value was set to defined defaultValue when value was not defined [%]".format(testClass.name)
-			);
-			param.free;
-		} {|err|
-			this.failed(
-				thisMethod,
-				"Unknown test fail for %\n\t%".format(class, err.errorString)
-			);
-		};
+				testClass = VTMUnitTest.testclassForType( class.type );
+				testValue = testClass.makeRandomValue;
+				param = class.new(name, declaration: (defaultValue: testValue));
+				this.assertEquals(
+					param.defaultValue, testValue, "Parameter defaultValue was set [%]".format(testClass.name)
+				);
+				this.assertEquals(
+					param.value, testValue,
+					"Parameter value was set to defined defaultValue when value was not defined [%]".format(testClass.name)
+				);
+				param.free;
+			} {|err|
+				this.failed(
+					thisMethod,
+					"Unknown test fail for %\n\t%".format(class, err.errorString)
+				);
+			};
 		});
 	}
 
@@ -115,7 +141,7 @@ TestVTMValueParameter : TestVTMParameter {
 			param.free;
 		});
 	}
-//
+	//
 	test_Typechecking{
 		var wrongValuesForType = (
 			integer: \hei,
@@ -166,9 +192,9 @@ TestVTMValueParameter : TestVTMParameter {
 				};
 				param.doAction;
 				this.assert(gotParamPassed,
-				   	"ValueParameter got param passed in action [%]".format(class.name));
+					"ValueParameter got param passed in action [%]".format(class.name));
 				this.assert(gotValue,
-				   	"ValueParameter got value in action [%]".format(class.name));
+					"ValueParameter got value in action [%]".format(class.name));
 				param.free;
 			} {|err|
 				this.failed(
@@ -279,7 +305,8 @@ TestVTMValueParameter : TestVTMParameter {
 					\filterRepetitions,
 					\name,
 					\type -> class.type,
-					\enabled -> true
+					\enabled -> true,
+					\enum
 				]
 			);
 			param = VTMParameter.makeFromDeclaration(testDeclaration);
@@ -287,13 +314,13 @@ TestVTMValueParameter : TestVTMParameter {
 			testAttributes.put(\action, testDeclaration[\action].asCompileString);
 			this.assert(
 				testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
-			   	"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
+				"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
 			);
-//			this.assertEquals(
-//				testAttributes.sect(param.attributes),
-//			   	testAttributes,
-//			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
-//			);
+			//			this.assertEquals(
+			//				testAttributes.sect(param.attributes),
+			//			   	testAttributes,
+			//			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
+			//			);
 			param.free;
 		});
 	}
@@ -306,12 +333,6 @@ TestVTMValueParameter : TestVTMParameter {
 			var testEnum;
 			var testDeclaration, testAttributes;
 			testClass = VTMUnitTest.testclassForType( class.type );
-			testEnum = (3..8).choose.collect({arg i;
-				[
-					[i + 1, testClass.makeRandomString.asSymbol].choose,
-					testClass.makeRandomValue
-				];
-			}).flatten;
 			testDeclaration = testClass.generateRandomAttributes(
 				[
 					\value,
@@ -321,10 +342,11 @@ TestVTMValueParameter : TestVTMParameter {
 					\filterRepetitions,
 					\name,
 					\type -> class.type,
-					\enabled -> true
+					\enabled -> true,
+					\enum
 				]
 			);
-			testDeclaration.put(\enum, testEnum);
+			testEnum = testDeclaration.at(\enum);
 			param = VTMParameter.makeFromDeclaration(testDeclaration);
 			testAttributes = testDeclaration.deepCopy;
 			testAttributes.put(\action, testDeclaration[\action].asCompileString);

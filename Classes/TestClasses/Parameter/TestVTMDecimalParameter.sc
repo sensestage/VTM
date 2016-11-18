@@ -12,45 +12,6 @@ TestVTMDecimalParameter : TestVTMNumberParameter {
 		"Tearing down a VTMDecimalParameterTest".postln;
 	}
 
-	test_DefaultAttributes{
-		var param = VTMDecimalParameter.new('myDecimal');
-		this.assert(
-			param.defaultValue.class == Float and: {param.defaultValue.equalWithPrecision(0.0)},
-			"DecimalParameter defaultValue defaults to Decimal 0.0"
-		);
-		//value should default to 0 if value not defined
-		this.assert(
-			param.value == param.defaultValue and: {param.value.class == Float},
-			"DecimalParameter value defaults to Decimal 0.0"
-		);
-		//stepsize should default to 0.0
-		this.assertEquals(
-			param.stepsize, 0.0, "DecimalParameter stepsize defaults to 0.0"
-		);
-		//clipmode should default to 'none'
-		this.assertEquals(
-			param.clipmode, \none, "DecimalParameter clipmode defaults to 'none'"
-		);
-		//minVal should default to nil (this might change later)
-		this.assert(
-			param.minVal.isNil, "DecimalParameter minVal defaults to nil"
-		);
-		//maxVal should default to nil (this might change later)
-		this.assert(
-			param.maxVal.isNil, "DecimalParameter maxVal defaults to nil"
-		);
-	}
-
-	test_SetGetValue{
-		var param = VTMDecimalParameter.new('myDecimal');
-		var testValue = 50.0;
-		//SetGet 'value'
-		param.value = testValue;
-		this.assertFloatEquals(
-			param.value, testValue, "DecimalParameter value was set"
-		);
-	}
-
 	test_ConvertIntegerNumbersToFloat{
 		var testValue;
 		var desc = (
@@ -116,5 +77,4 @@ TestVTMDecimalParameter : TestVTMNumberParameter {
 			"DecimalParameter changed decimal stepsize in setter to Float"
 		);
 	}
-
 }
