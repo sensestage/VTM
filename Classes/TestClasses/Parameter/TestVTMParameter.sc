@@ -3,12 +3,11 @@ TestVTMParameter : VTMUnitTest {
 	*initClass{
 		testClasses = [
 			VTMBooleanParameter,
-			// VTMStringParameter,
+			VTMStringParameter,
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
-			// VTMFunctionParameter,
-			// VTMTimecodeParameter,
+			VTMTimecodeParameter,
 			VTMDecimalParameter,
 			VTMIntegerParameter
 			// VTMSchemaParameter,
