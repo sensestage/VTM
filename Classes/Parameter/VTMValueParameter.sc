@@ -3,8 +3,9 @@ VTMValueParameter : VTMParameter {
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
 	var <>format;
-	var <options;
-	var <restrictValueToOptions = false;
+	var enum;
+	var <selectedEnum;
+	var <restrictValueToEnum = false;
 	var scheduler;
 
 	prDefaultValueForType{
@@ -36,14 +37,15 @@ VTMValueParameter : VTMParameter {
 			if(declaration.includesKey(\filterRepetitions), {
 				filterRepetitions = declaration[\filterRepetitions];
 			});
-			if(declaration.includesKey(\options), {
-				options = declaration[\options].asArray;
+			if(declaration.includesKey(\enum), {
+				//enums are stored as key value pairs
+				enum = VTMNamedList.newFromKeyValuePairs(declaration[\enum]);
 			});
-			if(declaration.includesKey(\restrictValueToOptions), {
-				restrictValueToOptions = declaration[\restrictValueToOptions];
+			if(declaration.includesKey(\restrictValueToEnum), {
+				restrictValueToEnum = declaration[\restrictValueToEnum];
 			});
 		});
-		options = options ? [];
+		enum = enum ? VTMNamedList();
 		if(defaultValue.isNil, {
 			this.defaultValue_(this.prDefaultValueForType.deepCopy);
 		});
@@ -63,13 +65,13 @@ VTMValueParameter : VTMParameter {
 		});
 	}
 
-	options_{arg val;
-		//All options must be valid
+	enum_{arg val;
+		//All enum must be valid
 		if(val.isKindOf(SequenceableCollection), {
 			if(val.every({arg it; this.isValidType(it)}), {
-				options = val;
+				enum = val;
 			}, {
-				"%:% - % All options must be valid. [%]".format(
+				"%:% - % All enum must be valid. [%]".format(
 					this.class.name,
 					thisMethod.name,
 					this.name,
@@ -77,7 +79,7 @@ VTMValueParameter : VTMParameter {
 				).warn;
 			});
 		}, {
-			"%:% - % Options must be an array. [%]".format(
+			"%:% - % enum must be an array. [%]".format(
 				this.class.name,
 				thisMethod.name,
 				this.name,
@@ -87,8 +89,8 @@ VTMValueParameter : VTMParameter {
 	}
 
 	value_{arg val;
-		if(restrictValueToOptions, {
-			if(options.includes(val), {
+		if(restrictValueToEnum, {
+			if(enum.includes(val), {
 				value = val;
 			});
 		}, {
@@ -126,16 +128,51 @@ VTMValueParameter : VTMParameter {
 		super.free;
 	}
 
+	enum{
+		^enum.asKeyValuePairs;
+	}
+
+	addEnum{arg val, name, slot;
+		enum.addItem(val, name, slot);
+		this.changed(\enum);
+	}
+
+	removeEnum{arg slotOrName;
+		if(enum.removedItem(slotOrName).notNil, {
+			this.changed(\enum);
+		});
+	}
+
+	moveEnum{arg slotOrName, toSlot;
+		enum.moveItem(slotOrName, toSlot);
+		this.changed(\enum);
+	}
+
+	setEnumName{arg slotOrName, itemName;
+		enum.setItemName(slotOrName, itemName);
+		this.changed(\enum);
+	}
+
+	changeEnum{arg slotOrName, newValue;
+		enum.changeItem(slotOrName, newValue);
+		this.changed(\enum);
+	}
+
+	getEnumValue{arg slotOrName;
+		^enum[slotOrName];
+	}
+
 	attributes{
 		^super.attributes.putAll(IdentityDictionary[
 			\value -> this.value,
 			\defaultValue -> this.defaultValue,
-			\filterRepetitions -> this.filterRepetitions
+			\filterRepetitions -> this.filterRepetitions,
+			\enum -> enum.asKeyValuePairs
 		]);
 	}
 
 	*attributeKeys{
-		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions]);
+		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \enum]);
 	}
 
 }

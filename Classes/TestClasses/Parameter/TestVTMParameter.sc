@@ -3,16 +3,16 @@ TestVTMParameter : VTMUnitTest {
 	*initClass{
 		testClasses = [
 			VTMBooleanParameter,
-			VTMStringParameter,
-			VTMListParameter,
-			VTMDictionaryParameter,
-			VTMArrayParameter,
-			VTMFunctionParameter,
-			VTMTimecodeParameter,
+			// VTMStringParameter,
+			// VTMListParameter,
+			// VTMDictionaryParameter,
+			// VTMArrayParameter,
+			// VTMFunctionParameter,
+			// VTMTimecodeParameter,
 			VTMDecimalParameter,
-			VTMIntegerParameter,
-			VTMSchemaParameter,
-			VTMTupleParameter
+			VTMIntegerParameter
+			// VTMSchemaParameter,
+			// VTMTupleParameter
 		];
 	}
 
@@ -122,7 +122,7 @@ TestVTMParameter : VTMUnitTest {
 					"Parameter returned 'name' correctly[%]".format(testClass)
 				);
 				param.free;
-			} {|err| 
+			} {|err|
 				this.failed(thisMethod,
 					"Parameter test failed due to unknown error. [%]\n\t%".format(
 						testClass, err.errorString);

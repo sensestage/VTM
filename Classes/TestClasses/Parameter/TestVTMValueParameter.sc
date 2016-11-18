@@ -8,7 +8,7 @@ TestVTMValueParameter : TestVTMParameter {
 	*makeRandomValue{arg params;
 		^this.subclassResponsibility(thisMethod);
 	}
-	
+
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		result = super.prMakeRandomAttribute(key, params);
@@ -294,6 +294,44 @@ TestVTMValueParameter : TestVTMParameter {
 //			   	testAttributes,
 //			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
 //			);
+			param.free;
+		});
+	}
+
+	test_Enum{
+		this.class.testClasses.do({arg class;
+			var testClass, testValue;
+			var name = "my%".format(class.name);
+			var param;
+			var testEnum;
+			var testDeclaration, testAttributes;
+			testClass = VTMUnitTest.testclassForType( class.type );
+			testEnum = (3..8).choose.collect({arg i;
+				[
+					[i + 1, testClass.makeRandomString.asSymbol].choose,
+					testClass.makeRandomValue
+				];
+			}).flatten;
+			testDeclaration = testClass.generateRandomAttributes(
+				[
+					\value,
+					\defaultValue,
+					\path,
+					\action -> {arg p; 1 + 1 },
+					\filterRepetitions,
+					\name,
+					\type -> class.type,
+					\enabled -> true
+				]
+			);
+			testDeclaration.put(\enum, testEnum);
+			param = VTMParameter.makeFromDeclaration(testDeclaration);
+			testAttributes = testDeclaration.deepCopy;
+			testAttributes.put(\action, testDeclaration[\action].asCompileString);
+			this.assertEquals(
+				param.enum, testEnum,
+				"ValueParameter set and returned correct enum[%]".format(class.name)
+			);
 			param.free;
 		});
 	}
