@@ -19,6 +19,9 @@ VTMNamedList {
 			//it is assumed that the integer keys are in sorted order
 			if(key.isInteger, {
 				res = val;
+				if(res.isString, {
+					res = [res];
+				});
 			}, {
 				res = key -> val;
 			});

@@ -3,9 +3,9 @@ VTMUnitTest.runTestForClass(VTMNamedList, true);
 a = VTMNamedList.new([\myAA -> \aa,\bb,\cc]);
 (
 a = VTMNamedList.newFromKeyValuePairs(
-	[\myAA, \aa, 2, \bb, \myCC, \cc]);
+	[\myAA, \aa, 2, \bb, \myCC, "abcdef"]);
 )
-a[1]
+a[3].class
 a.items
 a.getItems
 a.names
@@ -23,13 +23,19 @@ Association(\myAA, 111).trulyEqual( Association(\myAA, 222) );
 Association(\myAA, 111).trulyEqual( Association(\myAA, 111) );
 
 VTMUnitTest.runTestForClass(VTMValueParameter);
-VTMUnitTest.runTestForClass(VTMParameter);
 
+VTMUnitTest.reportAllErrors = true
+VTMUnitTest.runTestForClass(VTMParameter, true);
+VTMUnitTest.runTest("TestVTMValueParameter:test_Enum")
+VTMUnitTest.listUntestedMethods(VTMNamedList)
+
+VTMUnitTest.runTest("TestVTMValueParameter:test_Enum")
 (
-(3..8).choose.collect({arg i;
+3.collect({arg i;
 	[
-		[i, "absgc".scramble.asSymbol].choose,
-		100.rand
+		[1 + i, "absgc".scramble.asSymbol].choose,
+		"abcdef"
 	];
 }).flatten;
 )
+[999, "absgc".scramble.asSymbol].choose
