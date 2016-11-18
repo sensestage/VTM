@@ -1,40 +1,64 @@
 //A list where enumeration are numbers from 1 .. N.
 //Optionally items can be named with symbols.
-//This is not help "store-now-name-later"
+//... "store-now, name-later"
 //Also stores time of creating items, and time when they are changed.
 VTMNamedList {
 	var <items;
 
-	*new{arg items, slotNames;
-		^super.new.init(items, slotNames);
+	*new{arg items;
+		^super.new.init(items);
 	}
 
-	init{arg items_, slotNames_;
-		if(items_.notNil or: { items.notEmpty }, {
-			this.items_(items_, slotNames_);
-		}, {
-			Error("%:% - Must define 'items' as a kind of SequenceableCollection with at least one element".format(
-				this.class.name, thisMethod.name
-			)).throw;
-		});
+	*newFromKeyValuePairs{arg keyValPairs;
+		var items;
+		items = keyValPairs.clump(2).collect({arg item, i;
+			var res, key, val;
+			key = item[0];
+			val = item[1];
+			//if the key is an integer it is ignored at this point
+			//it is assumed that the integer keys are in sorted order
+			if(key.isInteger, {
+				res = val;
+			}, {
+				res = key -> val;
+			});
+			res;
+		}).flatten;
+		"Items before construction; %".format(items).postln;
+		^this.new(items);
 	}
 
-	items_{arg val, slotNames;
+	init{arg items_;
+		this.items_(items_);
+	}
+
+	items_{arg val;
 		var temp;
-		temp = val.collect({arg item;
-			(data: item, created: Date.getDate)
-		});
-		items = List.newFrom(temp);
-		if(slotNames.notNil, {
-			if(slotNames.every({arg it; it.isKindOf(Association)}), {
-				slotNames.do({arg mapping;
-					var itemToMap = items[mapping.key - 1];
-					itemToMap.put(\name, mapping.value);
+		if(val.isNil, {
+			temp = [];
+		}, {
+			if(val.isKindOf(SequenceableCollection), {
+				temp = val.collect({arg item;
+					if(item.isKindOf(Association), {
+						//ignoring integer values as name
+						if(item.key.isInteger, {
+							(data: item, created: Date.getDate);
+						}, {
+							(data: item.value, created: Date.getDate, name: item.key);
+						});
+					}, {
+						(data: item, created: Date.getDate);
+					});
+
 				});
 			}, {
-				"ListEnumerator: slot names needs to be a collection of Associations: %".format(slotNames).warn;
+				Error("%:% - Items must be a kind of SequenceableCollection: %.".format(
+					this.class.name, thisMethod.name, val
+				)).throw;
 			});
 		});
+
+		items = List.newFrom(temp);
 	}
 
 	names{
@@ -49,10 +73,14 @@ VTMNamedList {
 		^result;
 	}
 
-	at{arg val;
+	prAt{arg val;
 		var result;
 		if(val.isInteger, {
-			^items[val - 1][\data];
+			if(val >= 1 and: {val <= items.size}, {
+				^items[val - 1];
+			}, {
+				^nil;
+			});
 		}, {
 			if(val.isKindOf(Symbol), {
 				result = items.detect({arg item;
@@ -61,10 +89,20 @@ VTMNamedList {
 					}, {
 						false;
 					});
-				})[\data];
-			})
+				});
+			});
 		});
 		^result;
+	}
+
+	at{arg val;
+		var result;
+		result = this.prAt(val);
+		if(result.notNil, {
+			^result[\data];
+		}, {
+			^nil;
+		});
 	}
 
 	associations{
@@ -77,10 +115,22 @@ VTMNamedList {
 		^result;
 	}
 
+	asKeyValuePairs{
+		var result;
+		result = this.associations.collect({arg item;
+			[item.key, item.value]
+		}).flatten;
+		^result;
+	}
+
 	setItemName{arg number, name;
-		var itemToChange = items[number];
+		var itemToChange = this.prAt(number);
 		if(itemToChange.notNil, {
 			itemToChange.put(\name, name);
+		}, {
+			Error("%:% - Item number not found %.".format(
+				this.class.name, thisMethod.name, number
+			)).throw;
 		});
 	}
 
@@ -90,7 +140,7 @@ VTMNamedList {
 
 	getItemName{arg number;
 		var result;
-		result = items[number];
+		result = this.prAt(number);
 		if(result.notNil, {
 			result = result[\name];
 		}, {
@@ -100,21 +150,21 @@ VTMNamedList {
 	}
 
 	getItemTimeCreated{arg name;
-		var result = items[\name];
+		var result = this.prAt(name);
 		if(result.notNil, {
 			^result[\created];
 		}, { ^nil });
 	}
 
-	getItemTimeLastChanged{
-		var result = items[\name];
+	getItemTimeLastChanged{arg name;
+		var result = this.prAt(name);
 		if(result.notNil, {
 			^result[\changed];
 		}, { ^nil });
 	}
 
 	changeItem{arg name, data;
-		var itemToChange = items[name];
+		var itemToChange = this.prAt(name);
 		if(itemToChange.notNil, {
 			itemToChange.put(\data, data);
 			itemToChange.put(\changed, Date.getDate);
@@ -150,7 +200,11 @@ VTMNamedList {
 				});
 			});
 		});
-		if(indexToRemove.notNil, {
+
+		if(
+			indexToRemove.notNil and:
+			{indexToRemove >= 0} and:
+			{indexToRemove < items.size}, {
 			removedItem = items.removeAt(indexToRemove);
 		});
 		^removedItem;
@@ -161,6 +215,14 @@ VTMNamedList {
 		itemToMove = this.removeItem(name);
 		if(itemToMove.notNil, {
 			items.insert(slot - 1, itemToMove);
+		}, {
+			Error("%:% - Slot number/name not found: %.".format(
+				this.class.name, thisMethod.name, name
+			)).throw;
 		});
+	}
+
+	includes{arg val;
+		^this.getItems.includes(val);
 	}
 }
