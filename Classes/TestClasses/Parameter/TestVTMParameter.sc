@@ -85,6 +85,16 @@ TestVTMParameter : VTMUnitTest {
 		^result;
 	}
 
+	*makeRandomDeclaration{arg type;
+		var testClass, class, attrKeys, result;
+		class = "VTM%Parameter".format(type.asString.capitalize).asSymbol.asClass;
+		testClass = "Test%".format(class.name).asSymbol.asClass;
+		attrKeys = class.attributeKeys;
+		attrKeys.add(\type -> type);
+		result = testClass.generateRandomAttributes(attrKeys);
+		^result;
+	}
+
 	setUp{
 		"Setting up a VTMParameterTest".postln;
 	}
@@ -334,31 +344,27 @@ TestVTMParameter : VTMUnitTest {
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
 		this.class.testClasses.do({arg testClass;
-			var testName = "my%".format(testClass.name).asSymbol;
 			var wasRun = false;
-			var declaration = IdentityDictionary[
-				\path -> '/myPath/is',
-				\action -> {|p| 11 + 8; },
-				\enabled -> true
-			];
-			var testAttributes;
-			var param = testClass.new(testName, declaration);
-			// Should return an IdentityDictionary with the keys: name, path, action, enabled
-			testAttributes = declaration.deepCopy.put(
-				\name, testName
-			);
-			testAttributes.put(\action, declaration[\action].asCompileString);
+			var declaration = this.class.makeRandomDeclaration(testClass.type);
+			var param = testClass.makeFromDeclaration(declaration);
 
-			this.assert(
-				param.attributes.keys.sect(Set[\path, \action, \enabled, \name]).notEmpty,
-				"Parameter returned correct attributes. [%]".format(testClass.name)
+			this.assertEquals(
+				param.attributes, declaration,
+				"% returned correct attributes.".format(testClass)
 			);
-
+			"Attributes:".postln;
+			param.attributes.keysValuesDo({arg key, val;
+				"\t:% - [%]%".format(key, val.class, val).postln;
+			});
+			"Declaration".postln;
+			declaration.keysValuesDo({arg key, val;
+				"\t:% - [%]%".format(key, val.class, val).postln;
+			});
 			//If the action is not a closed function it should not get returned as attribute
 			param.action = {|p| wasRun = true;};
 			this.assert(
 				param.attributes[\action].isNil,
-				"Parameter returned open function as nil. [%]".format(testClass.name)
+				"% returned open function as nil. [%]".format(testClass)
 			);
 			param.free;
 		});

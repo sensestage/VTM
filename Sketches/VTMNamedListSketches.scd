@@ -24,9 +24,15 @@ Association(\myAA, 111).trulyEqual( Association(\myAA, 111) );
 
 VTMUnitTest.runTestForClass(VTMValueParameter);
 
-VTMUnitTest.reportAllErrors = true
+VTMUnitTest.reportAllErrors = true;
+VTMUnitTest.runTestForClass(VTMValueParameter, true);
+VTMUnitTest.runTestForClass(VTMNumberParameter,true);
 VTMUnitTest.runTestForClass(VTMParameter, true);
-VTMUnitTest.runTest("TestVTMValueParameter:test_Enum")
+
+TestVTMParameter.makeRandomDeclaration(\integer)
+
+
+VTMUnitTest.runTest("TestVTMParameter:test_GetAttributes")
 VTMUnitTest.listUntestedMethods(VTMNamedList)
 
 VTMUnitTest.runTest("TestVTMValueParameter:test_Enum")
