@@ -188,35 +188,15 @@ VTMContext {
 		^fullPathThunk.value;
 	}
 
-	//Can not set path, it is always determined by its place in the namespace
-	//Return only the path, not the name. Use fullPath if that is needed.
+	//Can only set path on init.
+	//Return only the path, not the name.
 	path{arg str;
+		^path;
 		//Search parents until root node is found and construct path from that
 	}
 
 	//Some objects need to define special separators, e.g. subparameters, submodules etc.
 	leadingSeparator{ ^$/;	}
-
-	//Move this context to another parent context
-	move{arg newParentContext;
-		if(parent.notNil, {
-			parent.moveContext(this, newParentContext);
-		}, {
-			parent = newParentContext;
-			parent.addChild(this);
-		});
-	}
-
-	//Move one of children to another parent context
-	moveChild{arg child, newParentContext;
-		var removedChild;
-		removedChild = this.removeChild(child);
-		if(removedChild.notNil, {
-			newParentContext.addChild(removedChild);
-		}, {
-			"Context: Did not find child: %".format(child).warn;
-		});
-	}
 
 	//Determine if this is a root context, i.e. having no parent.
 	isRoot{
@@ -262,12 +242,12 @@ VTMContext {
 	}
 
 	//Save current declaration to file
-	writeDeclaration{
+	writeDeclaration{arg filePath;
 
 	}
 
 	//Read declaration from file
-	readDeclaration{
+	readDeclaration{arg filePath;
 
 	}
 
@@ -387,4 +367,8 @@ VTMContext {
 			});
 		});
 	}
+
+	startOSC{ oscInterface.enable; }
+
+	stopOSC{ oscInterface.disable; }
 }

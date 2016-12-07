@@ -1,8 +1,6 @@
 //children may be Module
 VTMModule : VTMComposableContext {
 
-	var submodules;
-
 	*new{arg name, parent, declaration, definition;
 		var actualDefinition, actualDeclaration;
 		//Check if either definition or declaration are Symobol, in which case

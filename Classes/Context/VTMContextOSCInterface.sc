@@ -3,10 +3,10 @@ VTMContextOSCInterface {
 	var responders;
 
 	*new{arg context;
-		^super.new.initContextOSCInterface(context);
+		^super.new.init(context);
 	}
 
-	initContextOSCInterface{arg context_;
+	init{arg context_;
 		context = context_;
 		responders = IdentityDictionary.new;
 
@@ -27,5 +27,7 @@ VTMContextOSCInterface {
 
 	free{
 		responders.do(_.free);
+		context = nil;
+		responders = nil;
 	}
 }

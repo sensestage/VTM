@@ -64,5 +64,6 @@ VTMContextParameterManager {
 		parameters.do(_.free);
 		order = nil;
 		parameters = nil;
+		context = nil;
 	}
 }

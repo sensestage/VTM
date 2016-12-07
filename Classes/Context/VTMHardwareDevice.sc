@@ -87,12 +87,7 @@ VTMHardwareDevice : VTMComposableContext {
 		"VTMHardwareDevice initialized".postln;
 	}
 
-
-
-
-	parameters{	^nonSubcontexts.value; }
 	subdevices{	^subcontexts.value; }
 	isSubdevice{ ^this.isSubcontext; }
-	isParameter{ ^this.isSubcontext.not; }
 	setup { ^parent; }
 }

@@ -1,14 +1,13 @@
 VTMNetworkedContext : VTMContext {
-	var network;
 	var <library;//temp getter
 	var <definitionPaths, <isLoadingDefinitions = false;
 	var <declarationPaths, <isLoadingDeclarations = false;
 
 	*new{arg name, network, declaration, definition;
-		^super.new(name, network, declaration, definition).initContextManager;
+		^super.new(name, network, declaration, definition).initNetworkedContext;
 	}
 
-	initContextManager {
+	initNetworkedContext {
 		library = IdentityDictionary[
 			\definitions -> IdentityDictionary[
 				\project -> IdentityDictionary.new,
