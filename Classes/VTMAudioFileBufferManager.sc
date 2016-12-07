@@ -1,0 +1,3 @@
+VTMAudioFileBufferManager {
+	var <buffers;
+}

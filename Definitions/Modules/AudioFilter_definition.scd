@@ -2,6 +2,7 @@
 ~prepare = {arg module, cond;
 	var numInputs, numOutputs;
 	var declaration = module.declaration;
+	~group = ~engine.groups[\filters];
 
 	if(declaration.includesKey(\numInputs), {
 		~numInputs = declaration[\numInputs];

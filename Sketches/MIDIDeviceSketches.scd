@@ -64,7 +64,7 @@ var declaration = (
 
 //Niklas static IP
 ~bcf2000.envir[\device].components['fader.1'].action_({arg comp; NetAddr("192.168.1.115", 57120).sendMsg('/hei', comp.value)});
-
+OSCFunc.trace;
 MIDIFunc.trace
 NetAddr.localAddr
 
