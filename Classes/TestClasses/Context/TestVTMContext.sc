@@ -6,7 +6,7 @@ TestVTMContext : UnitTest {
 	test_Construction{
 		var testDesc = IdentityDictionary[\testObj -> 33];
 		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {"So you wanna leave?".postln;}];
-		var context = VTMContext.new('myRoot', nil, testDesc, testDef);
+		var context = VTMContext.new('myRoot', nil, testDef, testDesc);
 
 		this.assert(
 			context === context.root,
@@ -34,7 +34,7 @@ TestVTMContext : UnitTest {
 		var testArgs = [11,22,\hello];
 		var testDesc = IdentityDictionary[\testObj -> 33];
 		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {|context ...args|"So you wanna leave?".postln; wasRun = true; theArgs = args; itself = context;}];
-		var context = VTMContext.new('myRoot', nil, testDesc, testDef);
+		var context = VTMContext.new('myRoot', nil, testDef, testDesc);
 
 		context.execute(\brexit, *testArgs);
 		this.assert(

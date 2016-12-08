@@ -4,8 +4,8 @@ VTMSliderView : VTMNumberParameterView {
 	var round;
 	var <decimals;
 
-	*new{arg parent, bounds, parameter, declaration, definition;
-		^super.new(parent, bounds, parameter, declaration, definition).initSliderView;
+	*new{arg parent, bounds, parameter, definition, declaration;
+		^super.new(parent, bounds, parameter, definition, declaration).initSliderView;
 	}
 
 	initSliderView {

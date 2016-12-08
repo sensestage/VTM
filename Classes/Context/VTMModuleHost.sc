@@ -1,8 +1,8 @@
 VTMModuleHost : VTMNetworkedContext {
 	var <factory;
 
-	*new{arg network, declaration, definition;
-		^super.new('modules', network, declaration, definition).initModuleHost;
+	*new{arg network, definition, declaration;
+		^super.new('modules', network, definition, declaration).initModuleHost;
 	}
 
 	initModuleHost {
@@ -19,10 +19,10 @@ VTMModuleHost : VTMNetworkedContext {
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//
-	loadModuleDeclaration{arg declaration, moduleDefinition;
+	loadModuleDeclaration{arg moduleDefinition, declaration;
 		var newModule;
 		try{
-			newModule = factory.build(declaration, moduleDefinition);
+			newModule = factory.build(moduleDefinition, declaration);
 
 			//The factory may throw error when building the module, but
 			//added an extra check here
@@ -38,7 +38,7 @@ VTMModuleHost : VTMNetworkedContext {
 		^newModule;
 	}
 
-	loadModuleJSONCue{arg declarationJSONString, moduleDefinition;
+	loadModuleJSONCue{arg moduleDefinition, declarationJSONString;
 		var moduleDeclaration;
 		//parse JSON string
 		try{
@@ -47,7 +47,7 @@ VTMModuleHost : VTMNetworkedContext {
 			"Module JSON cue parser error".warn;
 			err.postln;
 		};
-		this.loadModuleDeclaration(moduleDeclaration, moduleDefinition);
+		this.loadModuleDeclaration(moduleDefinition, moduleDeclaration);
 	}
 
 	//can be either a .json file or a .scd file

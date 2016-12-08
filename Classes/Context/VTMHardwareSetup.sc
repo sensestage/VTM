@@ -1,8 +1,8 @@
 VTMHardwareSetup : VTMNetworkedContext {
 
 	//a hardware setups parent will be an Application
-	*new{arg network, declaration, definition;
-		^super.new('devices', network, declaration, definition).initHardwareSetup;
+	*new{arg network, definition, declaration;
+		^super.new('devices', network, definition, declaration).initHardwareSetup;
 	}
 
 	initHardwareSetup{

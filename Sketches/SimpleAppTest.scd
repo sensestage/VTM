@@ -1,6 +1,6 @@
 //Start simple app with alternative server options
 (
-var declaration, definition;
+var definition, declaration;
 declaration = (
 	startServer: true,
 	serverOptions: (
@@ -19,7 +19,7 @@ definition = Environment.make({
 	};
 });
 ~app = VTMApplication.new('test',
-	declaration, definition
+	definition, declaration
 );
 )
 

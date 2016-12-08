@@ -213,7 +213,7 @@ VTMParameter {
 		^[\name, \path, \action, \enabled, \type];
 	}
 
-	makeView{arg parent, bounds, declaration, definition;
-		^VTMParameterView.makeFromDeclaration(parent, bounds, declaration, definition, this);
+	makeView{arg parent, bounds, definition, declaration;
+		^VTMParameterView.makeFromDeclaration(parent, bounds, definition, declaration, this);
 	}
 }

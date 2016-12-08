@@ -2,9 +2,9 @@ VTMContextParameterManagerView : VTMView {
 	var contextView;
 	var parameterViews;
 
-	*new{arg parent, bounds, declaration, definition;
+	*new{arg parent, bounds, definition, declaration;
 		if(parent.isKindOf(VTMContextView), {
-			^super.new(parent, bounds, declaration, definition).initContextParameterManagerView;
+			^super.new(parent, bounds, definition, declaration).initContextParameterManagerView;
 		}, {
 			"VTMContextParameterManagerView - parent View must be a kind of VTMContextView".warn;
 			^nil;

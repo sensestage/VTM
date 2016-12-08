@@ -31,7 +31,7 @@ declaration = (
 	synthDef: \sine,
 	numVoices: 4
 );
-~voicer = VTMModule.new('siner', nil, declaration, definition);
+~voicer = VTMModule.new('siner', nil, definition, declaration);
 ~voicer.prepare;
 )
 

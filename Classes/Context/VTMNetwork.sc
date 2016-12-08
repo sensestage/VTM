@@ -4,8 +4,8 @@ VTMNetwork : VTMContext {
 
 	classvar >sendToAllAction;
 
-	*new{arg name, application, declaration, definition;
-		^super.new(name, nil, declaration, definition).initNetwork(application);
+	*new{arg name, application, definition, declaration;
+		^super.new(name, nil, definition, declaration).initNetwork(application);
 	}
 
 	initNetwork{arg application_;

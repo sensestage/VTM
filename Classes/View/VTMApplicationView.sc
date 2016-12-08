@@ -5,8 +5,8 @@ VTMApplicationView : VTMView {
 	var headerView, contentView, bottomView, statusView;
 	var sceneOwnerView, moduleHostView, hardwareSetupView, networkView;
 
-	*new{arg parent, bounds, application, declaration, definition;
-		^super.new(parent, bounds, declaration, definition).initApplicationView(application);
+	*new{arg parent, bounds, application, definition, declaration;
+		^super.new(parent, bounds, definition, declaration).initApplicationView(application);
 	}
 
 	initApplicationView{arg application_;

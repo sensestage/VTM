@@ -1,8 +1,8 @@
 VTMNumberParameterView : VTMValueParameterView {
 	var <spec;
 
-	*new{arg parent, bounds, parameter, declaration, definition;
-		^super.new(parent, bounds, parameter, declaration, definition).initNumberParameterView;
+	*new{arg parent, bounds, parameter, definition, declaration;
+		^super.new(parent, bounds, parameter, definition, declaration).initNumberParameterView;
 	}
 
 	initNumberParameterView{

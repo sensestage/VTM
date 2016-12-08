@@ -32,8 +32,8 @@ VTMApplication {
 	//The scsynth for this application
 	var <server;
 
-	*new{arg name, declaration, definition, projectFolder, applicationFolder;
-		^super.new.initApplication(name, declaration, definition, projectFolder, applicationFolder);
+	*new{arg name, definition, declaration, projectFolder, applicationFolder;
+		^super.new.initApplication(name, definition, declaration, projectFolder, applicationFolder);
 	}
 
 	*loadApplication{arg appFolder, projectFolder;
@@ -48,7 +48,7 @@ VTMApplication {
 				decl = env[\declaration];
 				def = env[\definition];
 				name = env[\name];
-				^this.new(appName, decl, def,
+				^this.new(appName, def, decl,
 					applicationFolder: appFolder,
 					projectFolder: projectFolder
 				);
@@ -60,7 +60,7 @@ VTMApplication {
 		});
 	}
 
-	initApplication{arg name_, declaration_, definition_, projectFolder_, appFolder_;
+	initApplication{arg name_, definition_, declaration_, projectFolder_, appFolder_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
@@ -96,20 +96,17 @@ VTMApplication {
 			declaration = Environment.new;
 		});
 
-		network = VTMNetwork(name_, this, networkDesc, networkDef);
-		hardwareSetup = VTMHardwareSetup(network, hardwareDesc, hardwareDef);
-		moduleHost = VTMModuleHost(network, moduleDesc, moduleDef);
-		sceneOwner = VTMSceneOwner(network, sceneDesc, sceneDef);
+		network = VTMNetwork(name_, this, networkDef, networkDesc);
+		hardwareSetup = VTMHardwareSetup(network, hardwareDef, hardwareDesc);
+		moduleHost = VTMModuleHost(network, moduleDef, moduleDesc);
+		sceneOwner = VTMSceneOwner(network, sceneDef, sceneDesc);
 
 		//Discover other application on the network
 		//network.discover;
 		if(declaration.includesKey(\openView), {
 			if(declaration[\openView], {
 				var viewDesc, viewDef;
-				this.makeView(
-					viewDeclaration: declaration[\viewDeclaration],
-					viewDefinition: declaration[\viewDefinition]
-				);
+				this.makeView( declaration[\viewDefinition], declaration[\viewDeclaration] );
 			});
 		});
 
@@ -217,9 +214,9 @@ VTMApplication {
 
 	addr{ ^network.addr; }
 
-	makeView{arg parent, bounds, viewDeclaration, viewDefinition;
+	makeView{arg parent, bounds, viewDefinition, viewDeclaration;
 		^VTMApplicationView.new(
-			parent, bounds, this, viewDeclaration, viewDefinition
+			parent, bounds, this, viewDefinition, viewDeclaration
 		);
 	}
 

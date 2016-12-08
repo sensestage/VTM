@@ -2,8 +2,8 @@ VTMRemoteContextProxyImplementation : VTMContextProxyImplementation {
 	var <targetAddr;
 	var <targetPath;
 
-	*new{arg context, declaration, definition;
-		^super.new(context, declaration, definition).initRemoteContextProxyImplementation;
+	*new{arg context, definition, declaration;
+		^super.new(context, definition, declaration).initRemoteContextProxyImplementation;
 	}
 
 	initRemoteContextProxyImplementation{

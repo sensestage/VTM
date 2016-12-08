@@ -1,6 +1,6 @@
 //Make a simple module that is running all by itself.
 (
-var declaration, definition;
+var definition, declaration;
 declaration = (
 	parameters: (fee: 99, foo: 33)
 );
@@ -32,7 +32,7 @@ definition = Environment.make({
 		)
 	];
 });
-~mod = VTMModule.new('testModule', nil, declaration, definition);
+~mod = VTMModule.new('testModule', nil, definition, declaration);
 
 ~mod.prepare;
 )

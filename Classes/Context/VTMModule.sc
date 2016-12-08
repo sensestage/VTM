@@ -1,7 +1,7 @@
 //children may be Module
 VTMModule : VTMComposableContext {
 
-	*new{arg name, parent, declaration, definition;
+	*new{arg name, parent, definition, declaration;
 		var actualDefinition, actualDeclaration;
 		//Check if either definition or declaration are Symobol, in which case
 		//they will be looked up in the global vtm library
@@ -18,7 +18,7 @@ VTMModule : VTMComposableContext {
 		}, {
 			actualDeclaration = declaration;
 		});
-		^super.new(name, parent, actualDeclaration, actualDefinition).initModule;
+		^super.new(name, parent, actualDefinition, actualDeclaration).initModule;
 	}
 
 	*makeDefinitionEnvironment{arg definition;

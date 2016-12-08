@@ -9,7 +9,7 @@ VTMModuleFactory{
 		host = host_;
 	}
 
-	build{arg declaration, definition;
+	build{arg definition, declaration;
 		var moduleDefinition;
 		var newModule;
 
@@ -53,7 +53,7 @@ VTMModuleFactory{
 			moduleDefinition = definition;
 		});
 
-		newModule = VTMModule.new(declaration[\name], host, declaration, moduleDefinition);
+		newModule = VTMModule.new(declaration[\name], host, moduleDefinition, declaration);
 		^newModule;
 
 	}

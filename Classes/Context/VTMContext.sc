@@ -36,11 +36,11 @@ VTMContext {
 		});
 	}
 
-	*new{arg name, parent, declaration, definition;
-		^super.new.initContext(name, parent, declaration, definition);
+	*new{arg name, parent, definition, declaration;
+		^super.new.initContext(name, parent, definition, declaration);
 	}
 
-	initContext{arg name_, parent_, declaration_, definition_;
+	initContext{arg name_, parent_, definition_, declaration_;
 		if(name_.isNil, {
 			Error("Context must have name").throw;
 		}, {
@@ -344,7 +344,7 @@ VTMContext {
 		^result;
 	}
 
-	makeView{arg parent, bounds, declaration, definition;
+	makeView{arg parent, bounds, definition, declaration;
 		var viewClass = this.class.viewClassSymbol.asClass;
 		//override class if defined in declaration.
 		if(declaration.notNil, {
@@ -352,7 +352,7 @@ VTMContext {
 				viewClass = declaration[\viewClass];
 			});
 		});
-		^viewClass.new(parent, bounds, declaration, definition, this);
+		^viewClass.new(parent, bounds, definition, declaration, this);
 	}
 
 	update{arg theChanged, whatChanged, theChanger ...args;

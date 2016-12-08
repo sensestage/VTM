@@ -17,7 +17,7 @@ VTMSceneFactory{
 		^sceneOwner.application.hardwareSetup;
 	}
 
-	build{arg sceneDeclaration, sceneDefinition;
+	build{arg sceneDefinition, sceneDeclaration;
 		var newScene, buildResult;
 		var modules = (
 			local: (static: [], dynamic: []),
@@ -74,7 +74,7 @@ VTMSceneFactory{
 		});
 
 
-		newScene = VTMScene.new(sceneDeclaration[\name], sceneOwner, sceneDeclaration, sceneDefinition);
+		newScene = VTMScene.new(sceneDeclaration[\name], sceneOwner, sceneDefinition, sceneDeclaration);
 		buildResult.put(\scene, newScene);
 		^buildResult;
 	}
