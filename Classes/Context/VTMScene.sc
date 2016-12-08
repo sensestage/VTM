@@ -1,8 +1,8 @@
 //children may be Parameter, Module, ModuleProxy, and Scene
 VTMScene : VTMComposableContext {
 
-	*new{arg name, parent, definition, declaration;
-		^super.new(name, parent, definition, declaration).initScene;
+	*new{arg name, definition, declaration, parent;
+		^super.new(name, definition, declaration, parent).initScene;
 	}
 
 	initScene{

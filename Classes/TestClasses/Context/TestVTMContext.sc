@@ -6,7 +6,7 @@ TestVTMContext : UnitTest {
 	test_Construction{
 		var testDesc = IdentityDictionary[\testObj -> 33];
 		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {"So you wanna leave?".postln;}];
-		var context = VTMContext.new('myRoot', nil, testDef, testDesc);
+		var context = VTMContext.new('myRoot', testDef, testDesc);
 
 		this.assert(
 			context === context.root,
@@ -34,7 +34,7 @@ TestVTMContext : UnitTest {
 		var testArgs = [11,22,\hello];
 		var testDesc = IdentityDictionary[\testObj -> 33];
 		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {|context ...args|"So you wanna leave?".postln; wasRun = true; theArgs = args; itself = context;}];
-		var context = VTMContext.new('myRoot', nil, testDef, testDesc);
+		var context = VTMContext.new('myRoot', testDef, testDesc);
 
 		context.execute(\brexit, *testArgs);
 		this.assert(
@@ -53,7 +53,7 @@ TestVTMContext : UnitTest {
 
 	test_nodeManagement{
 		var root = VTMContext.new('myRoot');
-		var app = VTMContext.new('myApp', root);
+		var app = VTMContext.new('myApp', parent: root);
 		var module, moduleObj;
 
 		this.assert(
@@ -72,8 +72,8 @@ TestVTMContext : UnitTest {
 		//propagate down the context tree
 
 		//Make three level context tree (chain)
-		app = VTMContext.new('myOtherApp', root);
-		module = VTMContext.new('myModule', root);
+		app = VTMContext.new('myOtherApp', parent: root);
+		module = VTMContext.new('myModule', parent: root);
 
 		//Should free all node contexts, i.e. 'myModule' and 'myOtherApp'
 		root.free;
@@ -98,13 +98,13 @@ TestVTMContext : UnitTest {
 
 		//Make a three level context tree
 		3.do({arg i;
-			var iNode = VTMContext.new("node_%".format(i).asSymbol, root);
+			var iNode = VTMContext.new("node_%".format(i).asSymbol, parent: root);
 			children = children.add(iNode);
 			3.do({arg j;
-				var jNode = VTMContext.new("node_%_%".format(i, j).asSymbol, iNode);
+				var jNode = VTMContext.new("node_%_%".format(i, j).asSymbol, parent: iNode);
 				children = children.add(jNode);
 				4.do({arg k;
-					var kNode = VTMContext.new("node_%_%_%".format(i, j, k).asSymbol, jNode);
+					var kNode = VTMContext.new("node_%_%_%".format(i, j, k).asSymbol, parent: jNode);
 					children = children.add(kNode);
 				});
 			});

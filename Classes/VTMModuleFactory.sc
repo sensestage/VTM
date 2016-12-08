@@ -53,7 +53,7 @@ VTMModuleFactory{
 			moduleDefinition = definition;
 		});
 
-		newModule = VTMModule.new(declaration[\name], host, moduleDefinition, declaration);
+		newModule = VTMModule.new(declaration[\name], moduleDefinition, declaration, host);
 		^newModule;
 
 	}

@@ -1,7 +1,7 @@
 VTMApplicationProxy : VTMContextProxy {
 
-	*new{arg name, parent, definition, declaration;
-		^super.new(name, parent, definition, declaration).initApplicationProxy;
+	*new{arg name, definition, declaration, parent;
+		^super.new(name, definition, declaration, parent).initApplicationProxy;
 	}
 
 	initApplicationProxy{

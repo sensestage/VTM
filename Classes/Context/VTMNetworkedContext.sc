@@ -3,8 +3,8 @@ VTMNetworkedContext : VTMContext {
 	var <definitionPaths, <isLoadingDefinitions = false;
 	var <declarationPaths, <isLoadingDeclarations = false;
 
-	*new{arg name, network, definition, declaration;
-		^super.new(name, network, definition, declaration).initNetworkedContext;
+	*new{arg name, definition, declaration, network;
+		^super.new(name, definition, declaration, network).initNetworkedContext;
 	}
 
 	initNetworkedContext {

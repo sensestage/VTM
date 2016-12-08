@@ -1,8 +1,8 @@
 VTMModuleHost : VTMNetworkedContext {
 	var <factory;
 
-	*new{arg network, definition, declaration;
-		^super.new('modules', network, definition, declaration).initModuleHost;
+	*new{arg definition, declaration, network;
+		^super.new('modules', definition, declaration, network).initModuleHost;
 	}
 
 	initModuleHost {

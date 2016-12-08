@@ -56,7 +56,7 @@ def = Environment.make {
 		),
 	];
 };
-~node.moduleHost.loadModuledeclaration(name, desc, def);
+~node.moduleHost.loadModuledeclaration(name, def, desc);
 )
 
 ~node.moduleHost.modules[\jeger].parameters[\rasky].declaration;

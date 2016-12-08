@@ -1,8 +1,8 @@
 VTMSceneOwner : VTMNetworkedContext {
 	var <sceneFactory;
 
-	*new{arg network, definition, declaration;
-		^super.new('scenes', network, definition, declaration).initSceneOwner;
+	*new{arg definition, declaration, network;
+		^super.new('scenes', definition, declaration, network).initSceneOwner;
 	}
 
 	initSceneOwner{

@@ -27,7 +27,7 @@ VTMContext {
 				var def, name;
 				name = declaration.removeAt(\name);
 				def = declaration.removeAt(\definition);
-				^this.new( name, parent, declaration, def);
+				^this.new( name, def, declaration, parent);
 			}, {
 				Error("Context must have definition").throw;
 			});
@@ -36,11 +36,11 @@ VTMContext {
 		});
 	}
 
-	*new{arg name, parent, definition, declaration;
-		^super.new.initContext(name, parent, definition, declaration);
+	*new{arg name, definition, declaration, parent;
+		^super.new.initContext(name, definition, declaration, parent);
 	}
 
-	initContext{arg name_, parent_, definition_, declaration_;
+	initContext{arg name_, definition_, declaration_, parent_;
 		if(name_.isNil, {
 			Error("Context must have name").throw;
 		}, {

@@ -1,8 +1,8 @@
 VTMContextProxy : VTMContext {
 	var implementation;
 
-	*new{arg name, parent, definition, declaration;
-		^super.new(name, parent, definition, declaration).initContextProxy;
+	*new{arg name, definition, declaration, parent;
+		^super.new(name, definition, declaration, parent).initContextProxy;
 	}
 
 	initContextProxy{

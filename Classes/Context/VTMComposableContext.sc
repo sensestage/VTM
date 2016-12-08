@@ -1,8 +1,8 @@
 VTMComposableContext : VTMContext {
 	var subcontexts, nonSubcontexts;
 
-	*new{arg name, parent, definition, declaration;
-		^super.new(name, parent, definition, declaration).initComposableContext;
+	*new{arg name, definition, declaration, parent;
+		^super.new(name, definition, declaration, parent).initComposableContext;
 	}
 
 	initComposableContext{

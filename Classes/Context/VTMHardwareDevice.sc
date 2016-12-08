@@ -1,12 +1,12 @@
 //children may be Parameter and HardwareDevice
 VTMHardwareDevice : VTMComposableContext {
 
-	// *new{arg name, parent, definition, declaration;
-	// 	^super.new(name, parent, definition, declaration).initHardwareDevice;
+	// *new{arg name, definition, declaration, parent;
+	// 	^super.new(name, definition, declaration, parent).initHardwareDevice;
 	// }
 
 	//Non DRY hack for Martin/Sofia jam - duplication of VTMModule constructor
-	*new{arg name, parent, definition, declaration;
+	*new{arg name, definition, declaration, parent;
 		var actualDefinition, actualDeclaration;
 		//Check if either definition or declaration are Symobol, in which case
 		//they will be looked up in the global vtm library
@@ -23,7 +23,7 @@ VTMHardwareDevice : VTMComposableContext {
 		}, {
 			actualDeclaration = declaration;
 		});
-		^super.new(name, parent, actualDefinition, actualDeclaration).initHardwareDevice;
+		^super.new(name, actualDefinition, actualDeclaration, parent).initHardwareDevice;
 	}
 
 	*makeDefinitionEnvironment{arg definition;

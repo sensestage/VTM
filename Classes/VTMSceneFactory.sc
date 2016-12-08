@@ -74,7 +74,7 @@ VTMSceneFactory{
 		});
 
 
-		newScene = VTMScene.new(sceneDeclaration[\name], sceneOwner, sceneDefinition, sceneDeclaration);
+		newScene = VTMScene.new(sceneDeclaration[\name], sceneDefinition, sceneDeclaration, sceneOwner);
 		buildResult.put(\scene, newScene);
 		^buildResult;
 	}

@@ -8,7 +8,7 @@ var declaration = (
 	outDeviceName: "X-TOUCH COMPACT",
 	outPortName: "X-TOUCH COMPACT"
 );
-~xtouch = VTMHardwareDevice('xtouch', nil, declaration, \BehringerXTouchCompact);
+~xtouch = VTMHardwareDevice('xtouch', declaration, \BehringerXTouchCompact);
 ~xtouch.prepare;
 )
 
@@ -20,7 +20,7 @@ var declaration = (
 	outDeviceName: "LPD8",
 	outPortName: "LPD8"
 );
-~lpd8 = VTMHardwareDevice('lpd8', nil, declaration, \LPD8);
+~lpd8 = VTMHardwareDevice('lpd8', declaration, \LPD8);
 ~lpd8.prepare;
 )
 
@@ -31,7 +31,7 @@ var declaration = (
 	outDeviceName: "nanoKONTROL",
 	outPortName: "CTRL"
 );
-~nanoKontrol = VTMHardwareDevice('myNanoKontrol', nil, declaration, 'KorgNanoKontrol');
+~nanoKontrol = VTMHardwareDevice('myNanoKontrol', declaration, 'KorgNanoKontrol');
 ~nanoKontrol.prepare;
 )
 
@@ -42,7 +42,7 @@ var declaration = (
 	outDeviceName: "X-TOUCH MINI",
 	outPortName: "X-TOUCH MINI"
 );
-~xtouchMini = VTMHardwareDevice('xtouchMini', nil, declaration, 'BehringerXTouchMini');
+~xtouchMini = VTMHardwareDevice('xtouchMini', declaration, 'BehringerXTouchMini');
 ~xtouchMini.prepare;
 )
 
@@ -53,7 +53,7 @@ var declaration = (
 	outDeviceName: "BCF2000",
 	outPortName: "BCF2000"
 );
-~bcf2000 = VTMHardwareDevice('bcf2000', nil, declaration, 'BehringerBCF2000');
+~bcf2000 = VTMHardwareDevice('bcf2000', declaration, 'BehringerBCF2000');
 ~bcf2000.prepare;
 )
 

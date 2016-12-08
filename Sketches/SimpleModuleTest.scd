@@ -32,7 +32,7 @@ definition = Environment.make({
 		)
 	];
 });
-~mod = VTMModule.new('testModule', nil, definition, declaration);
+~mod = VTMModule.new('testModule', definition, declaration);
 
 ~mod.prepare;
 )

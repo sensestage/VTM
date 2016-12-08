@@ -96,10 +96,10 @@ VTMApplication {
 			declaration = Environment.new;
 		});
 
-		network = VTMNetwork(name_, this, networkDef, networkDesc);
-		hardwareSetup = VTMHardwareSetup(network, hardwareDef, hardwareDesc);
-		moduleHost = VTMModuleHost(network, moduleDef, moduleDesc);
-		sceneOwner = VTMSceneOwner(network, sceneDef, sceneDesc);
+		network = VTMNetwork(name_, networkDef, networkDesc, this);
+		hardwareSetup = VTMHardwareSetup(hardwareDef, hardwareDesc, network);
+		moduleHost = VTMModuleHost(moduleDef, moduleDesc, network);
+		sceneOwner = VTMSceneOwner(sceneDef, sceneDesc, network);
 
 		//Discover other application on the network
 		//network.discover;
