@@ -29,7 +29,6 @@ VTMContextParameterManager {
 				});
 			});
 		});
-
 	}
 
 	//TODO: What if param has no path here?
@@ -65,5 +64,17 @@ VTMContextParameterManager {
 		order = nil;
 		parameters = nil;
 		context = nil;
+	}
+
+	enableOSC{
+		parameters.do({arg item;
+			item.enableOSC;
+		});
+	}
+
+	disableOSC{
+		parameters.do({arg item;
+			item.disableOSC;
+		});
 	}
 }

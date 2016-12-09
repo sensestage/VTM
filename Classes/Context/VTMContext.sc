@@ -1,16 +1,17 @@
 VTMContext {
 	var <name;
 	var <parent;
+	var definition;
 	var declaration;
-	var <definition; //this is not really safe so getter will probably be removed
-	var <children;
+	var children;
 	var path; //an OSC valid path.
 	var fullPathThunk;
 	var <envir;
 	var <addr; //the address for this object instance.
-	var <oscInterface;
+	var oscInterface;
+	var <oscEnabled;
 	var <state;
-	var <parameterManager;
+	var parameterManager;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
@@ -21,48 +22,30 @@ VTMContext {
 	classvar <contextCommandSeparator = $:;
 	classvar <viewClassSymbol = 'VTMContextView';
 
-	*buildFromDeclaration{arg declaration, parent;
-		if(declaration.includesKey(\name), {
-			if(declaration.includesKey(\definition), {
-				var def, name;
-				name = declaration.removeAt(\name);
-				def = declaration.removeAt(\definition);
-				^this.new( name, def, declaration, parent);
-			}, {
-				Error("Context must have definition").throw;
-			});
-		}, {
+	*new{arg name, definition, declaration, parent;
+		if(name.isNil, {
 			Error("Context must have name").throw;
 		});
-	}
-
-	*new{arg name, definition, declaration, parent;
 		^super.new.initContext(name, definition, declaration, parent);
 	}
 
 	initContext{arg name_, definition_, declaration_, parent_;
-		if(name_.isNil, {
-			Error("Context must have name").throw;
-		}, {
-			name = name_.asSymbol;
-		});
+		name = name_.asSymbol;
 		if(declaration_.isNil, {
-			// "[%]-MAKING NEW DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.new;
 		}, {
-			// "[%]-LOADING DECLARATION".format(this.name).postln;
 			declaration = IdentityDictionary.newFrom(declaration_);
 			if(declaration.includesKey(\addr), {
-				addr = declaration[\addr];
+				addr = NetAddr.newFromIPString(declaration[\addr]).asString;
 			});
 		});
 
 		if(definition_.isNil, {
 			definition = Environment.new;
 		}, {
-			// definition = Environment.newFrom(definition_);
-			definition = definition_;
+			definition = Environment.newFrom(definition_);
 		});
+
 		if(addr.isNil, {
 			addr = NetAddr.localAddr;
 		}, {
@@ -81,25 +64,35 @@ VTMContext {
 
 		parent = parent_;
 		children = IdentityDictionary.new;
-		envir = definition;//Environment.newFrom(definition.deepCopy);
+		envir = Environment.newFrom(definition.deepCopy);
 		envir.put(\self, this);
-
-		parameterManager = VTMContextParameterManager(this);
-
-
-		// envir.put(\runtimedeclaration, this.declaration );// a declaration that can be changed in runtime.
-
-		fullPathThunk = Thunk.new({
-			"/%".format(name).asSymbol;
-		});
 
 		if(parent.notNil, {
 			//Make parent add this to its children.
 			parent.addChild(this);
+			//derive path from parent context
+			path = parent.fullPath;
+		}, {
+			//Can use declaration specified path if context has no parent
+			if(declaration.includesKey(\path), {
+				path = declaration[\path].asSymbol;
+				//force leading slash
+				if(path.asString.first != $/, {
+					path = "/%".format(path).asSymbol;
+					"Context '%/%' forced leading slash in path".format(path, name).warn
+				});
+			});
+		});
+		fullPathThunk = Thunk({
+			if(parent.isNil, {
+				"/%".format(name).asSymbol;
+			}, {
+				"%%%".format(path, this.leadingSeparator, name).asSymbol;
+			});
 		});
 
-		//make OSC interface
-		oscInterface = VTMContextOSCInterface.new(this);
+		parameterManager = VTMContextParameterManager(this);
+		this.prChangeState(\initialized);
 	}
 
 	//The context that calls prepare can issue a condition to use for handling
@@ -107,7 +100,7 @@ VTMContext {
 	//make its own condition instance.
 	//The ~prepare stage is where the module definition defines and creates its
 	//parameters.
-	prepare{arg condition, onReady;
+	prepare{arg condition, onPrepared;
 		forkIfNeeded{
 			//Load the the prototypes
 			if(envir.includesKey(\prepare), {
@@ -117,7 +110,9 @@ VTMContext {
 			if(definition.includesKey(\parameters), {
 				parameterManager.loadParameterDeclarations(definition[\parameters]);
 			});
-			onReady.value(this);
+			this.enableOSC;
+			this.prChangeState(\prepared);
+			onPrepared.value(this);
 		};
 	}
 
@@ -127,6 +122,7 @@ VTMContext {
 				var cond = condition ?? {Condition.new};
 				this.execute(\run, cond);
 			});
+			this.prChangeState(\running);
 			onRunning.value(this);
 		};
 	}
@@ -137,36 +133,23 @@ VTMContext {
 			if(envir.includesKey(\free), {
 				this.execute(\free, cond);
 			});
-			this.oscInterface.free; //Free the responders
+			this.disableOSC;
 			children.keysValuesDo({arg key, child;
 				child.free(key, cond);
 			});
 			parameterManager.free;
-			this.changed(\freed);
 			this.release; //Release this as dependant from other objects.
 			definition = nil;
 			declaration = nil;
+			this.prChangeState(\freed);
 			onFreed.value(this);
 		};
 	}
 
 	reset{
+		//set all parameters to default and evaluate the action
 		this.parameters.do(_.reset(true));
 	}
-
-	// prBuildParameters{arg params;
-	// 	var result;
-	// 	params.do({arg parameterDeclaration;
-	// 		result = VTMParameter.makeFromDeclaration(parameterDeclaration);
-	// 		if(result.isNil, {
-	// 			"Building parameter failed, from declaration: %".formats(
-	// 				parameterDeclaration
-	// 			).postln;
-	// 			}, {
-	// 				parameters.put(result.name, result);
-	// 		});
-	// 	});
-	// }
 
 	addChild{arg context;
 		children.put(context.name, context);
@@ -206,6 +189,14 @@ VTMContext {
 	//Determine is this a lead context, i.e. having no children.
 	isLeaf{
 		^children.isEmpty;
+	}
+
+	children{
+		if(children.isEmpty, {
+			^nil;
+		}, {
+			^children;
+		});
 	}
 
 	//Find the root for this context.
@@ -368,7 +359,50 @@ VTMContext {
 		});
 	}
 
-	startOSC{ oscInterface.enable; }
+	enableOSC{ 
+		//make OSC interface if not already created
+		if(oscInterface.isNil, {
+			oscInterface = VTMContextOSCInterface.new(this);
+		});
+		parameterManager.enableOSC;
+		oscInterface.enable;
+		oscEnabled = true;
+	}
 
-	stopOSC{ oscInterface.disable; }
+	disableOSC{
+		oscInterface.disable;
+		parameterManager.disableOSC;
+		oscEnabled = false;
+		oscInterface = nil;
+	}
+
+	//command keys ending wth ? are getters (or more precisely queries),
+	//which function will return a value that can be sent to the application
+	//that sends the query.
+	//keys with ! are action commands that cause function to be run
+	*commandFunctions{
+		^IdentityDictionary[
+			'children?' -> {arg context;
+				var result;
+				if(context.isLeaf.not, {
+					result = context.children.collect(_.name);
+				}, {
+					result = nil;
+				});
+				result;
+			},
+			'declaration?' -> {arg context;
+				context.declaration.asKeyValuePairs;
+			},
+			'parameterNames?' -> {arg context;
+				context.parameterOrder
+			},
+			'parameters?' -> {arg context;
+				context.parameters.collect(_.value)
+			},
+			'state?' -> {arg context; context.state; },
+			'reset!' -> {arg context; context.reset; },
+			'free!' -> {arg context; context.free; }
+		];
+	}
 }
