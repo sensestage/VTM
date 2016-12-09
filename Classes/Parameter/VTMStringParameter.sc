@@ -102,13 +102,13 @@ VTMStringParameter : VTMValueParameter {
 		});
 	}
 
-	attributes{
-		var result;
-		result = super.attributes.putAll(IdentityDictionary[
-			\matchPattern -> this.matchPattern,
-			\pattern -> this.pattern
-		]);
-		^result;
+	*makeAttributeGetterFunctions{arg param;
+		^super.makeAttributeGetterFunctions(param).putAll(
+			IdentityDictionary[
+				\matchPattern -> {param.matchPattern;},
+				\pattern -> {param.pattern;}
+			]
+		);
 	}
 
 	*attributeKeys{

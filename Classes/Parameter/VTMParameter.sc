@@ -14,6 +14,7 @@ VTMParameter {
 	var <>onlyReturn = false;
 	var <isSubParameter = false;
 	var >envir;
+	var attributesGetterFunctionsThunk;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -101,6 +102,11 @@ VTMParameter {
 			if(declaration.includesKey(\onlyReturn), {
 				onlyReturn = declaration[\onlyReturn];
 			});
+		});
+
+		//lazy attributesGetters
+		attributesGetterFunctionsThunk = Thunk({
+			this.class.makeAttributeGetterFunctions(this);
 		});
 	}
 
@@ -191,29 +197,71 @@ VTMParameter {
 	}
 
 	attributes{
-		var aFunction;
-		aFunction = this.action;
-		if(aFunction.notNil and: {aFunction.isKindOf(Function)} and: {aFunction.isClosed}, {
-			//Only return closed functions as attributes
-			aFunction = aFunction.asCompileString;
-		}, {
-			aFunction = nil;
+		var result;
+		result = IdentityDictionary.new;
+		this.class.attributeKeys.do({arg attrKey;
+			result.put(
+				attrKey,
+				this.attributeGetterFunctions[attrKey].value
+			);
 		});
+		^result;
+	}
 
-		^IdentityDictionary[
-			\name -> this.name,
-			\path -> this.path,
-			\action -> aFunction,
-			\enabled -> this.enabled,
-			\type -> this.type
-		];
+	attributeGetterFunctions{
+		^attributesGetterFunctionsThunk.value;
 	}
 
 	*attributeKeys{
 		^[\name, \path, \action, \enabled, \type];
 	}
 
+	*makeAttributeGetterFunctions{arg param;
+		var result;
+		result = IdentityDictionary[
+			\name -> {param.name;},
+			\path -> {param.path;},
+			\action -> {
+				var aFunction;
+				aFunction = param.action;
+				if(aFunction.notNil and: {aFunction.isKindOf(Function)} and: {aFunction.isClosed}, {
+					//Only return closed functions as attributes
+					aFunction = aFunction.asCompileString;
+				}, {
+					aFunction = nil;
+				});
+				aFunction;
+			},
+			\enabled -> {param.enabled;},
+			\type -> {param.type;}
+		];
+		^result;
+	}
+
 	makeView{arg parent, bounds, definition, declaration;
 		^VTMParameterView.makeFromDeclaration(parent, bounds, definition, declaration, this);
+	}
+
+	*makeCommandFunctions{arg param;
+		var result = IdentityDictionary.new;
+		//make query getters for attributes
+		param.attributeKeys.do({arg item;
+			result.put(item, {
+
+			});
+		});
+	}
+
+	enableOSC{
+		if(oscInterface.isNil, {
+			oscInterface = VTMParameterOSCInterface(this);
+		});
+		oscInterface.enable;
+	}
+
+	disableOSC{
+		if(oscInterface.notNil, {
+			oscInterface.disable;
+		});
 	}
 }

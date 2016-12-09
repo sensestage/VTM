@@ -145,19 +145,23 @@ VTMNumberParameter : VTMValueParameter {
 		});
 	}
 
-	attributes{
+	*makeAttributeGetterFunctions{arg param;
 		var result;
-		result = super.attributes.putAll(IdentityDictionary[
-			\minVal -> this.minVal,
-			\maxVal -> this.maxVal,
-			\stepsize -> this.stepsize,
-			\clipmode -> this.clipmode
-		]);
-		if(dataspace.notNil, {
-			result.put(
-				\dataspace, dataspace.attributes
-			);
-		});
+		result = super.makeAttributeGetterFunctions(param).putAll(
+			IdentityDictionary[
+				\minVal -> {param.minVal},
+				\maxVal -> {param.maxVal},
+				\stepsize -> {param.stepsize},
+				\clipmode -> {param.clipmode},
+				\dataspace -> {
+					var val;
+					if(param.dataspace.notNil, {
+						val = param.dataspace.attributes;
+					});
+					val;
+				}
+			]
+		);
 		^result;
 	}
 

@@ -162,13 +162,15 @@ VTMValueParameter : VTMParameter {
 		^enum[slotOrName];
 	}
 
-	attributes{
-		^super.attributes.putAll(IdentityDictionary[
-			\value -> this.value,
-			\defaultValue -> this.defaultValue,
-			\filterRepetitions -> this.filterRepetitions,
-			\enum -> enum.asKeyValuePairs
-		]);
+	*makeAttributeGetterFunctions{arg param;
+		^super.makeAttributeGetterFunctions(param).putAll(
+			IdentityDictionary[
+				\value -> {param.value},
+				\defaultValue -> {param.defaultValue;},
+				\filterRepetitions -> {param.filterRepetitions;},
+				\enum -> {param.enum;}
+			]
+		);
 	}
 
 	*attributeKeys{
