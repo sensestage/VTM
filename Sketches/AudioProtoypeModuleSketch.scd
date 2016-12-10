@@ -26,9 +26,9 @@ VTMModule.viewClass
 
 ~mod.parameters[\sideeffect].rampValue(false, 1);
 
-~mod.setParameter(\freq, rrand(220, 430));
+~mod.set(\freq, rrand(220, 430));
 
-~mod.setParameter(\freq, rrand(220, 430), \phase, 2pi.rand);
+~mod.set(\freq, rrand(220, 430), \phase, 2pi.rand);
 
 ~mod.rampParameter();
 

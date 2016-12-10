@@ -16,7 +16,7 @@ w.front;
 ~mod.parameters[\freq].rampValue(rrand(200, 1000), 5)
 ~mod.reset;
 ~mod.parameters[\phase].makeView.front;
-~mod.setParameter(\freq, 780);
+~mod.set(\freq, 780);
 
 ~mod.rampParameter(\freq, 780, 3);
 

@@ -44,19 +44,19 @@ w.front;
 
 
 (
-~mod.setParameter(\magi, 0.5, \freq, 2, \unstabl, 300, \rate, 200, \grains, 10, \dur, 2, \lag, 1);
+~mod.set(\magi, 0.5, \freq, 2, \unstabl, 300, \rate, 200, \grains, 10, \dur, 2, \lag, 1);
 )
 (
-~mod.setParameter(\magi, 9.5, \freq, 19000, \unstabl, 100, \rate, 20000, \grains, 1, \dur, 0.3, \lag, 2);
+~mod.set(\magi, 9.5, \freq, 19000, \unstabl, 100, \rate, 20000, \grains, 1, \dur, 0.3, \lag, 2);
 )
 (
-~mod.setParameter(\magi, 90.5, \freq, 1000, \unstabl, 10, \rate, 2000, \grains, 1, \dur, 2.3, \lag, 5);
+~mod.set(\magi, 90.5, \freq, 1000, \unstabl, 10, \rate, 2000, \grains, 1, \dur, 2.3, \lag, 5);
 )
 (
-~mod.setParameter(\magi, 0.1, \freq, 2.1, \unstabl, 4, \rate, 20000, \grains, 1, \dur, 0.1, \lag, 1);
+~mod.set(\magi, 0.1, \freq, 2.1, \unstabl, 4, \rate, 20000, \grains, 1, \dur, 0.1, \lag, 1);
 )
 (
-~mod.setParameter(\magi, 0.1, \freq, 200, \unstabl, 1000, \rate, 20000, \grains, 1, \dur, 10, \lag, 0.3);
+~mod.set(\magi, 0.1, \freq, 200, \unstabl, 1000, \rate, 20000, \grains, 1, \dur, 10, \lag, 0.3);
 )
 
 
@@ -103,8 +103,8 @@ VTMModule.viewClass
 ~ert.stop;
 ~ert.free;
 
-~mod.setParameter(\magi, rrand(2, 200));
-~mod.setParameter(\magi, rrand(2, 200));
+~mod.set(\magi, rrand(2, 200));
+~mod.set(\magi, rrand(2, 200));
 
 ~mod.parameters[\freq].valueAction_(rrand(220, 440));
 

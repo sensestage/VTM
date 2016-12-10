@@ -243,9 +243,9 @@ VTMContext {
 			if(newDeclaration.notNil, {
 				newDeclaration = newDeclaration.value;
 				newDeclaration.removeAt(\comment);
-				this.setParameter(*newDeclaration.asKeyValuePairs);
+				this.set(*newDeclaration.asKeyValuePairs);
 				if(ramping.isNil, {
-					this.setParameter(*newDeclaration.asKeyValuePairs);
+					this.set(*newDeclaration.asKeyValuePairs);
 				}, {
 					newDeclaration = newDeclaration.asKeyValuePairs.flop.collect({arg item;
 						item.add(ramping);
@@ -271,11 +271,11 @@ VTMContext {
 	parameters{ ^parameterManager.parameters; }
 	parameterOrder{ ^parameterManager.order; }
 
-	setParameter{arg ...args;
+	set{arg ...args;
 		if(args.size > 2, {
 			args.pairsDo({arg paramName, paramVal;
 				if(this.parameters.includesKey(paramName), {
-					this.setParameter(paramName, paramVal);
+					this.set(paramName, paramVal);
 				});
 			});
 		}, {
