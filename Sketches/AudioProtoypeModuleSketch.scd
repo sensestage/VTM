@@ -22,9 +22,9 @@ VTMModule.viewClass
 ~mod.stop;
 ~mod.free(onFreed: {"DODODO".postln;});
 
-~mod.parameters[\freq].ramp(rrand(220, 740), rrand(0.2, 4));
+~mod.ramp(\freq, rrand(220, 740), rrand(0.2, 4));
 
-~mod.parameters[\sideeffect].ramp(false, 1);
+~mod.ramp(\sideeffect, false, 1);
 
 ~mod.set(\freq, rrand(220, 430));
 
@@ -38,11 +38,11 @@ VTMModule.viewClass
 
 ~mod.execute(\hey, \88, 2221);
 
-~mod.parameters[\freq].valueAction_(rrand(220, 440));
+~mod.set(\freq, rrand(220, 440));
 
 
 
-~mod.parameters[\freq].value
+~mod.get(\freq)
 
 
 VTMLibrary.at(\definitions, \SinOsc, \declarations).do(_.postln);

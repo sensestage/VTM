@@ -13,7 +13,7 @@ w.front;
 
 ~mod.parameterOrder
 ~mod.parameters[\freq].makeView.front;
-~mod.parameters[\freq].ramp(rrand(200, 1000), 5)
+~mod.ramp(\freq, rrand(200, 1000), 5);
 ~mod.reset;
 ~mod.parameters[\phase].makeView.front;
 ~mod.set(\freq, 780);

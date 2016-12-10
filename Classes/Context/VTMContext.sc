@@ -286,6 +286,10 @@ VTMContext {
 		});
 	}
 
+	get{arg parameterName;
+		^parameterManager.parameters[parameterName].value;
+	}
+
 	ramp{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
 		var param;
 		if(args.size > 3, {

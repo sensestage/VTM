@@ -106,10 +106,10 @@ VTMModule.viewClass
 ~mod.set(\magi, rrand(2, 200));
 ~mod.set(\magi, rrand(2, 200));
 
-~mod.parameters[\freq].valueAction_(rrand(220, 440));
+~mod.set(\freq, rrand(220, 440));
 
 
-~mod.parameters[\freq].value
+~mod.get(\freq);
 
 
 VTMLibrary.at(\definitions, \SinOsc, \declarations).do(_.postln);

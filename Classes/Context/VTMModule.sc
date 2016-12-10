@@ -51,8 +51,7 @@ VTMModule : VTMComposableContext {
 
 							if(module.envir.includesKey(\initSynthArgs), {
 								module.envir[\initSynthArgs].do({arg item;
-									var param = module.parameters[item];
-									extraArgs.put(param.name, param.value);
+									extraArgs.put(item, module.get(item));
 								});
 							});
 							extraArgs = extraArgs.asKeyValuePairs;

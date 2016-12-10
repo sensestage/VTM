@@ -1,6 +1,7 @@
+VTMUnitTest.runAll
+
 VTMUnitTest.runTestForClass(VTMParameter, true);
 VTMUnitTest.runTestForClass(VTMContext, true);
-VTMUnitTest.runAll
 
 VTMUnitTest.reportAllErrors = true;
 
@@ -10,8 +11,5 @@ VTMUnitTest.runTest("TestVTMParameter:test_GetAttributes")
 VTMParameter.test
 VTMValueParameter.test
 
-AbstractResponderFunc.allEnabled['OSC unmatched'].do({arg it; it.path.postln})
-
-
-
+AbstractResponderFunc.allFuncProxies
 AbstractResponderFunc.allEnabled['OSC unmatched'][0].free
