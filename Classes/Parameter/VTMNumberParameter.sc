@@ -103,7 +103,7 @@ VTMNumberParameter : VTMValueParameter {
 		);
 	}
 
-	rampValue{arg targetValue, time, curve = \lin;
+	ramp{arg targetValue, time, curve = \lin;
 		if(scheduler.isPlaying, {
 			scheduler.stop;
 		});

@@ -22,15 +22,15 @@ VTMModule.viewClass
 ~mod.stop;
 ~mod.free(onFreed: {"DODODO".postln;});
 
-~mod.parameters[\freq].rampValue(rrand(220, 740), rrand(0.2, 4));
+~mod.parameters[\freq].ramp(rrand(220, 740), rrand(0.2, 4));
 
-~mod.parameters[\sideeffect].rampValue(false, 1);
+~mod.parameters[\sideeffect].ramp(false, 1);
 
 ~mod.set(\freq, rrand(220, 430));
 
 ~mod.set(\freq, rrand(220, 430), \phase, 2pi.rand);
 
-~mod.rampParameter();
+~mod.ramp();
 
 ~mod.loadDeclaration(\coolSound);
 ~mod.loadDeclaration(\evenMoreCoolSound);

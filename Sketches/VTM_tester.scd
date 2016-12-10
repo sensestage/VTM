@@ -67,7 +67,7 @@ w.front;
 )
 
 
-~mod.rampParameter(\freq, 780, 3);
+~mod.ramp(\freq, 780, 3);
 
 v.refresh;
 v.front;

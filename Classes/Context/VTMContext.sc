@@ -250,7 +250,7 @@ VTMContext {
 					newDeclaration = newDeclaration.asKeyValuePairs.flop.collect({arg item;
 						item.add(ramping);
 					}).flatten;
-					this.rampParameter(*newDeclaration);
+					this.ramp(*newDeclaration);
 				});
 			}, {
 				"Declaration '%' for '%' not found".format(declarationName, this.fullPath).warn;
@@ -286,7 +286,7 @@ VTMContext {
 		});
 	}
 
-	rampParameter{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
+	ramp{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
 		var param;
 		if(args.size > 3, {
 			args.clump(3).do({arg item;

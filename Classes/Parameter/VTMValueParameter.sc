@@ -112,7 +112,7 @@ VTMValueParameter : VTMParameter {
 		});
 	}
 
-	rampValue{arg val, time;
+	ramp{arg val, time;
 		if(scheduler.isPlaying, {
 			scheduler.stop;
 		});
