@@ -42,7 +42,8 @@ TestVTMValueParameter : TestVTMParameter {
 				\filterRepetitions, { result = this.makeRandomBoolean(params); },
 				\value, { result = this.makeRandomValue(params); },
 				\defaultValue, { result = this.makeRandomValue(params); },
-				\enum, { result = this.makeRandomEnum(params); }
+				\enum, { result = this.makeRandomEnum(params); },
+				\restrictValueToEnum, { result = this.makeRandomBoolean(params); }
 			);
 		});
 		^result;

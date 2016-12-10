@@ -168,13 +168,32 @@ VTMValueParameter : VTMParameter {
 				\value -> {param.value},
 				\defaultValue -> {param.defaultValue;},
 				\filterRepetitions -> {param.filterRepetitions;},
-				\enum -> {param.enum;}
+				\enum -> {param.enum;},
+				\restrictValueToEnum -> { param.restrictValueToEnum; }
 			]
 		);
 	}
 
+	*makeAttributeSetterFunctions{arg param;
+		^super.makeAttributeSetterFunctions(param).putAll(IdentityDictionary[
+			'value' -> {arg ...args; param.valueAction_(*args); },
+			'filterRepetitions' -> {arg ...args;
+				param.filterRepetitions_(args[0].booleanValue); },
+			'restrictValueToEnum' -> {arg ...args;
+				param.restrictValueToEnum_(args[0].booleanValue); }
+		]);
+	}
+
 	*attributeKeys{
-		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \enum]);
+		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \enum,
+			\restrictValueToEnum
+		]);
+	}
+
+	*makeOSCAPI{arg param;
+		^super.makeOSCAPI(param).putAll(IdentityDictionary[
+			'ramp' -> {arg ...args; param.ramp(*args); }
+		]);
 	}
 
 }

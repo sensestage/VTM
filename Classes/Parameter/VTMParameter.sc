@@ -14,7 +14,8 @@ VTMParameter {
 	var <>onlyReturn = false;
 	var <isSubParameter = false;
 	var >envir;
-	var attributesGetterFunctionsThunk;
+	var attributeGetterFunctionsThunk;
+	var attributeSetterFunctionsThunk;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -104,9 +105,12 @@ VTMParameter {
 			});
 		});
 
-		//lazy attributesGetters
-		attributesGetterFunctionsThunk = Thunk({
+		//lazy attributesGetters and setters
+		attributeGetterFunctionsThunk = Thunk({
 			this.class.makeAttributeGetterFunctions(this);
+		});
+		attributeSetterFunctionsThunk = Thunk({
+			this.class.makeAttributeSetterFunctions(this);
 		});
 	}
 
@@ -209,7 +213,11 @@ VTMParameter {
 	}
 
 	attributeGetterFunctions{
-		^attributesGetterFunctionsThunk.value;
+		^attributeGetterFunctionsThunk.value;
+	}
+
+	attributeSetterFunctions{
+		^attributeSetterFunctionsThunk.value;
 	}
 
 	*attributeKeys{
@@ -238,19 +246,28 @@ VTMParameter {
 		^result;
 	}
 
+	*makeAttributeSetterFunctions{arg param;
+		var result;
+		result = IdentityDictionary.new;
+		^result;
+	}
+
 	makeView{arg parent, bounds, definition, declaration;
 		^VTMParameterView.makeFromDeclaration(parent, bounds, definition, declaration, this);
 	}
 
 	*makeOSCAPI{arg param;
 		var result = IdentityDictionary.new;
+
 		//make query getters for attributes
-		param.class.attributeKeys.do({arg item;
+		param.attributeGetterFunctions.keysValuesDo({arg key, getFunc;
 			result.put(
-				"%?".format(item).asSymbol,
-				param.attributeGetterFunctions[item]
+				"%?".format(key).asSymbol,
+				getFunc
 			);
 		});
+		//make setters for attributes
+		result.putAll(param.attributeSetterFunctions);
 		^result;
 	}
 

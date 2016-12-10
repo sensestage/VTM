@@ -111,6 +111,15 @@ VTMStringParameter : VTMValueParameter {
 		);
 	}
 
+	*makeAttributeSetterFunctions{arg param;
+		^super.makeAttributeSetterFunctions(param).putAll(
+			IdentityDictionary[
+				\matchPattern -> {arg ...args; param.matchPattern_(*args);},
+				\pattern -> {arg ...args; param.pattern_(*args);}
+			]
+		);
+	}
+
 	*attributeKeys{
 		^(super.attributeKeys ++ [\matchPattern, \pattern]);
 	}

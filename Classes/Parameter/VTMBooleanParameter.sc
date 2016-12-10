@@ -18,7 +18,7 @@ VTMBooleanParameter : VTMValueParameter {
 	}
 
 	toggle{
-		this.value_(this.value.not);
+		this.valueAction_(this.value.not);
 	}
 
 	doActionOn{arg when;
@@ -34,4 +34,10 @@ VTMBooleanParameter : VTMValueParameter {
 	}
 
 	*defaultViewType{ ^\toggle; }
+
+	*makeOSCAPI{arg param;
+		^super.makeOSCAPI(param).putAll(IdentityDictionary[
+			'toggle!' -> {param.toggle;}
+		]);
+	}
 }

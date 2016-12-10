@@ -165,6 +165,31 @@ VTMNumberParameter : VTMValueParameter {
 		^result;
 	}
 
+	*makeAttributeSetterFunctions{arg param;
+		var result;
+		result = super.makeAttributeGetterFunctions(param).putAll(
+			IdentityDictionary[
+				\minVal -> {arg ...args; param.minVal_(args[0]); },
+				\maxVal -> {arg ...args; param.maxVal_(args[0]); },
+				\stepsize -> {arg ...args; param.stepsize_(args[0]); },
+				\clipmode -> {arg ...args; param.clipmode_(args[0]); },
+				\dataspace -> {arg ...args;
+					if(param.dataspace.notNil, {
+						param.dataspace_(*args);
+					});
+				}
+			]
+		);
+		^result;
+	}
+
+	*makeOSCAPI{arg param;
+		^super.makeOSCAPI(param).putAll(IdentityDictionary[
+			'increment!' -> {param.increment;},
+			'decrement!' -> {param.decrement;}
+		]);
+	}
+
 	*attributeKeys{
 		^(super.attributeKeys ++ [\minVal, \maxVal, \stepsize, \clipmode, \dataspace]);
 	}

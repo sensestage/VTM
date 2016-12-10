@@ -350,8 +350,13 @@ TestVTMParameter : VTMUnitTest {
 
 			this.assertEquals(
 				param.attributes, declaration,
-				"% returned correct attributes.".format(testClass)
+				"% returned correct attributes.\nA:\t%\nB:\t%".format(
+					testClass,
+				   	param.attributes.keys.asArray.sort,
+					declaration.keys.asArray.sort
+				)
 			);
+			/*
 			"Attributes:".postln;
 			param.attributes.keysValuesDo({arg key, val;
 				"\t:% - [%]%".format(key, val.class, val).postln;
@@ -360,6 +365,7 @@ TestVTMParameter : VTMUnitTest {
 			declaration.keysValuesDo({arg key, val;
 				"\t:% - [%]%".format(key, val.class, val).postln;
 			});
+			*/
 			//If the action is not a closed function it should not get returned as attribute
 			param.action = {|p| wasRun = true;};
 			this.assert(
