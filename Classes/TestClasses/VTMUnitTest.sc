@@ -1,5 +1,7 @@
 VTMUnitTest : UnitTest {
-	classvar <>reportAllErrors = false;
+	classvar <>reportAllErrors = true;
+	classvar <>checkFreeingResponderFuncs = true;
+	classvar <>forceFreeingResponderFuncs = true;
 
 	*testclassForType{arg val;
 		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -34,10 +36,24 @@ VTMUnitTest : UnitTest {
 
 	tearDown{
 		"Tearing down a VTMTest".postln;
+
+		//This checks if any Responders have not been removed.
+		if(this.class.checkFreeingResponderFuncs, {
+			if(AbstractResponderFunc.allFuncProxies.isEmpty.not, {
+				this.failed(currentMethod,
+					"Some AbstractResponderFunc proxies were not freed after test."
+				);
+				if(this.class.forceFreeingResponderFuncs, {
+					AbstractResponderFunc.allFuncProxies.do({arg funcs;
+						funcs.do(_.free)
+					});
+				});
+			});
+		});
 	}
 
 
-	run { | reset = true, report = true, reportAllErrors = false|
+	run { | reset = true, report = true|
 		var function;
 		if(reset) { this.class.reset };
 		if(report) { ("RUNNING UNIT TEST" + this).inform };
@@ -56,13 +72,6 @@ VTMUnitTest : UnitTest {
 				}, {
 					this.perform(method.name);
 				});
-				//{
-
-				// unfortunately this removes the interesting part of the call stack
-				//}.try({ |err|
-				//	("ERROR during test"+method).postln;
-				//	err.throw;
-				//});
 
 				this.tearDown;
 			};
