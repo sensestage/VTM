@@ -380,7 +380,7 @@ VTMContext {
 		});
 	}
 
-	//command keys ending wth ? are getters (or more precisely queries),
+	//command keys ending with ? are getters (or more precisely queries),
 	//which function will return a value that can be sent to the application
 	//that sends the query.
 	//keys with ! are action commands that cause function to be run
@@ -406,7 +406,8 @@ VTMContext {
 			},
 			'state?' -> {arg context; context.state; },
 			'reset!' -> {arg context; context.reset; },
-			'free!' -> {arg context; context.free; }
+			'free!' -> {arg context; context.free; },
+			'attributes?' -> {arg context; JSON.stringify(context.attributes); }
 		];
 	}
 }
