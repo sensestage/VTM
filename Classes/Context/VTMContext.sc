@@ -9,17 +9,11 @@ VTMContext {
 	var <envir;
 	var <addr; //the address for this object instance.
 	var oscInterface;
-	var <oscEnabled;
 	var <state;
 	var parameterManager;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
-	classvar <ownershipIndicator = $~;
-	classvar <hardwareSign = $#;
-	classvar <moduleSign = $%;
-	classvar <sceneSign = $$;
-	classvar <contextCommandSeparator = $:;
 	classvar <viewClassSymbol = 'VTMContextView';
 
 	*new{arg name, definition, declaration, parent;
@@ -366,21 +360,27 @@ VTMContext {
 		});
 		parameterManager.enableOSC;
 		oscInterface.enable;
-		oscEnabled = true;
 	}
 
 	disableOSC{
-		oscInterface.disable;
+		oscInterface.free;
 		parameterManager.disableOSC;
-		oscEnabled = false;
 		oscInterface = nil;
+	}
+
+	oscEnabled{
+		^if(oscInterface.notNil, {
+			oscInterface.enabled;
+		}, {
+			^nil;
+		});
 	}
 
 	//command keys ending wth ? are getters (or more precisely queries),
 	//which function will return a value that can be sent to the application
 	//that sends the query.
 	//keys with ! are action commands that cause function to be run
-	*commandFunctions{
+	*makeOSCAPI{arg context;
 		^IdentityDictionary[
 			'children?' -> {arg context;
 				var result;
@@ -394,10 +394,10 @@ VTMContext {
 			'declaration?' -> {arg context;
 				context.declaration.asKeyValuePairs;
 			},
-			'parameterNames?' -> {arg context;
+			'parameters?' -> {arg context;
 				context.parameterOrder
 			},
-			'parameters?' -> {arg context;
+			'parameterValues?' -> {arg context;
 				context.parameters.collect(_.value)
 			},
 			'state?' -> {arg context; context.state; },

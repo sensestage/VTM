@@ -242,14 +242,16 @@ VTMParameter {
 		^VTMParameterView.makeFromDeclaration(parent, bounds, definition, declaration, this);
 	}
 
-	*makeCommandFunctions{arg param;
+	*makeOSCAPI{arg param;
 		var result = IdentityDictionary.new;
 		//make query getters for attributes
-		param.attributeKeys.do({arg item;
-			result.put(item, {
-
-			});
+		param.class.attributeKeys.do({arg item;
+			result.put(
+				"%?".format(item).asSymbol,
+				param.attributeGetterFunctions[item]
+			);
 		});
+		^result;
 	}
 
 	enableOSC{
@@ -261,7 +263,8 @@ VTMParameter {
 
 	disableOSC{
 		if(oscInterface.notNil, {
-			oscInterface.disable;
+			oscInterface.free;
+			oscInterface = nil;
 		});
 	}
 }

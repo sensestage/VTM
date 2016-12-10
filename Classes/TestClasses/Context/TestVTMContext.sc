@@ -1,8 +1,4 @@
 TestVTMContext : VTMUnitTest { 
-	setUp{}
-
-	tearDown{}
-
 	test_missingNameError{
 		var context;
 		//Should fail if not named
@@ -244,6 +240,7 @@ TestVTMContext : VTMUnitTest {
 		//should set Parameter values through object API
 
 		//should free all parameters upon context free.
+		context.free;
 	}
 
 	test_OSCCommunication{
@@ -280,16 +277,14 @@ TestVTMContext : VTMUnitTest {
 		//e.g. :children :declaration :parameters :parameterOrder :parameterValues
 		//:state :reset
 
-
-
 		//test OSC responders for parameters
 
 		//stoppingOSC
 
 		//restarting OSC
 
-		//ree context frees OSC responders
-
+		//free context frees OSC responders, (is tested in VTMUnitTest:tearDown)
+		context.free;
 	}
 
 	test_initPathWhenBeingChildContext{}
