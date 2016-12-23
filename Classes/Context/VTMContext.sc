@@ -78,7 +78,7 @@ VTMContext {
 			});
 		});
 		fullPathThunk = Thunk({
-			if(parent.isNil, {
+			if(path.isNil, {
 				"/%".format(name).asSymbol;
 			}, {
 				"%%%".format(path, this.leadingSeparator, name).asSymbol;
@@ -142,7 +142,7 @@ VTMContext {
 
 	reset{
 		//set all parameters to default and evaluate the action
-		this.parameters.do(_.reset(true));
+		parameterManager.parameters.do(_.reset(true));
 	}
 
 	addChild{arg context;
@@ -189,7 +189,7 @@ VTMContext {
 		if(children.isEmpty, {
 			^nil;
 		}, {
-			^children;
+			^children.keys.asArray;// safer to return only the children. not the dict.
 		});
 	}
 
@@ -212,7 +212,13 @@ VTMContext {
 
 	//Get the whole child context tree.
 	childTree{
-		^children.collect(_.childTree);
+		var result;
+		if(this.children.notNil, {
+			this.children.do({arg item;
+				result = result.add(item.childTree);
+			});
+		});
+		^result;
 	}
 
 	//immutable declaration. Should only be changed with 'changeDeclaration'
@@ -268,8 +274,7 @@ VTMContext {
 		});
 	}
 
-	parameters{ ^parameterManager.parameters; }
-	parameterOrder{ ^parameterManager.order; }
+	parameters{ ^parameterManager.order; }
 
 	set{arg ...args;
 		if(args.size > 2, {
@@ -288,6 +293,10 @@ VTMContext {
 
 	get{arg parameterName;
 		^parameterManager.parameters[parameterName].value;
+	}
+
+	getParameter{arg parameterName;
+		^parameterManager.parameters[parameterName];
 	}
 
 	ramp{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
@@ -380,6 +389,16 @@ VTMContext {
 		});
 	}
 
+	attributes{
+		var result = IdentityDictionary.new;
+		result.put(\parameters, IdentityDictionary.new);
+		result.put(\children, this.children);
+		parameterManager.parameters.do({arg item;
+			result[\parameters].put(item.name, item.attributes);
+		});
+		^result;
+	}
+
 	//command keys ending with ? are getters (or more precisely queries),
 	//which function will return a value that can be sent to the application
 	//that sends the query.
@@ -389,25 +408,19 @@ VTMContext {
 			'children?' -> {arg context;
 				var result;
 				if(context.isLeaf.not, {
-					result = context.children.collect(_.name);
+					result = context.children;
 				}, {
 					result = nil;
 				});
 				result;
 			},
-			'declaration?' -> {arg context;
-				context.declaration.asKeyValuePairs;
-			},
 			'parameters?' -> {arg context;
-				context.parameterOrder
-			},
-			'parameterValues?' -> {arg context;
-				context.parameters.collect(_.value)
+				context.parameters;
 			},
 			'state?' -> {arg context; context.state; },
+			'attributes?' -> {arg context; JSON.stringify(context.attributes); },
 			'reset!' -> {arg context; context.reset; },
-			'free!' -> {arg context; context.free; },
-			'attributes?' -> {arg context; JSON.stringify(context.attributes); }
+			'free!' -> {arg context; context.free; }
 		];
 	}
 }

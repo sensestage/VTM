@@ -83,7 +83,29 @@ TestVTMContext : VTMUnitTest {
 		context = VTMContext(testName);
 	}
 
-	test_ForceLeadingSlashInPath{}
+	test_ForceLeadingSlashInPath{
+		var context, testPath, testName;
+		var definition, declaration;
+		testName = this.class.makeRandomString.asSymbol;
+		testPath = 'pathWithout/leadingSlash';
+		declaration = (
+			path: testPath
+		);
+		context = VTMContext(testName, declaration: declaration);
+		//should add missing leading slash
+		this.assertEquals(
+			context.path,
+			"/%".format(testPath).asSymbol,
+			"Context forcibly added missing leading slash to path"
+		);
+		//should also work with full path
+
+		this.assertEquals(
+			context.fullPath,
+			"/%/%".format(testPath, testName).asSymbol,
+			"Context forcibly added missing leading slash to fullPath"
+		);
+	}
 
 	test_DerivePathFromParentContext{}
 
@@ -221,7 +243,7 @@ TestVTMContext : VTMUnitTest {
 		context = VTMContext(name, definition, declaration);
 		context.prepare;
 		this.assertEquals(
-			context.parameterOrder,
+			context.parameters,
 			parameterDeclarations.collect({arg it; it[\name]}),
 			"Context initialized parameter names in the right order"
 		);
@@ -229,14 +251,17 @@ TestVTMContext : VTMUnitTest {
 		//check that the param path was built with the context path
 		parameterDeclarations.do({arg item;
 			var pathShouldBe;
+			item[\name].postln;
 			pathShouldBe = "%/%".format(context.fullPath, item[\name]).asSymbol;
 			this.assertEquals(
 				pathShouldBe, 
-				context.parameters[item[\name]].fullPath,
+				context.getParameter(item[\name]).fullPath,
 				"Context set Parameter path relative to its own path."
 			);
 		});
 		
+		//should get Parameter values through object API§
+
 		//should set Parameter values through object API
 
 		//should free all parameters upon context free.
@@ -247,7 +272,8 @@ TestVTMContext : VTMUnitTest {
 		var context, name = this.class.makeRandomString;
 		var parameterDeclarations;
 		var definition, declaration;
-		var numParameters = rrand(3,8);
+		var numParameters = 1;//rrand(3,8);
+		var subContexts;
 		var parameterValues = Array.newClear(numParameters);
 		var testParameterValues = parameterValues.deepCopy;
 		parameterDeclarations = numParameters.collect({arg i;
@@ -265,6 +291,10 @@ TestVTMContext : VTMUnitTest {
 		);
 		context = VTMContext(name, definition, declaration);
 		context.prepare;
+
+		subContexts = 4.collect({arg i;
+			VTMContext(this.class.makeRandomString.asSymbol, parent: context);
+		});
 		
 		//startingOSC
 		context.enableOSC;
@@ -277,6 +307,73 @@ TestVTMContext : VTMUnitTest {
 		//e.g. :children :declaration :parameters :parameterOrder :parameterValues
 		//:state :reset
 
+		{//test the OSC API getters
+			[
+				'children?', 'parameters?'//, 'state?'
+			].do({arg cmdKey;
+				var tempResponder, response, cond;
+				var responded = false;
+				var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
+				cond = Condition.new;
+				tempResponder = OSCFunc({arg msg, time, addr, port;
+					//if(msg.size > 2, {
+					//	response = msg[1..].flat;
+					//}, {
+					//});
+					response = msg[1..].flat;
+					responded = true;
+					cond.unhang;
+				}, respPath);
+				context.addr.sendMsg(
+					"%:%".format(context.fullPath, cmdKey).asSymbol,
+					NetAddr.localAddr.hostname,
+					NetAddr.localAddr.port,
+					respPath
+				);
+				cond.hang(0.2);
+				this.assert(responded, 
+					"Context OSC API command '%' responded".format(cmdKey)
+				);
+				this.assertEquals(
+					response,
+					context.perform(cmdKey.asString.drop(-1).asSymbol),
+					"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
+				);
+				tempResponder.free;
+			});
+		}.value;
+
+//		{//test the OSC API attributes responder
+//			var cmdKey = 'attributes?';
+//			var tempResponder, response, cond;
+//			var responded = false;
+//			var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
+//			cond = Condition.new;
+//			tempResponder = OSCFunc({arg msg, time, addr, port;
+//				response = msg[1].asString.parseYAML;
+//				response = response.changeScalarValuesToDataTypes;
+//				response = response.asIdentityDictionaryWithSymbolKeys;
+//				responded = true;
+//				cond.unhang;
+//			}, respPath);
+//			context.addr.sendMsg(
+//				"%:%".format(context.fullPath, cmdKey).asSymbol,
+//				NetAddr.localAddr.hostname,
+//				NetAddr.localAddr.port,
+//				respPath
+//			);
+//			cond.hang(0.2);
+//			this.assert(responded, 
+//				"Context OSC API command '%' responded".format(cmdKey)
+//			);
+//			this.assertEquals(
+//				response,
+//				context.perform(cmdKey.asString.drop(-1).asSymbol),
+//				"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
+//			);
+//
+//			tempResponder.free;
+//		}.value;
 		//test OSC responders for parameters
 
 		//stoppingOSC
@@ -287,34 +384,121 @@ TestVTMContext : VTMUnitTest {
 		context.free;
 	}
 
-	test_initPathWhenBeingChildContext{}
-//
-//	test_Construction{
-//		var testDesc = IdentityDictionary[\testObj -> 33];
-//		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {"So you wanna leave?".postln;}];
-//		var context = VTMContext.new('myRoot', testDef, testDesc);
-//
-//		this.assert(
-//			context === context.root,
-//			"Context root is itself"
-//		);
-//
-//		this.assertEquals(
-//			context.children, IdentityDictionary.new,
-//			"Context initialized to empty IdentityDictionary"
-//		);
-//
-//		this.assert(
-//			context.declaration == testDesc and: {context.declaration !== testDesc},
-//			"Context set declaration to equal, but not identical declaration."
-//		);
-//
-//		this.assert(
-//			context.definition == testDef and: {context.definition !== testDef},
-//			"Context set definition to equal, but not identical definition."
-//		);
-//	}
-//
+	test_addingChildContexts{
+		var rootData;
+		rootData = IdentityDictionary[\name -> this.class.makeRandomString];
+
+		rootData.put(\obj, VTMContext(rootData[\name]));
+
+		//should return children as nil
+		this.assert(
+			rootData[\obj].children.isNil,
+			"Context return children from context without children as nil"
+		);
+		this.assert(
+			rootData[\obj].isLeaf,
+			"Context is considered a leaf when childless"
+		);
+
+		this.assert(
+			rootData[\obj].root === rootData[\obj],
+			"Context root points to itself when being root"
+		);
+
+		rootData.put(\children, {
+			var childName = this.class.makeRandomString; 
+			IdentityDictionary[
+				\name -> childName,
+				\obj -> VTMContext(childName, parent: rootData[\obj]);
+			];
+		} ! rrand(3,7));
+
+		rootData[\children].do({arg childData;
+			childData.put(\children, {
+				var grandChildName = this.class.makeRandomString;
+				IdentityDictionary[
+					\name -> grandChildName,
+					\obj -> VTMContext(grandChildName, parent: childData[\obj])
+				]
+			} ! rrand(3, 7));
+		});
+
+		this.assert(
+			rootData[\obj].isLeaf.not,
+			"Context added children to root object"
+		);
+		//the root obj should be root and not leafs
+		this.assert(
+			rootData[\obj].isRoot and: {rootData[\obj].isLeaf.not},
+			"Context returned isRoot when being constructed to be so"
+		);
+
+		//all children should be both not roots and not leafs
+		this.assert(
+			rootData[\children].every({arg childData;
+				var child = childData[\obj];
+				child.isRoot.not and: { child.isLeaf.not};
+			}),
+			"Context returned all children as non roots and non leafs"
+		);
+
+		//all grand children should be non root and leafs
+		this.assert(
+			rootData[\children].every({arg childData;
+				childData[\children].every({arg grandChildData;
+					var grandChild = grandChildData[\obj];
+					grandChild.isRoot.not and: { grandChild.isLeaf};
+				});
+			})
+		);
+
+		//the children name and paths should match with the test data
+		this.assert(
+			rootData[\children].every({arg childData;
+				var child = childData[\obj];
+				"/%/%".format(
+					rootData[\name],
+				   	childData[\name]
+				).asSymbol == child.fullPath and: {
+					"/%".format(rootData[\name]).asSymbol == child.path
+				};
+			}),
+			"Context children paths and fullPaths were correctly returned"
+		);
+
+		//the grand children paths and fullPaths should match with the test data
+		this.assert(
+			rootData[\children].every({arg childData;
+				childData[\children].every({arg grandChildData;
+					var grandChild = grandChildData[\obj];
+					"/%/%/%".format(
+						rootData[\name],
+						childData[\name],
+						grandChildData[\name]
+					).asSymbol == grandChild.fullPath and: {
+						"/%/%".format(
+							rootData[\name],
+							childData[\name]
+						).asSymbol == grandChild.path
+					};
+				});
+			}),
+			"Context grand children paths and fullPaths were correctly returned"
+		);
+
+		//all children and grand children point to the root as root
+		this.assert(
+			rootData[\children].every({arg childData;
+				(childData[\obj].root === rootData[\obj]) and: {
+					childData[\children].every({arg grandChildData;
+						grandChildData[\obj].root === rootData[\obj];
+					});
+				};
+			}),
+			"Context children and grand children all point to correct root context"
+		);
+	}
+
 //	test_EnvirExecute{
 //		var wasRun = false, itself, theArgs;
 //		var testArgs = [11,22,\hello];

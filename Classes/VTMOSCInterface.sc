@@ -29,14 +29,26 @@ VTMOSCInterface {
 				},
 				$?, {
 					responderFunc = {arg msg, time, addr, port;
-						var queryAddr, queryPath, queryPort;
+						var queryHost, queryPath, queryPort;
 						if(msg.size == 4, {
-							queryAddr = msg[1];
+							var replyData;
+							queryHost = msg[1].asString;
 							queryPort = msg[2];
 							queryPath = msg[3];
-							NetAddr(queryAddr, queryPort).sendMsg(
-								queryPath.asSymbol, cmdFunc.value(model)
-							);
+							replyData = cmdFunc.value(model);
+							if(replyData.notNil, {
+								if(replyData.isArray, {
+									NetAddr(queryHost, queryPort).sendMsg(
+										queryPath.asSymbol,
+										*replyData
+									);
+								}, {
+									NetAddr(queryHost, queryPort).sendMsg(
+										queryPath.asSymbol,
+										replyData
+									);
+								});
+							});
 						}, {
 							"% command '%' OSC missing query addr data".format(
 								model.class,

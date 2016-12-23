@@ -5,9 +5,14 @@ VTMUnitTest.runTestForClass(VTMContext, true);
 
 VTMUnitTest.reportAllErrors = true;
 
+
 VTMUnitTest.runTest("TestVTMContext:test_OSCCommunication")
 
-VTMUnitTest.runTest("TestVTMParameter:test_GetAttributes")
+
+OSCFunc.trace
+
+NetAddr.localAddr.sendMsg('/hei', *[89, 99])
+NetAddr.localAddr.sendMsg('/hei', [89, 99])
 
 
-Quarks.gui
+[12, 123].unbubble
