@@ -86,7 +86,7 @@ VTMContext {
 		});
 
 		parameterManager = VTMContextParameterManager(this);
-		this.prChangeState(\initialized);
+		this.prChangeState(\didInitialize);
 	}
 
 	//The context that calls prepare can issue a condition to use for handling
@@ -94,36 +94,46 @@ VTMContext {
 	//make its own condition instance.
 	//The ~prepare stage is where the module definition defines and creates its
 	//parameters.
-	prepare{arg condition, onPrepared;
+	prepare{arg condition, action;
 		forkIfNeeded{
-			//Load the the prototypes
+			var cond = condition ?? {Condition.new};
+			this.prChangeState(\willPrepare);
 			if(envir.includesKey(\prepare), {
-				var cond = condition ?? {Condition.new};
 				this.execute(\prepare, cond);
 			});
+
+			//load and build parameters
 			if(definition.includesKey(\parameters), {
 				parameterManager.loadParameterDeclarations(definition[\parameters]);
 			});
-			this.enableOSC;
-			this.prChangeState(\prepared);
-			onPrepared.value(this);
-		};
-	}
-
-	run{arg condition, onRunning;
-		forkIfNeeded{
-			if(envir.includesKey(\run), {
-				var cond = condition ?? {Condition.new};
-				this.execute(\run, cond);
+			if(definition.includesKey(\buildParameters), {
+				parameterManager.loadParameterDeclarations(
+					this.execute(\buildParameters, cond);
+				);
 			});
-			this.prChangeState(\running);
-			onRunning.value(this);
+
+			this.enableOSC;
+			this.prChangeState(\didPrepare);
+			action.value(this);
 		};
 	}
 
-	free{arg condition, onFreed;
+	run{arg condition, action;
 		forkIfNeeded{
 			var cond = condition ?? {Condition.new};
+			this.prChangeState(\willRun);
+			if(envir.includesKey(\run), {
+				this.execute(\run, cond);
+			});
+			this.prChangeState(\didRun);
+			action.value(this);
+		};
+	}
+
+	free{arg condition, action;
+		forkIfNeeded{
+			var cond = condition ?? {Condition.new};
+			this.prChangeState(\willFree);
 			if(envir.includesKey(\free), {
 				this.execute(\free, cond);
 			});
@@ -132,11 +142,11 @@ VTMContext {
 				child.free(key, cond);
 			});
 			parameterManager.free;
+			this.prChangeState(\didFree);
+			action.value(this);
 			this.release; //Release this as dependant from other objects.
 			definition = nil;
 			declaration = nil;
-			this.prChangeState(\freed);
-			onFreed.value(this);
 		};
 	}
 
@@ -172,7 +182,7 @@ VTMContext {
 		//Search parents until root node is found and construct path from that
 	}
 
-	//Some objects need to define special separators, e.g. subparameters, submodules etc.
+	//Some objects need to define special separators, e.g. subscenes, submodules etc.
 	leadingSeparator{ ^$/;	}
 
 	//Determine if this is a root context, i.e. having no parent.
@@ -259,7 +269,7 @@ VTMContext {
 		var newState;
 		if(state != val, {
 			state = val;
-			this.changed(\state);
+			this.changed(\state, state);
 		});
 	}
 

@@ -4,4 +4,4 @@ VTMUnitTest.reportAllErrors = false;
 VTMContext.test
 
 
-
+VTMUnitTest.runTest("TestVTMContext:test_DefinitionInitAndPrepareRunFreeAndStateChange")

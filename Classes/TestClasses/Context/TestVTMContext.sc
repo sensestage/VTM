@@ -58,7 +58,7 @@ TestVTMContext : VTMUnitTest {
 			"Context init fullPath to /<name>"
 		);
 
-		this.assertEquals(context.state, \initialized,
+		this.assertEquals(context.state, \didInitialize,
 			"Context set state to initialized when constructed"
 		);
 
@@ -110,114 +110,180 @@ TestVTMContext : VTMUnitTest {
 	test_DerivePathFromParentContext{}
 
 	test_DefinitionInitAndPrepareRunFreeAndStateChange{
-		var context;
+		var context, testCondition = Condition.new;
 		var definition, declaration, name;
-		var wasPrepared = false;
-	   	var wasRun = false;
-		var wasFreed = false;
-		var prepareArgs;
-		var runArgs;
-		var freeArgs;
-		var prepareCallbackArgs;
-		var runCallbackArgs;
-		var freeCallbackArgs;
+		var runtimeSteps = [\prepare, \run, \free];
+		var contextStates = [
+			\willPrepare, \didPrepare,
+			\willRun, \didRun,
+			\willFree, \didFree
+		];
+		var resultDict = IdentityDictionary[
+			\wasExecuted -> List.new,
+			\args -> IdentityDictionary.new
+		];
+		var result = IdentityDictionary[
+			\definitionFunction -> resultDict.deepCopy,
+			\argumentCallback -> resultDict.deepCopy,
+			\stateObserver -> resultDict.deepCopy
+		];
+		var controller;
 
-		name = this.class.makeRandomString;
-		definition = Environment.make{
-			~prepare = {arg ...args;
-				wasPrepared = true;
-				prepareArgs = args;
-			};
-			~run = {arg ...args;
-				wasRun = true;
-				runArgs = args;
-			};
-			~free = {arg ...args;
-				wasFreed = true;
-				freeArgs = args;
-			};
-		};
-
+		//Generate definition functions from runtime step symbols.
+		definition = Environment.new;
+		runtimeSteps.do({arg runtimeStep;
+			definition.put(runtimeStep, {arg ...args;
+				result[\definitionFunction][\wasExecuted].add(runtimeStep);
+				result[\definitionFunction][\args].put(runtimeStep, args);
+			});
+		});
+		name = this.class.makeRandomString.asSymbol;
 		context = VTMContext(name, definition);
+		//add dependant for observing state changes
+		controller = SimpleController.new(context);
+		controller.put(\state, {arg ...args; //should be: theChanged, whatChanged, newState;
+			var newState = args[2];
+			result[\stateObserver][\wasExecuted].add(newState);
+			result[\stateObserver][\args].put(newState, args);
+		});
 
-		this.assertEquals(
-			context.envir,
-			definition.put(\self, context),
-			"Context envir is equal to definition argument plus self ref."
-		);
 		this.assert(
 			context.envir !== definition,
 			"Context definition argument is not identical to context envir"
 		);
 
-		//Do the prepare
-		context.prepare(onPrepared: {arg ...args;
-			prepareCallbackArgs = args;
-		});
-		this.assert(wasPrepared,
-			"Context prepare def function was run"
-		);
-		this.assert(
-			context.state == \prepared,
-			"Context changed state to prepared"
-		);
-		this.assert(prepareArgs.notNil and: {
-			prepareArgs[0] === context
-		} and: {
-			prepareArgs[1].isKindOf(Condition)
-		},
-		"Context passed correct argument to definition prepare function"
-		);
-		this.assertEquals(
-			prepareCallbackArgs, [context],
-			"Context passed correct arguments to prepare callback"
+		this.assert(context.envir == definition.put(\self, context),
+			"Context envir is equal to definition argument plus self ref."
 		);
 
-		//Do the run
-		context.run(onRunning: {arg ...args;
-			runCallbackArgs = args;
+		//Perform the runtime steps. Do tests after each step.
+		runtimeSteps.do({arg runtimeStep;
+			context.perform(runtimeStep, testCondition, {arg ...args;
+				result[\argumentCallback][\wasExecuted].add(runtimeStep);
+				result[\argumentCallback][\args].put(runtimeStep, args);
+			});
+
+			//should execute definition function
+			this.assert(
+				result[\definitionFunction][\wasExecuted].includes(runtimeStep),
+				"Context executed definition function for '%'".format(runtimeStep)
+			);
+			this.assert(
+				result[\definitionFunction][\args][runtimeStep][0] === context and: {
+					result[\definitionFunction][\args][runtimeStep][1] === testCondition
+				},
+				"Context propagated correct args to definition function for '%'".format(
+					runtimeStep
+				)
+			);
+
+			//should execute argument callback function
+			this.assert(
+				result[\argumentCallback][\wasExecuted].includes(runtimeStep),
+				"Context argument callback was executed for '%'".format(
+					runtimeStep
+				)
+			);
+			this.assert(
+				result[\argumentCallback][\args][runtimeStep].size == 1 and: {
+					result[\argumentCallback][\args][runtimeStep][0] === context
+				},
+				"Context argument callback propagated correct arguments for '%'".format(
+					runtimeStep
+				)
+			);
+
 		});
-		this.assert(wasRun,
-			"Context run def function was run"
-		);
-		this.assert(
-			context.state == \running,
-			"Context changed state to running"
-		);
-		this.assert(runArgs.notNil and: {
-			runArgs[0] === context
-		} and: {
-			runArgs[1].isKindOf(Condition)
-		},
-		"Context passed correct argument to definition run function"
-		);
+		//should announce state change to observers in the correct order
 		this.assertEquals(
-			runCallbackArgs, [context],
-			"Context passed correct arguments to run callback"
+			result[\stateObserver][\wasExecuted].asArray,
+			contextStates,
+			"Context notified dependant on state changes in the correct order."
 		);
 
-		//Do the free
-		context.free(onFreed: {arg ...args;
-			freeCallbackArgs = args;
+		contextStates.do({arg contextState;
+			this.assert(
+				result[\stateObserver][\args][contextState][0] === context and: {
+					result[\stateObserver][\args][contextState][1] == \state
+				} and: {
+					result[\stateObserver][\args][contextState][2] == contextState
+				},
+				"Context sent correct arguments for state change notification '%'".format(
+					contextState
+				)
+			);
 		});
-		this.assert(wasFreed,
-			"Context free def function was run"
-		);
-		this.assert(
-			context.state == \freed,
-			"Context changed state to freed"
-		);
-		this.assert(freeArgs.notNil and: {
-			freeArgs[0] === context
-		} and: {
-			freeArgs[1].isKindOf(Condition)
-		},
-		"Context passed correct argument to definition free function"
-		);
-		this.assertEquals(
-			freeCallbackArgs, [context],
-			"Context passed correct arguments to free callback"
-		);
+
+
+
+		// //Do the prepare
+		// context.prepare(onPrepared: {arg ...args;
+		// 	prepareCallbackArgs = args;
+		// });
+		// this.assert(wasPrepared,
+		// 	"Context prepare def function was run"
+		// );
+		// this.assert(
+		// 	context.state == \prepared,
+		// 	"Context changed state to prepared"
+		// );
+		// this.assert(prepareArgs.notNil and: {
+		// 	prepareArgs[0] === context
+		// 	} and: {
+		// 		prepareArgs[1].isKindOf(Condition)
+		// 	},
+		// 	"Context passed correct argument to definition prepare function"
+		// );
+		// this.assertEquals(
+		// 	prepareCallbackArgs, [context],
+		// 	"Context passed correct arguments to prepare callback"
+		// );
+		//
+		// //Do the run
+		// context.run(onRunning: {arg ...args;
+		// 	runCallbackArgs = args;
+		// });
+		// this.assert(wasRun,
+		// 	"Context run def function was run"
+		// );
+		// this.assert(
+		// 	context.state == \running,
+		// 	"Context changed state to running"
+		// );
+		// this.assert(runArgs.notNil and: {
+		// 	runArgs[0] === context
+		// 	} and: {
+		// 		runArgs[1].isKindOf(Condition)
+		// 	},
+		// 	"Context passed correct argument to definition run function"
+		// );
+		// this.assertEquals(
+		// 	runCallbackArgs, [context],
+		// 	"Context passed correct arguments to run callback"
+		// );
+		//
+		// //Do the free
+		// context.free(onFreed: {arg ...args;
+		// 	freeCallbackArgs = args;
+		// });
+		// this.assert(wasFreed,
+		// 	"Context free def function was run"
+		// );
+		// this.assert(
+		// 	context.state == \freed,
+		// 	"Context changed state to freed"
+		// );
+		// this.assert(freeArgs.notNil and: {
+		// 	freeArgs[0] === context
+		// 	} and: {
+		// 		freeArgs[1].isKindOf(Condition)
+		// 	},
+		// 	"Context passed correct argument to definition free function"
+		// );
+		// this.assertEquals(
+		// 	freeCallbackArgs, [context],
+		// 	"Context passed correct arguments to free callback"
+		// );
 	}
 
 	test_initParameters{
@@ -339,37 +405,37 @@ TestVTMContext : VTMUnitTest {
 			});
 		}.value;
 
-//		{//test the OSC API attributes responder
-//			var cmdKey = 'attributes?';
-//			var tempResponder, response, cond;
-//			var responded = false;
-//			var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
-//			cond = Condition.new;
-//			tempResponder = OSCFunc({arg msg, time, addr, port;
-//				response = msg[1].asString.parseYAML;
-//				response = response.changeScalarValuesToDataTypes;
-//				response = response.asIdentityDictionaryWithSymbolKeys;
-//				responded = true;
-//				cond.unhang;
-//			}, respPath);
-//			context.addr.sendMsg(
-//				"%:%".format(context.fullPath, cmdKey).asSymbol,
-//				NetAddr.localAddr.hostname,
-//				NetAddr.localAddr.port,
-//				respPath
-//			);
-//			cond.hang(0.2);
-//			this.assert(responded,
-//				"Context OSC API command '%' responded".format(cmdKey)
-//			);
-//			this.assertEquals(
-//				response,
-//				context.perform(cmdKey.asString.drop(-1).asSymbol),
-//				"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
-//			);
-//
-//			tempResponder.free;
-//		}.value;
+		//		{//test the OSC API attributes responder
+		//			var cmdKey = 'attributes?';
+		//			var tempResponder, response, cond;
+		//			var responded = false;
+		//			var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
+		//			cond = Condition.new;
+		//			tempResponder = OSCFunc({arg msg, time, addr, port;
+		//				response = msg[1].asString.parseYAML;
+		//				response = response.changeScalarValuesToDataTypes;
+		//				response = response.asIdentityDictionaryWithSymbolKeys;
+		//				responded = true;
+		//				cond.unhang;
+		//			}, respPath);
+		//			context.addr.sendMsg(
+		//				"%:%".format(context.fullPath, cmdKey).asSymbol,
+		//				NetAddr.localAddr.hostname,
+		//				NetAddr.localAddr.port,
+		//				respPath
+		//			);
+		//			cond.hang(0.2);
+		//			this.assert(responded,
+		//				"Context OSC API command '%' responded".format(cmdKey)
+		//			);
+		//			this.assertEquals(
+		//				response,
+		//				context.perform(cmdKey.asString.drop(-1).asSymbol),
+		//				"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
+		//			);
+		//
+		//			tempResponder.free;
+		//		}.value;
 		//test OSC responders for parameters
 
 		//stoppingOSC
@@ -454,7 +520,7 @@ TestVTMContext : VTMUnitTest {
 				var child = childData[\obj];
 				"/%/%".format(
 					rootData[\name],
-				   	childData[\name]
+					childData[\name]
 				).asSymbol == child.fullPath and: {
 					"/%".format(rootData[\name]).asSymbol == child.path
 				};
@@ -495,103 +561,103 @@ TestVTMContext : VTMUnitTest {
 		);
 	}
 
-//	test_EnvirExecute{
-//		var wasRun = false, itself, theArgs;
-//		var testArgs = [11,22,\hello];
-//		var testDesc = IdentityDictionary[\testObj -> 33];
-//		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {|context ...args|"So you wanna leave?".postln; wasRun = true; theArgs = args; itself = context;}];
-//		var context = VTMContext.new('myRoot', testDef, testDesc);
-//
-//		context.execute(\brexit, *testArgs);
-//		this.assert(
-//			wasRun, "Context did run function"
-//		);
-//
-//		this.assert(
-//			itself === context, "Context passed itself to the envir function"
-//		);
-//
-//		this.assertEquals(
-//			theArgs, testArgs, "Context passed correct arguments"
-//		);
-//
-//	}
-//
-//	test_nodeManagement{
-//		var root = VTMContext.new('myRoot');
-//		var app = VTMContext.new('myApp', parent: root);
-//		var module, moduleObj;
-//
-//		this.assert(
-//			root.children.includes(app),
-//			"Context added app to its children"
-//		);
-//
-//		//should notify the parent upon free
-//		app.free;
-//		this.assert(
-//			root.children.includes(app).not,
-//			"Context removed app from its children"
-//		);
-//
-//		//If the root context is freed it should remove all node context, and this should
-//		//propagate down the context tree
-//
-//		//Make three level context tree (chain)
-//		app = VTMContext.new('myOtherApp', parent: root);
-//		module = VTMContext.new('myModule', parent: root);
-//
-//		//Should free all node contexts, i.e. 'myModule' and 'myOtherApp'
-//		root.free;
-//
-//		this.assert(
-//			root.children.includes(app).not,
-//			"Context removed first level node"
-//		);
-//
-//		this.assert(
-//			app.children.includes(module).not,
-//			"Context removed second level node"
-//		);
-//	}
-//
-//	test_MultiLevelChildManagament{
-//		var root;
-//		var children;
-//
-//		//using empty Event as bogus obj
-//		root = VTMContext.new('myRoot');
-//
-//		//Make a three level context tree
-//		3.do({arg i;
-//			var iNode = VTMContext.new("node_%".format(i).asSymbol, parent: root);
-//			children = children.add(iNode);
-//			3.do({arg j;
-//				var jNode = VTMContext.new("node_%_%".format(i, j).asSymbol, parent: iNode);
-//				children = children.add(jNode);
-//				4.do({arg k;
-//					var kNode = VTMContext.new("node_%_%_%".format(i, j, k).asSymbol, parent: jNode);
-//					children = children.add(kNode);
-//				});
-//			});
-//		});
-//
-//		//All nodes must have same root
-//		this.assert(
-//			children.collect({arg item;
-//				item.root === root;
-//			}).every({arg it; it}),
-//			"Context children all have the same root"
-//		);
-//
-//		//freeing root also frees child nodes
-//		root.free;
-//		this.assert(
-//			children.collect({arg item;
-//				//The nodes should no longer have child nodes nor parent node
-//				item.children.isEmpty and: {item.parent.isNil}
-//			}).every({arg it;it}),
-//			"Context children was freed when context root was freed"
-//		);
-//	}
+	//	test_EnvirExecute{
+	//		var wasRun = false, itself, theArgs;
+	//		var testArgs = [11,22,\hello];
+	//		var testDesc = IdentityDictionary[\testObj -> 33];
+	//		var testDef = IdentityDictionary[\bongo -> 8383, \brexit -> {|context ...args|"So you wanna leave?".postln; wasRun = true; theArgs = args; itself = context;}];
+	//		var context = VTMContext.new('myRoot', testDef, testDesc);
+	//
+	//		context.execute(\brexit, *testArgs);
+	//		this.assert(
+	//			wasRun, "Context did run function"
+	//		);
+	//
+	//		this.assert(
+	//			itself === context, "Context passed itself to the envir function"
+	//		);
+	//
+	//		this.assertEquals(
+	//			theArgs, testArgs, "Context passed correct arguments"
+	//		);
+	//
+	//	}
+	//
+	//	test_nodeManagement{
+	//		var root = VTMContext.new('myRoot');
+	//		var app = VTMContext.new('myApp', parent: root);
+	//		var module, moduleObj;
+	//
+	//		this.assert(
+	//			root.children.includes(app),
+	//			"Context added app to its children"
+	//		);
+	//
+	//		//should notify the parent upon free
+	//		app.free;
+	//		this.assert(
+	//			root.children.includes(app).not,
+	//			"Context removed app from its children"
+	//		);
+	//
+	//		//If the root context is freed it should remove all node context, and this should
+	//		//propagate down the context tree
+	//
+	//		//Make three level context tree (chain)
+	//		app = VTMContext.new('myOtherApp', parent: root);
+	//		module = VTMContext.new('myModule', parent: root);
+	//
+	//		//Should free all node contexts, i.e. 'myModule' and 'myOtherApp'
+	//		root.free;
+	//
+	//		this.assert(
+	//			root.children.includes(app).not,
+	//			"Context removed first level node"
+	//		);
+	//
+	//		this.assert(
+	//			app.children.includes(module).not,
+	//			"Context removed second level node"
+	//		);
+	//	}
+	//
+	//	test_MultiLevelChildManagament{
+	//		var root;
+	//		var children;
+	//
+	//		//using empty Event as bogus obj
+	//		root = VTMContext.new('myRoot');
+	//
+	//		//Make a three level context tree
+	//		3.do({arg i;
+	//			var iNode = VTMContext.new("node_%".format(i).asSymbol, parent: root);
+	//			children = children.add(iNode);
+	//			3.do({arg j;
+	//				var jNode = VTMContext.new("node_%_%".format(i, j).asSymbol, parent: iNode);
+	//				children = children.add(jNode);
+	//				4.do({arg k;
+	//					var kNode = VTMContext.new("node_%_%_%".format(i, j, k).asSymbol, parent: jNode);
+	//					children = children.add(kNode);
+	//				});
+	//			});
+	//		});
+	//
+	//		//All nodes must have same root
+	//		this.assert(
+	//			children.collect({arg item;
+	//				item.root === root;
+	//			}).every({arg it; it}),
+	//			"Context children all have the same root"
+	//		);
+	//
+	//		//freeing root also frees child nodes
+	//		root.free;
+	//		this.assert(
+	//			children.collect({arg item;
+	//				//The nodes should no longer have child nodes nor parent node
+	//				item.children.isEmpty and: {item.parent.isNil}
+	//			}).every({arg it;it}),
+	//			"Context children was freed when context root was freed"
+	//		);
+	//	}
 }
