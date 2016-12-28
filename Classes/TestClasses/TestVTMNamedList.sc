@@ -44,7 +44,7 @@ TestVTMNamedList : VTMUnitTest {
 	test_NewFromKeyValuePairs{
 		var obj;
 		var testList = [\myAA, \aa, 2, \bb, \myCC, \cc];
-		obj = VTMNamedList(testList);
+		obj = VTMNamedList.newFromKeyValuePairs(testList);
 
 		this.assertEquals(
 			obj.asKeyValuePairs,
