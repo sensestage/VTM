@@ -221,24 +221,13 @@ VTMContext {
 		^result;
 	}
 
-	//immutable declaration. Should only be changed with 'changeDeclaration'
+	//immutable declaration.
 	declaration{
 		^declaration.deepCopy;
 	}
 
-	//If not passed in as argument get the declaration from current envir.
-	//If passed as argument use only the described keys to change the current declaration
-	changeDeclaration{arg newDesc;
-
-	}
-
 	//Save current declaration to file
 	writeDeclaration{arg filePath;
-
-	}
-
-	//Read declaration from file
-	readDeclaration{arg filePath;
 
 	}
 
@@ -366,7 +355,7 @@ VTMContext {
 		});
 	}
 
-	enableOSC{ 
+	enableOSC{
 		//make OSC interface if not already created
 		if(oscInterface.isNil, {
 			oscInterface = VTMContextOSCInterface.new(this);
