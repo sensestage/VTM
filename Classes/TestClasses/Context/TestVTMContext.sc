@@ -1,4 +1,4 @@
-TestVTMContext : VTMUnitTest { 
+TestVTMContext : VTMUnitTest {
 	test_missingNameError{
 		var context;
 		//Should fail if not named
@@ -254,12 +254,12 @@ TestVTMContext : VTMUnitTest {
 			item[\name].postln;
 			pathShouldBe = "%/%".format(context.fullPath, item[\name]).asSymbol;
 			this.assertEquals(
-				pathShouldBe, 
+				pathShouldBe,
 				context.getParameter(item[\name]).fullPath,
 				"Context set Parameter path relative to its own path."
 			);
 		});
-		
+
 		//should get Parameter values through object API§
 
 		//should set Parameter values through object API
@@ -295,7 +295,7 @@ TestVTMContext : VTMUnitTest {
 		subContexts = 4.collect({arg i;
 			VTMContext(this.class.makeRandomString.asSymbol, parent: context);
 		});
-		
+
 		//startingOSC
 		context.enableOSC;
 		//should activate OSC
@@ -309,17 +309,13 @@ TestVTMContext : VTMUnitTest {
 
 		{//test the OSC API getters
 			[
-				'children?', 'parameters?'//, 'state?'
+				'children?', 'parameters?', 'state?'
 			].do({arg cmdKey;
 				var tempResponder, response, cond;
 				var responded = false;
 				var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
 				cond = Condition.new;
 				tempResponder = OSCFunc({arg msg, time, addr, port;
-					//if(msg.size > 2, {
-					//	response = msg[1..].flat;
-					//}, {
-					//});
 					response = msg[1..].flat;
 					responded = true;
 					cond.unhang;
@@ -331,12 +327,12 @@ TestVTMContext : VTMUnitTest {
 					respPath
 				);
 				cond.hang(0.2);
-				this.assert(responded, 
+				this.assert(responded,
 					"Context OSC API command '%' responded".format(cmdKey)
 				);
 				this.assertEquals(
 					response,
-					context.perform(cmdKey.asString.drop(-1).asSymbol),
+					context.perform(cmdKey.asString.drop(-1).asSymbol).asArray,
 					"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
 				);
 				tempResponder.free;
@@ -363,7 +359,7 @@ TestVTMContext : VTMUnitTest {
 //				respPath
 //			);
 //			cond.hang(0.2);
-//			this.assert(responded, 
+//			this.assert(responded,
 //				"Context OSC API command '%' responded".format(cmdKey)
 //			);
 //			this.assertEquals(
@@ -406,7 +402,7 @@ TestVTMContext : VTMUnitTest {
 		);
 
 		rootData.put(\children, {
-			var childName = this.class.makeRandomString; 
+			var childName = this.class.makeRandomString;
 			IdentityDictionary[
 				\name -> childName,
 				\obj -> VTMContext(childName, parent: rootData[\obj]);
