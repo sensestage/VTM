@@ -82,7 +82,7 @@
     )
 ];
 
-~declarations= [
+~presets = [
 	\space -> (tempo: 4.23, freq: 263.79, resFreq: 1631.38, delayTimeChangeRate: 0.73, maxDelayTime: 4.73, lagTime:9.32, comment: "1970ies style"),
     \nap -> (tempo: 1.23, freq: 220, resFreq: 800, delayTimeChangeRate: 0.2, maxDelayTime: 2.12, lagTime:1.0, comment: "napnap"),
     \test -> (tempo: 0.2, freq: 200, resFreq: 1000, delayTimeChangeRate: 0.3, maxDelayTime: 5, lagTime:5, comment: "napnap")

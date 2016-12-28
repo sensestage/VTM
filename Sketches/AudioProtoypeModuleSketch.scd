@@ -32,8 +32,8 @@ VTMModule.viewClass
 
 ~mod.ramp();
 
-~mod.loadDeclaration(\coolSound);
-~mod.loadDeclaration(\evenMoreCoolSound);
+~mod.loadPreset(\coolSound);
+~mod.loadPreset(\evenMoreCoolSound);
 
 
 ~mod.execute(\hey, \88, 2221);

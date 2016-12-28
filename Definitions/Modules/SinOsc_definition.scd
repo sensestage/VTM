@@ -38,7 +38,7 @@
 		defaultValue: true
 	)*/
 ];
-~declarations = [
+~presets = [
 	\coolSound -> (freq: 808, phase: 0.2, comment: "Denne er kul"),
 	\evenMoreCoolSound -> (freq: 308, phase: 0.1, comment: "Denne er enda kulere!")
 ];

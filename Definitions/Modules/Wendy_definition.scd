@@ -32,7 +32,7 @@
 		defaultValue: 1000
 	)
 ];
-~declarations= [
+~presets = [
 	\dark-> (rate: 0.1, cutoff: 40, comment: "oktober storm"),
 	\mikro -> (rate: 100, cutoff: 400, comment: "irregular bubbly wind"),
 	\train -> (rate: 10, cutoff: 4000, comment: "supersonic speed train")

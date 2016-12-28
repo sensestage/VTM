@@ -231,27 +231,27 @@ VTMContext {
 
 	}
 
-	loadDeclaration{arg declarationName, ramping;
-		if(envir.includesKey(\declarations), {
-			var newDeclaration;
-			newDeclaration = envir[\declarations].detect({arg item; item.key == declarationName;});
-			if(newDeclaration.notNil, {
-				newDeclaration = newDeclaration.value;
-				newDeclaration.removeAt(\comment);
-				this.set(*newDeclaration.asKeyValuePairs);
+	loadPreset{arg presetName, ramping;
+		if(envir.includesKey(\presets), {
+			var newPreset;
+			newPreset = envir[\presets].detect({arg item; item.key == presetName;});
+			if(newPreset.notNil, {
+				newPreset = newPreset.value;
+				newPreset.removeAt(\comment);
+				this.set(*newPreset.asKeyValuePairs);
 				if(ramping.isNil, {
-					this.set(*newDeclaration.asKeyValuePairs);
+					this.set(*newPreset.asKeyValuePairs);
 				}, {
-					newDeclaration = newDeclaration.asKeyValuePairs.flop.collect({arg item;
+					newPreset = newPreset.asKeyValuePairs.flop.collect({arg item;
 						item.add(ramping);
 					}).flatten;
-					this.ramp(*newDeclaration);
+					this.ramp(*newPreset);
 				});
 			}, {
-				"Declaration '%' for '%' not found".format(declarationName, this.fullPath).warn;
+				"Preset '%' for '%' not found".format(presetName, this.fullPath).warn;
 			});
 		}, {
-			"No declaration stored in '%' not found".format(declarationName, this.fullPath).warn;
+			"No preset stored in '%' not found".format(presetName, this.fullPath).warn;
 		});
 	}
 

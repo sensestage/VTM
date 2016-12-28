@@ -7,9 +7,9 @@ VTMLibrary.loadGlobalLibrary;
 ~qwe.prepare;
 )
 
-~qwe.loadDeclaration(\space)
-~qwe.loadDeclaration(\nap)
-~qwe.loadDeclaration(\test)
+~qwe.loadPreset(\space)
+~qwe.loadPreset(\nap)
+~qwe.loadPreset(\test)
 ~qwe.reset;
 ~qwe.play(1);
 ~qwe.stop(2);

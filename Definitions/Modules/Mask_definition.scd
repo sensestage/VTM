@@ -64,6 +64,6 @@
 	)
 ];
 
-~declarations= [
+~presets = [
     \mantiss -> (freq: 18000, mod: 200, bits: 1, hash: 1, comment: "flop comma not")
 ];
