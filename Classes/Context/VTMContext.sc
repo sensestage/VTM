@@ -11,6 +11,8 @@ VTMContext {
 	var oscInterface;
 	var <state;
 	var parameterManager;
+	var presetManager;
+	var cueManager;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
@@ -241,6 +243,90 @@ VTMContext {
 
 	}
 
+	//presets are a result of the presets in the context definition,
+	//which are copied (immutability), and run-time defined presets
+	//Run-time defined presets will be stored as part of the declaration.
+	//The presets getter only returns the names of the presets.
+	//Usage:
+	// myContext.presets;// -> returns preset names
+	// myContext.set(myContext.getPreset(\myPresetName));
+	presets{
+		var result = [];
+		if(envir.includesKey(\presets), {
+			result = result.addAll(envir[\presets].collect({arg assoc; assoc.key;}));
+		});
+		if(presetManager.notNil, {
+			result.addAll(presetManager.names);
+		});
+		^result;
+	}
+
+	getPreset{arg presetName;
+		^presetManager.at(presetName);
+	}
+
+	addPreset{arg data, presetName, slot;
+		//if this is the first preset to be added we have to create
+		//a presetManager first
+		if(presetManager.isNil, {
+			presetManager = VTMNamedList.new;
+		});
+		presetManager.addItem(data, presetName, slot);
+		this.changed(\presetAdded, presetName);
+	}
+
+	removePreset{arg presetName;
+		var removedPreset;
+		if(presetManager.notNil, {
+			removedPreset = presetManager.removeItem(presetName);
+			if(removedPreset.notNil, {
+				"Context: % - removed preset '%'".format(this.fullPath, presetName).postln;
+			});
+		}, {
+			"Context: % - no presets to remove".format(this.fullPath).warn
+		});
+	}
+	//END preset methods
+
+	//Similar as with presets, see comments above 'preset' method
+	cues{
+		var result = [];
+		if(envir.includesKey(\cues), {
+			result = result.addAll(envir[\cues].collect({arg assoc; assoc.key;}));
+		});
+		if(cueManager.notNil, {
+			result.addAll(cueManager.names);
+		});
+		^result;
+	}
+
+	getCue{arg cueName;
+		^cueManager.at(cueName);
+	}
+
+	addCue{arg data, cueName, slot;
+		//if this is the first cue to be added we have to create
+		//a cueManager first
+		if(cueManager.isNil, {
+			cueManager = VTMNamedList.new;
+		});
+		cueManager.addItem(data, cueName, slot);
+		this.changed(\cueAdded, cueName);
+	}
+
+	removeCue{arg cueName;
+		var removedCue;
+		if(cueManager.notNil, {
+			removedCue = cueManager.removeItem(cueName);
+			if(removedCue.notNil, {
+				"Context: % - removed cue '%'".format(this.fullPath, cueName).postln;
+			});
+		}, {
+			"Context: % - no cues to remove".format(this.fullPath).warn
+		});
+	}
+	//END cue methods
+
 	loadPreset{arg presetName, ramping;
 		if(envir.includesKey(\presets), {
 			var newPreset;
@@ -264,6 +350,8 @@ VTMContext {
 			"No preset stored in '%' not found".format(presetName, this.fullPath).warn;
 		});
 	}
+
+
 
 	prChangeState{ arg val;
 		var newState;

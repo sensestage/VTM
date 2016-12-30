@@ -5,6 +5,9 @@
 VTMNamedList {
 	var <items;
 
+	//init 'items' argument is an array of data. If an item
+	//is a kindOf Association, the association key will be used as the
+	//name for that item. Otherwise the item will be enumerated
 	*new{arg items;
 		^super.new.init(items);
 	}
@@ -227,5 +230,9 @@ VTMNamedList {
 
 	includes{arg val;
 		^this.getItems.includes(val);
+	}
+
+	isEmpty{
+		^items.isEmpty;
 	}
 }

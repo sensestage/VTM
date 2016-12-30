@@ -10,7 +10,8 @@ VTMUnitTest : UnitTest {
 	*runAll{
 		[
 			VTMParameter,
-			VTMContext
+			VTMContext,
+			VTMNamedList
 		].do({arg cl;
 			this.runTestForClass(cl, recursive: true);
 		});
