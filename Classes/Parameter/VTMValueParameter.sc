@@ -2,7 +2,6 @@ VTMValueParameter : VTMParameter {
 	var value;
 	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
 	var <>defaultValue;
-	var <>format;
 	var enum;
 	var <selectedEnum;
 	var <restrictValueToEnum = false;

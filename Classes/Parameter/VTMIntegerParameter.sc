@@ -40,12 +40,4 @@ VTMIntegerParameter : VTMNumberParameter {
 		});
 		super.defaultValue_(val);
 	}
-
-	format{
-		^"^-?\\d+$";
-	}
-
-	format_{
-		this.shouldNotImplement(thisMethod);
-	}
 }
