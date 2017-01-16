@@ -179,7 +179,7 @@ VTMContext {
 
 	//Can only set path on init.
 	//Return only the path, not the name.
-	path{arg str;
+	path{
 		^path;
 		//Search parents until root node is found and construct path from that
 	}
