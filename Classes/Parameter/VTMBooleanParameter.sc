@@ -1,5 +1,5 @@
 VTMBooleanParameter : VTMValueParameter {
-	var whenToDoAction = \change;
+	var <doActionOn = \change;
 
 	prDefaultValueForType{ ^false; }
 
@@ -21,11 +21,11 @@ VTMBooleanParameter : VTMValueParameter {
 		this.valueAction_(this.value.not);
 	}
 
-	doActionOn{arg when;
+	doActionOn_{arg when;
 		if([\rising, \falling, \change].includes(when), {
-			whenToDoAction = when;
+			doActionOn = when;
 		}, {
-			"%:% - Uknown option %.\n\tAlternatives are 'rising', 'fallin', and 'change'".format(
+			"%:% - Uknown option %.\n\tAlternatives are 'rising', 'falling', and 'change'".format(
 				this.class.name,
 				thisMethod.name,
 				when

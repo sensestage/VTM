@@ -4,6 +4,7 @@ VTM - system for Verdensteatret
 ###requirements
 
 * UnitTesting quark
+* API quark
 * sc3-plugins
 
 ###install VTM
