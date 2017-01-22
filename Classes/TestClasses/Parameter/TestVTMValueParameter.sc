@@ -1,7 +1,6 @@
 TestVTMValueParameter : TestVTMParameter {
-
-	*initClass{
-		testClasses = [
+	*testClasses{
+		^[
 			VTMBooleanParameter,
 			VTMStringParameter,
 			// VTMListParameter,
@@ -28,7 +27,7 @@ TestVTMValueParameter : TestVTMParameter {
 		var minRand = 5, maxRand = 10;
 		^rrand(minRand, maxRand).collect({arg i;
 			[
-				[i + 1, this.makeRandomString.asSymbol].choose,
+				[i + 1, this.makeRandomString].choose,
 				this.makeRandomValue
 			];
 		}).flatten;
@@ -290,41 +289,41 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 
-	test_GetAttributes{
-		this.class.testClasses.do({arg class;
-			var testClass, testValue;
-			var name = "my%".format(class.name);
-			var param;
-			var testDeclaration, testAttributes;
-			testClass = VTMUnitTest.testclassForType( class.type );
-			testDeclaration = testClass.generateRandomAttributes(
-				[
-					\value,
-					\defaultValue,
-					\path,
-					\action -> {arg p; 1 + 1 },
-					\filterRepetitions,
-					\name,
-					\type -> class.type,
-					\enabled -> true,
-					\enum
-				]
-			);
-			param = VTMParameter.makeFromDeclaration(testDeclaration);
-			testAttributes = testDeclaration.deepCopy;
-			testAttributes.put(\action, testDeclaration[\action].asCompileString);
-			this.assert(
-				testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
-				"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
-			);
-			//			this.assertEquals(
-			//				testAttributes.sect(param.attributes),
-			//			   	testAttributes,
-			//			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
-			//			);
-			param.free;
-		});
-	}
+	// test_GetAttributes{
+	// 	this.class.testClasses.do({arg class;
+	// 		var testClass, testValue;
+	// 		var name = "my%".format(class.name);
+	// 		var param;
+	// 		var testDeclaration, testAttributes;
+	// 		testClass = VTMUnitTest.testclassForType( class.type );
+	// 		testDeclaration = testClass.generateRandomAttributes(
+	// 			[
+	// 				\value,
+	// 				\defaultValue,
+	// 				\path,
+	// 				\action -> {arg p; 1 + 1 },
+	// 				\filterRepetitions,
+	// 				\name,
+	// 				\type -> class.type,
+	// 				\enabled -> true,
+	// 				\enum
+	// 			]
+	// 		);
+	// 		param = VTMParameter.makeFromDeclaration(testDeclaration);
+	// 		testAttributes = testDeclaration.deepCopy;
+	// 		testAttributes.put(\action, testDeclaration[\action].asCompileString);
+	// 		this.assert(
+	// 			testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
+	// 			"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
+	// 		);
+	// 		//			this.assertEquals(
+	// 		//				testAttributes.sect(param.attributes),
+	// 		//			   	testAttributes,
+	// 		//			   	"ValueParameter returned correct attribute values for ValueParameter level [%]".format(class.name)
+	// 		//			);
+	// 		param.free;
+	// 	});
+	// }
 
 	test_Enum{
 		this.class.testClasses.do({arg class;

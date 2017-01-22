@@ -1,6 +1,7 @@
 TestVTMNumberParameter : TestVTMValueParameter {
-	*initClass{
-		testClasses = [
+
+	*testClasses{
+		^[
 			VTMDecimalParameter,
 			VTMIntegerParameter
 		];

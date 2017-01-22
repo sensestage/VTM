@@ -1,15 +1,14 @@
 TestVTMParameter : VTMUnitTest {
-	classvar <testClasses;
-	*initClass{
-		testClasses = [
+	*testClasses{
+		^[
 			VTMBooleanParameter,
 			VTMStringParameter,
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
-			VTMTimecodeParameter,
-			VTMDecimalParameter,
-			VTMIntegerParameter
+			// VTMTimecodeParameter,
+			// VTMDecimalParameter,
+			// VTMIntegerParameter
 			// VTMSchemaParameter,
 			// VTMTupleParameter
 		];
@@ -62,7 +61,7 @@ TestVTMParameter : VTMUnitTest {
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		switch(key,
-			\name, {result = this.makeRandomString.value(params).asSymbol},
+			\name, {result = this.makeRandomString.value(params); },
 			\path, {
 				var minLevels, maxLevels;
 				if(params.notNil and: { params.isKindOf(Dictionary) },{
@@ -75,7 +74,7 @@ TestVTMParameter : VTMUnitTest {
 				result = rrand(minLevels,maxLevels).collect({
 					"/%".format(this.makeRandomString.value(params));
 				});
-				result = String.newFrom(result.flat).asSymbol;
+				result = String.newFrom(result.flat);
 			},
 			\enabled, {result = this.makeRandomBoolean.value(params)},
 			\willStore, {result = this.makeRandomBoolean.value(params)},
@@ -343,7 +342,8 @@ TestVTMParameter : VTMUnitTest {
 //
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
-		this.class.testClasses.do({arg testClass;
+		"TESTING CLASSES: %".format(TestVTMParameter.testClasses).postln;
+		TestVTMParameter.testClasses.do({arg testClass;
 			var wasRun = false;
 			var declaration = this.class.makeRandomDeclaration(testClass.type);
 			var param = testClass.makeFromDeclaration(declaration);
