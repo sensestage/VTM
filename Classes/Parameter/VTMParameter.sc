@@ -204,9 +204,20 @@ VTMParameter {
 		var result;
 		result = IdentityDictionary.new;
 		this.class.attributeKeys.do({arg attrKey;
+			var val;
+			val = this.attributeGetterFunctions[attrKey].value;
+			//outside the class, i.e. "in real life", there is no such thing as a Symbol,
+			//that data type is only relevant in the context of sclang code.
+			//Thus we turn all values into strings when thing come in and out of a Parameter.
+			//When sending attributes over OSC to other nodes/application the problem with distinguishing
+			//between symbols and strings becomes apparent. That is the reason for doing this.
+			//Attributes is always pertaining to the "outside world" of the sclang code domain.
+			if(val.isKindOf(Symbol), {
+				val = val.asString;
+			});
 			result.put(
 				attrKey,
-				this.attributeGetterFunctions[attrKey].value
+				val
 			);
 		});
 		^result;
