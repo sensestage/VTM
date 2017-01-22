@@ -81,27 +81,47 @@ VTMUnitTest : UnitTest {
 		};
 	}
 
+	*makeRandomSymbol{arg params;
+		^this.makeRandomString(params).asSymbol;
+	}
+
 	*makeRandomString{arg params;
-		var minLength, maxLength, makeSpaces;
+		var chars;
+		var minLength, maxLength, noSpaces, noNumbers, noAlphas, onlyAlphaNumeric;
+		minLength = 1;
+		maxLength = 15;
+		noSpaces = true;
+		noAlphas = false;
+		noNumbers = false;
+		onlyAlphaNumeric = true;
+
 		if(params.notNil and: { params.isKindOf(Dictionary) }, {
-			minLength = params[\minLength] ? 1;
-			maxLength = params[\maxLength] ? 15;
-			makeSpaces = params[\makeSpaces] ? false;
-		}, {
-			minLength = 1; maxLength = 15; makeSpaces = false;
+			minLength = params[\minLength] ? minLength;
+			maxLength = params[\maxLength] ? maxLength;
+			noSpaces = params[\noSpaces] ? noSpaces;
+			noAlphas = params[\noAlphas] ? noAlphas;
+			noNumbers = params[\noNumbers] ? noNumbers;
+			onlyAlphaNumeric = params[\onlyAlphaNumeric] ? onlyAlphaNumeric;
+		});
+
+		chars = (0..127).collect(_.asAscii);
+
+		if(onlyAlphaNumeric, {
+			chars = chars.select({arg it; it.isAlphaNum || (it == Char.space); });
+		});
+		if(noSpaces, {
+			chars = chars.reject({arg it; it == Char.space; });
+		});
+		if(noNumbers, {
+			chars = chars.reject({arg it; it.isDecDigit; });
+		});
+		if(noAlphas, {
+			chars = chars.reject({arg it; it.isAlpha; });
 		});
 		^String.newFrom(
 			rrand(minLength, maxLength).collect({
-				(0..127).collect(_.asAscii).select({arg it;
-					var v;
-					if(makeSpaces, {
-						v = it.isAlphaNum || (it == Char.space);
-					}, {
-						v = it.isAlphaNum;
-					});
-					v;
-				}).choose;
-			});
+				chars.choose;
+			})
 		);
 	}
 
