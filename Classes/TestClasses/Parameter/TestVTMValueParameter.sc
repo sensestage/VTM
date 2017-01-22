@@ -57,7 +57,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_SetGetValue{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -72,7 +72,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_SetGetDefaultValue{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param;
@@ -98,7 +98,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_ResetSetValueToDefault{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
@@ -126,7 +126,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_DefaultValueShouldNotBeNil{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
@@ -155,7 +155,7 @@ TestVTMValueParameter : TestVTMParameter {
 			schema: \hei,
 			tuple: \halo
 		);
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
@@ -177,7 +177,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_AccessValueInAction{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			try{
 				var testClass, testValue, wasRun;
 				var name = "my%".format(class.name);
@@ -209,7 +209,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_ValueAction{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param, wasRun, gotUpdatedValue;
@@ -233,7 +233,7 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_FilterRepeatingValues{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param;
@@ -255,9 +255,8 @@ TestVTMValueParameter : TestVTMParameter {
 	}
 
 	test_SetVariablesFromDeclaration{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
 			var param;
 			var testDeclaration, wasRun = false;
 			testClass = VTMUnitTest.testclassForType( class.type );
@@ -272,8 +271,19 @@ TestVTMValueParameter : TestVTMParameter {
 					\type -> class.type
 				]
 			);
+
 			param = VTMParameter.makeFromDeclaration(testDeclaration);
+
+			//Change string values to symbols for testing object return values
+			testDeclaration[\name] = testDeclaration[\name].asSymbol;
+			testDeclaration[\path] = testDeclaration[\path].asSymbol;
+
 			[\value, \defaultValue, \path, \name, \filterRepetitions].do({arg item;
+				// "CHECKING %: \n\t%[%]\n\t%[%]".format(
+				// 	item,
+				// 	param.perform(item), param.perform(item).class,
+				// 	testDeclaration[item], testDeclaration[item].class
+				// ).postln;
 				this.assertEquals(
 					param.perform(item), testDeclaration[item],
 					"Parameter set % through declaration [%]".format(item, class.name)
@@ -290,7 +300,7 @@ TestVTMValueParameter : TestVTMParameter {
 
 
 	// test_GetAttributes{
-	// 	this.class.testClasses.do({arg class;
+	// 	TestVTMValueParameter.testClasses.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param;
@@ -326,7 +336,7 @@ TestVTMValueParameter : TestVTMParameter {
 	// }
 
 	test_Enum{
-		this.class.testClasses.do({arg class;
+		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param;

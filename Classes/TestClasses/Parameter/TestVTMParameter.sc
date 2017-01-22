@@ -6,9 +6,9 @@ TestVTMParameter : VTMUnitTest {
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
-			// VTMTimecodeParameter,
-			// VTMDecimalParameter,
-			// VTMIntegerParameter
+			VTMTimecodeParameter,
+			VTMDecimalParameter,
+			VTMIntegerParameter
 			// VTMSchemaParameter,
 			// VTMTupleParameter
 		];
@@ -89,7 +89,7 @@ TestVTMParameter : VTMUnitTest {
 		class = "VTM%Parameter".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
 		attrKeys = class.attributeKeys;
-		attrKeys.add(\type -> type);
+		attrKeys.add(\type -> type.asString);
 		result = testClass.generateRandomAttributes(attrKeys);
 		^result;
 	}
@@ -342,11 +342,14 @@ TestVTMParameter : VTMUnitTest {
 //
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
-		"TESTING CLASSES: %".format(TestVTMParameter.testClasses).postln;
+		topEnvironment.put('paramTest', ());
 		TestVTMParameter.testClasses.do({arg testClass;
 			var wasRun = false;
 			var declaration = this.class.makeRandomDeclaration(testClass.type);
 			var param = testClass.makeFromDeclaration(declaration);
+			topEnvironment['paramTest'].put(param.name,
+				(attributes: param.attributes.deepCopy, declaration: declaration.deepCopy)
+			);
 
 			this.assertEquals(
 				param.attributes, declaration,

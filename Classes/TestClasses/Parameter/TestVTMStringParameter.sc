@@ -4,6 +4,19 @@ TestVTMStringParameter : TestVTMValueParameter {
 		^this.makeRandomString(params);
 	}
 
+	*prMakeRandomAttribute{arg key, params;
+		var result;
+		result = super.prMakeRandomAttribute(key, params);
+		if(result.isNil, {
+			switch(key,
+				\pattern, { result = this.makeRandomString(params); },
+				\matchPattern, { result = this.makeRandomBoolean(params); }
+			);
+		});
+		^result;
+	}
+
+
 	setUp{
 		"Setting up a VTMStringParameterTest".postln;
 	}

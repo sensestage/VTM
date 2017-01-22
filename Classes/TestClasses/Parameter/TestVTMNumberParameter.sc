@@ -15,7 +15,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 				\minVal, { result = this.makeRandomValue(params); },
 				\maxVal, { result = this.makeRandomValue(params); },
 				\stepsize, { result = this.makeRandomValue(params ? (minVal: 0.0, maxVal: 1000.0)).abs; },
-				\clipmode, { result = [\none, \low, \high, \both].choose }
+				\clipmode, { result = [\none, \low, \high, \both].choose.asString; }
 			);
 		});
 		^result;
@@ -30,7 +30,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_DefaultAttributes{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -64,7 +64,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_SetGetValue{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -78,7 +78,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	// test_OnlyCheckRangesWhenMinValAndMaxValAreDefined{
-	// 	this.class.testClasses.do({arg class;
+	// 	TestVTMNumberParameter.testClasses.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param = class.new(name);
@@ -100,7 +100,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	// }
 
 	test_SetGetAttributes{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -127,13 +127,13 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			testValue = testClass.prMakeRandomAttribute(\clipmode);
 			param.clipmode = testValue;
 			this.assertEquals(
-				param.clipmode, testValue, "NumberParameter clipmode was set"
+				param.clipmode, testValue.asSymbol, "NumberParameter clipmode was set"
 			);
 		});
 	}
 
 	test_IgnoreAndWarnOnWrongTypes{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -174,7 +174,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_CheckValueTypeValidity{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -196,7 +196,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_Clipmode{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -259,7 +259,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_StepsizeIncrementAndDecrement{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -369,7 +369,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_UpdateValueWhenMinValAndMaxValChange{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -413,7 +413,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_AllowSettingMinValAndMaxValToNil{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -453,7 +453,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 
 
 	test_OnlyClipValuesWhenMinValAndMaxValAreDefined{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -497,7 +497,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	}
 
 	test_UpdateValueWhenClipmodeChange{
-		this.class.testClasses.do({arg class;
+		TestVTMNumberParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
