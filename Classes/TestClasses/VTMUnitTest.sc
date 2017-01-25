@@ -7,13 +7,17 @@ VTMUnitTest : UnitTest {
 		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
 	}
 
-	*runAll{
+	*runAll{arg runScripts = true;
 		[
 			VTMParameter,
 			VTMContext,
 			VTMNamedList
 		].do({arg cl;
 			this.runTestForClass(cl, recursive: true);
+		});
+		if(runScripts, {
+			VTMUnitTestScript.findTestScripts;
+			VTMUnitTestScript.runAll;
 		});
 	}
 
