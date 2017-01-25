@@ -21,3 +21,4 @@ tags
 
 # vim swap files
 .*.sw[op]
+.sw[op]
