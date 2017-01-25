@@ -1,1 +1,1 @@
-#Global device declarations
+#Global device attributes

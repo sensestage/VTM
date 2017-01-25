@@ -22,23 +22,23 @@ TestVTMDecimalParameter : TestVTMNumberParameter {
 		var param = VTMDecimalParameter.new('myDecimal', desc);
 		this.assertEquals(
 			param.value.class, Float,
-			"DecimalParameter changed integer value in declaration to Float"
+			"DecimalParameter changed integer value in attributes to Float"
 		);
 		this.assertEquals(
 			param.defaultValue.class, Float,
-			"DecimalParameter changed integer defaultValue in declaration to Float"
+			"DecimalParameter changed integer defaultValue in attributes to Float"
 		);
 		this.assertEquals(
 			param.minVal.class, Float,
-			"DecimalParameter changed integer minVal in declaration to Float"
+			"DecimalParameter changed integer minVal in attributes to Float"
 		);
 		this.assertEquals(
 			param.maxVal.class, Float,
-			"DecimalParameter changed integer maxVal in declaration to Float"
+			"DecimalParameter changed integer maxVal in attributes to Float"
 		);
 		this.assertEquals(
 			param.stepsize.class, Float,
-			"DecimalParameter changed integer stepsize in declaration to Float"
+			"DecimalParameter changed integer stepsize in attributes to Float"
 		);
 
 		//Test the setter methods also

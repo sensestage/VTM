@@ -13,18 +13,18 @@ VTMContextParameterManager {
 		order = [];
 	}
 
-	loadParameterDeclarations{arg parameterDeclarations;
-		if(parameterDeclarations.notNil, {
-			parameterDeclarations.do({arg paramDeclaration;
+	loadParameterAttributes{arg parameterAttributes;
+		if(parameterAttributes.notNil, {
+			parameterAttributes.do({arg paramAttributes;
 				var newParam;
-				paramDeclaration.put(\path, context.fullPath);
-				newParam = VTMParameter.makeFromDeclaration(paramDeclaration);
+				paramAttributes.put(\path, context.fullPath);
+				newParam = VTMParameter.makeFromAttributes(paramAttributes);
 				newParam.envir = context.envir;
 				if(newParam.notNil, {
 					this.addParameter(newParam);
 				}, {
-					"Failed to build parameter declaration: '%' for context: '%'".format(
-						paramDeclaration, context.path;
+					"Failed to build parameter attributes: '%' for context: '%'".format(
+						paramAttributes, context.path;
 					).warn;
 				});
 			});

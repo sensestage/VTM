@@ -1,1 +1,1 @@
-#Global scene declarations
+#Global scene attributes

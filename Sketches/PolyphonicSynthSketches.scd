@@ -8,12 +8,12 @@ a.ratios
 
 
 (
-var definition, declaration;
+var definition, attributes;
 definition = Environment.make{
 	~prototypes = ['PolyphonicSynth'];
 	~prepare = {arg module, cond;
 		"Preparing voicer".postln;
-		~maxVoices = module.declaration[\numVoices];
+		~maxVoices = module.attributes[\numVoices];
 		~voices = [];
 
 		~group =
@@ -27,11 +27,11 @@ definition = Environment.make{
 		};
 	};
 };
-declaration = (
+attributes = (
 	synthDef: \sine,
 	numVoices: 4
 );
-~voicer = VTMModule.new('siner', definition, declaration);
+~voicer = VTMModule.new('siner', definition, attributes);
 ~voicer.prepare;
 )
 

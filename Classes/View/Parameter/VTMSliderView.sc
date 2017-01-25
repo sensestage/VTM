@@ -4,17 +4,17 @@ VTMSliderView : VTMNumberParameterView {
 	var round;
 	var <decimals;
 
-	*new{arg parent, bounds, parameter, definition, declaration;
-		^super.new(parent, bounds, parameter, definition, declaration).initSliderView;
+	*new{arg parent, bounds, parameter, definition, attributes;
+		^super.new(parent, bounds, parameter, definition, attributes).initSliderView;
 	}
 
 	initSliderView {
 		var sliderBounds;
 		//using 1 units as default
-		declaration.atFail(\units, {
-			declaration.put(\units, 1);
+		attributes.atFail(\units, {
+			attributes.put(\units, 1);
 		});
-		units = declaration[\units].clip(1,2);
+		units = attributes[\units].clip(1,2);
 		this.bounds_(this.class.prCalculateSize(units).asRect);
 		switch(units,
 			1, { sliderBounds = this.bounds; },
@@ -47,7 +47,7 @@ VTMSliderView : VTMNumberParameterView {
 		if(parameter.type == \integer, {
 			this.decimals_(0);
 		}, {
-			this.decimals_(declaration.atFail(\decimals, {2}));
+			this.decimals_(attributes.atFail(\decimals, {2}));
 		});
 		this.refresh;
 	}

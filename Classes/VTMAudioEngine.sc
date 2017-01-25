@@ -24,9 +24,9 @@
 // 	start{arg condition;
 // 		var serverOptions;
 // 		forkIfNeeded{
-// 			// if(declaration.includesKey(\serverOptions), {
+// 			// if(attributes.includesKey(\serverOptions), {
 // 			// 	serverOptions = ServerOptions.new;
-// 			// 	declaration[\serverOptions].keysValuesDo({arg opt, val;
+// 			// 	attributes[\serverOptions].keysValuesDo({arg opt, val;
 // 			// 		serverOptions.perform(opt.asSetter, val);
 // 			// 	});
 // 			// });

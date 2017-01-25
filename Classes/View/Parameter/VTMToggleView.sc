@@ -1,8 +1,8 @@
 VTMToggleView : VTMValueParameterView {
 	var buttonView;
 
-	*new{arg parent, bounds, parameter, definition, declaration;
-		^super.new(parent, bounds, parameter, definition, declaration).initToggleView;
+	*new{arg parent, bounds, parameter, definition, attributes;
+		^super.new(parent, bounds, parameter, definition, attributes).initToggleView;
 	}
 
 	initToggleView {

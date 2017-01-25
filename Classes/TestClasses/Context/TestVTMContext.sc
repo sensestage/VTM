@@ -24,7 +24,7 @@ TestVTMContext : VTMUnitTest {
 
 	test_DefaultConstruction{
 		var context, testName;
-		//construct without definition and declaration
+		//construct without definition and attributes
 		testName = this.class.makeRandomString.asSymbol;
 		context = VTMContext(testName);
 		this.assertEquals(
@@ -66,17 +66,17 @@ TestVTMContext : VTMUnitTest {
 			"Context initialized addr to local address"
 		);
 
-		//Constructor extracts definition from declaration if defined
+		//Constructor extracts definition from attributes if defined
 	}
 
-	test_NewAndInitWithDeclaration{
+	test_NewAndInitWithAttributes{
 		var context, testName;
-		var declaration;
+		var attributes;
 		var definition;
-		//Construct with definition and declaration
+		//Construct with definition and attributes
 		testName = this.class.makeRandomString.asSymbol;
 		definition = Environment[];
-		declaration = (
+		attributes = (
 			path: "/%".format(this.class.makeRandomString).asSymbol,
 
 		);
@@ -85,13 +85,13 @@ TestVTMContext : VTMUnitTest {
 
 	test_ForceLeadingSlashInPath{
 		var context, testPath, testName;
-		var definition, declaration;
+		var definition, attributes;
 		testName = this.class.makeRandomString.asSymbol;
 		testPath = 'pathWithout/leadingSlash';
-		declaration = (
+		attributes = (
 			path: testPath
 		);
-		context = VTMContext(testName, declaration: declaration);
+		context = VTMContext(testName, attributes: attributes);
 		//should add missing leading slash
 		this.assertEquals(
 			context.path,
@@ -111,7 +111,7 @@ TestVTMContext : VTMUnitTest {
 
 	test_DefinitionInitAndPrepareRunFreeAndStateChange{
 		var context, testCondition = Condition.new;
-		var definition, declaration, name;
+		var definition, attributes, name;
 		var runtimeSteps = [\prepare, \run, \free];
 		var contextStates = [
 			\willPrepare, \didPrepare,
@@ -288,45 +288,45 @@ TestVTMContext : VTMUnitTest {
 
 	test_initParameters{
 		var context, name = this.class.makeRandomString;
-		var parameterDeclarations;
-		var definition, declaration;
+		var parameterAttributes;
+		var definition, attributes;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
 		var testParameterValues = parameterValues.deepCopy;
-		parameterDeclarations = numParameters.collect({arg i;
-			TestVTMParameter.makeRandomDeclaration(
+		parameterAttributes = numParameters.collect({arg i;
+			TestVTMParameter.makeRandomAttributes(
 				[\integer, \decimal, \string, \boolean].choose
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
 		});
 		definition	= Environment.make{
-			~parameters = parameterDeclarations;
+			~parameters = parameterAttributes;
 		};
-		declaration = (
+		attributes = (
 			path: "/%".format(this.class.makeRandomString).asSymbol
 		);
-		context = VTMContext(name, definition, declaration);
+		context = VTMContext(name, definition, attributes);
 		context.prepare;
 		this.assertEquals(
 			context.parameters,
-			parameterDeclarations.collect({arg it; it[\name]}),
+			parameterAttributes.collect({arg it; it[\name].asSymbol}),
 			"Context initialized parameter names in the right order"
 		);
 
 		//check that the param path was built with the context path
-		parameterDeclarations.do({arg item;
+		parameterAttributes.do({arg item;
 			var pathShouldBe;
-			item[\name].postln;
+			// item[\name].postln;
 			pathShouldBe = "%/%".format(context.fullPath, item[\name]).asSymbol;
 			this.assertEquals(
 				pathShouldBe,
-				context.getParameter(item[\name]).fullPath,
+				context.getParameter(item[\name].asSymbol).fullPath,
 				"Context set Parameter path relative to its own path."
 			);
 		});
 
-		//should get Parameter values through object API§
+		//should get Parameter values through object API
 
 		//should set Parameter values through object API
 
@@ -336,26 +336,26 @@ TestVTMContext : VTMUnitTest {
 
 	test_OSCCommunication{
 		var context, name = this.class.makeRandomString;
-		var parameterDeclarations;
-		var definition, declaration;
-		var numParameters = 1;//rrand(3,8);
+		var parameterAttributes;
+		var definition, attributes;
+		var numParameters = rrand(3,8);
 		var subContexts;
 		var parameterValues = Array.newClear(numParameters);
 		var testParameterValues = parameterValues.deepCopy;
-		parameterDeclarations = numParameters.collect({arg i;
-			TestVTMParameter.makeRandomDeclaration(
+		parameterAttributes = numParameters.collect({arg i;
+			TestVTMParameter.makeRandomAttributes(
 				[\integer, \decimal, \string, \boolean].choose
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
 		});
 		definition	= Environment.make{
-			~parameters = parameterDeclarations;
+			~parameters = parameterAttributes;
 		};
-		declaration = (
+		attributes = (
 			path: "/%".format(this.class.makeRandomString).asSymbol
 		);
-		context = VTMContext(name, definition, declaration);
+		context = VTMContext(name, definition, attributes);
 		context.prepare;
 
 		subContexts = 4.collect({arg i;
@@ -370,7 +370,7 @@ TestVTMContext : VTMUnitTest {
 		);
 
 		//should initialize OSC commands
-		//e.g. :children :declaration :parameters :parameterOrder :parameterValues
+		//e.g. :children :attributes :parameters :parameterOrder :parameterValues
 		//:state :reset
 
 		{//test the OSC API getters
@@ -405,37 +405,78 @@ TestVTMContext : VTMUnitTest {
 			});
 		}.value;
 
-		//		{//test the OSC API attributes responder
-		//			var cmdKey = 'attributes?';
-		//			var tempResponder, response, cond;
-		//			var responded = false;
-		//			var respPath = "%:%_testreply".format(context.fullPath, cmdKey).asSymbol;
-		//			cond = Condition.new;
-		//			tempResponder = OSCFunc({arg msg, time, addr, port;
-		//				response = msg[1].asString.parseYAML;
-		//				response = response.changeScalarValuesToDataTypes;
-		//				response = response.asIdentityDictionaryWithSymbolKeys;
-		//				responded = true;
-		//				cond.unhang;
-		//			}, respPath);
-		//			context.addr.sendMsg(
-		//				"%:%".format(context.fullPath, cmdKey).asSymbol,
-		//				NetAddr.localAddr.hostname,
-		//				NetAddr.localAddr.port,
-		//				respPath
-		//			);
-		//			cond.hang(0.2);
-		//			this.assert(responded,
-		//				"Context OSC API command '%' responded".format(cmdKey)
-		//			);
-		//			this.assertEquals(
-		//				response,
-		//				context.perform(cmdKey.asString.drop(-1).asSymbol),
-		//				"Context getter OSC responders responded with correct value for '%'.".format(cmdKey)
-		//			);
+		// {//test the OSC API attributes responder
+		// 	var tempResponder, response, cond;
+		// 	var responded = false;
+		// 	var respPath = "%:attributes?_testreply".format(context.fullPath).asSymbol;
+		// 	var attributes;
 		//
-		//			tempResponder.free;
-		//		}.value;
+		// 	cond = Condition.new;
+		// 	tempResponder = OSCFunc({arg msg, time, addr, port;
+		// 		response = msg[1].asString.parseYAML;
+		// 		response = response.changeScalarValuesToDataTypes;
+		// 		response = response.asIdentityDictionaryWithSymbolKeys;
+		// 		responded = true;
+		// 		cond.unhang;
+		// 	}, respPath);
+		// 	context.addr.sendMsg(
+		// 		"%:attributes?".format(context.fullPath).asSymbol,
+		// 		NetAddr.localAddr.hostname,
+		// 		NetAddr.localAddr.port,
+		// 		respPath
+		// 	);
+		// 	cond.hang(0.2);
+		// 	this.assert(responded,
+		// 		"Context OSC API command 'attributes?' responded"
+		// 	);
+		//
+		// 	attributes = context.attributes;
+		//
+		// 	this.assertEquals(
+		// 		response.keys.asArray.sort, attributes.keys.asArray.sort,
+		// 		"Context OSC API command 'attributes?' returned equal dictionary keys"
+		// 	);
+		//
+		// 	attributes.keysValuesDo({arg attrKey, attrVal;
+		//
+		// 		if(attrVal.isKindOf(Float), {
+		// 			this.assertFloatEquals(
+		// 				response[attrKey],
+		// 				attrVal,
+		// 				"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
+		// 			);
+		// 			}, {
+		// 				if(attrVal.isArray, {
+		// 					var valItemEqualities;
+		// 					//convert any symbol values to string, as the OSC response will be an array of string values
+		// 					attrVal = attrVal.collect({arg it;
+		// 						if(it.isKindOf(Symbol), { it.asString; }, { it; } );
+		// 					});
+		// 					//compare the elements in the array
+		// 					valItemEqualities = attrVal.collect({arg valItem, i;
+		// 						if(valItem.isKindOf(Float), {
+		// 							valItem.equalWithPrecision(response[attrKey][i]);
+		// 							}, {
+		// 								valItem == response[attrKey][i];
+		// 						});
+		// 					});
+		// 					this.assert(valItemEqualities.every({arg it; it;}),
+		// 						"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
+		// 					);
+		// 					}, {
+		// 						this.assertEquals(
+		// 							response[attrKey],
+		// 							attrVal,
+		// 							"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
+		// 						);
+		// 				});
+		// 		});
+		// 	});
+		// 	topEnvironment.put(\response, response);
+		// 	topEnvironment.put(\attributes, context.attributes);
+		//
+		// 	tempResponder.free;
+		// }.value;
 		//test OSC responders for parameters
 
 		//stoppingOSC

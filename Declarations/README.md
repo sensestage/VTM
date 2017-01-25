@@ -1,1 +1,1 @@
-#Declarations
+#Attributes

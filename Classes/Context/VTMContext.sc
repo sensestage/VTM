@@ -2,7 +2,7 @@ VTMContext {
 	var <name;
 	var <parent;
 	var definition;
-	var declaration;
+	var attributes;
 	var children;
 	var path; //an OSC valid path.
 	var fullPathThunk;
@@ -18,21 +18,21 @@ VTMContext {
 	classvar <subcontextSeparator = $.;
 	classvar <viewClassSymbol = 'VTMContextView';
 
-	*new{arg name, definition, declaration, parent;
+	*new{arg name, definition, attributes, parent;
 		if(name.isNil, {
 			Error("Context must have name").throw;
 		});
-		^super.new.initContext(name, definition, declaration, parent);
+		^super.new.initContext(name, definition, attributes, parent);
 	}
 
-	initContext{arg name_, definition_, declaration_, parent_;
+	initContext{arg name_, definition_, attributes_, parent_;
 		name = name_.asSymbol;
-		if(declaration_.isNil, {
-			declaration = IdentityDictionary.new;
+		if(attributes_.isNil, {
+			attributes = IdentityDictionary.new;
 		}, {
-			declaration = IdentityDictionary.newFrom(declaration_);
-			if(declaration.includesKey(\addr), {
-				addr = NetAddr.newFromIPString(declaration[\addr]).asString;
+			attributes = IdentityDictionary.newFrom(attributes_);
+			if(attributes.includesKey(\addr), {
+				addr = NetAddr.newFromIPString(attributes[\addr]).asString;
 			});
 		});
 
@@ -69,9 +69,9 @@ VTMContext {
 			//derive path from parent context
 			path = parent.fullPath;
 		}, {
-			//Can use declaration specified path if context has no parent
-			if(declaration.includesKey(\path), {
-				path = declaration[\path].asSymbol;
+			//Can use attributes specified path if context has no parent
+			if(attributes.includesKey(\path), {
+				path = attributes[\path].asSymbol;
 				//force leading slash
 				if(path.asString.first != $/, {
 					path = "/%".format(path).asSymbol;
@@ -106,10 +106,10 @@ VTMContext {
 
 			//load and build parameters
 			if(definition.includesKey(\parameters), {
-				parameterManager.loadParameterDeclarations(definition[\parameters]);
+				parameterManager.loadParameterAttributes(definition[\parameters]);
 			});
 			if(definition.includesKey(\buildParameters), {
-				parameterManager.loadParameterDeclarations(
+				parameterManager.loadParameterAttributes(
 					this.execute(\buildParameters, cond);
 				);
 			});
@@ -148,7 +148,7 @@ VTMContext {
 			action.value(this);
 			this.release; //Release this as dependant from other objects.
 			definition = nil;
-			declaration = nil;
+			attributes = nil;
 		};
 	}
 
@@ -233,19 +233,9 @@ VTMContext {
 		^result;
 	}
 
-	//immutable declaration.
-	declaration{
-		^declaration.deepCopy;
-	}
-
-	//Save current declaration to file
-	writeDeclaration{arg filePath;
-
-	}
-
 	//presets are a result of the presets in the context definition,
 	//which are copied (immutability), and run-time defined presets
-	//Run-time defined presets will be stored as part of the declaration.
+	//Run-time defined presets will be stored as part of the attributes.
 	//The presets getter only returns the names of the presets.
 	//Usage:
 	// myContext.presets;// -> returns preset names
@@ -429,15 +419,15 @@ VTMContext {
 		^result;
 	}
 
-	makeView{arg parent, bounds, definition, declaration;
+	makeView{arg parent, bounds, definition, attributes;
 		var viewClass = this.class.viewClassSymbol.asClass;
-		//override class if defined in declaration.
-		if(declaration.notNil, {
-			if(declaration.includesKey(\viewClass), {
-				viewClass = declaration[\viewClass];
+		//override class if defined in attributes.
+		if(attributes.notNil, {
+			if(attributes.includesKey(\viewClass), {
+				viewClass = attributes[\viewClass];
 			});
 		});
-		^viewClass.new(parent, bounds, definition, declaration, this);
+		^viewClass.new(parent, bounds, definition, attributes, this);
 	}
 
 	update{arg theChanged, whatChanged, theChanger ...args;

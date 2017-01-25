@@ -14,8 +14,8 @@ VTMApplication {
 	// All hardware devices are managed by this object.
 	var <hardwareSetup;
 
-	//The loaded declaration of setting for the application.
-	var <declaration;
+	//The loaded attributes of setting for the application.
+	var <attributes;
 
 	//A prototype of an environment (that will be copied into 'envir', where you e.g. can add special functonality
 	//for the application.
@@ -32,8 +32,8 @@ VTMApplication {
 	//The scsynth for this application
 	var <server;
 
-	*new{arg name, definition, declaration, projectFolder, applicationFolder;
-		^super.new.initApplication(name, definition, declaration, projectFolder, applicationFolder);
+	*new{arg name, definition, attributes, projectFolder, applicationFolder;
+		^super.new.initApplication(name, definition, attributes, projectFolder, applicationFolder);
 	}
 
 	*loadApplication{arg appFolder, projectFolder;
@@ -45,7 +45,7 @@ VTMApplication {
 			if(File.exists(appStartupFilePath), {
 				var decl, def, env, name;
 				env = appStartupFilePath.standardizePath.load;
-				decl = env[\declaration];
+				decl = env[\attributes];
 				def = env[\definition];
 				name = env[\name];
 				^this.new(appName, def, decl,
@@ -60,7 +60,7 @@ VTMApplication {
 		});
 	}
 
-	initApplication{arg name_, definition_, declaration_, projectFolder_, appFolder_;
+	initApplication{arg name_, definition_, attributes_, projectFolder_, appFolder_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
@@ -74,26 +74,26 @@ VTMApplication {
 			definition = Environment.new;
 		});
 		envir = definition.deepCopy;
-		if(declaration_.notNil, {
-			declaration = Environment.newFrom(declaration_.deepCopy);
-			if(declaration.includesKey(\network), {
-				networkDesc = declaration[\network][\declaration];
-				networkDef = declaration[\network][\definition];
+		if(attributes_.notNil, {
+			attributes = Environment.newFrom(attributes_.deepCopy);
+			if(attributes.includesKey(\network), {
+				networkDesc = attributes[\network][\attributes];
+				networkDef = attributes[\network][\definition];
 			});
-			if(declaration.includesKey(\moduleHost), {
-				moduleDesc = declaration[\moduleHost][\declaration];
-				moduleDef = declaration[\moduleHost][\definition];
+			if(attributes.includesKey(\moduleHost), {
+				moduleDesc = attributes[\moduleHost][\attributes];
+				moduleDef = attributes[\moduleHost][\definition];
 			});
-			if(declaration.includesKey(\sceneOwner), {
-				sceneDesc = declaration[\sceneOwner][\declaration];
-				sceneDef = declaration[\sceneOwner][\definition];
+			if(attributes.includesKey(\sceneOwner), {
+				sceneDesc = attributes[\sceneOwner][\attributes];
+				sceneDef = attributes[\sceneOwner][\definition];
 			});
-			if(declaration.includesKey(\hardwareSetup), {
-				hardwareDesc = declaration[\hardwareSetup][\declaration];
-				hardwareDef = declaration[\hardwareSetup][\definition];
+			if(attributes.includesKey(\hardwareSetup), {
+				hardwareDesc = attributes[\hardwareSetup][\attributes];
+				hardwareDef = attributes[\hardwareSetup][\definition];
 			});
 		}, {
-			declaration = Environment.new;
+			attributes = Environment.new;
 		});
 
 		network = VTMNetwork(name_, networkDef, networkDesc, this);
@@ -103,10 +103,10 @@ VTMApplication {
 
 		//Discover other application on the network
 		//network.discover;
-		if(declaration.includesKey(\openView), {
-			if(declaration[\openView], {
+		if(attributes.includesKey(\openView), {
+			if(attributes[\openView], {
 				var viewDesc, viewDef;
-				this.makeView( declaration[\viewDefinition], declaration[\viewDeclaration] );
+				this.makeView( attributes[\viewDefinition], attributes[\viewAttributes] );
 			});
 		});
 
@@ -127,13 +127,13 @@ VTMApplication {
 		var condition = cond ? Condition.new;
 		forkIfNeeded{
 			//boot scsynth if defined
-			if(declaration.includesKey(\startServer), {
+			if(attributes.includesKey(\startServer), {
 				var serverOptions;
-				if(declaration[\startServer], {
+				if(attributes[\startServer], {
 
-					if(declaration.includesKey(\serverOptions), {
+					if(attributes.includesKey(\serverOptions), {
 						serverOptions = ServerOptions.new;
-						declaration[\serverOptions].keysValuesDo({arg opt, val;
+						attributes[\serverOptions].keysValuesDo({arg opt, val;
 							serverOptions.perform(opt.asSetter, val);
 						});
 					});
@@ -195,7 +195,7 @@ VTMApplication {
 	prLoadProjectFolder{arg pathName;
 		if(pathName.isKindOf(PathName) and: pathName.isFolder, {
 			projectFolder = pathName;
-			this.loadDeclarations;
+			this.loadAttributes;
 			this.loadDefinitions;
 		}, {
 			Error("%:% - Error loading project folder: [%]".format(this.class.name, thisMethod.name, pathName)).throw;
@@ -214,9 +214,9 @@ VTMApplication {
 
 	addr{ ^network.addr; }
 
-	makeView{arg parent, bounds, viewDefinition, viewDeclaration;
+	makeView{arg parent, bounds, viewDefinition, viewAttributes;
 		^VTMApplicationView.new(
-			parent, bounds, this, viewDefinition, viewDeclaration
+			parent, bounds, this, viewDefinition, viewAttributes
 		);
 	}
 
@@ -227,7 +227,7 @@ VTMApplication {
 			File.mkdir(projectFolder);
 			appFolder = projectFolder +/+ "Applications";
 			File.mkdir(appFolder);
-			["Definitions", "Declarations"].do({arg item;
+			["Definitions", "Attributes"].do({arg item;
 				var folder;
 				folder = projectFolder +/+ item;
 				File.mkdir(folder);
@@ -254,7 +254,7 @@ VTMApplication {
 			appStartupFile = File.new(appStartupFilePath, "w");
 			if(appStartupFile.isOpen, {
 				appStartupFile.putString("(" ++ Char.nl);
-				appStartupFile.putString("\t" ++ "declaration: ( )," ++ Char.nl);
+				appStartupFile.putString("\t" ++ "attributes: ( )," ++ Char.nl);
 				appStartupFile.putString("\t" ++ "definition: (" ++ Char.nl);
 				appStartupFile.putString("\t\t" ++ "prepare: {arg app;" ++ Char.nl);
 				appStartupFile.putString("\t\t\t" ++ "\"Application '%' prepare\".postln;".format(name) ++ Char.nl);
@@ -272,8 +272,8 @@ VTMApplication {
 				"Making new application startup file failed!".warn;
 			});
 
-			//Make folders for declarations and definitions
-			["Definitions", "Declarations"].do({arg item;
+			//Make folders for attributes and definitions
+			["Definitions", "Attributes"].do({arg item;
 				var folder;
 				folder = appFolder +/+ item;
 				File.mkdir(folder);

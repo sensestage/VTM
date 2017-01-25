@@ -1,10 +1,10 @@
 VTMNetworkedContext : VTMContext {
 	var <library;//temp getter
 	var <definitionPaths, <isLoadingDefinitions = false;
-	var <declarationPaths, <isLoadingDeclarations = false;
+	var <attributesPaths, <isLoadingAttributes = false;
 
-	*new{arg name, definition, declaration, network;
-		^super.new(name, definition, declaration, network).initNetworkedContext;
+	*new{arg name, definition, attributes, network;
+		^super.new(name, definition, attributes, network).initNetworkedContext;
 	}
 
 	initNetworkedContext {
@@ -14,24 +14,24 @@ VTMNetworkedContext : VTMContext {
 				\application -> IdentityDictionary.new,
 				\runtime -> IdentityDictionary.new
 			],
-			\declarations -> IdentityDictionary[
+			\attributes -> IdentityDictionary[
 				\project -> IdentityDictionary.new,
 				\application -> IdentityDictionary.new,
 				\runtime -> IdentityDictionary.new
 			]
 		];
 		definitionPaths = [];
-		declarationPaths = [];
+		attributesPaths = [];
 
-		if(declaration.notNil, {
-			if(declaration.includesKey(\definitionPaths), {
-				var paths = declaration[\definitionPaths].asArray;
+		if(attributes.notNil, {
+			if(attributes.includesKey(\definitionPaths), {
+				var paths = attributes[\definitionPaths].asArray;
 				paths.do({arg item; this.addDefinitionPath(item); });
 			});
 
-			if(declaration.includesKey(\declarationPaths), {
-				var paths = declaration[\declarationPaths].asArray;
-				paths.do({arg item; this.addDeclarationPath(item); });
+			if(attributes.includesKey(\attributesPaths), {
+				var paths = attributes[\attributesPaths].asArray;
+				paths.do({arg item; this.addAttributesPath(item); });
 			});
 		});
 		this.loadLibrary;
@@ -45,19 +45,19 @@ VTMNetworkedContext : VTMContext {
 		^this.network.application;
 	}
 
-	getDeclaration{arg key;
-		^this.prGetLibraryEntry(\declaration, key);
+	getAttributes{arg key;
+		^this.prGetLibraryEntry(\attributes, key);
 	}
 
 	getDefinition{arg key;
 		^this.prGetLibraryEntry(\definition, key);
 	}
 
-	//whatToGet is either \declaration or \definition
+	//whatToGet is either \attributes or \definition
 	prGetLibraryEntry{arg whatToGet, key;
 		var lib, result;
 		switch(whatToGet,
-			\declaration, {lib = library[\declarations];},
+			\attributes, {lib = library[\attributes];},
 			\definition, {lib = library[\definitions];}
 		);
 		result = lib[\runtime].atFail(key, {
@@ -72,11 +72,11 @@ VTMNetworkedContext : VTMContext {
 	}
 
 	loadLibrary{
-		this.prLoadToLibrary(\declarations);
+		this.prLoadToLibrary(\attributes);
 		this.prLoadToLibrary(\definitions);
 	}
 
-	//whatToLoad is either \definitions or \declarations
+	//whatToLoad is either \definitions or \attributes
 	prLoadToLibrary{arg whatToLoad;
 		var folder = VTMLibrary.vtmPath.asString;
 		var subfolder = whatToLoad.asString.capitalize +/+ this.name.asString.capitalize;

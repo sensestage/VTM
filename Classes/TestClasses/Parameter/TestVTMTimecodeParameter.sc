@@ -36,18 +36,18 @@ TestVTMTimecodeParameter : TestVTMValueParameter {
 		);
 	}
 
-	test_SettingAttributesThroughDeclaration{
+	test_SettingAttributesThroughAttributes{
 		var desc = (
 			value: 1000, defaultValue: 3000,
 		);
 		var param = VTMTimecodeParameter.new('myTimecode', desc);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
-			"TimecodeParameter set defaultValue through declaration"
+			"TimecodeParameter set defaultValue through attributes"
 		);
 		this.assertEquals(
 			param.value, desc[\value],
-			"TimecodeParameter set value through declaration"
+			"TimecodeParameter set value through attributes"
 		);
 	}
 

@@ -112,9 +112,9 @@ VTMModule.viewClass
 ~mod.get(\freq);
 
 
-VTMLibrary.at(\definitions, \SinOsc, \declarations).do(_.postln);
+VTMLibrary.at(\definitions, \SinOsc, \attributes).do(_.postln);
 (
-~mod = VTMModule.new('testModule', declaration: 'CoolSound', definition: \SinOsc);
+~mod = VTMModule.new('testModule', attributes: 'CoolSound', definition: \SinOsc);
 ~mod.prepare;
 )
 

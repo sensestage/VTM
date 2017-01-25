@@ -27,7 +27,7 @@ TestVTMValueParameter : TestVTMParameter {
 		var minRand = 5, maxRand = 10;
 		^rrand(minRand, maxRand).collect({arg i;
 			[
-				[i + 1, this.makeRandomString].choose,
+				[i + 1, this.makeRandomString((noNumbers: true, noSpaces: true))].choose,
 				this.makeRandomValue
 			];
 		}).flatten;
@@ -79,7 +79,7 @@ TestVTMValueParameter : TestVTMParameter {
 			try{
 				testClass = VTMUnitTest.testclassForType( class.type );
 				testValue = testClass.makeRandomValue;
-				param = class.new(name, declaration: (defaultValue: testValue));
+				param = class.new(name, attributes: (defaultValue: testValue));
 				this.assertEquals(
 					param.defaultValue, testValue, "Parameter defaultValue was set [%]".format(testClass.name)
 				);
@@ -254,13 +254,13 @@ TestVTMValueParameter : TestVTMParameter {
 		});
 	}
 
-	test_SetVariablesFromDeclaration{
+	test_SetVariablesFromAttributes{
 		TestVTMValueParameter.testClasses.do({arg class;
 			var testClass, testValue;
 			var param;
-			var testDeclaration, wasRun = false;
+			var testAttributes, wasRun = false;
 			testClass = VTMUnitTest.testclassForType( class.type );
-			testDeclaration = testClass.generateRandomAttributes(
+			testAttributes = testClass.generateRandomAttributes(
 				[
 					\value,
 					\defaultValue,
@@ -272,27 +272,27 @@ TestVTMValueParameter : TestVTMParameter {
 				]
 			);
 
-			param = VTMParameter.makeFromDeclaration(testDeclaration);
+			param = VTMParameter.makeFromAttributes(testAttributes);
 
 			//Change string values to symbols for testing object return values
-			testDeclaration[\name] = testDeclaration[\name].asSymbol;
-			testDeclaration[\path] = testDeclaration[\path].asSymbol;
+			testAttributes[\name] = testAttributes[\name].asSymbol;
+			testAttributes[\path] = testAttributes[\path].asSymbol;
 
 			[\value, \defaultValue, \path, \name, \filterRepetitions].do({arg item;
 				// "CHECKING %: \n\t%[%]\n\t%[%]".format(
 				// 	item,
 				// 	param.perform(item), param.perform(item).class,
-				// 	testDeclaration[item], testDeclaration[item].class
+				// 	testAttributes[item], testAttributes[item].class
 				// ).postln;
 				this.assertEquals(
-					param.perform(item), testDeclaration[item],
-					"Parameter set % through declaration [%]".format(item, class.name)
+					param.perform(item), testAttributes[item],
+					"Parameter set % through attributes [%]".format(item, class.name)
 				);
 			});
 			param.doAction;
 			this.assert(
 				wasRun,
-				"Parameter action was set through declaration [%]".format(class.name)
+				"Parameter action was set through attributes [%]".format(class.name)
 			);
 			param.free;
 		});
@@ -304,9 +304,9 @@ TestVTMValueParameter : TestVTMParameter {
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param;
-	// 		var testDeclaration, testAttributes;
+	// 		var testAttributes, testAttributes;
 	// 		testClass = VTMUnitTest.testclassForType( class.type );
-	// 		testDeclaration = testClass.generateRandomAttributes(
+	// 		testAttributes = testClass.generateRandomAttributes(
 	// 			[
 	// 				\value,
 	// 				\defaultValue,
@@ -319,9 +319,9 @@ TestVTMValueParameter : TestVTMParameter {
 	// 				\enum
 	// 			]
 	// 		);
-	// 		param = VTMParameter.makeFromDeclaration(testDeclaration);
-	// 		testAttributes = testDeclaration.deepCopy;
-	// 		testAttributes.put(\action, testDeclaration[\action].asCompileString);
+	// 		param = VTMParameter.makeFromAttributes(testAttributes);
+	// 		testAttributes = testAttributes.deepCopy;
+	// 		testAttributes.put(\action, testAttributes[\action].asCompileString);
 	// 		this.assert(
 	// 			testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
 	// 			"ValueParameter returned correct attribute keys for ValueParameter level [%]".format(class.name)
@@ -341,9 +341,9 @@ TestVTMValueParameter : TestVTMParameter {
 			var name = "my%".format(class.name);
 			var param;
 			var testEnum;
-			var testDeclaration, testAttributes;
+			var testAttributes;
 			testClass = VTMUnitTest.testclassForType( class.type );
-			testDeclaration = testClass.generateRandomAttributes(
+			testAttributes = testClass.generateRandomAttributes(
 				[
 					\value,
 					\defaultValue,
@@ -356,10 +356,9 @@ TestVTMValueParameter : TestVTMParameter {
 					\enum
 				]
 			);
-			testEnum = testDeclaration.at(\enum);
-			param = VTMParameter.makeFromDeclaration(testDeclaration);
-			testAttributes = testDeclaration.deepCopy;
-			testAttributes.put(\action, testDeclaration[\action].asCompileString);
+			testEnum = testAttributes.at(\enum);
+			param = VTMParameter.makeFromAttributes(testAttributes);
+			testAttributes.put(\action, testAttributes[\action].asCompileString);
 			this.assertEquals(
 				param.enum, testEnum,
 				"ValueParameter set and returned correct enum[%]".format(class.name)

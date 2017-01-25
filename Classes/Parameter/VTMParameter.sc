@@ -5,7 +5,7 @@
 VTMParameter {
 	var <name;
 	var <path, fullPathThunk; //an OSC valid path.
-	var <declaration;
+	var attributes;
 	var action, hiddenAction;
 	var <enabled = true;
 	var <mappings;
@@ -34,45 +34,45 @@ VTMParameter {
 	}
 
 	//factory type constructor
-	//In declaration dict 'name' and 'type' is mandatory.
-	*makeFromDeclaration{arg declaration;
-		var decl = declaration.deepCopy;
-		//if 'type' and 'name' is defined in declaration
+	//In attributes dict 'name' and 'type' is mandatory.
+	*makeFromAttributes{arg attributes;
+		var decl = attributes.deepCopy;
+		//if 'type' and 'name' is defined in attributes
 		if(decl.includesKey(\name), {
 			if(decl.includesKey(\type), {
 				var paramClass = decl.removeAt(\type);
 				var paramName = decl.removeAt(\name);
 				^VTMParameter.typeToClass(paramClass).new(paramName, decl);
 			}, {
-				Error("VTMParameter declaration needs type").throw;
+				Error("VTMParameter attributes needs type").throw;
 			});
 		}, {
-			Error("VTMParameter declaration needs name").throw;
+			Error("VTMParameter attributes needs name").throw;
 		});
 	}
 
 	//This constructor is not used directly, only for testing purposes
-	*new{arg name, declaration;
+	*new{arg name, attributes;
 		if(name.notNil, {
-			^super.new.initParameter(name, declaration);
+			^super.new.initParameter(name, attributes);
 		}, {
 			Error("VTMParameter needs name").throw;
 		});
 	}
 
-	initParameter{arg name_, declaration_;
+	initParameter{arg name_, attributes_;
 		var tempName = name_.copy.asString;
 		if(tempName.first == $/, {
 			tempName = tempName[1..];
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		if(declaration_.notNil, {
-			declaration = declaration_.deepCopy;
+		if(attributes_.notNil, {
+			attributes = attributes_.deepCopy;
 		}, {
-			declaration = IdentityDictionary.new;
+			attributes = IdentityDictionary.new;
 		});
-		// declaration = IdentityDictionary.newFrom(declaration_);
+		// attributes = IdentityDictionary.newFrom(attributes_);
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
 				".%".format(name).asSymbol;
@@ -80,28 +80,28 @@ VTMParameter {
 				"/%".format(name).asSymbol;
 			});
 		});
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\isSubParameter), {
-				isSubParameter = declaration[\isSubParameter];
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\isSubParameter), {
+				isSubParameter = attributes[\isSubParameter];
 			});
-			if(declaration.includesKey(\path), {
-				this.path = declaration[\path];
+			if(attributes.includesKey(\path), {
+				this.path = attributes[\path];
 			});
-			if(declaration.includesKey(\action), {
-				// "Setting action from declaration: %".format(declaration[\action]).postln;
-				this.action_(declaration[\action]);
+			if(attributes.includesKey(\action), {
+				// "Setting action from attributes: %".format(attributes[\action]).postln;
+				this.action_(attributes[\action]);
 			});
-			if(declaration.includesKey(\enabled), {
+			if(attributes.includesKey(\enabled), {
 				//Is enabled by default so only disabled if defined
-				if(declaration[\enabled].not, {
+				if(attributes[\enabled].not, {
 					this.disable;
 				})
 			});
-			if(declaration.includesKey(\willStore), {
-				willStore = declaration[\willStore];
+			if(attributes.includesKey(\willStore), {
+				willStore = attributes[\willStore];
 			});
-			if(declaration.includesKey(\onlyReturn), {
-				onlyReturn = declaration[\onlyReturn];
+			if(attributes.includesKey(\onlyReturn), {
+				onlyReturn = attributes[\onlyReturn];
 			});
 		});
 
@@ -263,8 +263,8 @@ VTMParameter {
 		^result;
 	}
 
-	makeView{arg parent, bounds, definition, declaration;
-		^VTMParameterView.makeFromDeclaration(parent, bounds, definition, declaration, this);
+	makeView{arg parent, bounds, definition, attributes;
+		^VTMParameterView.makeFromAttributes(parent, bounds, definition, attributes, this);
 	}
 
 	*makeOSCAPI{arg param;

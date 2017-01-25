@@ -16,20 +16,20 @@ VTMListParameter : VTMCollectionParameter {
 		^[];
 	}
 
-	*new{arg name, declaration;
-		^super.new(name, declaration).initListParameter;
+	*new{arg name, attributes;
+		^super.new(name, attributes).initListParameter;
 	}
 
 	initListParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\itemType), {
-				itemType = declaration[\itemType];
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\itemType), {
+				itemType = attributes[\itemType];
 			});
 		});
 		//Using decimal as default item type so 
-		//that list parameter can be made using empty declaration.
+		//that list parameter can be made using empty attributes.
 		itemType = itemType ? \decimal;
-		itemDeclarations = [ () ];
+		itemAttributes = [ () ];
 
 		//build the internal parameters
 		this.prBuildItemParameters;
@@ -48,48 +48,48 @@ VTMListParameter : VTMCollectionParameter {
 		//This forces you to always make a new list parameter if one is
 		//already made.
 		if(items.isNil, {
-			var itemClass, itemDeclarations, attributeKeys;
+			var itemClass, itemAttributes, attributeKeys;
 			var baseItemDesc;
 			items = Dictionary.new;
 			itemClass = VTMParameter.typeToClass(itemType);
 
-			//all sub parameters have this base item declaration
+			//all sub parameters have this base item attributes
 			baseItemDesc = (
 				isSubParameter: true
 			);
 
-			//Expand all the items in the item declaration, e.g. arrayed keys etc.
-			//All item declarations should now be expanded into separate Associations
-			itemDeclarations = this.class.prExpanditemDeclarations(itemDeclarations);
-			attributeKeys = itemClass.attributeKeys.asSet.sect(declaration.keys);
-			itemDeclarations = itemDeclarations.collect({arg itemAssoc, index;
+			//Expand all the items in the item attributes, e.g. arrayed keys etc.
+			//All item attributes should now be expanded into separate Associations
+			itemAttributes = this.class.prExpanditemAttributes(itemAttributes);
+			attributeKeys = itemClass.attributeKeys.asSet.sect(attributes.keys);
+			itemAttributes = itemAttributes.collect({arg itemAssoc, index;
 				var itemName, itemDesc, newItemDesc;
 				itemName = itemAssoc.key;
 				itemDesc = itemAssoc.value;
 				newItemDesc = itemDesc.deepCopy;
 
-				//add the values from the outer declaration that applies to all items of this type.
+				//add the values from the outer attributes that applies to all items of this type.
 				//Getting only the keys that pertain to the itemClass, and which are defined in the
-				//declaration.
-				itemClass.attributeKeys.asSet.sect(declaration.keys).do({arg attrKey;
-					newItemDesc.put(attrKey, declaration[attrKey]);
+				//attributes.
+				itemClass.attributeKeys.asSet.sect(attributes.keys).do({arg attrKey;
+					newItemDesc.put(attrKey, attributes[attrKey]);
 				});
 
-				//add the base item desc, overriding some of the outer declaration values
+				//add the base item desc, overriding some of the outer attributes values
 				newItemDesc.putAll(baseItemDesc.deepCopy);
 				newItemDesc.put(\name, itemName);
 				newItemDesc.put(\path, this.fullPath);//using the owner parameter fullPath
-				newItemDesc.put(\type, declaration[\itemType]);
+				newItemDesc.put(\type, attributes[\itemType]);
 
-				//override with the values in the itemDeclarations
+				//override with the values in the itemAttributes
 				newItemDesc.putAll(itemDesc);
 
 				Association.new(itemName, newItemDesc);
 			});
 
 			//Build the item parameter objects
-			items = itemDeclarations.collect({arg itemDesc;
-				VTMParameter.makeFromDeclaration(itemDesc.value);
+			items = itemAttributes.collect({arg itemDesc;
+				VTMParameter.makeFromAttributes(itemDesc.value);
 			});
 
 		}, {
@@ -102,7 +102,7 @@ VTMListParameter : VTMCollectionParameter {
 		});
 	}
 
-	*prExpanditemDeclarations{arg desc;
+	*prExpanditemAttributes{arg desc;
 		var result;
 		desc.do({arg item, i;
 			if(item.isKindOf(Association), {
@@ -113,7 +113,7 @@ VTMListParameter : VTMCollectionParameter {
 						var jDesc = ();
 						item.value.keysValuesDo({arg ke, va;
 							if(va.isArray and: {va.isString.not}, {
-								//expand item declaration value to arrayed key by wrapped indexing
+								//expand item attributes value to arrayed key by wrapped indexing
 								jDesc.put(
 									ke,
 									va.wrapAt(j)

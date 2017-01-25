@@ -2,58 +2,58 @@ VTMLibrary.postTree
 MIDIFunc.trace
 VTMLibrary.at(\definitions, \BehringerXTouchCompact)
 (
-var declaration = (
+var attributes = (
 	inDeviceName: "X-TOUCH COMPACT",
 	inPortName: "X-TOUCH COMPACT",
 	outDeviceName: "X-TOUCH COMPACT",
 	outPortName: "X-TOUCH COMPACT"
 );
-~xtouch = VTMHardwareDevice('xtouch', declaration, \BehringerXTouchCompact);
+~xtouch = VTMHardwareDevice('xtouch', attributes, \BehringerXTouchCompact);
 ~xtouch.prepare;
 )
 
 VTMLibrary.at(\definitions, \LPD8)
 (
-var declaration = (
+var attributes = (
 	inDeviceName: "LPD8",
 	inPortName: "LPD8",
 	outDeviceName: "LPD8",
 	outPortName: "LPD8"
 );
-~lpd8 = VTMHardwareDevice('lpd8', declaration, \LPD8);
+~lpd8 = VTMHardwareDevice('lpd8', attributes, \LPD8);
 ~lpd8.prepare;
 )
 
 (
-var declaration = (
+var attributes = (
 	inDeviceName: "nanoKONTROL",
 	inPortName: "SLIDER/KNOB",
 	outDeviceName: "nanoKONTROL",
 	outPortName: "CTRL"
 );
-~nanoKontrol = VTMHardwareDevice('myNanoKontrol', declaration, 'KorgNanoKontrol');
+~nanoKontrol = VTMHardwareDevice('myNanoKontrol', attributes, 'KorgNanoKontrol');
 ~nanoKontrol.prepare;
 )
 
 (
-var declaration = (
+var attributes = (
 	inDeviceName: "X-TOUCH MINI",
 	inPortName: "X-TOUCH MINI",
 	outDeviceName: "X-TOUCH MINI",
 	outPortName: "X-TOUCH MINI"
 );
-~xtouchMini = VTMHardwareDevice('xtouchMini', declaration, 'BehringerXTouchMini');
+~xtouchMini = VTMHardwareDevice('xtouchMini', attributes, 'BehringerXTouchMini');
 ~xtouchMini.prepare;
 )
 
 (
-var declaration = (
+var attributes = (
 	inDeviceName: "BCF2000",
 	inPortName: "BCF2000",
 	outDeviceName: "BCF2000",
 	outPortName: "BCF2000"
 );
-~bcf2000 = VTMHardwareDevice('bcf2000', declaration, 'BehringerBCF2000');
+~bcf2000 = VTMHardwareDevice('bcf2000', attributes, 'BehringerBCF2000');
 ~bcf2000.prepare;
 )
 

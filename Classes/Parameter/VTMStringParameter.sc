@@ -16,17 +16,17 @@ VTMStringParameter : VTMValueParameter {
 		^val.isKindOf(String);
 	}
 
-	*new{arg name, declaration;
-		^super.new(name, declaration).initStringParameter;
+	*new{arg name, attributes;
+		^super.new(name, attributes).initStringParameter;
 	}
 
 	initStringParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\pattern), {
-				this.pattern_(declaration[\pattern]);
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\pattern), {
+				this.pattern_(attributes[\pattern]);
 			});
-			if(declaration.includesKey(\matchPattern), {
-				this.matchPattern_(declaration[\matchPattern]);
+			if(attributes.includesKey(\matchPattern), {
+				this.matchPattern_(attributes[\matchPattern]);
 			});
 		});
 	}

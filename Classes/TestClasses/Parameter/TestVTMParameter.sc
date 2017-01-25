@@ -84,7 +84,7 @@ TestVTMParameter : VTMUnitTest {
 		^result;
 	}
 
-	*makeRandomDeclaration{arg type;
+	*makeRandomAttributes{arg type;
 		var testClass, class, attrKeys, result;
 		class = "VTM%Parameter".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
@@ -301,36 +301,36 @@ TestVTMParameter : VTMUnitTest {
 
 	}
 
-	test_SetVariablesThroughDeclaration{
+	test_SetVariablesThroughAttributes{
 		this.class.testClasses.do({arg testClass;
 			var name = "my%".format(testClass.name).asSymbol;
-			var param, aDeclaration, anAction;
+			var param, aAttributes, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
-			aDeclaration = (
+			aAttributes = (
 				action: anAction,
 				path: '/myPath',
 				enabled: false,
 			);
-			param = testClass.new(name, aDeclaration);
+			param = testClass.new(name, aAttributes);
 
-			//path is set through declaration
+			//path is set through attributes
 			this.assertEquals(param.path, '/myPath',
-				"Path was defined through declaration"
+				"Path was defined through attributes"
 			);
 			this.assertEquals(param.fullPath, "/myPath/%".format(name).asSymbol,
-				"Full path was defined through declaration"
+				"Full path was defined through attributes"
 			);
-			//enabled is set through declaration
+			//enabled is set through attributes
 			this.assert(param.enabled.not,
-				"Parameter was disabled through declaration"
+				"Parameter was disabled through attributes"
 			);
 
-			//action is set through declaration
+			//action is set through attributes
 			param.enable; //Reenable parameter
 			param.doAction;
 			this.assert(wasRun and: {param.action === anAction},
-				"Parameter action was set through declaration"
+				"Parameter action was set through attributes"
 			);
 			param.free;
 		});
@@ -345,18 +345,18 @@ TestVTMParameter : VTMUnitTest {
 		topEnvironment.put('paramTest', ());
 		TestVTMParameter.testClasses.do({arg testClass;
 			var wasRun = false;
-			var declaration = this.class.makeRandomDeclaration(testClass.type);
-			var param = testClass.makeFromDeclaration(declaration);
+			var attributes = this.class.makeRandomAttributes(testClass.type);
+			var param = testClass.makeFromAttributes(attributes);
 			topEnvironment['paramTest'].put(param.name,
-				(attributes: param.attributes.deepCopy, declaration: declaration.deepCopy)
+				(attributes: param.attributes.deepCopy, attributes: attributes.deepCopy)
 			);
 
 			this.assertEquals(
-				param.attributes, declaration,
+				param.attributes, attributes,
 				"% returned correct attributes.\nA:\t%\nB:\t%".format(
 					testClass,
 				   	param.attributes.keys.asArray.sort,
-					declaration.keys.asArray.sort
+					attributes.keys.asArray.sort
 				)
 			);
 			/*
@@ -364,8 +364,8 @@ TestVTMParameter : VTMUnitTest {
 			param.attributes.keysValuesDo({arg key, val;
 				"\t:% - [%]%".format(key, val.class, val).postln;
 			});
-			"Declaration".postln;
-			declaration.keysValuesDo({arg key, val;
+			"Attributes".postln;
+			attributes.keysValuesDo({arg key, val;
 				"\t:% - [%]%".format(key, val.class, val).postln;
 			});
 			*/

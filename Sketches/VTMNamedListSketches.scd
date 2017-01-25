@@ -29,7 +29,7 @@ VTMUnitTest.runTestForClass(VTMValueParameter, true);
 VTMUnitTest.runTestForClass(VTMNumberParameter,true);
 VTMUnitTest.runTestForClass(VTMParameter, true);
 
-TestVTMParameter.makeRandomDeclaration(\integer)
+TestVTMParameter.makeRandomAttributes(\integer)
 
 
 VTMUnitTest.runTest("TestVTMParameter:test_GetAttributes")

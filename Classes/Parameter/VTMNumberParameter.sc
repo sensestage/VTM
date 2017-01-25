@@ -6,8 +6,8 @@ VTMNumberParameter : VTMValueParameter {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
-	*new{arg name, declaration;
-		^super.new(name, declaration).initNumberParameter;
+	*new{arg name, attributes;
+		^super.new(name, attributes).initNumberParameter;
 	}
 
 	isValidType{arg val;
@@ -15,18 +15,18 @@ VTMNumberParameter : VTMValueParameter {
 	}
 
 	initNumberParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\clipmode), {
-				this.clipmode = declaration[\clipmode];
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\clipmode), {
+				this.clipmode = attributes[\clipmode];
 			});
-			if(declaration.includesKey(\minVal), {
-				this.minVal = declaration[\minVal];
+			if(attributes.includesKey(\minVal), {
+				this.minVal = attributes[\minVal];
 			});
-			if(declaration.includesKey(\maxVal), {
-				this.maxVal = declaration[\maxVal];
+			if(attributes.includesKey(\maxVal), {
+				this.maxVal = attributes[\maxVal];
 			});
-			if(declaration.includesKey(\stepsize), {
-				this.stepsize = declaration[\stepsize];
+			if(attributes.includesKey(\stepsize), {
+				this.stepsize = attributes[\stepsize];
 			});
 		});
 	}

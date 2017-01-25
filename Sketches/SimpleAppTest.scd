@@ -1,7 +1,7 @@
 //Start simple app with alternative server options
 (
-var definition, declaration;
-declaration = (
+var definition, attributes;
+attributes = (
 	startServer: true,
 	serverOptions: (
 		outDevice: "Soundflower (64ch)", inDevice: "Soundflower (64ch)"
@@ -19,7 +19,7 @@ definition = Environment.make({
 	};
 });
 ~app = VTMApplication.new('test',
-	definition, declaration
+	definition, attributes
 );
 )
 

@@ -2,17 +2,17 @@ VTMRemoteContextProxyImplementation : VTMContextProxyImplementation {
 	var <targetAddr;
 	var <targetPath;
 
-	*new{arg context, definition, declaration;
-		^super.new(context, definition, declaration).initRemoteContextProxyImplementation;
+	*new{arg context, definition, attributes;
+		^super.new(context, definition, attributes).initRemoteContextProxyImplementation;
 	}
 
 	initRemoteContextProxyImplementation{
-		if(declaration.notNil, {
-			if(declaration.includesKey(\targetAddr), {
-				targetAddr = declaration[\targetAddr];
+		if(attributes.notNil, {
+			if(attributes.includesKey(\targetAddr), {
+				targetAddr = attributes[\targetAddr];
 			});
-			if(declaration.includesKey(\targetPath), {
-				targetPath = declaration[\targetPath];
+			if(attributes.includesKey(\targetPath), {
+				targetPath = attributes[\targetPath];
 			});
 		});
 		if(targetPath.isNil, {

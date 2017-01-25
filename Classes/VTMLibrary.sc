@@ -1,4 +1,4 @@
-//A global library of VTM definitions and declarations for modules, scenes and hardware devices.
+//A global library of VTM definitions and attributes for modules, scenes and hardware devices.
 VTMLibrary : Library{
 	*vtmPath{
 		^PathName(PathName( this.filenameSymbol.asString ).parentPath).parentPath;
@@ -9,7 +9,7 @@ VTMLibrary : Library{
 	}
 
 	*loadGlobalLibrary{
-		[\definitions, \declarations].do({arg whatToLoad;
+		[\definitions, \attributes].do({arg whatToLoad;
 			var data;
 			data = this.loaderFunc(this.vtmPath, \global, whatToLoad);
 			data.keysValuesDo({arg key, val;

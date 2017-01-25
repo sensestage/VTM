@@ -1,14 +1,14 @@
 ~prototypes = [\AudioModule];
 ~prepare = {arg module, cond;
 	var numInputs, numOutputs;
-	var declaration = module.declaration;
+	var attributes = module.attributes;
 	~group = ~engine.groups[\filters];
 
-	if(declaration.includesKey(\numInputs), {
-		~numInputs = declaration[\numInputs];
+	if(attributes.includesKey(\numInputs), {
+		~numInputs = attributes[\numInputs];
 	}, { ~numInputs = 2; });
-	if(declaration.includesKey(\numOutputs), {
-		~numOutputs = declaration[\numOutputs];
+	if(attributes.includesKey(\numOutputs), {
+		~numOutputs = attributes[\numOutputs];
 	}, { ~numOutputs = 2;});
 
 	~input = NodeProxy.audio(~server, ~numInputs);

@@ -19,20 +19,20 @@ VTMArrayParameter : VTMCollectionParameter {
 		^[];
 	}
 
-	*new{arg name, declaration;
-		^super.new(name, declaration).initArrayParameter;
+	*new{arg name, attributes;
+		^super.new(name, attributes).initArrayParameter;
 	}
 
 	initArrayParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\size), {
-				size = declaration[\size];
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\size), {
+				size = attributes[\size];
 			});
-			if(declaration.includesKey(\fixedSize), {
-				fixedSize = declaration[\fixedSize];
+			if(attributes.includesKey(\fixedSize), {
+				fixedSize = attributes[\fixedSize];
 			});
-			if(declaration.includesKey(\itemType), {
-				itemType = declaration[\itemType];
+			if(attributes.includesKey(\itemType), {
+				itemType = attributes[\itemType];
 			});
 		});
 	}

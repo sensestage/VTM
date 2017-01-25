@@ -49,7 +49,7 @@ TestVTMStringParameter : TestVTMValueParameter {
 		);
 	}
 
-	test_SettingAttributesWithDeclaration{
+	test_SettingAttributesWithAttributes{
 		var desc, param;
 		desc = (
 			value: "heisann.3",
@@ -59,15 +59,15 @@ TestVTMStringParameter : TestVTMValueParameter {
 		param = VTMStringParameter.new('myString', desc);
 		this.assertEquals(
 			param.value, desc[\value],
-			"StringParameter set value through declaration"
+			"StringParameter set value through attributes"
 		);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
-			"StringParameter set defaultValue through declaration"
+			"StringParameter set defaultValue through attributes"
 		);
 		this.assertEquals(
 			param.pattern, desc[\pattern],
-			"StringParameter set value through declaration"
+			"StringParameter set value through attributes"
 		);
 	}
 

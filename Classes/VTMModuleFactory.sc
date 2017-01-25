@@ -9,21 +9,21 @@ VTMModuleFactory{
 		host = host_;
 	}
 
-	build{arg definition, declaration;
+	build{arg definition, attributes;
 		var moduleDefinition;
 		var newModule;
 
 		//Load module definition from file if not defined in arg
 		if(definition.isNil, {
 			var defName;
-			//Module declaration must define a def name, if not defined in arg
-			if(declaration.includesKey(\definition).not, {
-				Error("Module declaration for '%' is missing module definition name".format(declaration[\name])).throw;
+			//Module attributes must define a def name, if not defined in arg
+			if(attributes.includesKey(\definition).not, {
+				Error("Module attributes for '%' is missing module definition name".format(attributes[\name])).throw;
 				^nil;
 			});
 
 			//Load def from file
-			defName = declaration[\definition];
+			defName = attributes[\definition];
 			//Search for mod def file
 			moduleDefinition = this.host.getDefinition(defName);
 
@@ -53,7 +53,7 @@ VTMModuleFactory{
 			moduleDefinition = definition;
 		});
 
-		newModule = VTMModule.new(declaration[\name], moduleDefinition, declaration, host);
+		newModule = VTMModule.new(attributes[\name], moduleDefinition, attributes, host);
 		^newModule;
 
 	}
@@ -66,11 +66,11 @@ VTMModuleFactory{
 		^host.node.getFilePathFor(\moduleDefinition);
 	}
 
-	*isDeclarationForRemoteModule{arg desc;
+	*isAttributesForRemoteModule{arg desc;
 		^desc.includesKey(\app);
 	}
 
-	*isDeclarationForExistingModule{arg desc;
+	*isAttributesForExistingModule{arg desc;
 		^desc.includesKey(\path);
 	}
 }

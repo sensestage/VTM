@@ -1,13 +1,13 @@
 //Make a simple module that is running all by itself.
 (
-var definition, declaration;
-declaration = (
+var definition, attributes;
+attributes = (
 	parameters: (fee: 99, foo: 33)
 );
 definition = Environment.make({
 	~prepare = {arg mod, cond;
 		"Preparing test module % %".format(mod, cond).postln;
-		"\tUsing this declaration: %".format(mod.declaration).postln;
+		"\tUsing this attributes: %".format(mod.attributes).postln;
 
 		mod.on(\ready, {
 			//run related stuff
@@ -16,7 +16,7 @@ definition = Environment.make({
 
 	~free = {arg mod, cond;
 		"Freeing test module % %".format(mod, cond).postln;
-		"\tUsing this declaration: %".format(mod.declaration).postln;
+		"\tUsing this attributes: %".format(mod.attributes).postln;
 
 		mod.on(\freed, {
 			"I'm donne".postln;
@@ -32,7 +32,7 @@ definition = Environment.make({
 		)
 	];
 });
-~mod = VTMModule.new('testModule', definition, declaration);
+~mod = VTMModule.new('testModule', definition, attributes);
 
 ~mod.prepare;
 )

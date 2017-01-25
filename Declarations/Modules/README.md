@@ -1,1 +1,1 @@
-#Global module declarations
+#Global module attributes

@@ -26,7 +26,7 @@ TestVTMBooleanParameter : TestVTMValueParameter {
 		);
 	}
 
-	test_SetAttributesThroughDeclaration{
+	test_SetAttributesThroughAttributes{
 		var desc = (
 			value: true,
 			defaultValue: false
@@ -34,7 +34,7 @@ TestVTMBooleanParameter : TestVTMValueParameter {
 		var param = VTMBooleanParameter.new('myBoolean', desc);
 		this.assert(
 			param.value == desc[\value] and: {param.defaultValue == desc[\defaultValue]},
-			"BooleanParameter set correct values from declaration, test A"
+			"BooleanParameter set correct values from attributes, test A"
 		);
 
 		//test the inversion
@@ -45,7 +45,7 @@ TestVTMBooleanParameter : TestVTMValueParameter {
 		param = VTMBooleanParameter.new('myBoolean', desc);
 		this.assert(
 			param.value == desc[\value] and: {param.defaultValue == desc[\defaultValue]},
-			"BooleanParameter set correct values from declaration, test B"
+			"BooleanParameter set correct values from attributes, test B"
 		);
 	}
 

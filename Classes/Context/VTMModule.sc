@@ -1,9 +1,9 @@
 //children may be Module
 VTMModule : VTMComposableContext {
 
-	*new{arg name, definition, declaration, parent;
-		var actualDefinition, actualDeclaration;
-		//Check if either definition or declaration are Symobol, in which case
+	*new{arg name, definition, attributes, parent;
+		var actualDefinition, actualAttributes;
+		//Check if either definition or attributes are Symobol, in which case
 		//they will be looked up in the global vtm library
 		if(definition.isKindOf(Symbol), {
 			actualDefinition = VTMLibrary.at(\definitions, definition);
@@ -13,12 +13,12 @@ VTMModule : VTMComposableContext {
 
 		actualDefinition = this.makeDefinitionEnvironment(actualDefinition);
 
-		if(declaration.isKindOf(Symbol), {
-			actualDeclaration = VTMLibrary.at(\declarations, declaration);
+		if(attributes.isKindOf(Symbol), {
+			actualAttributes = VTMLibrary.at(\attributes, attributes);
 		}, {
-			actualDeclaration = declaration;
+			actualAttributes = attributes;
 		});
-		^super.new(name, actualDefinition, actualDeclaration, parent).initModule;
+		^super.new(name, actualDefinition, actualAttributes, parent).initModule;
 	}
 
 	*makeDefinitionEnvironment{arg definition;
@@ -137,18 +137,18 @@ VTMModule : VTMComposableContext {
 	}
 
 	//Making parameters depends on if the module's definition specifies
-	//a ~buildParameters function or a ~parameterDeclarations array.
+	//a ~buildParameters function or a ~parameterAttributes array.
 	//If both are defined they will be combined but the restults of
 	//the ~buildParameters function will override what is declared in
-	//~parameterDeclarations.
+	//~parameterAttributes.
 	// makeParameters{
 	// 	var parametersToBuild = IdentityDictionary.new;
 	// 	var buildOrder = [];
 	//
 	// 	if(definition.includesKey(\parameters), {
-	// 		definition[\parameters].do({arg paramDeclaration;
+	// 		definition[\parameters].do({arg paramAttributes;
 	// 			var paramName, paramDesc;
-	// 			paramName = paramDeclaration[\name];
+	// 			paramName = paramAttributes[\name];
 	// 			// "Adding param: % to build queue: \n\t%".format(
 	// 			// paramName, paramDesc).postln;
 	//
@@ -158,7 +158,7 @@ VTMModule : VTMComposableContext {
 	// 				}, {
 	// 					buildOrder = buildOrder.add(paramName);
 	// 			});
-	// 			parametersToBuild.put(paramName, paramDeclaration.as(IdentityDictionary));
+	// 			parametersToBuild.put(paramName, paramAttributes.as(IdentityDictionary));
 	// 		});
 	// 	});
 	//
@@ -180,17 +180,17 @@ VTMModule : VTMComposableContext {
 	// 	};
 	// }
 
-	// addParameter{arg parameterName, parameterDeclaration;
+	// addParameter{arg parameterName, parameterAttributes;
 	// 	var newParameter;
 	//
-	// 	newParameter = VTMParameter.makeFromDeclaration(
-	// 		parameterDeclaration.put(\name, parameterName)
+	// 	newParameter = VTMParameter.makeFromAttributes(
+	// 		parameterAttributes.put(\name, parameterName)
 	// 	);
 	// 	if(newParameter.notNil, {
 	// 		this.addChild(newParameter);
 	// 		this.prInvalidateChildren;
 	// 		}, {
-	// 			"Failed to add parameter: \n\t%\n\t%".format(parameterName, parameterDeclaration).postln;
+	// 			"Failed to add parameter: \n\t%\n\t%".format(parameterName, parameterAttributes).postln;
 	// 	});
 	// }
 

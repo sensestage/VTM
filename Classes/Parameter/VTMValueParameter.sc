@@ -12,8 +12,8 @@ VTMValueParameter : VTMParameter {
 	}
 
 	//This is an abstract class and can not be used directly.
-	*new{arg name, declaration;
-		^super.new(name, declaration).initValueParameter;
+	*new{arg name, attributes;
+		^super.new(name, attributes).initValueParameter;
 	}
 
 	value{
@@ -26,22 +26,22 @@ VTMValueParameter : VTMParameter {
    	}
 
 	initValueParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\defaultValue), {
-				this.defaultValue_(declaration[\defaultValue]);
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\defaultValue), {
+				this.defaultValue_(attributes[\defaultValue]);
 			});
-			if(declaration.includesKey(\value), {
-				this.value_(declaration[\value]);
+			if(attributes.includesKey(\value), {
+				this.value_(attributes[\value]);
 			});
-			if(declaration.includesKey(\filterRepetitions), {
-				filterRepetitions = declaration[\filterRepetitions];
+			if(attributes.includesKey(\filterRepetitions), {
+				filterRepetitions = attributes[\filterRepetitions];
 			});
-			if(declaration.includesKey(\enum), {
+			if(attributes.includesKey(\enum), {
 				//enums are stored as key value pairs
-				enum = VTMNamedList.newFromKeyValuePairs(declaration[\enum]);
+				enum = VTMNamedList.newFromKeyValuePairs(attributes[\enum]);
 			});
-			if(declaration.includesKey(\restrictValueToEnum), {
-				restrictValueToEnum = declaration[\restrictValueToEnum];
+			if(attributes.includesKey(\restrictValueToEnum), {
+				restrictValueToEnum = attributes[\restrictValueToEnum];
 			});
 		});
 		enum = enum ? VTMNamedList();

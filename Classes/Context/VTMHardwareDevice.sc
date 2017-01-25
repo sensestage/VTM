@@ -1,14 +1,14 @@
 //children may be Parameter and HardwareDevice
 VTMHardwareDevice : VTMComposableContext {
 
-	// *new{arg name, definition, declaration, parent;
-	// 	^super.new(name, definition, declaration, parent).initHardwareDevice;
+	// *new{arg name, definition, attributes, parent;
+	// 	^super.new(name, definition, attributes, parent).initHardwareDevice;
 	// }
 
 	//Non DRY hack for Martin/Sofia jam - duplication of VTMModule constructor
-	*new{arg name, definition, declaration, parent;
-		var actualDefinition, actualDeclaration;
-		//Check if either definition or declaration are Symobol, in which case
+	*new{arg name, definition, attributes, parent;
+		var actualDefinition, actualAttributes;
+		//Check if either definition or attributes are Symobol, in which case
 		//they will be looked up in the global vtm library
 		if(definition.isKindOf(Symbol), {
 			actualDefinition = VTMLibrary.at(\definitions, definition);
@@ -18,12 +18,12 @@ VTMHardwareDevice : VTMComposableContext {
 
 		actualDefinition = this.makeDefinitionEnvironment(actualDefinition);
 
-		if(declaration.isKindOf(Symbol), {
-			actualDeclaration = VTMLibrary.at(\declarations, declaration);
+		if(attributes.isKindOf(Symbol), {
+			actualAttributes = VTMLibrary.at(\attributes, attributes);
 		}, {
-			actualDeclaration = declaration;
+			actualAttributes = attributes;
 		});
-		^super.new(name, actualDefinition, actualDeclaration, parent).initHardwareDevice;
+		^super.new(name, actualDefinition, actualAttributes, parent).initHardwareDevice;
 	}
 
 	*makeDefinitionEnvironment{arg definition;
@@ -36,7 +36,7 @@ VTMHardwareDevice : VTMComposableContext {
 				midiDevice = Environment.new;
 				midiDevice.use{
 					~prepare = {arg device, cond;
-						var decl = device.declaration;
+						var decl = device.attributes;
 						"Preparing MIDIDevice prototype".postln;
 						MIDIClient.initialized.not.if({
 							MIDIClient.init;

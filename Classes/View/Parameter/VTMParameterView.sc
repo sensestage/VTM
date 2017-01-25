@@ -1,7 +1,7 @@
 VTMParameterView : View {
 	var parameter;//the VTParameter instance
 	var labelView, outlineView;
-	var declaration;
+	var attributes;
 	var definition;
 	var <labelMode = \name;
 	var <color;
@@ -33,41 +33,41 @@ VTMParameterView : View {
 		^this.class.viewTypeToClassMappings.findKeyForValue(this.class);
 	}
 
-	*makeFromDeclaration{arg parent, bounds, definition, declaration, parameter;
+	*makeFromAttributes{arg parent, bounds, definition, attributes, parameter;
 		var viewClass;
-		if(declaration.notNil, {
-			if(declaration.includesKey(\type), {
-				viewClass = this.viewTypeToClassMappings[declaration[\type]];
+		if(attributes.notNil, {
+			if(attributes.includesKey(\type), {
+				viewClass = this.viewTypeToClassMappings[attributes[\type]];
 			});
 		});
 
 		if(viewClass.isNil, {
 			viewClass = this.viewTypeToClassMappings[parameter.class.defaultViewType];
 		});
-		^viewClass.new(parent, bounds, definition, declaration, parameter);
+		^viewClass.new(parent, bounds, definition, attributes, parameter);
 	}
 
 	*prCalculateSize{arg units;
 		^Size(unitWidth, unitHeight * units);
 	}
 
-	*new{arg parent, bounds, definition, declaration, parameter;
+	*new{arg parent, bounds, definition, attributes, parameter;
 		var viewBounds;
 		viewBounds = bounds ?? { this.prCalculateSize(1).asRect; };
-		^super.new( parent: parent, bounds: viewBounds ).initParameterView(definition, declaration, parameter);
+		^super.new( parent: parent, bounds: viewBounds ).initParameterView(definition, attributes, parameter);
 	}
 
-	initParameterView{arg definition_, declaration_, parameter_;
+	initParameterView{arg definition_, attributes_, parameter_;
 		if(parameter_.isNil, {Error("VTMParameterView - needs parameter").throw;});
 		parameter = parameter_;
 		parameter.addDependant(this);
 
-		declaration = declaration_ ? IdentityDictionary.new;
+		attributes = attributes_ ? IdentityDictionary.new;
 		definition = definition_ ? Environment.new;
 
-		if(declaration.notNil, {
-			if(declaration.includesKey(\labelMode), {
-				labelMode = declaration[\labelMode];
+		if(attributes.notNil, {
+			if(attributes.includesKey(\labelMode), {
+				labelMode = attributes[\labelMode];
 			});
 		});
 
@@ -77,7 +77,7 @@ VTMParameterView : View {
 				//if alt key is pressed when pressing down the view, the parameter setting window
 				//for this ibjet will open.
 				if(mod == 524288, {
-					"Opening parameter declaration window: %".format(parameter.path).postln;
+					"Opening parameter attributes window: %".format(parameter.path).postln;
 					result = true;
 				});
 				result;
@@ -113,16 +113,16 @@ VTMParameterView : View {
 		outlineView.drawFunc = {|uview|
 			Pen.use {
 				Pen.addRoundedRect(uview.bounds.insetBy(1,1), 5, 5);
-				Pen.strokeColor_(declaration[\outlineColor] ? Color.black);
-				Pen.width_(declaration[\outlineWidth] ? 2);
-				Pen.fillColor_(declaration.atFail(\color, {Color.cyan.alpha_(0.0)}));
+				Pen.strokeColor_(attributes[\outlineColor] ? Color.black);
+				Pen.width_(attributes[\outlineWidth] ? 2);
+				Pen.fillColor_(attributes.atFail(\color, {Color.cyan.alpha_(0.0)}));
 				Pen.draw(3);//draw both stroke and fill
 			}
 		};
 		labelView !? {labelView.remove;};
 		labelView = StaticText(this, this.class.prCalculateSize(1).asRect.insetAll(labelOffset, 0, 0, 0))
-		.stringColor_(declaration[\stringColor] ? this.class.stringColor)
-		.font_(declaration[\font] ? this.class.font.bold_(true).italic_(true))
+		.stringColor_(attributes[\stringColor] ? this.class.stringColor)
+		.font_(attributes[\font] ? this.class.font.bold_(true).italic_(true))
 		.acceptsMouse_(false)
 		.focusColor_(Color.white.alpha_(0.0))
 		.background_(Color.white.alpha_(0.0))
@@ -138,7 +138,7 @@ VTMParameterView : View {
 			\name, { label = parameter.name; },
 			\path, { label = parameter.fullPath; }
 		);
-		declaration[\labelPrepend] !? {label = declaration[\labelPrepend] ++ label; };
+		attributes[\labelPrepend] !? {label = attributes[\labelPrepend] ++ label; };
 		{labelView.string_(label).toolTip_("% [%]".format(label, this.type))}.defer;
 	}
 

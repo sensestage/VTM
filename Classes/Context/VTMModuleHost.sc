@@ -1,8 +1,8 @@
 VTMModuleHost : VTMNetworkedContext {
 	var <factory;
 
-	*new{arg definition, declaration, network;
-		^super.new('modules', definition, declaration, network).initModuleHost;
+	*new{arg definition, attributes, network;
+		^super.new('modules', definition, attributes, network).initModuleHost;
 	}
 
 	initModuleHost {
@@ -13,16 +13,16 @@ VTMModuleHost : VTMNetworkedContext {
 		^children;
 	}
 
-	//A declaration is a dictonary of parameter key/values.
-	//The declaration may define the name of a module definition.
+	//A attributes is a dictonary of parameter key/values.
+	//The attributes may define the name of a module definition.
 	//This definition may be overriden by the optional moduleDefinition argument
 	//that expects an Environment where the prepare, start, and free methods are defined.
 	//The definition can also define functions for building parameters (~buildParameters)
 	//
-	loadModuleDeclaration{arg moduleDefinition, declaration;
+	loadModuleAttributes{arg moduleDefinition, attributes;
 		var newModule;
 		try{
-			newModule = factory.build(moduleDefinition, declaration);
+			newModule = factory.build(moduleDefinition, attributes);
 
 			//The factory may throw error when building the module, but
 			//added an extra check here
@@ -32,22 +32,22 @@ VTMModuleHost : VTMNetworkedContext {
 				this.loadModule(newModule);
 			});
 		} {|err|
-			"Module build error for module name: '%'".format(declaration[\name]).warn;
+			"Module build error for module name: '%'".format(attributes[\name]).warn;
 			err.throw;
 		};
 		^newModule;
 	}
 
-	loadModuleJSONCue{arg moduleDefinition, declarationJSONString;
-		var moduleDeclaration;
+	loadModuleJSONCue{arg moduleDefinition, attributesJSONString;
+		var moduleAttributes;
 		//parse JSON string
 		try{
-			moduleDeclaration = declarationJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
+			moduleAttributes = attributesJSONString.parseYAML.changeScalarValuesToDataTypes.asIdentityDictionaryWithSymbolKeys;
 		} {|err|
 			"Module JSON cue parser error".warn;
 			err.postln;
 		};
-		this.loadModuleDeclaration(moduleDefinition, moduleDeclaration);
+		this.loadModuleAttributes(moduleDefinition, moduleAttributes);
 	}
 
 	//can be either a .json file or a .scd file
@@ -94,10 +94,10 @@ VTMModuleHost : VTMNetworkedContext {
 
 	prepare{arg condition;
 		forkIfNeeded{
-			if(declaration.includesKey(\modules), {
-				declaration[\modules].do({arg modDec;
+			if(attributes.includesKey(\modules), {
+				attributes[\modules].do({arg modDec;
 					var mod;
-					mod = this.loadModuleDeclaration(modDec);
+					mod = this.loadModuleAttributes(modDec);
 					if(mod.notNil, {
 						mod.prepare(condition);
 						mod.run(condition);
