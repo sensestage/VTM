@@ -28,7 +28,8 @@
 			}
 			{"^0[xX][0-9a-fA-F]+$".matchRegexp(str)} {result = str.interpret; } //hex notation
 			{"^true$|^Y$|^Yes$|^ON$".matchRegexp(str)} { result = true; }// yaml1.2 /json compatible booleans
-			{"^false$|^n$|^FALSE$|^No$|^off$".matchRegexp(str)} { result = false; };
+			{"^false$|^n$|^FALSE$|^No$|^off$".matchRegexp(str)} { result = false; }
+			{ result = str.asSymbol; };//convert to symbol by default
 			result;
 		};
 		changeValue = {|key,val|

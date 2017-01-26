@@ -15,7 +15,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 				\minVal, { result = this.makeRandomValue(params); },
 				\maxVal, { result = this.makeRandomValue(params); },
 				\stepsize, { result = this.makeRandomValue(params ? (minVal: 0.0, maxVal: 1000.0)).abs; },
-				\clipmode, { result = [\none, \low, \high, \both].choose.asString; }
+				\clipmode, { result = [\none, \low, \high, \both].choose; }
 			);
 		});
 		^result;

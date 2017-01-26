@@ -6,13 +6,13 @@ VTMJSON : JSON {
 			^obj.asCompileString.reject(_.isControl).replace("\n", JSON.nl).replace("\t", JSON.tab);
 		});
 		if(obj.class === Symbol, {
-			^VTMJSON.stringify(obj.asString)
+			^VTMJSON.stringifyAttributes(obj.asString)
 		});
 
 		if(obj.isKindOf(Dictionary), {
 			out = List.new;
 			obj.keysValuesDo({ arg key, value;
-				out.add( key.asString.asCompileString ++ ":" + VTMJSON.stringify(value) );
+				out.add( key.asString.asCompileString ++ ":" + VTMJSON.stringifyAttributes(value) );
 			});
 			^("{" ++ (out.join(", ")) ++ "}");
 		});
@@ -45,7 +45,7 @@ VTMJSON : JSON {
 		});
 		if(obj.isKindOf(SequenceableCollection), {
 			^"[" ++ obj.collect({ arg sub;
-				VTMJSON.stringify(sub)
+				VTMJSON.stringifyAttributes(sub)
 			}).join(", ")
 			++ "]";
 		});
@@ -57,10 +57,10 @@ VTMJSON : JSON {
 		// http://en.wikipedia.org/wiki/ISO_8601
 
 		("No JSON conversion for object" + obj).warn;
-		^VTMJSON.stringify(obj.asCompileString)
+		^VTMJSON.stringifyAttributes(obj.asCompileString)
 	}
 
-	*parseAttributes{arg str;
+	*parseAttributesString{arg str;
 		var result;
 		result = str.parseYAML(str);
 		result = result.changeScalarValuesToDataTypes;

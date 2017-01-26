@@ -27,7 +27,7 @@ TestVTMValueParameter : TestVTMParameter {
 		var minRand = 5, maxRand = 10;
 		^rrand(minRand, maxRand).collect({arg i;
 			[
-				[i + 1, this.makeRandomString((noNumbers: true, noSpaces: true))].choose,
+				[i + 1, this.makeRandomSymbol((noNumbers: true, noSpaces: true))].choose,
 				this.makeRandomValue
 			];
 		}).flatten;

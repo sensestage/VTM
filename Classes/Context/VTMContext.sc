@@ -495,7 +495,7 @@ VTMContext {
 				context.parameters;
 			},
 			'state?' -> {arg context; context.state; },
-			'attributes?' -> {arg context; JSON.stringify(context.attributes); },
+			'attributes?' -> {arg context; VTMJSON.stringifyAttributes(context.attributes); },
 			'reset!' -> {arg context; context.reset; },
 			'free!' -> {arg context; context.free; }
 		];

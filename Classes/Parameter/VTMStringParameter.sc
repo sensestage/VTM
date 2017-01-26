@@ -5,7 +5,7 @@ parsed in some way. Its pattern value defines a regex pattern that checks the va
 incoming string values.
 */
 VTMStringParameter : VTMValueParameter {
-	var <pattern = ""; //empty string cause no pattern match
+	var pattern = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
 	*type{ ^\string; }
@@ -47,9 +47,13 @@ VTMStringParameter : VTMValueParameter {
 		});
 	}
 
+	pattern{
+		^pattern.asSymbol;
+	}
+
 	pattern_{arg val;
-		if(val.isString, {
-			pattern = val;
+		if(val.isString or: {val.isKindOf(Symbol)}, {
+			pattern = val.asString;
 		}, {
 			"StringParameter:pattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
 				this.fullPath, val, val.class

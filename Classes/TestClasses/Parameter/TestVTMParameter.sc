@@ -1,14 +1,14 @@
 TestVTMParameter : VTMUnitTest {
 	*testClasses{
 		^[
-			VTMBooleanParameter,
+//			VTMBooleanParameter,
 			VTMStringParameter,
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
-			VTMTimecodeParameter,
-			VTMDecimalParameter,
-			VTMIntegerParameter
+		//	VTMTimecodeParameter,
+	//		VTMDecimalParameter,
+			//VTMIntegerParameter
 			// VTMSchemaParameter,
 			// VTMTupleParameter
 		];
@@ -61,7 +61,7 @@ TestVTMParameter : VTMUnitTest {
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		switch(key,
-			\name, {result = this.makeRandomString.value(params); },
+			\name, {result = this.makeRandomSymbol(params ? (noNumbers: true)); },
 			\path, {
 				var minLevels, maxLevels;
 				if(params.notNil and: { params.isKindOf(Dictionary) },{
@@ -74,7 +74,7 @@ TestVTMParameter : VTMUnitTest {
 				result = rrand(minLevels,maxLevels).collect({
 					"/%".format(this.makeRandomString.value(params));
 				});
-				result = String.newFrom(result.flat);
+				result = String.newFrom(result.flat).asSymbol;
 			},
 			\enabled, {result = this.makeRandomBoolean.value(params)},
 			\willStore, {result = this.makeRandomBoolean.value(params)},
@@ -89,7 +89,7 @@ TestVTMParameter : VTMUnitTest {
 		class = "VTM%Parameter".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
 		attrKeys = class.attributeKeys;
-		attrKeys.add(\type -> type.asString);
+		attrKeys.add(\type -> type);
 		result = testClass.generateRandomAttributes(attrKeys);
 		^result;
 	}
@@ -359,6 +359,9 @@ TestVTMParameter : VTMUnitTest {
 					attributes.keys.asArray.sort
 				)
 			);
+			topEnvironment.put(\response, param.attributes);
+			topEnvironment.put(\attributes, attributes);
+
 			/*
 			"Attributes:".postln;
 			param.attributes.keysValuesDo({arg key, val;

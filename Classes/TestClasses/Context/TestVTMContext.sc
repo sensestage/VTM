@@ -275,7 +275,8 @@ TestVTMContext : VTMUnitTest {
 		var testParameterValues = parameterValues.deepCopy;
 		parameterAttributes = numParameters.collect({arg i;
 			TestVTMParameter.makeRandomAttributes(
-				[\integer, \decimal, \string, \boolean].choose
+				// [\integer, \decimal, \string, \boolean].choose
+				\decimal
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
@@ -290,7 +291,7 @@ TestVTMContext : VTMUnitTest {
 		context.prepare;
 
 		subContexts = 4.collect({arg i;
-			VTMContext(this.class.makeRandomString.asSymbol, parent: context);
+			VTMContext(this.class.makeRandomString((minLength: 6)).asSymbol, parent: context);
 		});
 
 		//startingOSC
@@ -336,78 +337,79 @@ TestVTMContext : VTMUnitTest {
 			});
 		}.value;
 
-		// {//test the OSC API attributes responder
-		// 	var tempResponder, response, cond;
-		// 	var responded = false;
-		// 	var respPath = "%:attributes?_testreply".format(context.fullPath).asSymbol;
-		// 	var attributes;
-		//
-		// 	cond = Condition.new;
-		// 	tempResponder = OSCFunc({arg msg, time, addr, port;
-		// 		response = msg[1].asString.parseYAML;
-		// 		response = response.changeScalarValuesToDataTypes;
-		// 		response = response.asIdentityDictionaryWithSymbolKeys;
-		// 		responded = true;
-		// 		cond.unhang;
-		// 	}, respPath);
-		// 	context.addr.sendMsg(
-		// 		"%:attributes?".format(context.fullPath).asSymbol,
-		// 		NetAddr.localAddr.hostname,
-		// 		NetAddr.localAddr.port,
-		// 		respPath
-		// 	);
-		// 	cond.hang(0.2);
-		// 	this.assert(responded,
-		// 		"Context OSC API command 'attributes?' responded"
-		// 	);
-		//
-		// 	attributes = context.attributes;
-		//
-		// 	this.assertEquals(
-		// 		response.keys.asArray.sort, attributes.keys.asArray.sort,
-		// 		"Context OSC API command 'attributes?' returned equal dictionary keys"
-		// 	);
-		//
-		// 	attributes.keysValuesDo({arg attrKey, attrVal;
-		//
-		// 		if(attrVal.isKindOf(Float), {
-		// 			this.assertFloatEquals(
-		// 				response[attrKey],
-		// 				attrVal,
-		// 				"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
-		// 			);
-		// 			}, {
-		// 				if(attrVal.isArray, {
-		// 					var valItemEqualities;
-		// 					//convert any symbol values to string, as the OSC response will be an array of string values
-		// 					attrVal = attrVal.collect({arg it;
-		// 						if(it.isKindOf(Symbol), { it.asString; }, { it; } );
-		// 					});
-		// 					//compare the elements in the array
-		// 					valItemEqualities = attrVal.collect({arg valItem, i;
-		// 						if(valItem.isKindOf(Float), {
-		// 							valItem.equalWithPrecision(response[attrKey][i]);
-		// 							}, {
-		// 								valItem == response[attrKey][i];
-		// 						});
-		// 					});
-		// 					this.assert(valItemEqualities.every({arg it; it;}),
-		// 						"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
-		// 					);
-		// 					}, {
-		// 						this.assertEquals(
-		// 							response[attrKey],
-		// 							attrVal,
-		// 							"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
-		// 						);
-		// 				});
-		// 		});
-		// 	});
-		// 	topEnvironment.put(\response, response);
-		// 	topEnvironment.put(\attributes, context.attributes);
-		//
-		// 	tempResponder.free;
-		// }.value;
+		{//test the OSC API attributes responder
+			var tempResponder, response, cond;
+			var responded = false;
+			var respPath = "%:attributes?_testreply".format(context.fullPath).asSymbol;
+			var attributes;
+
+			cond = Condition.new;
+			tempResponder = OSCFunc({arg msg, time, addr, port;
+				topEnvironment.put(\json, msg[1]);
+				response = VTMJSON.parseAttributesString(msg[1].asString);
+				responded = true;
+				cond.unhang;
+			}, respPath);
+			context.addr.sendMsg(
+				"%:attributes?".format(context.fullPath).asSymbol,
+				NetAddr.localAddr.hostname,
+				NetAddr.localAddr.port,
+				respPath
+			);
+			cond.hang(0.2);
+			this.assert(responded,
+				"Context OSC API command 'attributes?' responded"
+			);
+
+			attributes = context.attributes;
+
+			this.assertEquals(
+				response.keys.asArray.sort, attributes.keys.asArray.sort,
+				"Context OSC API command 'attributes?' returned equal dictionary keys"
+			);
+
+			this.assertEquals(
+				response, context.attributes,
+				"Context OSC API got correct Context attributes"
+			);
+/*			attributes.keysValuesDo({arg attrKey, attrVal;
+
+				if(attrVal.isKindOf(Float), {
+					this.assertFloatEquals(
+						response[attrKey],
+						attrVal,
+						"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
+					);
+				}, {
+					if(attrVal.isArray, {
+						var valItemEqualities;
+						//convert any symbol values to string, as the OSC response will be an array of string values
+						attrVal = attrVal.collect({arg it;
+							if(it.isKindOf(Symbol), { it.asString; }, { it; } );
+						});
+						//compare the elements in the array
+						valItemEqualities = attrVal.collect({arg valItem, i;
+							if(valItem.isKindOf(Float), {
+								valItem.equalWithPrecision(response[attrKey][i]);
+							}, {
+								valItem == response[attrKey][i];
+							});
+						});
+						this.assert(valItemEqualities.every({arg it; it;}),
+							"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
+						);
+					}, {
+						this.assertEquals(
+							response[attrKey],
+							attrVal,
+							"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
+						);
+					});
+				});
+			});*/
+
+			tempResponder.free;
+		}.value;
 		//test OSC responders for parameters
 
 		//stoppingOSC
