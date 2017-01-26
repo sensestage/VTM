@@ -5,7 +5,7 @@ parsed in some way. Its pattern value defines a regex pattern that checks the va
 incoming string values.
 */
 VTMStringParameter : VTMValueParameter {
-	var pattern = ""; //empty string cause no pattern match
+	var <pattern = ""; //empty string cause no pattern match
 	var <matchPattern = true;
 
 	*type{ ^\string; }
@@ -47,11 +47,8 @@ VTMStringParameter : VTMValueParameter {
 		});
 	}
 
-	pattern{
-		^pattern.asSymbol;
-	}
-
 	pattern_{arg val;
+		var result = val ? "";
 		if(val.isString or: {val.isKindOf(Symbol)}, {
 			pattern = val.asString;
 		}, {
@@ -79,6 +76,9 @@ VTMStringParameter : VTMValueParameter {
 	}
 
 	value_{arg val;
+		if(val.class == Symbol, {//Symbols are accepted and converted into strings
+			val = val.asString;
+		});
 		if(matchPattern and: {pattern.isEmpty.not}, {
 			if(pattern.matchRegexp(val), {
 				super.value_(val, true);

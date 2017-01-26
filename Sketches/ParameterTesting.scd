@@ -1,6 +1,8 @@
 a = VTMUnitTest.runAll
 a.failures[0]
 
+"hei".asCompileString.drop(1).drop(-1)
+
 VTMUnitTest.runTest("TestVTMParameter:test_GetAttributes");
 
 VTMUnitTest.runTest("TestVTMContext:test_OSCCommunication");
@@ -15,6 +17,7 @@ VTMUnitTest.runTestForClass(VTMContext, true);
 
 VTMUnitTest.reportAllErrors = true;
 
+Platform.defaultTempDir
 
 
 VTMUnitTest.runTest("TestVTMValueParameter:test_SetVariablesFromAttributes");
@@ -66,6 +69,20 @@ paramA.keysValuesDo({arg key, val;
 ~response[\parameters] == ~attributes[\parameters]
 ~response[\children] == ~attributes[\children]
 ~response[\children] == ~attributes[\children]
+a = ~json.asString.parseYAML;
+b = a.changeScalarValuesToDataTypes;
+a["children"][0].class
+b['children'][0].class
+
+
+a["parameters"]["V"]["name"].class
+b['parameters']['DGzXuFZUBER']['name'].class
+
+
+a["parameters"]["DGzXuFZUBER"]["defaultValue"].class
+b['parameters']['DGzXuFZUBER']['defaultValue'].class
+
+
 (
 var attributes, response;
 "CHILDREN EQUALITY: %".format(~attributes[\children] == ~response[\children]).postln;
@@ -87,14 +104,14 @@ var attributes, response;
 		//only print the unmatched ones
 		if(match.not, {
 			if(val.isKindOf(Array), {
-				"\t% - %\n\t\tA[%]:\t%\n\t\tB[%]:\t%".format(
+				"\t% - %\n\t\tAttributes[%]:\t%\n\t\tResponse[%]:\t%".format(
 					key,
 					match,
 					val.class, val.collect({arg item, i; [item, item.class.asSymbol, item == paramB[key][i]]}),
 					paramB[key].class, paramB[key].collect({arg item, i; [item, item.class.asSymbol, item == val[i]]})
 				).postln;
 			}, {
-				"\t% - %\n\t\tA[%]:\t%\n\t\tB[%]:\t%".format(
+				"\t% - %\n\t\tAttributes[%]:\t%\n\t\tResponse[%]:\t%".format(
 					key,
 					match,
 					val.class, val,

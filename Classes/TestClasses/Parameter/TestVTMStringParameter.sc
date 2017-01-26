@@ -9,7 +9,7 @@ TestVTMStringParameter : TestVTMValueParameter {
 		result = super.prMakeRandomAttribute(key, params);
 		if(result.isNil, {
 			switch(key,
-				\pattern, { result = this.makeRandomString(params).asSymbol; },
+				\pattern, { result = this.makeRandomString(params); },
 				\matchPattern, { result = this.makeRandomBoolean(params); }
 			);
 		});
@@ -34,11 +34,11 @@ TestVTMStringParameter : TestVTMValueParameter {
 		//value should default to empty string if value not defined
 		this.assert(
 			param.value.class == String and: { param.value == param.defaultValue },
-			"StringParameter value defaults to empty string.\n\tIS: %\n\tSHOULD BE: %".format(param.value, "")
+			"StringParameter value defaults to empty string.\n\tIS: %\n\tSHOULD BE: %".format(param.value.asCompileString, "".asCompileString)
 		);
 		//pattern should be empty string by default
 		this.assertEquals(
-			param.pattern, '',
+			param.pattern, "",
 			"StringParameter pattern is empty symbol by default"
 		);
 
@@ -66,33 +66,33 @@ TestVTMStringParameter : TestVTMValueParameter {
 			"StringParameter set defaultValue through attributes"
 		);
 		this.assertEquals(
-			param.pattern, desc[\pattern].asSymbol,
+			param.pattern, desc[\pattern],
 			"StringParameter set value through attributes"
 		);
 	}
 
-	//Uncommented due to unclarity whether to use symbols or Strings. To be decided later
-	// test_ConvertingSymbolArgsToStrings{
-	// 	var desc, param;
-	// 	desc = (
-	// 		value: 'heisann.3',
-	// 		defaultValue: 'heisann.5',
-	// 		pattern: '^heisann\\.\\d+$'
-	// 	);
-	// 	param = VTMStringParameter.new('myString', desc);
-	// 	this.assertEquals(
-	// 		param.defaultValue.class, String,
-	// 		"StringParameter converted defaultValue symbol arg to String"
-	// 	);
-	// 	// this.assertEquals(
-	// 	// 	param.value.class, String,
-	// 	// 	"StringParameter converted value symbol arg to String"
-	// 	// );
-	// 	this.assertEquals(
-	// 		param.pattern.class, String,
-	// 		"StringParameter converted pattern symbol arg to String"
-	// 	);
-	// }
+
+	test_ConvertingSymbolArgsToStrings{
+		var desc, param;
+		desc = (
+			value: 'heisann.3',
+			defaultValue: 'heisann.5',
+			pattern: '^heisann\\.\\d+$'
+		);
+		param = VTMStringParameter.new('myString', desc);
+		this.assertEquals(
+			param.defaultValue.class, String,
+			"StringParameter converted defaultValue symbol arg to String"
+		);
+		this.assertEquals(
+			param.value.class, String,
+			"StringParameter converted value symbol arg to String"
+		);
+		this.assertEquals(
+			param.pattern.class, String,
+			"StringParameter converted pattern symbol arg to String"
+		);
+	}
 
 	test_RegexMatchingWhenSettingValue{
 		var testValue;

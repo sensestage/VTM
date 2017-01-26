@@ -275,8 +275,7 @@ TestVTMContext : VTMUnitTest {
 		var testParameterValues = parameterValues.deepCopy;
 		parameterAttributes = numParameters.collect({arg i;
 			TestVTMParameter.makeRandomAttributes(
-				// [\integer, \decimal, \string, \boolean].choose
-				\decimal
+				[\integer, \decimal, \string, \boolean].choose
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
@@ -407,6 +406,9 @@ TestVTMContext : VTMUnitTest {
 					});
 				});
 			});*/
+
+			topEnvironment.put(\response, response);
+			topEnvironment.put(\attributes, attributes);
 
 			tempResponder.free;
 		}.value;

@@ -3,10 +3,10 @@ VTMJSON : JSON {
 		var out;
 
 		if(obj.isString, {
-			^obj.asCompileString.reject(_.isControl).replace("\n", JSON.nl).replace("\t", JSON.tab);
+			^"<string> " ++ obj.asCompileString.reject(_.isControl).replace("\n", JSON.nl).replace("\t", JSON.tab);
 		});
 		if(obj.class === Symbol, {
-			^VTMJSON.stringifyAttributes(obj.asString)
+			^"<symbol> %".format(obj.asString);
 		});
 
 		if(obj.isKindOf(Dictionary), {
@@ -21,10 +21,10 @@ VTMJSON : JSON {
 			^"null"
 		});
 		if(obj === true, {
-			^"true"
+			^"<bool> true"
 		});
 		if(obj === false, {
-			^"false"
+			^"<bool> false"
 		});
 		if(obj.isNumber, {
 			if(obj.isNaN, {
@@ -38,7 +38,10 @@ VTMJSON : JSON {
 			});
 			if(obj.isFloat, {
 				//using angle bracket for denoting the data type, 64 bit float
-				^"<float64>%%".format(*[obj.high32Bits, obj.low32Bits].collect(_.asHexString));
+				^"<float> %%".format(*[obj.high32Bits, obj.low32Bits].collect(_.asHexString));
+			});
+			if(obj.isInteger, {
+				^"<int> %".format(obj);
 			});
 
 			^obj.asString
@@ -64,7 +67,6 @@ VTMJSON : JSON {
 		var result;
 		result = str.parseYAML(str);
 		result = result.changeScalarValuesToDataTypes;
-		result = result.asIdentityDictionaryWithSymbolKeys;
 		^result;
 	}
 }

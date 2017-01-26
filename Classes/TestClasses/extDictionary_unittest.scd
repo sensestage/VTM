@@ -6,7 +6,7 @@
 	shouldBe = Float.from64Bits(highBits, lowBits);
 
 	testVal = Dictionary[
-		\mykey -> "<float64>%%".format(*[highBits, lowBits].collect(_.asHexString(8)))
+		\mykey -> "<float> %%".format(*[highBits, lowBits].collect(_.asHexString(8)))
 	].changeScalarValuesToDataTypes[\mykey];
 
 	test.assertEquals(
@@ -18,7 +18,7 @@
 	lowBits = Integer.makeRandom32Bits;
 	shouldBe = Float.from32Bits(lowBits);
 	testVal = Dictionary[
-		\mykey -> "<float32>%".format(lowBits.asHexString(8))
+		\mykey -> "<float> %".format(lowBits.asHexString(8))
 	].changeScalarValuesToDataTypes[\mykey];
 
 	test.assertEquals(

@@ -359,8 +359,8 @@ TestVTMParameter : VTMUnitTest {
 					attributes.keys.asArray.sort
 				)
 			);
-			topEnvironment.put(\response, param.attributes);
-			topEnvironment.put(\attributes, attributes);
+			// topEnvironment.put(\response, param.attributes);
+			// topEnvironment.put(\attributes, attributes);
 
 			/*
 			"Attributes:".postln;
