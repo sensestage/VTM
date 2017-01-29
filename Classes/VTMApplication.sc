@@ -182,16 +182,17 @@ VTMApplication {
 		onRunning.value(this);
 	}
 
-	free{
+	free{arg onFreed;
 		this.execute(\free, condition);
 		sceneOwner.free(condition);
 		moduleHost.free(condition);
 		hardwareSetup.free(condition);
 		network.free(condition);
+		onFreed.value(this);
 	}
 
-	quit{
-		this.free;
+	quit{arg onFreed;
+		this.free(onFreed);
 	}
 
 	prLoadProjectFolder{arg pathName;

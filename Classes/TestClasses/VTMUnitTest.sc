@@ -8,18 +8,20 @@ VTMUnitTest : UnitTest {
 	}
 
 	*runAll{arg runScripts = true;
-		[
-			VTMParameter,
-			VTMContext,
-			VTMNamedList,
-			VTMApplication
-		].do({arg cl;
-			this.runTestForClass(cl, recursive: true);
-		});
-		if(runScripts, {
-			VTMUnitTestScript.findTestScripts;
-			VTMUnitTestScript.runAll;
-		});
+		forkIfNeeded{
+			[
+				VTMParameter,
+				VTMContext,
+				VTMNamedList,
+				VTMApplication
+			].do({arg cl;
+				this.runTestForClass(cl, recursive: true);
+			});
+			if(runScripts, {
+				VTMUnitTestScript.findTestScripts;
+				VTMUnitTestScript.runAll;
+			});
+		};
 	}
 
 	*runTestForClass{arg what, recursive = false;
@@ -47,7 +49,8 @@ VTMUnitTest : UnitTest {
 		if(this.class.checkFreeingResponderFuncs, {
 			if(AbstractResponderFunc.allFuncProxies.isEmpty.not, {
 				this.failed(currentMethod,
-					"Some AbstractResponderFunc proxies were not freed after test."
+					"Some AbstractResponderFunc proxies were not freed after test.:\n\t:%".format(
+						AbstractResponderFunc.allFuncProxies).postln;
 				);
 				if(this.class.forceFreeingResponderFuncs, {
 					AbstractResponderFunc.allFuncProxies.do({arg funcs;

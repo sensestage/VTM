@@ -1,6 +1,7 @@
 VTMUnitTest.runAll;
 
 VTMApplication.test;
+VTMContext.test;
 
 
 

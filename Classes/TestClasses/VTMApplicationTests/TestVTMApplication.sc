@@ -1,7 +1,7 @@
 /*
 Test setup with three applications running on the same computer.
 */
-TestVTMApplication : UnitTest {
+TestVTMApplication : VTMUnitTest {
 
 	test_StartApplication{}
 
@@ -17,36 +17,45 @@ TestVTMApplication : UnitTest {
 
 	test_RegisterNetworkApplicationsOnStartup{
 		var result, aaa, bbb, ccc;
-		var cond = Condition.new;
-		aaa = VTMApplication.new('aaa', onRunning: {cond.unhang;});
-		0.5.wait;
-		bbb = VTMApplication.new('bbb', onRunning: {cond.unhang;});
-		0.5.wait;
-		ccc = VTMApplication.new('ccc', onRunning: {cond.unhang;});
-		0.5.wait;
+		var cond = false;
+		aaa = VTMApplication.new('aaa', onRunning: {cond = true;});
+		this.wait(cond, maxTime: 1.0);
+		cond = false;
+		bbb = VTMApplication.new('bbb', onRunning: {cond = true;});
+		this.wait(cond, maxTime: 1.0);
+		cond = false;
+		ccc = VTMApplication.new('ccc', onRunning: {cond = true;});
+		this.wait(cond, maxTime: 1.0);
+		cond = false;
 		//The application should now have registered eachother as application proxies.
 		result = nil;
 		result = result.add(aaa.network.applicationProxies.collect(_.name).includesAll([\bbb, \ccc]));
 		result = result.add(bbb.network.applicationProxies.collect(_.name).includesAll([\aaa, \ccc]));
 		result = result.add(ccc.network.applicationProxies.collect(_.name).includesAll([\bbb, \aaa]));
-		// "aaa: %".format(aaa.network.applicationProxies.collect(_.name)).postln;
-		// "bbb: %".format(bbb.network.applicationProxies.collect(_.name)).postln;
-		// "ccc: %".format(ccc.network.applicationProxies.collect(_.name)).postln;
-		this.assert(
-			result.every({arg it; it;}),
-			"Applications registered eachother correctly"
+		cond = {
+			[
+				aaa.network.applicationProxies.collect(_.name).includesAll([\bbb, \ccc]),
+				bbb.network.applicationProxies.collect(_.name).includesAll([\aaa, \ccc]),
+				ccc.network.applicationProxies.collect(_.name).includesAll([\bbb, \aaa])
+			].every({arg it; it;});
+		};
+		this.wait(
+			cond,
+			"Applications did not register eachother correctly",
+			1.0
 		);
 
 		aaa.quit;
-		0.5.wait;
-
-		//app 'bbb' and 'ccc' should be notified upon 'aaa' quit
-		result = nil;
-		result = result.add( bbb.network.applicationProxies.collect(_.name).matchItem(\aaa).not );
-		result = result.add( ccc.network.applicationProxies.collect(_.name).matchItem(\aaa).not );
-		this.assert(
-			result.every({arg item; item}),
-			"Application 'bbb' and 'ccc' got notified of 'aaa' quit and removed its ApplicationProxy for it."
+		cond = {
+			[
+				bbb.network.applicationProxies.collect(_.name).matchItem(\aaa).not,
+				ccc.network.applicationProxies.collect(_.name).matchItem(\aaa).not
+			].every({arg item; item});
+		};
+		this.wait(
+			cond,
+			"Application 'bbb' and 'ccc' did get got notified of 'aaa' quit and removed its ApplicationProxy for it.",
+			maxTime: 1.0
 		);
 
 		bbb.quit;

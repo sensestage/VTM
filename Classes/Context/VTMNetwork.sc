@@ -1,5 +1,6 @@
 VTMNetwork : VTMContext {
 	var <application;
+	var oscResponders;
 	classvar <defaultPort = 57120;
 
 	classvar >sendToAllAction;
@@ -11,7 +12,7 @@ VTMNetwork : VTMContext {
 	initNetwork{arg application_;
 		application = application_;
 		NetAddr.broadcastFlag = true;
-		this.makeOSCResponders;
+		oscResponders = this.makeOSCResponders;
 	}
 
 	discover{
@@ -30,11 +31,12 @@ VTMNetwork : VTMContext {
 		this.applicationProxies.do({arg item;
 			item.sendMsg('/applicationQuitting', this.name, this.addr.generateIPString);
 		});
+		oscResponders.do(_.free);
 		super.free;
 	}
 
 	makeOSCResponders{
-		[
+		^[
 			OSCFunc({arg msg, time, addr, port;//network discover responder
 				var remoteName, remoteAddr;
 				// "[%] - Got network query: \n\t%".format(this.application.name, [msg, time, addr, port]).postln;
