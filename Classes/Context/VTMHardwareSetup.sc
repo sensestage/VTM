@@ -6,13 +6,13 @@ VTMHardwareSetup : VTMNetworkedContext {
 	}
 
 	initHardwareSetup{
-		"init hardware setup".postln;
+		// "init hardware setup".postln;
 		if(attributes.notNil, {
-			"init hardware setup attributes: %".format(attributes).postln;
+			// "init hardware setup attributes: %".format(attributes).postln;
 			if(attributes.includesKey(\devices), {
-				"init hardware setup devices".postln;
+				// "init hardware setup devices".postln;
 				attributes[\devices].do({arg deviceAttributes;
-					"\tiinit hardware device: %".format(deviceAttributes).postln;
+					// "\tiinit hardware device: %".format(deviceAttributes).postln;
 					VTMHardwareDevice.buildFromAttributes(deviceAttributes, this);
 				})
 			});

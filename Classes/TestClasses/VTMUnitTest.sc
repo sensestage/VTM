@@ -11,7 +11,8 @@ VTMUnitTest : UnitTest {
 		[
 			VTMParameter,
 			VTMContext,
-			VTMNamedList
+			VTMNamedList,
+			VTMApplication
 		].do({arg cl;
 			this.runTestForClass(cl, recursive: true);
 		});

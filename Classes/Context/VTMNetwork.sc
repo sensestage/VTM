@@ -12,7 +12,6 @@ VTMNetwork : VTMContext {
 		application = application_;
 		NetAddr.broadcastFlag = true;
 		this.makeOSCResponders;
-		"VTMNetwork initialized".postln;
 	}
 
 	discover{
@@ -27,6 +26,7 @@ VTMNetwork : VTMContext {
 
 	free{
 		//When the network instance is freed we notify the other applications about what is happening.
+		// "Application proxies: %".format(this.applicationProxies).postln;
 		this.applicationProxies.do({arg item;
 			item.sendMsg('/applicationQuitting', this.name, this.addr.generateIPString);
 		});
@@ -37,19 +37,20 @@ VTMNetwork : VTMContext {
 		[
 			OSCFunc({arg msg, time, addr, port;//network discover responder
 				var remoteName, remoteAddr;
-				"Got network query: %".format([msg, time, addr, port]).postln;
+				// "[%] - Got network query: \n\t%".format(this.application.name, [msg, time, addr, port]).postln;
 				//> get the name and the address for the app that queries
+				// "1: %\n\t%".format(this.name, msg).postln;
 				remoteName = msg[1].asSymbol;
 				remoteAddr = NetAddr.newFromIPString(msg[2].asString);
 				if(remoteName != this.name, {
-					"Registering new application: %".format([remoteName, remoteAddr]).postln;
+					// "Registering new application: %".format([remoteName, remoteAddr]).postln;
 					//register this application
 					this.addApplicationProxy(remoteName, remoteAddr);
 
 					//> reply with this name, addr:ip
 					//<to the querier> /! <name> <addr:ip>
-					this.applicationProxies[remoteName].sendMsg(
-						'!',
+					remoteAddr.sendMsg(
+						"/%!".format(remoteName).asSymbol,
 						this.name,
 						this.addr.generateIPString
 					);
@@ -58,9 +59,10 @@ VTMNetwork : VTMContext {
 			OSCFunc({arg msg, time, addr, port;//network discover reply
 				var remoteName, remoteAddr;
 				//> get the name and the address of the responding app
+				// "2: %\n\t%".format(this.name, msg).postln;
 				remoteName = msg[1];
 				remoteAddr = NetAddr.newFromIPString(msg[2].asString);
-				"Got response from: %".format([remoteName, remoteAddr]).postln;
+				// "Got response from: %".format([remoteName, remoteAddr]).postln;
 				if(remoteName != this.name, {
 					//register this application
 					this.addApplicationProxy(remoteName, remoteAddr);
@@ -69,32 +71,34 @@ VTMNetwork : VTMContext {
 			}, "/%!".format(this.name).asSymbol),
 			OSCFunc({arg msg, time, addr, port;
 				var quittingApp;
-				"[%] - Notified that app: % at addr: % is quitting.".format(this.name, msg[1], msg[2]).postln;
+				// "3: %\n\t%".format(this.name, msg).postln;
+				// "[%] - Notified that app: % at addr: % is quitting.".format(this.name, msg[1], msg[2]).postln;
 				quittingApp = this.applicationProxies[msg[1].asSymbol];
 				if(quittingApp.notNil, {
 					this.removeChild(msg[1].asSymbol);
-					"\tRemoving quitting app: '%'".format(msg[1]).postln;
+					// "\tRemoving quitting app: '%'".format(msg[1]).postln;
 				}, {
-					"\tQuitting app '%' not found, ignoring notification.".format(msg[1]).postln;
+					// "\tQuitting app '%' not found, ignoring notification.".format(msg[1]).postln;
 				});
 			}, "%/applicationQuitting".format(this.fullPath).asSymbol)
 		];
 	}
 
 	addApplicationProxy{arg name, addr;
-		"Network - addApplicationProxy".format([name, addr]).postln;
+		// "[%] - addApplicationProxy: name: % addr: %".format(this.application.name, name, addr).postln;
 		if(this.applicationProxies.includesKey(name).not and: {name != this.name}, {
-			var newAppProxy = VTMApplicationProxy(name, this, (targetAddr: addr));
-			"Adding app proxy: % - %".format(name, addr).postln;
-			this.addChild(newAppProxy);
+			var newAppProxy = VTMApplicationProxy(name, nil, (targetAddr: addr), this);
+			// "\tAdding app proxy: % - %".format(name, addr).postln;
 		}, {
-			"App proxy already registered: % - %".format(name, addr).postln;
+			// "\tApp proxy already registered: % - %".format(name, addr).postln;
 		});
 	}
 
 	localApplication { ^parent; }
 
-	applicationProxies{ ^children; }
+	applicationProxies{
+		^children.select({arg it; it.isKindOf(VTMApplicationProxy); });
+	}
 
 	applications {
 		var result;

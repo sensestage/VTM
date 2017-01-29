@@ -97,7 +97,7 @@ VTMNetworkedContext : VTMContext {
 			).postln;
 			library[whatToLoad][\project].putAll(VTMLibrary.loaderFunc(folder, \project));
 		},{
-			"Application '%' is not in a project".postln;
+			// "Application '%' is not in a project".format(this.application.name).postln;
 		});
 
 		//Load application stuff
@@ -110,8 +110,8 @@ VTMNetworkedContext : VTMContext {
 			).postln;
 			library[whatToLoad][\application].putAll(VTMLibrary.loaderFunc(folder, \application));
 		}, {
-			"Application '%' is not in a folder".postln;
+			// "Application '%' is not in a folder".format(this.application.name).postln;
 		});
-		"Resulting LIBRARY: %".format(library[whatToLoad]).postln;
+		// "Resulting LIBRARY: %".format(library[whatToLoad]).postln;
 	}
 }

@@ -1,5 +1,5 @@
 VTMApplication {
-	//The environment where all Application level things are happening.
+	//The environment where Application level things are happening.
 	var <envir;
 
 	//The object that handles communication with other applications on the network.
@@ -32,8 +32,8 @@ VTMApplication {
 	//The scsynth for this application
 	var <server;
 
-	*new{arg name, definition, attributes, projectFolder, applicationFolder;
-		^super.new.initApplication(name, definition, attributes, projectFolder, applicationFolder);
+	*new{arg name, definition, attributes, projectFolder, applicationFolder, onPrepared, onRunning;
+		^super.new.initApplication(name, definition, attributes, projectFolder, applicationFolder, onPrepared, onRunning);
 	}
 
 	*loadApplication{arg appFolder, projectFolder;
@@ -60,7 +60,7 @@ VTMApplication {
 		});
 	}
 
-	initApplication{arg name_, definition_, attributes_, projectFolder_, appFolder_;
+	initApplication{arg name_, definition_, attributes_, projectFolder_, appFolder_, onPrepared_, onRunning_;
 		var networkDesc, networkDef;
 		var moduleDesc, moduleDef;
 		var sceneDesc, sceneDef;
@@ -102,7 +102,7 @@ VTMApplication {
 		sceneOwner = VTMSceneOwner(sceneDef, sceneDesc, network);
 
 		//Discover other application on the network
-		//network.discover;
+		network.discover;
 		if(attributes.includesKey(\openView), {
 			if(attributes[\openView], {
 				var viewDesc, viewDef;
@@ -112,8 +112,8 @@ VTMApplication {
 
 		condition = Condition.new;
 		fork{
-			this.prepare(condition);
-			this.run(condition);
+			this.prepare(condition, onPrepared_);
+			this.run(condition, onRunning_);
 		}
 	}
 
@@ -123,7 +123,7 @@ VTMApplication {
 		^envir[selector].value(this, *args);
 	}
 
-	prepare{arg cond;
+	prepare{arg cond, onPrepared;
 		var condition = cond ? Condition.new;
 		forkIfNeeded{
 			//boot scsynth if defined
@@ -172,12 +172,14 @@ VTMApplication {
 			//Prepare its own envir last as it may depend on other things
 			//to be initialized first.
 			//			this.execute(\prepare, condition);
+			onPrepared.value(this);
 
 		};
 	}
 
-	run{
-
+	run{arg cond, onRunning;
+		network.discover;
+		onRunning.value(this);
 	}
 
 	free{

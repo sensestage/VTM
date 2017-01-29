@@ -17,18 +17,23 @@ TestVTMApplication : UnitTest {
 
 	test_RegisterNetworkApplicationsOnStartup{
 		var result, aaa, bbb, ccc;
-		aaa = VTMApplication.new('aaa');
-		1.wait;
-		bbb = VTMApplication.new('bbb');
-		1.wait;
-		ccc = VTMApplication.new('ccc');
-		1.wait;
-		//The application should now have eachother registered as application proxies.
+		var cond = Condition.new;
+		aaa = VTMApplication.new('aaa', onRunning: {cond.unhang;});
+		0.5.wait;
+		bbb = VTMApplication.new('bbb', onRunning: {cond.unhang;});
+		0.5.wait;
+		ccc = VTMApplication.new('ccc', onRunning: {cond.unhang;});
+		0.5.wait;
+		//The application should now have registered eachother as application proxies.
+		result = nil;
 		result = result.add(aaa.network.applicationProxies.collect(_.name).includesAll([\bbb, \ccc]));
 		result = result.add(bbb.network.applicationProxies.collect(_.name).includesAll([\aaa, \ccc]));
 		result = result.add(ccc.network.applicationProxies.collect(_.name).includesAll([\bbb, \aaa]));
+		// "aaa: %".format(aaa.network.applicationProxies.collect(_.name)).postln;
+		// "bbb: %".format(bbb.network.applicationProxies.collect(_.name)).postln;
+		// "ccc: %".format(ccc.network.applicationProxies.collect(_.name)).postln;
 		this.assert(
-			result.every({arg item; item;}),
+			result.every({arg it; it;}),
 			"Applications registered eachother correctly"
 		);
 

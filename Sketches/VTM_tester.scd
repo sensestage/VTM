@@ -1,3 +1,10 @@
+VTMUnitTest.runAll;
+
+VTMApplication.test;
+
+
+
+
 VTMLibrary.at(\definitions, \Percussive);
 VTMLibrary.loadGlobalLibrary;
 
