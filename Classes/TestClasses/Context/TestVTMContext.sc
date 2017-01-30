@@ -291,30 +291,14 @@ TestVTMContext : VTMUnitTest {
 	}
 
 	test_OSCCommunication{
-		var context, name = this.class.makeRandomString;
-		var parameterAttributes;
-		var definition, attributes;
-		var numParameters = rrand(3,8);
+		var context;
 		var subContexts;
-		var parameterValues = Array.newClear(numParameters);
-		parameterAttributes = numParameters.collect({arg i;
-			TestVTMParameter.makeRandomAttributes(
-				[\integer, \decimal, \string, \boolean].choose
-			).put(\action, {|p|
-				parameterValues[i] = p.value;
-			});
-		});
-		definition	= Environment.make{
-			~parameters = parameterAttributes;
-		};
-		attributes = (
-			path: "/%".format(this.class.makeRandomString).asSymbol
-		);
-		context = VTMContext(name, definition, attributes);
+		context = this.class.makeRandomContext;
 		context.prepare;
 
 		subContexts = 4.collect({arg i;
-			VTMContext(this.class.makeRandomString((minLength: 6)).asSymbol, parent: context);
+			this.class.makeRandomContext((parent: context));
+			// VTMContext(this.class.makeRandomString((minLength: 6)).asSymbol, parent: context);
 		});
 
 		//startingOSC
@@ -325,12 +309,10 @@ TestVTMContext : VTMUnitTest {
 		);
 
 		//should initialize OSC commands
-		//e.g. :children :attributes :parameters :parameterOrder :parameterValues
-		//:state :reset
 
 		{//test the OSC API getters
 			[
-				'children?', 'parameters?', 'state?'
+				'children?', 'parameters?', 'state?', 'presets?'
 			].do({arg cmdKey;
 				var tempResponder, response, cond;
 				var responded = false;
