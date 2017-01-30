@@ -89,19 +89,20 @@ var attributes, response;
 "\tAttributes: %".format([~attributes[\children], ~attributes[\children].collect(_.class)].lace).postln;
 "\tResponse: %".format([~response[\children], ~response[\children].collect(_.class)].lace).postln;
 "PARAMETERS EQUALITY: %".format(~attributes[\parameters] == ~response[\parameters]).postln;
-~response[\parameters].keysValuesDo({arg paramName, param;
-	var paramA, paramB;
-	paramA = ~attributes[\parameters][paramName];
-	paramB = ~response[\parameters][paramName];
+~response[\parameters].do({arg paramA, i;
+	var paramB, paramName;
+	// paramA = ~attributes[\parameters][i];
+	paramB = ~response[\parameters][i];
+	paramName = paramA[\name];
 	"%: (type: A: % B: % match: %)".format(paramName, paramA[\type], paramB[\type], paramA == paramB).postln;
 	paramA.keysValuesDo({arg key, val;
 		var match;
 		if(paramA[key].isKindOf(Float), {
 			match = paramA[key].equalWithPrecision( paramB[key] );
-		}, {
-			match = paramA[key] == paramB[key];
+			}, {
+				match = paramA[key] == paramB[key];
 		});
-		//only print the unmatched ones
+		// only print the unmatched ones
 		if(match.not, {
 			if(val.isKindOf(Array), {
 				"\t% - %\n\t\tAttributes[%]:\t%\n\t\tResponse[%]:\t%".format(
@@ -110,13 +111,13 @@ var attributes, response;
 					val.class, val.collect({arg item, i; [item, item.class.asSymbol, item == paramB[key][i]]}),
 					paramB[key].class, paramB[key].collect({arg item, i; [item, item.class.asSymbol, item == val[i]]})
 				).postln;
-			}, {
-				"\t% - %\n\t\tAttributes[%]:\t%\n\t\tResponse[%]:\t%".format(
-					key,
-					match,
-					val.class, val,
-					paramB[key].class, paramB[key]
-				).postln;
+				}, {
+					"\t% - %\n\t\tAttributes[%]:\t%\n\t\tResponse[%]:\t%".format(
+						key,
+						match,
+						val.class, val,
+						paramB[key].class, paramB[key]
+					).postln;
 			});
 		});
 	});

@@ -422,10 +422,14 @@ VTMContext {
 
 	attributes{
 		var result = IdentityDictionary.new;
-		result.put(\parameters, IdentityDictionary.new);
+		result.put(\parameters, Array.new);
 		result.put(\children, this.children);
-		parameterManager.parameters.do({arg item;
-			result[\parameters].put(item.name, item.attributes);
+		this.parameters.do({arg item;
+			var param = this.getParameter(item);
+			result[\parameters] = result[\parameters].addAll([
+				param.name,
+				param.attributes
+			]);
 		});
 		^result;
 	}
