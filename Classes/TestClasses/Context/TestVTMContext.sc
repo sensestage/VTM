@@ -1,4 +1,30 @@
 TestVTMContext : VTMUnitTest {
+
+	*makeRandomContext{arg params;
+		var context, name = this.makeRandomString;
+		var parameterAttributes;
+		var definition, attributes;
+		var numParameters = rrand(3,8);
+		var parameterValues = Array.newClear(numParameters);
+		var parent;
+		params !? { parent = params.at(\parent) };
+		parameterAttributes = numParameters.collect({arg i;
+			TestVTMParameter.makeRandomAttributes(
+				[\integer, \decimal, \string, \boolean].choose
+			).put(\action, {|p|
+				parameterValues[i] = p.value;
+			});
+		});
+		definition	= Environment.make{
+			~parameters = parameterAttributes.postln;
+		};
+		attributes = (
+			path: "/%".format(this.makeRandomString).asSymbol
+		);
+		context = VTMContext(name, definition, attributes, parent);
+		^context;
+	}
+
 	test_missingNameError{
 		var context;
 		//Should fail if not named
@@ -223,7 +249,6 @@ TestVTMContext : VTMUnitTest {
 		var definition, attributes;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
-		var testParameterValues = parameterValues.deepCopy;
 		parameterAttributes = numParameters.collect({arg i;
 			TestVTMParameter.makeRandomAttributes(
 				[\integer, \decimal, \string, \boolean].choose
@@ -272,7 +297,6 @@ TestVTMContext : VTMUnitTest {
 		var numParameters = rrand(3,8);
 		var subContexts;
 		var parameterValues = Array.newClear(numParameters);
-		var testParameterValues = parameterValues.deepCopy;
 		parameterAttributes = numParameters.collect({arg i;
 			TestVTMParameter.makeRandomAttributes(
 				[\integer, \decimal, \string, \boolean].choose
@@ -371,40 +395,40 @@ TestVTMContext : VTMUnitTest {
 				response, context.attributes,
 				"Context OSC API got correct Context attributes"
 			);
-/*			attributes.keysValuesDo({arg attrKey, attrVal;
+			/*			attributes.keysValuesDo({arg attrKey, attrVal;
 
-				if(attrVal.isKindOf(Float), {
-					this.assertFloatEquals(
-						response[attrKey],
-						attrVal,
-						"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
-					);
-				}, {
-					if(attrVal.isArray, {
-						var valItemEqualities;
-						//convert any symbol values to string, as the OSC response will be an array of string values
-						attrVal = attrVal.collect({arg it;
-							if(it.isKindOf(Symbol), { it.asString; }, { it; } );
-						});
-						//compare the elements in the array
-						valItemEqualities = attrVal.collect({arg valItem, i;
-							if(valItem.isKindOf(Float), {
-								valItem.equalWithPrecision(response[attrKey][i]);
-							}, {
-								valItem == response[attrKey][i];
-							});
-						});
-						this.assert(valItemEqualities.every({arg it; it;}),
-							"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
-						);
-					}, {
-						this.assertEquals(
-							response[attrKey],
-							attrVal,
-							"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
-						);
-					});
-				});
+			if(attrVal.isKindOf(Float), {
+			this.assertFloatEquals(
+			response[attrKey],
+			attrVal,
+			"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
+			);
+			}, {
+			if(attrVal.isArray, {
+			var valItemEqualities;
+			//convert any symbol values to string, as the OSC response will be an array of string values
+			attrVal = attrVal.collect({arg it;
+			if(it.isKindOf(Symbol), { it.asString; }, { it; } );
+			});
+			//compare the elements in the array
+			valItemEqualities = attrVal.collect({arg valItem, i;
+			if(valItem.isKindOf(Float), {
+			valItem.equalWithPrecision(response[attrKey][i]);
+			}, {
+			valItem == response[attrKey][i];
+			});
+			});
+			this.assert(valItemEqualities.every({arg it; it;}),
+			"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
+			);
+			}, {
+			this.assertEquals(
+			response[attrKey],
+			attrVal,
+			"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
+			);
+			});
+			});
 			});*/
 
 			topEnvironment.put(\response, response);
