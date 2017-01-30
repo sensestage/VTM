@@ -79,9 +79,6 @@ VTMContextParameterManager {
 		});
 	}
 
-	//presets are a result of the presets in the context definition,
-	//and run-time defined presets.
-	//Run-time defined presets will be stored as part of the attributes.
 	//The presets getter only returns the names of the presets.
 	//Usage:
 	// myContext.presets;// -> returns preset names
@@ -92,9 +89,10 @@ VTMContextParameterManager {
 			result = result.addAll(context.envir[\presets].collect({arg assoc; assoc.key;}));
 		});
 		if(presetList.notNil, {
-			result.addAll(presetList.names);
+			result = result.addAll(presetList.names);
 		});
 		^result;
+		// ^result;
 	}
 
 	getPreset{arg presetName;
@@ -104,6 +102,7 @@ VTMContextParameterManager {
 	addPreset{arg data, presetName, slot;
 		//if this is the first preset to be added we have to create
 		//a presetList first
+		"Adding preset: %".format([data, presetName, slot]).postln;
 		if(presetList.isNil, {
 			presetList = VTMNamedList.new;
 		});
@@ -121,6 +120,10 @@ VTMContextParameterManager {
 		}, {
 			"Context: % - no presets to remove".format(this.fullPath).warn
 		});
+	}
+
+	presetAttributes{
+		^presetList.asKeyValuePairs;
 	}
 	//END preset methods
 }

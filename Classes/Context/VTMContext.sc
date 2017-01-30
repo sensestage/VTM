@@ -232,7 +232,28 @@ VTMContext {
 		^result;
 	}
 
-	//Similar as with presets, see comments above 'preset' method
+
+	//Interface to presetManager
+	presets{
+		^parameterManager.presets;
+	}
+
+	getPreset{arg presetName;
+		^parameterManager.getPreset(presetName);
+	}
+
+	addPreset{arg data, presetName, slot;
+		parameterManager.addPreset(data, presetName, slot);
+	}
+
+	removePreset{arg presetName;
+		parameterManager.removePreset(presetName);
+	}
+
+	presetAttributes{
+		^parameterManager.presetAttributes;
+	}
+
 	cues{
 		var result = [];
 		if(envir.includesKey(\cues), {
@@ -431,6 +452,9 @@ VTMContext {
 				param.attributes
 			]);
 		});
+		if(this.presets.isEmpty.not, {
+			result.put(\presets, this.presetAttributes);
+		});
 		^result;
 	}
 
@@ -451,6 +475,9 @@ VTMContext {
 			},
 			'parameters?' -> {arg context;
 				context.parameters;
+			},
+			'presets?' -> {arg context;
+				context.presets;
 			},
 			'state?' -> {arg context; context.state; },
 			'attributes?' -> {arg context; VTMJSON.stringifyAttributes(context.attributes); },

@@ -1,14 +1,14 @@
 TestVTMParameter : VTMUnitTest {
 	*testClasses{
 		^[
-//			VTMBooleanParameter,
+			VTMBooleanParameter,
 			VTMStringParameter,
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
 		//	VTMTimecodeParameter,
-	//		VTMDecimalParameter,
-			//VTMIntegerParameter
+			VTMDecimalParameter,
+			VTMIntegerParameter
 			// VTMSchemaParameter,
 			// VTMTupleParameter
 		];

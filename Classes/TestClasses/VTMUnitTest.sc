@@ -8,20 +8,21 @@ VTMUnitTest : UnitTest {
 	}
 
 	*runAll{arg runScripts = true;
-		forkIfNeeded{
-			[
-				VTMParameter,
-				VTMContext,
-				VTMNamedList,
-				VTMApplication
-			].do({arg cl;
-				this.runTestForClass(cl, recursive: true);
-			});
-			if(runScripts, {
-				VTMUnitTestScript.findTestScripts;
-				VTMUnitTestScript.runAll;
-			});
-		};
+
+		[
+			VTMParameter,
+			VTMContext,
+			VTMNamedList,
+			// VTMApplication, //buggy testing when using .wait andhaung etc.
+			VTMContextParameterManager
+		].do({arg cl;
+			this.runTestForClass(cl, recursive: true);
+		});
+		if(runScripts, {
+			VTMUnitTestScript.findTestScripts;
+			VTMUnitTestScript.runAll;
+		});
+
 	}
 
 	*runTestForClass{arg what, recursive = false;

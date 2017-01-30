@@ -1,14 +1,29 @@
 VTMUnitTest.runAll;
 
+VTMUnitTest.runTestForClass(VTMParameter, true);
+VTMUnitTest.runTestForClass(VTMContext, true);
+VTMUnitTest.runTestForClass(VTMApplication, true);
+VTMUnitTest.runTestForClass(VTMContextParameterManager, true);
+
 VTMApplication.test;
+
 VTMContext.test;
 
-a = TestVTMContext.makeRandomContext((parent: TestVTMContext.makeRandomContext));
+VTMContextParameterManager.test;
+
+
+// a = TestVTMContext.makeRandomContext((parent: TestVTMContext.makeRandomContext));
+a = TestVTMContext.makeRandomContext;
 a.prepare;
 a.dump
 a.parameters
 a.parent.children
 
+TestVTMContextParameterManager.makeRandomPresetForContext(a);
+TestVTMContextParameterManager.makeRandomPresetArrayForContext(a);
+
+a.parameters
+a.attributes[\parameters].pairsDo({arg item; item.postln});
 
 
 VTMLibrary.at(\definitions, \Percussive);
