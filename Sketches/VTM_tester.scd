@@ -3,6 +3,11 @@ VTMUnitTest.runAll;
 VTMApplication.test;
 VTMContext.test;
 
+a = TestVTMContext.makeRandomContext((parent: TestVTMContext.makeRandomContext));
+a.prepare;
+a.dump
+a.parameters
+a.parent.children
 
 
 
