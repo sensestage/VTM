@@ -20,7 +20,8 @@ a.parameters
 a.parent.children
 
 TestVTMContextParameterManager.makeRandomPresetForContext(a);
-TestVTMContextParameterManager.makeRandomPresetArrayForContext(a);
+TestVTMContextParameterManager.makeRandomPresetAttributesForContext(a);
+TestVTMContextParameterManager.makeRandomPresetAttributesForParameterAttributes(a.attributes);
 
 a.parameters
 a.attributes[\parameters].pairsDo({arg item; item.postln});

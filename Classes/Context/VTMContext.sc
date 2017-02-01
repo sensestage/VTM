@@ -453,7 +453,7 @@ VTMContext {
 			]);
 		});
 		if(this.presets.isEmpty.not, {
-			result.put(\presets, this.presetAttributes);
+			result.put(\presets, this.presetAttributes; );
 		});
 		^result;
 	}

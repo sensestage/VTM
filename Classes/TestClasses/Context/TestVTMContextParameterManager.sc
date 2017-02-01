@@ -21,7 +21,7 @@ TestVTMContextParameterManager : VTMUnitTest {
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetArrayForContext{arg context;
+	*makeRandomPresetAttributesForContext{arg context;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
 			result.put(this.makeRandomString, this.makeRandomPresetForContext(context));
@@ -29,7 +29,7 @@ TestVTMContextParameterManager : VTMUnitTest {
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetArrayForParameterAttributes{arg attributes;
+	*makeRandomPresetAttributesForParameterAttributes{arg attributes;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
 			result.put(this.makeRandomString, this.makeRandomPresetForParameterAttributes(attributes));
@@ -45,7 +45,7 @@ TestVTMContextParameterManager : VTMUnitTest {
 		context.prepare;
 
 		//make some random presets
-		testPresets = this.class.makeRandomPresetArrayForContext(context);
+		testPresets = this.class.makeRandomPresetAttributesForContext(context);
 		testPresetNames = testPresets.clump(2).flop[0];
 
 		testPresets.pairsDo({arg presetName, presetData;

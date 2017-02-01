@@ -16,7 +16,10 @@ TestVTMContext : VTMUnitTest {
 			});
 		});
 		definition	= Environment.make{
-			~parameters = parameterAttributes.postln;
+			~parameters = parameterAttributes;
+			~presets = TestVTMContextParameterManager.makeRandomPresetAttributesForParameterAttributes(
+				parameterAttributes
+			);
 		};
 		attributes = (
 			path: "/%".format(this.makeRandomString).asSymbol
@@ -107,6 +110,7 @@ TestVTMContext : VTMUnitTest {
 
 		);
 		context = VTMContext(testName);
+		context.free;
 	}
 
 	test_ForceLeadingSlashInPath{
@@ -243,9 +247,10 @@ TestVTMContext : VTMUnitTest {
 
 	}
 
-	test_initParameters{
+	test_initParametersAndPresets{
 		var context, name = this.class.makeRandomString;
 		var parameterAttributes;
+		var presetAttributes;
 		var definition, attributes;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
@@ -256,6 +261,7 @@ TestVTMContext : VTMUnitTest {
 				parameterValues[i] = p.value;
 			});
 		});
+		presetAttributes = TestVTMContextParameterManager.makeRandomPresetAttributesForContext;
 		definition	= Environment.make{
 			~parameters = parameterAttributes;
 		};
@@ -298,7 +304,6 @@ TestVTMContext : VTMUnitTest {
 
 		subContexts = 4.collect({arg i;
 			this.class.makeRandomContext((parent: context));
-			// VTMContext(this.class.makeRandomString((minLength: 6)).asSymbol, parent: context);
 		});
 
 		//startingOSC
