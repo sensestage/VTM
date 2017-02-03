@@ -10,8 +10,10 @@ VTMContext {
 	var <addr; //the address for this object instance.
 	var oscInterface;
 	var <state;
-	var parameterManager;
-	var cueManager;
+	var <parameters;
+	var <presets;
+	var <cues;
+	var <mappings;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
@@ -86,7 +88,27 @@ VTMContext {
 			});
 		});
 
-		parameterManager = VTMContextParameterManager(this);
+		parameters = VTMParameterManager(this,
+			definition !? {definition[\parameters]},
+			attributes !? {attributes[\parameters]},//parameters defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
+			definition !? {definition[\buildParameters]}
+		);
+		presets = VTMPresetManager(this,
+			definition !? {definition[\presets]},
+			attributes !? {attributes[\presets]},
+			definition !? {definition[\buildPresets]}
+		);
+		cues = VTMCueManager(this,
+			definition !? {definition[\cues]},
+			attributes !? {attributes[\cues]},
+			definition !? {definition[\buildCues]}
+		);
+		mappings = VTMMappingManager(this,
+			definition !? {definition[\mappings]},
+			attributes !? {attributes[\mappings]},
+			definition !? {definition[\buildMappings]}
+		);
+
 		this.prChangeState(\didInitialize);
 	}
 
@@ -102,16 +124,7 @@ VTMContext {
 			if(envir.includesKey(\prepare), {
 				this.execute(\prepare, cond);
 			});
-
-			//load and build parameters
-			if(definition.includesKey(\parameters), {
-				parameterManager.loadParameterAttributes(definition[\parameters]);
-			});
-			if(definition.includesKey(\buildParameters), {
-				parameterManager.loadParameterAttributes(
-					this.execute(\buildParameters, cond);
-				);
-			});
+			[parameters, presets, cues, mappings].do({arg it; it.prepare(cond)});
 
 			this.enableOSC;
 			this.prChangeState(\didPrepare);
@@ -126,6 +139,7 @@ VTMContext {
 			if(envir.includesKey(\run), {
 				this.execute(\run, cond);
 			});
+			[parameters, presets, cues, mappings].do({arg it; it.run(cond)});
 			this.prChangeState(\didRun);
 			action.value(this);
 		};
@@ -142,7 +156,7 @@ VTMContext {
 			children.keysValuesDo({arg key, child;
 				child.free(key, cond);
 			});
-			parameterManager.free;
+			[parameters, presets, cues, mappings].do({arg it; it.free(cond)});
 			this.prChangeState(\didFree);
 			action.value(this);
 			this.release; //Release this as dependant from other objects.
@@ -153,7 +167,7 @@ VTMContext {
 
 	reset{
 		//set all parameters to default and evaluate the action
-		parameterManager.parameters.do(_.reset(true));
+		parameters.reset(true)
 	}
 
 	addChild{arg context;
@@ -232,92 +246,6 @@ VTMContext {
 		^result;
 	}
 
-
-	//Interface to presetManager
-	presets{
-		^parameterManager.presets;
-	}
-
-	getPreset{arg presetName;
-		^parameterManager.getPreset(presetName);
-	}
-
-	addPreset{arg data, presetName, slot;
-		parameterManager.addPreset(data, presetName, slot);
-	}
-
-	removePreset{arg presetName;
-		parameterManager.removePreset(presetName);
-	}
-
-	presetAttributes{
-		^parameterManager.presetAttributes;
-	}
-
-	cues{
-		var result = [];
-		if(envir.includesKey(\cues), {
-			result = result.addAll(envir[\cues].collect({arg assoc; assoc.key;}));
-		});
-		if(cueManager.notNil, {
-			result.addAll(cueManager.names);
-		});
-		^result;
-	}
-
-	getCue{arg cueName;
-		^cueManager.at(cueName);
-	}
-
-	addCue{arg data, cueName, slot;
-		//if this is the first cue to be added we have to create
-		//a cueManager first
-		if(cueManager.isNil, {
-			cueManager = VTMNamedList.new;
-		});
-		cueManager.addItem(data, cueName, slot);
-		this.changed(\cueAdded, cueName);
-	}
-
-	removeCue{arg cueName;
-		var removedCue;
-		if(cueManager.notNil, {
-			removedCue = cueManager.removeItem(cueName);
-			if(removedCue.notNil, {
-				"Context: % - removed cue '%'".format(this.fullPath, cueName).postln;
-			});
-		}, {
-			"Context: % - no cues to remove".format(this.fullPath).warn
-		});
-	}
-	//END cue methods
-
-	loadPreset{arg presetName, ramping;
-		if(envir.includesKey(\presets), {
-			var newPreset;
-			newPreset = envir[\presets].detect({arg item; item.key == presetName;});
-			if(newPreset.notNil, {
-				newPreset = newPreset.value;
-				newPreset.removeAt(\comment);
-				this.set(*newPreset.asKeyValuePairs);
-				if(ramping.isNil, {
-					this.set(*newPreset.asKeyValuePairs);
-				}, {
-					newPreset = newPreset.asKeyValuePairs.flop.collect({arg item;
-						item.add(ramping);
-					}).flatten;
-					this.ramp(*newPreset);
-				});
-			}, {
-				"Preset '%' for '%' not found".format(presetName, this.fullPath).warn;
-			});
-		}, {
-			"No preset stored in '%' not found".format(presetName, this.fullPath).warn;
-		});
-	}
-
-
-
 	prChangeState{ arg val;
 		var newState;
 		if(state != val, {
@@ -326,17 +254,17 @@ VTMContext {
 		});
 	}
 
-	parameters{ ^parameterManager.order; }
-
+	//since parameter values are often set and get we have special methods for
+	//these directly in the context interface
 	set{arg ...args;
 		if(args.size > 2, {
 			args.pairsDo({arg paramName, paramVal;
-				if(this.parameters.includesKey(paramName), {
+				if(parameters.includes(paramName), {
 					this.set(paramName, paramVal);
 				});
 			});
 		}, {
-			var param = parameterManager.parameters[args[0]];
+			var param = parameters[args[0]];
 			if(param.notNil, {
 				param.valueAction_(*args[1]);
 			});
@@ -344,22 +272,7 @@ VTMContext {
 	}
 
 	get{arg parameterName;
-		^parameterManager.parameters[parameterName].value;
-	}
-
-	getParameter{arg parameterName;
-		^parameterManager.parameters[parameterName];
-	}
-
-	ramp{arg ...args; // paramName, val, rampTime, paramName, val ...etc.
-		var param;
-		if(args.size > 3, {
-			args.clump(3).do({arg item;
-
-			})
-		}, {
-
-		});
+		^parameters[parameterName].value;
 	}
 
 	//Call functions in the runtime environment with this module as first arg.
@@ -423,13 +336,13 @@ VTMContext {
 		if(oscInterface.isNil, {
 			oscInterface = VTMContextOSCInterface.new(this);
 		});
-		parameterManager.enableOSC;
+		[parameters, presets, cues, mappings].do(_.enableOSC);
 		oscInterface.enable;
 	}
 
 	disableOSC{
 		oscInterface.free;
-		parameterManager.disableOSC;
+		[parameters, presets, cues, mappings].do(_.disableOSC);
 		oscInterface = nil;
 	}
 
@@ -443,18 +356,23 @@ VTMContext {
 
 	attributes{
 		var result = IdentityDictionary.new;
-		result.put(\parameters, Array.new);
+
 		result.put(\children, this.children);
-		this.parameters.do({arg item;
-			var param = this.getParameter(item);
-			result[\parameters] = result[\parameters].addAll([
-				param.name,
-				param.attributes
-			]);
+
+		if(parameters.isEmpty.not, {
+			result.put(\parameters, parameters.attributes);
 		});
-		if(this.presets.isEmpty.not, {
-			result.put(\presets, this.presetAttributes; );
+		if(presets.isEmpty.not, {
+			result.put(\presets, presets.attributes);
 		});
+		if(cues.isEmpty.not, {
+			result.put(\cues, cues.attributes);
+		});
+		if(mappings.isEmpty.not, {
+			result.put(\mappings, mappings.attributes);
+		});
+
+
 		^result;
 	}
 
@@ -474,10 +392,16 @@ VTMContext {
 				result;
 			},
 			'parameters?' -> {arg context;
-				context.parameters;
+				context.parameters.names;
 			},
 			'presets?' -> {arg context;
-				context.presets;
+				context.presets.names;
+			},
+			'cues?' -> {arg context;
+				context.cues.names;
+			},
+			'mappings?' -> {arg context;
+				context.mappings.names;
 			},
 			'state?' -> {arg context; context.state; },
 			'attributes?' -> {arg context; VTMJSON.stringifyAttributes(context.attributes); },

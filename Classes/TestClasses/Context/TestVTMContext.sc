@@ -261,18 +261,29 @@ TestVTMContext : VTMUnitTest {
 				parameterValues[i] = p.value;
 			});
 		});
-		presetAttributes = TestVTMContextParameterManager.makeRandomPresetAttributesForContext;
+		presetAttributes = TestVTMContextParameterManager.makeRandomPresetAttributesForParameterAttributes(
+			parameterAttributes);
 		definition	= Environment.make{
 			~parameters = parameterAttributes;
+			~presets = presetAttributes;
 		};
 		attributes = (
 			path: "/%".format(this.class.makeRandomString).asSymbol
 		);
 		context = VTMContext(name, definition, attributes);
 		context.prepare;
+
+		//Should return parameter names
 		this.assertEquals(
 			context.parameters,
 			parameterAttributes.collect({arg it; it[\name].asSymbol}),
+			"Context initialized parameter names in the right order"
+		);
+
+		//Should return preset names
+		this.assertEquals(
+			context.presets,
+			presetAttributes.collect({arg it; it[\name].asSymbol}),
 			"Context initialized parameter names in the right order"
 		);
 
@@ -295,6 +306,7 @@ TestVTMContext : VTMUnitTest {
 		//should free all parameters upon context free.
 		context.free;
 	}
+
 
 	test_OSCCommunication{
 		var context;
