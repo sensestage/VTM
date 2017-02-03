@@ -4,7 +4,7 @@ VTMContextParameterManager {
 	var <order;
 	var presetList;
 
-	*new{arg context;
+	*new{arg context, definition, attributes;
 		^super.new.init(context);
 	}
 
@@ -102,7 +102,7 @@ VTMContextParameterManager {
 	addPreset{arg data, presetName, slot;
 		//if this is the first preset to be added we have to create
 		//a presetList first
-		"Adding preset: %".format([data, presetName, slot]).postln;
+		"Adding preset slot %[%]:\n\t%".format(presetName, slot, data).postln;
 		if(presetList.isNil, {
 			presetList = VTMNamedList.new;
 		});
