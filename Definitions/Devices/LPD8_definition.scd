@@ -6,15 +6,20 @@
 		(1..8).do({arg chanNum, i;
 			result = result.add(
 				"prog.%/knob.%".format(progNum, chanNum).asSymbol -> (
+					number: (9..16).at(i), chan: progNum - 1, msgType: \control
+				)
+			);
+			result = result.add(
+				"prog.%/ccpad.%".format(progNum, chanNum).asSymbol -> (
 					number: (1..8).at(i), chan: progNum - 1, msgType: \control
 				)
 			);
 			result = result.addAll([
 				"prog.%/pad.%/on".format(progNum, chanNum).asSymbol -> (
-					number: (36..43).at(i), chan: progNum - 1, msgType: \noteOn
+					number: [64, 66, 68, 69, 57, 59, 60, 62].at(i), chan: progNum - 1, msgType: \noteOn
 				),
 				"prog.%/pad.%/off".format(progNum, chanNum).asSymbol -> (
-					number: (36..43).at(i), chan: progNum - 1, msgType: \noteOff
+					number: [64, 66, 68, 69, 57, 59, 60, 62].at(i), chan: progNum - 1, msgType: \noteOff
 				)
 			]);
 		});
