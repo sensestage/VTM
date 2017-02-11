@@ -1,0 +1,3 @@
+VTMCommandManager : VTMAbstractDataManager {
+
+}
