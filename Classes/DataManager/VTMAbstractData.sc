@@ -1,0 +1,6 @@
+VTMAbstractData{
+
+	get{}
+	set{}
+
+}
