@@ -1,0 +1,3 @@
+VTMScoreManager : VTMAbstractDataManager {
+
+}
