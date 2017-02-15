@@ -3,10 +3,6 @@ VTMUnitTest : UnitTest {
 	classvar <>checkFreeingResponderFuncs = true;
 	classvar <>forceFreeingResponderFuncs = true;
 
-	*testclassForType{arg val;
-		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
-	}
-
 	*runAll{arg runScripts = true;
 
 		[

@@ -5,7 +5,7 @@ TestVTMContextParameterManager : VTMUnitTest {
 		attributes.do({arg attr;
 			result.put(
 				attr[\name],
-				this.testclassForType(attr[\type]).makeRandomValue
+				TestVTMParameter.testclassForType(attr[\type]).makeRandomValue
 			);
 		});
 		^result.asKeyValuePairs;
@@ -16,7 +16,7 @@ TestVTMContextParameterManager : VTMUnitTest {
 		context.parameters.do({arg paramName;
 			var param;
 			param = context.getParameter(paramName);
-			result.put(paramName, this.testclassForType(param.type).makeRandomValue);
+			result.put(paramName, TestVTMParameter.testclassForType(param.type).makeRandomValue);
 		});
 		^result.asKeyValuePairs;
 	}
