@@ -1,0 +1,3 @@
+TestVTMScore : TestVTMAbstractData {
+
+}

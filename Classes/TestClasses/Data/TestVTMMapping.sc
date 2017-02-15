@@ -1,0 +1,3 @@
+TestVTMMapping : TestVTMAbstractData {
+
+}
