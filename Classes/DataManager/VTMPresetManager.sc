@@ -1,4 +1,8 @@
 VTMPresetManager : VTMAbstractDataManager{
+	*dataClass{
+		^VTMPreset;
+	}
+
 
 	loadPreset{arg presetName, ramping;
 		var newPreset;

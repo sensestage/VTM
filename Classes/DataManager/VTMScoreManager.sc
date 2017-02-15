@@ -1,3 +1,5 @@
 VTMScoreManager : VTMAbstractDataManager {
-
+	*dataClass{
+		^VTMScore;
+	}
 }
