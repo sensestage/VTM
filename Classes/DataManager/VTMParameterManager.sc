@@ -1,4 +1,7 @@
 VTMParameterManager : VTMAbstractDataManager{
+	*dataClass{
+		^VTMParameter;
+	}
 
 	reset{arg doAction = true;
 		items.do(_.reset(doAction));

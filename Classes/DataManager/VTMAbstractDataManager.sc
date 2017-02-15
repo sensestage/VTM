@@ -7,6 +7,10 @@ VTMAbstractDataManager {
 	var items;
 	var oscInterface;
 
+	*dataClass{
+		^this.subclassResponsibility(thisMethod);
+	}
+
 	*new{arg model, definition, attributes, buildFunction;
 		^super.new.initAbstractDataManager(model, definition, attributes, buildFunction);
 	}

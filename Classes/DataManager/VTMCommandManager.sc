@@ -1,3 +1,7 @@
 VTMCommandManager : VTMAbstractDataManager {
 
+	*dataClass{
+		^VTMCommand;
+	}
+
 }
