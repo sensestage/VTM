@@ -14,6 +14,8 @@ VTMContext {
 	var <presets;
 	var <cues;
 	var <mappings;
+	var <scores;
+	var <commands;
 
 	classvar <contextLevelSeparator = $/;
 	classvar <subcontextSeparator = $.;
@@ -107,6 +109,16 @@ VTMContext {
 			definition !? {definition[\mappings]},
 			attributes !? {attributes[\mappings]},
 			definition !? {definition[\buildMappings]}
+		);
+		scores = VTMScoreManager(this,
+			definition !? {definition[\scores]},
+			attributes !? {attributes[\scores]},
+			definition !? {definition[\buildScores]}
+		);
+		commands = VTMCommandManager(this,
+			definition !? {definition[\commands]},
+			attributes !? {attributes[\commands]},//commands defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
+			definition !? {definition[\buildCommands]}
 		);
 
 		this.prChangeState(\didInitialize);
