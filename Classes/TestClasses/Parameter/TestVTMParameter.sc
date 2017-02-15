@@ -6,12 +6,20 @@ TestVTMParameter : VTMUnitTest {
 			// VTMListParameter,
 			// VTMDictionaryParameter,
 			// VTMArrayParameter,
-		//	VTMTimecodeParameter,
+			//	VTMTimecodeParameter,
 			VTMDecimalParameter,
 			VTMIntegerParameter
 			// VTMSchemaParameter,
 			// VTMTupleParameter
 		];
+	}
+
+	*testclassForType{arg val;
+		^"TestVTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
+	}
+
+	*testTypes{
+		^this.testClasses.collect(_.type);
 	}
 
 	*generateRandomAttributes{arg description;
@@ -335,11 +343,11 @@ TestVTMParameter : VTMUnitTest {
 			param.free;
 		});
 	}
-//
-//	test_ParameterFree{
-//		//Should free responders, internal parameters, mappings, and oscInterface
-//	}
-//
+	//
+	//	test_ParameterFree{
+	//		//Should free responders, internal parameters, mappings, and oscInterface
+	//	}
+	//
 	test_GetAttributes{
 		//Only testing for attributes relevant to VTMParameter class
 		topEnvironment.put('paramTest', ());
@@ -355,7 +363,7 @@ TestVTMParameter : VTMUnitTest {
 				param.attributes, attributes,
 				"% returned correct attributes.\nA:\t%\nB:\t%".format(
 					testClass,
-				   	param.attributes.keys.asArray.sort,
+					param.attributes.keys.asArray.sort,
 					attributes.keys.asArray.sort
 				)
 			);
@@ -365,11 +373,11 @@ TestVTMParameter : VTMUnitTest {
 			/*
 			"Attributes:".postln;
 			param.attributes.keysValuesDo({arg key, val;
-				"\t:% - [%]%".format(key, val.class, val).postln;
+			"\t:% - [%]%".format(key, val.class, val).postln;
 			});
 			"Attributes".postln;
 			attributes.keysValuesDo({arg key, val;
-				"\t:% - [%]%".format(key, val.class, val).postln;
+			"\t:% - [%]%".format(key, val.class, val).postln;
 			});
 			*/
 			//If the action is not a closed function it should not get returned as attribute
