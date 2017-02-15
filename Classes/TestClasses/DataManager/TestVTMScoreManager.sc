@@ -1,0 +1,3 @@
+TestVTMScoreManager : TestVTMAbstractDataManager {
+
+}
