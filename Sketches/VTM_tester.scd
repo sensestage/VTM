@@ -8,8 +8,50 @@ VTMUnitTest.runTestForClass(VTMContextParameterManager, true);
 VTMApplication.test;
 
 VTMContext.test;
+VTMParameter.test;
 
 VTMContextParameterManager.test;
+
+TestVTMParameter.testTypes
+
+VTMUnitTest.runTest("TestVTMContext:test_NewAndInitWithAttributes");
+VTMUnitTest.runTest("TestVTMContext:test_DefaultConstruction");
+
+
+TestVTMCommandManager.dataClass
+TestVTMCommandManager.dataTestClass
+
+
+
+~params = TestVTMParameterManager.makeTestAttributes;
+~commands = TestVTMCommandManager.makeRandomAttributes;
+~mappings = TestVTMMappingManager.makeRandomAttributes(nil, ~params);
+
+~envy = Environment[\bone -> \dry]
+~commands[1].value(~envy, 44,55,66,77)
+
+
+
+
+
+
+
+
+
+
+(
+a = rrand(3,7).collect({arg i; TestVTMParameter.makeRandomAttributes([\integer, \decimal, \string, \boolean].choose);});
+)
+
+(
+TestVTMPreset.makeRandomAttributes(a).keysValuesDo({arg presetName, presetData;
+	"Preset: %".format(presetName).postln;
+	presetData.do({arg paramName, paramValue;
+		"\t% - %".format(paramName, paramValue).postln;
+	});
+});
+)
+
 
 
 // a = TestVTMContext.makeRandomContext((parent: TestVTMContext.makeRandomContext));

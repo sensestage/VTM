@@ -2,10 +2,9 @@
 //Objects of this type has no arguments/values but works
 //as a 'command' to perform the defined action.
 
-VTMParameter {
+VTMParameter : VTMAbstractData {
 	var <name;
 	var <path, fullPathThunk; //an OSC valid path.
-	var attributes;
 	var action, hiddenAction;
 	var <enabled = true;
 	var <mappings;
@@ -14,8 +13,6 @@ VTMParameter {
 	var <>onlyReturn = false;
 	var <isSubParameter = false;
 	var >envir;
-	var attributeGetterFunctionsThunk;
-	var attributeSetterFunctionsThunk;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -54,25 +51,20 @@ VTMParameter {
 	//This constructor is not used directly, only for testing purposes
 	*new{arg name, attributes;
 		if(name.notNil, {
-			^super.new.initParameter(name, attributes);
+			^super.new(attributes).initParameter(name);
 		}, {
 			Error("VTMParameter needs name").throw;
 		});
 	}
 
-	initParameter{arg name_, attributes_;
+	initParameter{arg name_;
 		var tempName = name_.copy.asString;
 		if(tempName.first == $/, {
 			tempName = tempName[1..];
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
-		if(attributes_.notNil, {
-			attributes = attributes_.deepCopy;
-		}, {
-			attributes = IdentityDictionary.new;
-		});
-		// attributes = IdentityDictionary.newFrom(attributes_);
+
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
 				".%".format(name).asSymbol;
@@ -103,14 +95,6 @@ VTMParameter {
 			if(attributes.includesKey(\onlyReturn), {
 				onlyReturn = attributes[\onlyReturn];
 			});
-		});
-
-		//lazy attributesGetters and setters
-		attributeGetterFunctionsThunk = Thunk({
-			this.class.makeAttributeGetterFunctions(this);
-		});
-		attributeSetterFunctionsThunk = Thunk({
-			this.class.makeAttributeSetterFunctions(this);
 		});
 	}
 
@@ -196,30 +180,14 @@ VTMParameter {
 			oscInterface.free;
 		});
 		oscInterface = nil;
+		super.free;
 
 		this.changed(\freed);
 	}
 
-	attributes{
-		var result;
-		result = IdentityDictionary.new;
-		this.class.attributeKeys.do({arg attrKey;
-			var val;
-			val = this.attributeGetterFunctions[attrKey].value;
-			result.put(
-				attrKey,
-				val
-			);
-		});
-		^result;
-	}
 
-	attributeGetterFunctions{
-		^attributeGetterFunctionsThunk.value;
-	}
-
-	attributeSetterFunctions{
-		^attributeSetterFunctionsThunk.value;
+	makeView{arg parent, bounds, definition, attributes;
+		^VTMParameterView.makeFromAttributes(parent, bounds, definition, attributes, this);
 	}
 
 	*attributeKeys{
@@ -252,10 +220,6 @@ VTMParameter {
 		var result;
 		result = IdentityDictionary.new;
 		^result;
-	}
-
-	makeView{arg parent, bounds, definition, attributes;
-		^VTMParameterView.makeFromAttributes(parent, bounds, definition, attributes, this);
 	}
 
 	*makeOSCAPI{arg param;

@@ -102,14 +102,31 @@ TestVTMContext : VTMUnitTest {
 		var context, testName;
 		var attributes;
 		var definition;
+		var paramsAttr, presetsAttr, cuesAttr, mappingsAttr;
+		var scoresAttr, commandsAttr;
 		//Construct with definition and attributes
 		testName = this.class.makeRandomString.asSymbol;
 		definition = Environment[];
+		paramsAttr = TestVTMParameterManager.makeTestAttributes;
+		commandsAttr = TestVTMCommandManager.makeRandomAttributes(paramsAttr);
+		mappingsAttr = TestVTMMappingManager.makeRandomAttributes(paramsAttr, commandsAttr);
+
+		presetsAttr = TestVTMPresetManager.makeRandomAttributes(paramsAttr);
+		cuesAttr = TestVTMCueManager.makeRandomAttributes(paramsAttr, commandsAttr);
+		scoresAttr = TestVTMScoreManager.makeRandomAttributes(
+			paramsAttr, commandsAttr, mappingsAttr, presetsAttr, cuesAttr
+		);
+
 		attributes = (
 			path: "/%".format(this.class.makeRandomString).asSymbol,
-
+			parameters: paramsAttr,
+			presets: presetsAttr,
+			cues: cuesAttr,
+			mappings: mappingsAttr,
+			scores: scoresAttr,
+			commands: commandsAttr
 		);
-		context = VTMContext(testName);
+		context = VTMContext(testName, definition, attributes);
 		context.free;
 	}
 

@@ -1,3 +1,3 @@
-TestVTMCommandManager : TestVTMAbstractDataManager {
+TestVTMCommandManager : VTMUnitTest {
 
 }
