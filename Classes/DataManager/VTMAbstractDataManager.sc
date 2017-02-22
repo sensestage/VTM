@@ -1,8 +1,7 @@
 //Manages a model
-VTMAbstractDataManager {
+VTMAbstractDataManager : VTMAbstractData {
 	var model;
 	var definition;
-	var attributes;
 	var buildFunction;
 	var items;
 	var oscInterface;
@@ -12,13 +11,12 @@ VTMAbstractDataManager {
 	}
 
 	*new{arg model, definition, attributes, buildFunction;
-		^super.new.initAbstractDataManager(model, definition, attributes, buildFunction);
+		^super.new(attributes).initAbstractDataManager(model, definition, buildFunction);
 	}
 
-	initAbstractDataManager{arg model_, definition_, attributes_, buildFunction_;
+	initAbstractDataManager{arg model_, definition_, buildFunction_;
 		model = model_;
 		definition = definition_ ? IdentityDictionary.new;
-		attributes = attributes_ ? IdentityDictionary.new;
 		items = IdentityDictionary.newFrom( attributes );
 		buildFunction = buildFunction_;
 		oscInterface = VTMOSCInterface.new(this);
@@ -74,6 +72,14 @@ VTMAbstractDataManager {
 		items.keysValuesDo({arg item;
 			item.value(item);
 		});
+	}
+
+	fullPath{
+		this.subclassResponsibility(thisMethod);
+	}
+
+	*makeOSCAPI{arg model;
+		this.subclassResponsibility(thisMethod);
 	}
 
 }

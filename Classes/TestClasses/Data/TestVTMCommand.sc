@@ -1,5 +1,4 @@
 TestVTMCommand : VTMUnitTest {
-
 	*makeRandomAttributes{arg parameterAttributes;
 		var result;
 		result = {arg env...args;

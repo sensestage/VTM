@@ -61,7 +61,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param.value = testValue;
 			this.assertEquals(
@@ -77,7 +77,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var name = "my%".format(class.name);
 			var param;
 			try{
-				testClass = VTMUnitTest.testclassForType( class.type );
+				testClass = this.class.testclassForType( class.type );
 				testValue = testClass.makeRandomValue;
 				param = class.new(name, attributes: (defaultValue: testValue));
 				this.assertEquals(
@@ -102,7 +102,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param = class.new(name);
 			param.value = testClass.makeRandomValue;
@@ -130,7 +130,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param = class.new(name);
 			this.assert(
 				param.defaultValue.notNil,
@@ -159,7 +159,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var testClass, testValue, wasRun;
 			var name = "my%".format(class.name);
 			var param;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param = class.new(name);
 			testValue = wrongValuesForType[class.type];
 			try{
@@ -182,7 +182,7 @@ TestVTMValueParameter : TestVTMParameter {
 				var testClass, testValue, wasRun;
 				var name = "my%".format(class.name);
 				var param, gotValue = false, gotParamPassed = false;
-				testClass = VTMUnitTest.testclassForType( class.type );
+				testClass = this.class.testclassForType( class.type );
 				param = class.new(name);
 				testValue = testClass.makeRandomValue;
 				param.value = testValue;
@@ -215,7 +215,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var param, wasRun, gotUpdatedValue;
 			wasRun = false;
 			gotUpdatedValue = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param = class.new(name);
 			param.action = {arg p;
@@ -238,7 +238,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var name = "my%".format(class.name);
 			var param;
 			var wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param = class.new(name);
 			param.filterRepetitions = true;
@@ -259,7 +259,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var testClass, testValue;
 			var param;
 			var testAttributes, wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testAttributes = testClass.generateRandomAttributes(
 				[
 					\value,
@@ -305,7 +305,7 @@ TestVTMValueParameter : TestVTMParameter {
 	// 		var name = "my%".format(class.name);
 	// 		var param;
 	// 		var testAttributes, testAttributes;
-	// 		testClass = VTMUnitTest.testclassForType( class.type );
+	// 		testClass = this.class.testclassForType( class.type );
 	// 		testAttributes = testClass.generateRandomAttributes(
 	// 			[
 	// 				\value,
@@ -342,7 +342,7 @@ TestVTMValueParameter : TestVTMParameter {
 			var param;
 			var testEnum;
 			var testAttributes;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testAttributes = testClass.generateRandomAttributes(
 				[
 					\value,

@@ -34,7 +34,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 
 			this.assertEquals(
 				param.defaultValue, param.prDefaultValueForType, "NumberParameter defaultValue defaults to 0"
@@ -68,7 +68,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param.value = testValue;
 			this.assertEquals(
@@ -83,7 +83,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 	// 		var name = "my%".format(class.name);
 	// 		var param = class.new(name);
 	// 		var testMinVal, testMaxVal;
-	// 		testClass = VTMUnitTest.testclassForType( class.type );
+	// 		testClass = this.class.testclassForType( class.type );
 	//
 	// 		//Should only check higher values when maxVal is not nil
 	// 		testValue = testClass.makeRandomValue();
@@ -104,7 +104,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			//SetGet 'minVal'
 			testValue = testClass.makeRandomValue;
 			param.minVal = testValue;
@@ -137,7 +137,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 
 			//Should ignore and warn on wrong 'minVal' type
 			testValue = -100;
@@ -179,7 +179,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var invalidValue;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 
 			//type validation should block setting value
 			param.clipmode = \none;
@@ -200,7 +200,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 100.0));
 			param.maxVal = testClass.makeRandomValue((minVal: 101.0, maxVal: 1000.0));
 
@@ -264,7 +264,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var testStepsize, wasRun, wasCorrectValue;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
 			param.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 200.0));
 			param.clipmode = \both;
@@ -374,7 +374,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
 			param.maxVal = testClass.makeRandomValue((minVal: 100.0, maxVal: 200.0));
 			param.action = {|p| wasRun = true; };
@@ -418,7 +418,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 
 			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
 			param.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 100.0));
@@ -458,7 +458,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 
 			//Should only check for lower value in clipmode 'both' if 'maxVal' is not defined
 			param.clipmode = \both;
@@ -502,7 +502,7 @@ TestVTMNumberParameter : TestVTMValueParameter {
 			var name = "my%".format(class.name);
 			var param = class.new(name);
 			var wasRun = false;
-			testClass = VTMUnitTest.testclassForType( class.type );
+			testClass = this.class.testclassForType( class.type );
 			param.minVal = -2.0;
 			param.maxVal = 22.0;
 			param.clipmode = \none;

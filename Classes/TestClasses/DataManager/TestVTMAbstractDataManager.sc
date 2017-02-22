@@ -2,34 +2,30 @@ TestVTMAbstractDataManager : VTMUnitTest {
 
 	*dataClass{ ^this.findTestedClass.dataClass; }
 
-	*makeRandomAttributes{arg settings, attributes;
-		if(attributes.notNil, {
-			attributes.collect({arg attr;
-				this.dataClass.makeRandomAttributes(attr);
-			});
-		}, {
-			var numItems;
-			if(settings.isNil, {
-				numItems = rrand(1,7);
-			}, {
-				var minItems = settings[\minItems] ? 1;
-				var maxItems = settings[\maxItems] ? 7;
-				numItems = rrand(minItems, maxItems);
-			});
-			numItems.do({arg i;
-				this.dataClass.makeRandomAttributes;
-			});
+	*dataTestClass{ ^this.findTestClass(this.dataClass);}
 
+
+	//settings: minItems, maxItems
+	//if attributes are defined the settings are overriden, and the
+	//attributes array size defines the number of data item attributes
+	//that are generated.
+
+	*makeRandomAttributes{arg settings ...args;
+		var result;
+		var numItems;
+		if(settings.isNil, {
+			numItems = rrand(1,7);
+		}, {
+			var minItems = settings[\minItems] ? 1;
+			var maxItems = settings[\maxItems] ? 7;
+			numItems = rrand(minItems, maxItems);
 		});
-		^rrand(1,7).collect({arg i;
+		result = numItems.collect({arg i;
 			[
-				[i + 1, this.makeRandomString].choose,
-				this.makeRandomData(attributes);
+				[i + 1, {this.makeRandomString}].choose.value,
+				this.dataTestClass.makeRandomAttributes(*args)
 			]
 		}).flatten;
-	}
-
-	*makeRandomData{arg attributes;
-		this.subclassResponsibility(thisMethod);
+		^result;
 	}
 }

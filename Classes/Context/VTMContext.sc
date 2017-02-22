@@ -1,8 +1,7 @@
-VTMContext {
+VTMContext : VTMAbstractDataManager {
 	var <name;
 	var <parent;
 	var definition;
-	var attributes;
 	var children;
 	var path; //an OSC valid path.
 	var fullPathThunk;
@@ -25,18 +24,14 @@ VTMContext {
 		if(name.isNil, {
 			Error("Context must have name").throw;
 		});
-		^super.new.initContext(name, definition, attributes, parent);
+		^super.new(attributes).initContext(name, definition, parent);
 	}
 
-	initContext{arg name_, definition_, attributes_, parent_;
+	initContext{arg name_, definition_, parent_;
 		name = name_.asSymbol;
-		if(attributes_.isNil, {
-			attributes = IdentityDictionary.new;
-		}, {
-			attributes = IdentityDictionary.newFrom(attributes_);
-			if(attributes.includesKey(\addr), {
-				addr = NetAddr.newFromIPString(attributes[\addr]).asString;
-			});
+
+		if(attributes.includesKey(\addr), {
+			addr = NetAddr.newFromIPString(attributes[\addr]).asString;
 		});
 
 		if(definition_.isNil, {
@@ -115,11 +110,13 @@ VTMContext {
 			attributes !? {attributes[\scores]},
 			definition !? {definition[\buildScores]}
 		);
-		commands = VTMCommandManager(this,
-			definition !? {definition[\commands]},
-			attributes !? {attributes[\commands]},//commands defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
-			definition !? {definition[\buildCommands]}
-		);
+
+		//TODO: Load commands
+		// commands = VTMCommandManager(this,
+		// 	definition !? {definition[\commands]},
+		// 	attributes !? {attributes[\commands]},//commands defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
+		// 	definition !? {definition[\buildCommands]}
+		// );
 
 		this.prChangeState(\didInitialize);
 	}
@@ -173,7 +170,7 @@ VTMContext {
 			action.value(this);
 			this.release; //Release this as dependant from other objects.
 			definition = nil;
-			attributes = nil;
+			super.free;
 		};
 	}
 
@@ -346,7 +343,7 @@ VTMContext {
 	enableOSC{
 		//make OSC interface if not already created
 		if(oscInterface.isNil, {
-			oscInterface = VTMContextOSCInterface.new(this);
+			oscInterface = VTMOSCInterface.new(this);
 		});
 		[parameters, presets, cues, mappings].do(_.enableOSC);
 		oscInterface.enable;
@@ -383,7 +380,9 @@ VTMContext {
 		if(mappings.isEmpty.not, {
 			result.put(\mappings, mappings.attributes);
 		});
-
+		if(scores.isEmpty.not, {
+			result.put(\scores, scores.attributes);
+		});
 
 		^result;
 	}

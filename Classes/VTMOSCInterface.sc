@@ -1,3 +1,6 @@
+//All classes that uses objects of this class must define a .makeOSCAPI
+//classmethod returning getter and setter methods and functions for those.
+//In order to define the OSC path the user class needs to define a .fullPath method.
 VTMOSCInterface {
 	var model;
 	var responders;
