@@ -1,5 +1,6 @@
 # VTM
-VTM - system for Verdensteatret
+VTM - system for Verdensteatret ( www.verdensteatret.com )
+This code is in a state of severe alpha and early development. That means that restructuring the class tree, and renaming, adding and removing methods/classes may – and will – happen.
 
 ###requirements
 
