@@ -1,5 +1,4 @@
-VTMContext : VTMAbstractDataManager {
-	var <name;
+VTMContext : VTMAbstractData {
 	var <parent;
 	var definition;
 	var children;
@@ -7,7 +6,6 @@ VTMContext : VTMAbstractDataManager {
 	var fullPathThunk;
 	var <envir;
 	var <addr; //the address for this object instance.
-	var oscInterface;
 	var <state;
 	var <parameters;
 	var <presets;
@@ -21,14 +19,10 @@ VTMContext : VTMAbstractDataManager {
 	classvar <viewClassSymbol = 'VTMContextView';
 
 	*new{arg name, definition, attributes, parent;
-		if(name.isNil, {
-			Error("Context must have name").throw;
-		});
-		^super.new(attributes).initContext(name, definition, parent);
+		^super.new(name, attributes).initContext(definition, parent);
 	}
 
-	initContext{arg name_, definition_, parent_;
-		name = name_.asSymbol;
+	initContext{arg definition_, parent_;
 
 		if(attributes.includesKey(\addr), {
 			addr = NetAddr.newFromIPString(attributes[\addr]).asString;
