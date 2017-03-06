@@ -1,7 +1,7 @@
 //All classes that uses objects of this class must define a .makeOSCAPI
 //classmethod returning getter and setter methods and functions for those.
 //In order to define the OSC path the user class needs to define:
-//- .fullPath method.
+//- .path method.
 //- .name method
 //- .leadingSeparator
 VTMOSCInterface {
@@ -10,6 +10,11 @@ VTMOSCInterface {
 	var <enabled = false;
 
 	*new{arg model;
+		[\path, \name, \leadingSeparator].do({arg item;
+			if(model.respondsTo(item).not, {
+				NotYetImplementedError("% has not implemented '%' method yet!".format(model.class, item)).throw;
+			});
+		});
 		^super.new.init(model);
 	}
 
