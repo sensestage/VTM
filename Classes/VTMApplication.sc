@@ -1,6 +1,4 @@
-VTMApplication {
-	//The environment where Application level things are happening.
-	var <envir;
+VTMApplication : VTMContext {
 
 	//The object that handles communication with other applications on the network.
 	var <network;

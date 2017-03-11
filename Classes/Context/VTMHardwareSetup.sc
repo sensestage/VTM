@@ -1,4 +1,4 @@
-VTMHardwareSetup : VTMNetworkedContext {
+VTMHardwareSetup : VTMComposableContextManager {
 
 	//a hardware setups parent will be an Application
 	*new{arg definition, attributes, network;
@@ -25,6 +25,4 @@ VTMHardwareSetup : VTMNetworkedContext {
 	removeDevice{arg deviceName;
 		this.removeChild(deviceName);
 	}
-
-	devices{ ^children; }
 }

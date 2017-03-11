@@ -1,6 +1,4 @@
 VTMCueManager : VTMAbstractDataManager{
-	*dataClass{
-		^VTMCue;
-	}
+	*dataClass{ ^VTMCue; }
 
 }

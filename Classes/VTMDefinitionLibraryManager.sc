@@ -1,0 +1,4 @@
+VTMDefinitionLibraryManager : VTMElementManager{
+	*dataClass{ ^VTMDefinitionLibrary; }
+
+}

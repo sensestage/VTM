@@ -1,4 +1,4 @@
-VTMContext : VTMAbstractData {
+VTMContext : VTMElement {
 	var <parent;
 	var definition;
 	var children;

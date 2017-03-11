@@ -1,20 +1,22 @@
 //Manages a model
-VTMAbstractDataManager : VTMAbstractData {
+VTMAbstractDataManager {
 	var model;
 	var definition;
 	var buildFunction;
 	var items;
 	var oscInterface;
+	var attributes;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
 	}
 
 	*new{arg model, definition, attributes, buildFunction;
-		^super.new(attributes).initAbstractDataManager(model, definition, buildFunction);
+		^super.new.initAbstractDataManager(attributes, model, definition, buildFunction);
 	}
 
-	initAbstractDataManager{arg model_, definition_, buildFunction_;
+	initAbstractDataManager{arg attributes_, model_, definition_, buildFunction_;
+		attributes = attributes_;
 		model = model_;
 		definition = definition_ ? IdentityDictionary.new;
 		items = IdentityDictionary.newFrom( attributes );

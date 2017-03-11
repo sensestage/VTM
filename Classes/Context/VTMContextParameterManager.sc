@@ -1,8 +1,10 @@
-VTMContextParameterManager {
+VTMContextParameterManager : VTMElementManager {
 	var context;
 	var <parameters;
 	var <order;
 	var presetList;
+
+	*dataClass{ ^VTMContextParameter; }
 
 	*new{arg context, definition, attributes;
 		^super.new.init(context);

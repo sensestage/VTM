@@ -1,4 +1,4 @@
-VTMNetworkNode {
+VTMAbstractNetworkNode : VTMElement {
 	classvar <applications;
 	classvar <addr;
 
@@ -17,3 +17,4 @@ VTMNetworkNode {
 	*checkApplications{
 	}
 }
+

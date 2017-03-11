@@ -1,4 +1,4 @@
-VTMScoreManager : VTMAbstractDataManager {
+VTMScoreManager : VTMComposableContextManager {
 	*dataClass{
 		^VTMScore;
 	}

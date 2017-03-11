@@ -1,5 +1,5 @@
 //A function that can be attached to an environment, e.g. in a context.
-VTMCommand {
+VTMElementCommand : VTMElement {
 	var >envir;
 	var <>action;
 

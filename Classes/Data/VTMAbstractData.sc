@@ -1,26 +1,17 @@
 //Data is what can be stored and loaded from file, and transmitted
 //between contexts as OSC.
 VTMAbstractData{
-	var <name;
 	var attributes;
 	var <manager;
-
-	var commands;
-	var oscInterface;
 
 	var attributeGetterFunctionsThunk;
 	var attributeSetterFunctionsThunk;
 
-	*new{arg name, attributes, manager;
-		if(name.isNil, {
-			Error("% must have name".format(this.class.name)).throw;
-		});
-
-		^super.new.initAbstractData(name, attributes, manager);
+	*new{arg attributes, manager;
+		^super.new.initAbstractData(attributes, manager);
 	}
 
-	initAbstractData{arg name_, attributes_, manager_;
-		name = name_.asSymbol;
+	initAbstractData{arg attributes_, manager_;
 		manager = manager_;
 		if(attributes_.notNil, {
 			attributes = attributes_.deepCopy;

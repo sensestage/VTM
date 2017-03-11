@@ -1,4 +1,4 @@
-VTMModuleHost : VTMNetworkedContext {
+VTMModuleHost : VTMComposableContextManager {
 	var <factory;
 
 	*new{arg definition, attributes, network;
@@ -7,10 +7,6 @@ VTMModuleHost : VTMNetworkedContext {
 
 	initModuleHost {
 		factory = VTMModuleFactory.new(this);
-	}
-
-	modules{
-		^children;
 	}
 
 	//A attributes is a dictonary of parameter key/values.
@@ -27,7 +23,7 @@ VTMModuleHost : VTMNetworkedContext {
 			//The factory may throw error when building the module, but
 			//added an extra check here
 			if(newModule.isNil, {
-				Error("Module % failed to build".format(name)).throw;
+				Error("Module % failed to build".format(this.name)).throw;
 			}, {
 				this.loadModule(newModule);
 			});

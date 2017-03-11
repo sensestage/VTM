@@ -1,0 +1,3 @@
+VTMElementCommandManager : VTMElementManager {
+	*dataClass{ ^VTMElementCommand; }
+}

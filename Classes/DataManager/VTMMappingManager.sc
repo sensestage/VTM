@@ -1,6 +1,4 @@
-VTMMappingManager : VTMAbstractDataManager{
-	*dataClass{
-		^VTMMapping;
-	}
+VTMMappingManager : VTMElementManager{
+	*dataClass{ ^VTMMapping; }
 
 }

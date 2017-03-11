@@ -1,0 +1,4 @@
+VTMDefinitionLibrary : VTMElement {
+
+}
+

@@ -1,0 +1,3 @@
+VTMAudioModule : VTMModule {
+}
+

@@ -1,4 +1,4 @@
-// VTMAudioEngine{
+VTMAudioEngine {
 // 	var <server;
 // 	var <setup;
 // 	var <groups;
@@ -65,4 +65,4 @@
 // 		//load output description
 // 		//Do we have outboard effects?
 // 	}
-// }
+}

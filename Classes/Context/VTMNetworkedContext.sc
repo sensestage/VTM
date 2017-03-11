@@ -1,7 +1,9 @@
-VTMNetworkedContext : VTMContext {
+VTMComposableContextManager : VTMElementManager {
 	var <library;//temp getter
 	var <definitionPaths, <isLoadingDefinitions = false;
 	var <attributesPaths, <isLoadingAttributes = false;
+
+	*dataClass{ ^VTMComposableContext; }
 
 	*new{arg name, definition, attributes, network;
 		^super.new(name, definition, attributes, network).initNetworkedContext;

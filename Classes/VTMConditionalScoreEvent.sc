@@ -1,0 +1,1 @@
+VTMConditionalScoreEvent : VTMScoreEvent {}

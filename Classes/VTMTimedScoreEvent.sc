@@ -1,0 +1,1 @@
+VTMTimedScoreEvent : VTMScoreEvent {}

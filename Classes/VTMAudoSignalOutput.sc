@@ -1,0 +1,1 @@
+VTMAudioSignalOutput : VTMAudioSignal {}
