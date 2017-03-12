@@ -1,20 +1,10 @@
-VTMContextParameterManager : VTMElementManager {
-	var context;
+VTMContextParameterManager : VTMAbstractDataManager {
 	var <parameters;
 	var <order;
 	var presetList;
 
 	*dataClass{ ^VTMContextParameter; }
-
-	*new{arg context, definition, attributes;
-		^super.new.init(context);
-	}
-
-	init{arg context_;
-		context = context_;
-		parameters = IdentityDictionary.new;
-		order = [];
-	}
+	name{ ^\parameters; }
 
 	loadParameterAttributes{arg parameterAttributes;
 		if(parameterAttributes.notNil, {

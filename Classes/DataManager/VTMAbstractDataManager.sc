@@ -1,87 +1,46 @@
-//Manages a model
 VTMAbstractDataManager {
-	var model;
-	var definition;
-	var buildFunction;
+	var name;
+	var context;
 	var items;
 	var oscInterface;
-	var attributes;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg model, definition, attributes, buildFunction;
-		^super.new.initAbstractDataManager(attributes, model, definition, buildFunction);
+	*new{arg context, attributes;
+		^super.new.initAbstractDataManager(context, attributes);
 	}
 
-	initAbstractDataManager{arg attributes_, model_, definition_, buildFunction_;
-		attributes = attributes_;
-		model = model_;
-		definition = definition_ ? IdentityDictionary.new;
-		items = IdentityDictionary.newFrom( attributes );
-		buildFunction = buildFunction_;
+	initAbstractDataManager{arg context_, attributes_;
+		context = context_;
+		attributes_.do({arg item;
+			this.class.dataClass.newFromAttributes(item);
+		});
 		oscInterface = VTMOSCInterface.new(this);
 	}
 
-	at{arg key;
-		attributes.at(key);
+	free{
+		items.do(_.free);
 	}
 
-	names{
-		^attributes.keys;
-	}
+	name{ this.subclassResponsibility(thisMethod); }
 
 	attributes{
-		^attributes;
-	}
-
-	attributes_{arg attr;
-		//TODO: reinit here
-		attributes = attr;
-	}
-
-	add{arg key, data;
-		attributes.put(key, data);
-	}
-
-	remove{arg key, data;
-
-	}
-
-	prepare{arg cond;}
-	run{arg cond;}
-	free{arg cond;}
-
-	enableOSC{}
-	disableOSC{}
-
-	includes{arg key;
-		^items.includesKey(key);
-	}
-
-	isEmpty{
-		^items.isEmpty;
-	}
-
-	do{arg action;
-		items.do{arg item;
-			action.value(item);
-		}
-	}
-
-	keysValuesDo{arg action;
-		items.keysValuesDo({arg item;
-			item.value(item);
+		var result;
+		items.collect({arg item; 
+			item.attributes;
 		});
+		^result;
 	}
 
-	fullPath{
-		this.subclassResponsibility(thisMethod);
+	path{
+	       	^"%%%".format(
+			context.path,
+			this.leadingSeparator,
+			this.name
+		);
 	}
 
-	*makeOSCAPI{arg model;
-		this.subclassResponsibility(thisMethod);
-	}
-
+	leadingSeparator{ ^':'; }
 }

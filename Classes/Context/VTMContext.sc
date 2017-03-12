@@ -1,6 +1,7 @@
 VTMContext : VTMElement {
 	var <parent;
 	var definition;
+	var buildFunction;
 	var children;
 	var path; //an OSC valid path.
 	var fullPathThunk;

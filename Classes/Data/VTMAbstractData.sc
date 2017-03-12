@@ -1,24 +1,25 @@
-//Data is what can be stored and loaded from file, and transmitted
-//between contexts as OSC.
 VTMAbstractData{
+	var <name;
 	var attributes;
 	var <manager;
-
 	var attributeGetterFunctionsThunk;
 	var attributeSetterFunctionsThunk;
 
-	*new{arg attributes, manager;
-		^super.new.initAbstractData(attributes, manager);
+	*newFromAttributes{arg attributes;
+		var name, manager;
+		name = attributes.removeAt(\attributes);
+		manager = attributes.removeAt(\manager);
+		^this.new(name, attributes, manager);
 	}
 
-	initAbstractData{arg attributes_, manager_;
-		manager = manager_;
-		if(attributes_.notNil, {
-			attributes = attributes_.deepCopy;
-		}, {
-			attributes = IdentityDictionary.new;
-		});
+	*new{arg name, attributes, manager;
+		^super.new.initAbstractData(name, attributes, manager);
+	}
 
+	initAbstractData{arg name_, attributes_, manager_;
+		name = name_;
+		manager = manager_;
+		attributes = VTMAttributeList.new(attributes_);
 		//lazy attributesGetters and setters
 		attributeGetterFunctionsThunk = Thunk({
 			this.class.makeAttributeGetterFunctions(this);
@@ -61,5 +62,4 @@ VTMAbstractData{
 	*makeAttributeSetterFunctions{arg param;
 		this.subclassResponsibility(thisMethod);
 	}
-
 }

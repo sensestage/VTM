@@ -1,4 +1,4 @@
-VTMDefinitionLibraryManager : VTMElementManager{
+VTMDefinitionLibraryManager : VTMAbstractDataManager {
 	*dataClass{ ^VTMDefinitionLibrary; }
-
+	name{ ^\libraries; }
 }

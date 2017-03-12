@@ -1,5 +1,4 @@
 VTMScoreManager : VTMComposableContextManager {
-	*dataClass{
-		^VTMScore;
-	}
+	*dataClass{ ^VTMScore; }
+	name{ ^\scores; }
 }

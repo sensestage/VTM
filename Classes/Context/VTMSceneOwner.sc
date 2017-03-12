@@ -1,9 +1,7 @@
 VTMSceneOwner : VTMComposableContextManager {
 	var <sceneFactory;
-
-	*new{arg definition, attributes, network;
-		^super.new('scenes', definition, attributes, network).initSceneOwner;
-	}
+	*dataClass{ ^VTMScene; }
+	name{ ^\scenes; }
 
 	initSceneOwner{
 		sceneFactory = VTMSceneFactory.new(this);
