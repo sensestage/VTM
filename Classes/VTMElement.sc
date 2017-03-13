@@ -1,17 +1,15 @@
 VTMElement : VTMAbstractData {
-	var name;
 	var commands;
 	var oscInterface;
 
-	*new{arg attributes, manager, name;
+	*new{arg name, attributes, manager;
 		if(name.isNil, {
 			Error("% must have name".format(this.class.name)).throw;
 		});
-		^super.new(attributes, manager).initAbstractElement(name);
+		^super.new(name, attributes, manager).initElement;
 	}
 
-	initAbstractElement{arg name_;
-		name = name_.asSymbol;
+	initElement{
 	}
 
 	free{
@@ -20,4 +18,24 @@ VTMElement : VTMAbstractData {
 		super.free;
 	}
 
+	enableOSC{
+		//make OSC interface if not already created
+		if(oscInterface.isNil, {
+			oscInterface = VTMOSCInterface.new(this);
+		});
+		oscInterface.enable;
+	}
+
+	disableOSC{
+		oscInterface.free;
+		oscInterface = nil;
+	}
+
+	oscEnabled{
+		^if(oscInterface.notNil, {
+			oscInterface.enabled;
+		}, {
+			^nil;
+		});
+	}
 }

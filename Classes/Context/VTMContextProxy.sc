@@ -1,16 +1,12 @@
-VTMContextProxy : VTMContext {
+VTMContextProxy {
 	var implementation;
 
-	*new{arg name, definition, attributes, parent;
-		^super.new(name, definition, attributes, parent).initContextProxy;
+	*new{arg name, definition, attributes, manager;
+		^super.new().initContextProxy(name, definition, attributes, manager);
 	}
 
-	initContextProxy{
-		var implClass;
+	initContextProxy{arg name, definition, attributes, manager;
 		//determine which implementation to use
-		implClass = VTMRemoteContextProxyImplementation;
-		//make implementation of correct type //FIXME: only remote proxy implmentation for now.
-		implementation = VTMRemoteContextProxyImplementation.new(this, definition, attributes);
 	}
 
 	sendMsg{arg ...msg;

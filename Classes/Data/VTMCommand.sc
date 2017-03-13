@@ -1,15 +1,13 @@
 //A function that can be attached to an environment, e.g. in a context.
-VTMElementCommand : VTMElement {
+VTMCommand : VTMElement {
 	var >envir;
 	var <>action;
 
-	*new{arg func;
-		^super.new.initCommand(func);
+	*new{arg name, attributes, manager;
+		^super.new(name, attributes, manager).initCommand;
 	}
 
-	initCommand{arg func_;
-		action = func_;
-	}
+	initCommand{}
 
 	value{arg ...args;
 		if(envir.notNil, {

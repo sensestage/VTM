@@ -1,10 +1,11 @@
 VTMAbstractNetworkNode : VTMElement {
 	classvar <applications;
-	classvar <addr;
 
-	*initClass{
-		addr = NetAddr.localAddr;
+	*new{arg name, attributes, manager;
+		^super.new(name, attributes, manager).initAbstractNetworkNode;
 	}
+
+	initAbstractNetworkNode{}
 
 	*registerApplication{
 

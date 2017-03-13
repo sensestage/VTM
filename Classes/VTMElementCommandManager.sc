@@ -1,4 +1,4 @@
-VTMElementCommandManager : VTMAbstractDataManager {
-	*dataClass{ ^VTMElementCommand; }
+VTMCommandManager : VTMAbstractDataManager {
+	*dataClass{ ^VTMCommand; }
 	name{ ^\commands; }
 }

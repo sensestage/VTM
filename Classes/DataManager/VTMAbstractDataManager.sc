@@ -43,4 +43,25 @@ VTMAbstractDataManager {
 	}
 
 	leadingSeparator{ ^':'; }
+
+	enableOSC{
+		//make OSC interface if not already created
+		if(oscInterface.isNil, {
+			oscInterface = VTMOSCInterface.new(this);
+		});
+		oscInterface.enable;
+	}
+
+	disableOSC{
+		oscInterface.free;
+		oscInterface = nil;
+	}
+
+	oscEnabled{
+		^if(oscInterface.notNil, {
+			oscInterface.enabled;
+		}, {
+			^nil;
+		});
+	}
 }

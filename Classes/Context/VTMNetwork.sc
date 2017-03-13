@@ -1,3 +1,4 @@
+/*
 VTMNetwork : VTMContext {
 	var <application;
 	var oscResponders;
@@ -113,3 +114,4 @@ VTMNetwork : VTMContext {
 		sendToAllAction.value(*args);
 	}
 }
+*/

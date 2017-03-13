@@ -4,6 +4,7 @@ VTMAbstractData{
 	var <manager;
 	var attributeGetterFunctionsThunk;
 	var attributeSetterFunctionsThunk;
+	classvar viewClassSymbol = \VTMAbstractDataView;
 
 	*newFromAttributes{arg attributes;
 		var name, manager;
@@ -30,6 +31,7 @@ VTMAbstractData{
 	}
 
 	free{
+		attributes.free;
 		attributes = nil;
 	}
 
@@ -61,5 +63,16 @@ VTMAbstractData{
 
 	*makeAttributeSetterFunctions{arg param;
 		this.subclassResponsibility(thisMethod);
+	}
+
+	makeView{arg parent, bounds, definition, attributes;
+		var viewClass = this.class.viewClassSymbol.asClass;
+		//override class if defined in attributes.
+		if(attributes.notNil, {
+			if(attributes.includesKey(\viewClass), {
+				viewClass = attributes[\viewClass];
+			});
+		});
+		^viewClass.new(parent, bounds, definition, attributes, this);
 	}
 }

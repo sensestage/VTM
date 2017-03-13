@@ -1,9 +1,6 @@
 VTMContext : VTMElement {
-	var <parent;
 	var definition;
 	var buildFunction;
-	var children;
-	var path; //an OSC valid path.
 	var fullPathThunk;
 	var <envir;
 	var <addr; //the address for this object instance.
@@ -14,107 +11,43 @@ VTMContext : VTMElement {
 	var <mappings;
 	var <scores;
 	var <commands;
+	var condition;
 
-	classvar <contextLevelSeparator = $/;
-	classvar <subcontextSeparator = $.;
 	classvar <viewClassSymbol = 'VTMContextView';
 
-	*new{arg name, definition, attributes, parent;
-		^super.new(name, attributes).initContext(definition, parent);
+	*new{arg name, attributes, manager, definition;
+		^super.new(name, attributes, manager).initContext(definition);
 	}
 
-	initContext{arg definition_, parent_;
-
-		if(attributes.includesKey(\addr), {
-			addr = NetAddr.newFromIPString(attributes[\addr]).asString;
-		});
-
-		if(definition_.isNil, {
-			definition = Environment.new;
-		}, {
-			definition = Environment.newFrom(definition_);
-		});
-
-		if(addr.isNil, {
-			addr = NetAddr.localAddr;
-		}, {
-			// a different address is used. Check if UPD port needs to be opened
-			if(thisProcess.openPorts.includes(addr.port), {
-				"VTMContext - UDP port number already opened for address: %".format(addr).postln;
-			}, {
-				//try to open this port
-				if(thisProcess.openUDPPort(addr.port), {
-					"VTMContext - Opened UDP port number for address: %".format(addr).postln;
-				}, {
-					Error("VTMContext failed to open UDP port number for address: %".format(addr)).throw;
-				});
-			});
-		});
-
-		parent = parent_;
-		children = IdentityDictionary.new;
-		envir = Environment.newFrom(definition.deepCopy);
-		envir.put(\self, this);
-
-		if(parent.notNil, {
-			//Make parent add this to its children.
-			parent.addChild(this);
-			//derive path from parent context
-			path = parent.fullPath;
-		}, {
-			//Can use attributes specified path if context has no parent
-			if(attributes.includesKey(\path), {
-				path = attributes[\path].asSymbol;
-				//force leading slash
-				if(path.asString.first != $/, {
-					path = "/%".format(path).asSymbol;
-					"Context '%/%' forced leading slash in path".format(path, name).warn
-				});
-			});
-		});
-		fullPathThunk = Thunk({
-			if(path.isNil, {
-				"/%".format(name).asSymbol;
-			}, {
-				"%%%".format(path, this.leadingSeparator, name).asSymbol;
-			});
-		});
+	initContext{arg definition_ ;
+		definition = VTMContextDefinition.new(definition_, this);
+		envir = definition.makeEnvir;
+		condition = Condition.new;
 
 		parameters = VTMParameterManager(this,
-			definition !? {definition[\parameters]},
-			attributes !? {attributes[\parameters]},//parameters defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
-			definition !? {definition[\buildParameters]}
+			definition.parameters,
+			attributes[\parameters]
 		);
 		presets = VTMPresetManager(this,
-			definition !? {definition[\presets]},
-			attributes !? {attributes[\presets]},
-			definition !? {definition[\buildPresets]}
+			definition.presets,
+			attributes[\presets]
 		);
 		cues = VTMCueManager(this,
-			definition !? {definition[\cues]},
-			attributes !? {attributes[\cues]},
-			definition !? {definition[\buildCues]}
+			definition.cues,
+			attributes[\cues]
 		);
 		mappings = VTMMappingManager(this,
-			definition !? {definition[\mappings]},
-			attributes !? {attributes[\mappings]},
-			definition !? {definition[\buildMappings]}
+			definition.mappings,
+			attributes[\mappings]
 		);
 		scores = VTMScoreManager(this,
-			definition !? {definition[\scores]},
-			attributes !? {attributes[\scores]},
-			definition !? {definition[\buildScores]}
+			definition.scores,
+			attributes[\scores]
 		);
-
-		//TODO: Load commands
-		// commands = VTMCommandManager(this,
-		// 	definition !? {definition[\commands]},
-		// 	attributes !? {attributes[\commands]},//commands defined in attributes doesn't make sense really, as no code (i.e. 'action') can be defined in data..?
-		// 	definition !? {definition[\buildCommands]}
-		// );
-
 		this.prChangeState(\didInitialize);
 	}
+
+	prComponents{ ^[parameters, presets, cues, mappings, scores]; }	
 
 	//The context that calls prepare can issue a condition to use for handling
 	//asynchronous events. If no condition is passed as argument the context will
@@ -128,8 +61,7 @@ VTMContext : VTMElement {
 			if(envir.includesKey(\prepare), {
 				this.execute(\prepare, cond);
 			});
-			[parameters, presets, cues, mappings].do({arg it; it.prepare(cond)});
-
+			this.prComponents.do({arg it; it.prepare(cond)});
 			this.enableOSC;
 			this.prChangeState(\didPrepare);
 			action.value(this);
@@ -143,7 +75,7 @@ VTMContext : VTMElement {
 			if(envir.includesKey(\run), {
 				this.execute(\run, cond);
 			});
-			[parameters, presets, cues, mappings].do({arg it; it.run(cond)});
+			this.prComponents.do({arg it; it.run(cond)});
 			this.prChangeState(\didRun);
 			action.value(this);
 		};
@@ -157,10 +89,10 @@ VTMContext : VTMElement {
 				this.execute(\free, cond);
 			});
 			this.disableOSC;
-			children.keysValuesDo({arg key, child;
-				child.free(key, cond);
-			});
-			[parameters, presets, cues, mappings].do({arg it; it.free(cond)});
+//			children.keysValuesDo({arg key, child;
+//				child.free(key, cond);
+//			});
+			this.prComponents.do({arg it; it.free(cond)});
 			this.prChangeState(\didFree);
 			action.value(this);
 			this.release; //Release this as dependant from other objects.
@@ -174,81 +106,41 @@ VTMContext : VTMElement {
 		parameters.reset(true)
 	}
 
-	addChild{arg context;
-		children.put(context.name, context);
-		context.addDependant(this);
-		this.changed(\addedChild, context.name);
-	}
-
-	removeChild{arg key;
-		var removedChild;
-		removedChild = children.removeAt(key);
-		//"[%] Removing child '%'".format(this.name, key).postln;
-		removedChild.removeDependant(this);
-		this.changed(\removedChild, key);
-		^removedChild;
-	}
-
 	//If path is not defined the name is returned with a leading slash
 	fullPath{
 		^fullPathThunk.value;
 	}
 
-	//Can only set path on init.
-	//Return only the path, not the name.
-	path{
-		^path;
-		//Search parents until root node is found and construct path from that
-	}
-
-	//Some objects need to define special separators, e.g. subscenes, submodules etc.
-	leadingSeparator{ ^$/;	}
-
-	//Determine if this is a root context, i.e. having no parent.
-	isRoot{
-		^parent.isNil;
-	}
-
-	//Determine is this a lead context, i.e. having no children.
-	isLeaf{
-		^children.isEmpty;
-	}
-
-	children{
-		if(children.isEmpty, {
-			^nil;
-		}, {
-			^children.keys.asArray;// safer to return only the children. not the dict.
-		});
-	}
-
+//	//Some objects need to define special separators, e.g. subscenes, submodules etc.
+//	leadingSeparator{ ^$/;	}
+//
+//	//Determine if this is a root context, i.e. having no parent.
+//	isRoot{
+//		//^parent.isNil;
+//	}
+//
+//	//Determine is this a lead context, i.e. having no children.
+//	isLeaf{
+//		^children.isEmpty;
+//	}
+//
+//	children{
+//		if(children.isEmpty, {
+//			^nil;
+//		}, {
+//			^children.keys.asArray;// safer to return only the children. not the dict.
+//		});
+//	}
 	//Find the root for this context.
-	root{
-		var result;
-		//search for context root
-		result = this;
-		while({result.isRoot.not}, {
-			result = result.parent;
-		});
-		^result;
-	}
-
-	//Search namespace for context path.
-	//Search path can be relative or absolute.
-	find{arg searchPath;
-
-	}
-
-	//Get the whole child context tree.
-	childTree{
-		var result;
-		if(this.children.notNil, {
-			this.children.do({arg item;
-				result = result.add(item.childTree);
-			});
-		});
-		^result;
-	}
+//	root{
+//		var result;
+//		//search for context root
+//		result = this;
+//		while({result.isRoot.not}, {
+//			result = result.parent;
+//		});
+//		^result;
+//	}
 
 	prChangeState{ arg val;
 		var newState;
@@ -311,43 +203,18 @@ VTMContext : VTMElement {
 		^result;
 	}
 
-	makeView{arg parent, bounds, definition, attributes;
-		var viewClass = this.class.viewClassSymbol.asClass;
-		//override class if defined in attributes.
-		if(attributes.notNil, {
-			if(attributes.includesKey(\viewClass), {
-				viewClass = attributes[\viewClass];
-			});
-		});
-		^viewClass.new(parent, bounds, definition, attributes, this);
-	}
-
 	update{arg theChanged, whatChanged, theChanger ...args;
 		// "[%] Update: %".format(this.name, [theChanged, whatChanged, theChanger, args]).postln;
-		if(theChanged.isKindOf(VTMContext), {
-			if(this.children.includes(theChanged), {
-				switch(whatChanged,
-					\freed, {
-						this.removeChild(theChanged.name);
-					}
-				);
-			});
-		});
 	}
 
 	enableOSC{
-		//make OSC interface if not already created
-		if(oscInterface.isNil, {
-			oscInterface = VTMOSCInterface.new(this);
-		});
-		[parameters, presets, cues, mappings].do(_.enableOSC);
-		oscInterface.enable;
+		super.enableOSC;
+		this.prComponents.do(_.enableOSC);
 	}
 
 	disableOSC{
-		oscInterface.free;
-		[parameters, presets, cues, mappings].do(_.disableOSC);
-		oscInterface = nil;
+		this.prComponents.do(_.disableOSC);
+		super.disableOSC;
 	}
 
 	oscEnabled{
@@ -360,8 +227,6 @@ VTMContext : VTMElement {
 
 	attributes{
 		var result = IdentityDictionary.new;
-
-		result.put(\children, this.children);
 
 		if(parameters.isEmpty.not, {
 			result.put(\parameters, parameters.attributes);
@@ -388,15 +253,6 @@ VTMContext : VTMElement {
 	//keys with ! are action commands that cause function to be run
 	*makeOSCAPI{arg context;
 		^IdentityDictionary[
-			'children?' -> {arg context;
-				var result;
-				if(context.isLeaf.not, {
-					result = context.children;
-				}, {
-					result = nil;
-				});
-				result;
-			},
 			'parameters?' -> {arg context;
 				context.parameters.names;
 			},
