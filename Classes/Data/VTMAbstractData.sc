@@ -35,6 +35,8 @@ VTMAbstractData{
 		attributes = nil;
 	}
 
+	prComponents{ ^nil; }
+
 	attributes{
 		var result;
 		result = IdentityDictionary.new;
