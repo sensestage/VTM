@@ -36,7 +36,7 @@ VTMAbstractDataManager {
 	}
 
 	path{
-	       	^"%%%".format(
+		^"%%%".format(
 			context.path,
 			this.leadingSeparator,
 			this.name
