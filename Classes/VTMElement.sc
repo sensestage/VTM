@@ -1,5 +1,4 @@
 VTMElement : VTMAbstractData {
-	var <commands;
 	var oscInterface;
 
 	*new{arg name, attributes, manager;
@@ -13,8 +12,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	free{
-		oscInterface.free;
-		commands.free;
+		this.disableOSC;
 		super.free;
 	}
 

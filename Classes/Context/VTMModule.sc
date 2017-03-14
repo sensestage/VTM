@@ -6,9 +6,6 @@ VTMModule : VTMComposableContext {
 	}
 
 	initModule{
-		//it is only the "real" implementation classes that will know when it
-		//has been properly initialized
-		this.prChangeState(\initialized);
 	}
 
 	play{arg ...args;

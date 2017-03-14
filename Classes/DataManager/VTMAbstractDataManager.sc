@@ -3,7 +3,6 @@ VTMAbstractDataManager {
 	var context;
 	var items;
 	var oscInterface;
-	var <commands;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
@@ -18,11 +17,12 @@ VTMAbstractDataManager {
 		attributes_.do({arg item;
 			this.class.dataClass.newFromAttributes(item);
 		});
-		oscInterface = VTMOSCInterface.new(this);
 	}
 
 	free{
+		this.disableOSC;
 		items.do(_.free);
+		context = nil;
 	}
 
 	name{ this.subclassResponsibility(thisMethod); }

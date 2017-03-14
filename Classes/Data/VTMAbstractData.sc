@@ -32,7 +32,10 @@ VTMAbstractData{
 
 	free{
 		attributes.free;
+		this.releaseDependants;
 		attributes = nil;
+		manager = nil;
+
 	}
 
 	prComponents{ ^nil; }

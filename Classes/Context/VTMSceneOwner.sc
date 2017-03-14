@@ -7,6 +7,11 @@ VTMSceneOwner : VTMComposableContextManager {
 		sceneFactory = VTMSceneFactory.new(this);
 	}
 
+	free{
+		sceneFactory.free;
+		super.free;
+	}
+
 	addScene{arg newScene;
 	}
 

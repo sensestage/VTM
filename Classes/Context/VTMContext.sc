@@ -10,6 +10,7 @@ VTMContext : VTMElement {
 	var <cues;
 	var <mappings;
 	var <scores;
+	var <commands;
 	var condition;
 
 	classvar <viewClassSymbol = 'VTMContextView';
@@ -22,10 +23,13 @@ VTMContext : VTMElement {
 		definition = VTMContextDefinition.new(definition_, this);
 		envir = definition.makeEnvir;
 		condition = Condition.new;
-
 		parameters = VTMParameterManager(this,
 			definition.parameters,
 			attributes[\parameters]
+		);
+		commands = VTMCommandManager(this,
+			definition.commands,
+			attributes[\commands]
 		);
 		presets = VTMPresetManager(this,
 			definition.presets,
@@ -46,7 +50,9 @@ VTMContext : VTMElement {
 		this.prChangeState(\didInitialize);
 	}
 
-	prComponents{ ^[parameters, presets, cues, mappings, scores]; }	
+	prComponents{
+	   	^[parameters, presets, cues, mappings, scores, commands];
+   	}	
 
 	//The context that calls prepare can issue a condition to use for handling
 	//asynchronous events. If no condition is passed as argument the context will
@@ -170,16 +176,9 @@ VTMContext : VTMElement {
 		^parameters[parameterName].value;
 	}
 
-	//Call functions in the runtime environment with this module as first arg.
-	//Module definition functions always has the module as its first arg.
-	//The method returns the result from the called function.
+	//Call functions in the runtime environment with this context as first arg.
 	execute{arg selector ...args;
-		// "EXECUTE -envir: % \n\thasProto: %".format(envir, envir.proto).postln;
-		if(envir.proto.notNil, {
-			this.executeWithPrototypes(selector, *args);
-		}, {
-			^envir[selector].value(this, *args);
-		});
+		^envir[selector].value(this, *args);
 	}
 
 	executeWithPrototypes{arg selector ...args;

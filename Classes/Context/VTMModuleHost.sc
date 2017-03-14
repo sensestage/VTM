@@ -8,6 +8,11 @@ VTMModuleHost : VTMComposableContextManager {
 		factory = VTMModuleFactory.new(this);
 	}
 
+	free{
+		factory.free;
+		super.free;
+	}
+
 	//A attributes is a dictonary of parameter key/values.
 	//The attributes may define the name of a module definition.
 	//This definition may be overriden by the optional moduleDefinition argument

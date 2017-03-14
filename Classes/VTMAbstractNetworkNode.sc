@@ -18,4 +18,3 @@ VTMAbstractNetworkNode : VTMElement {
 	*checkApplications{
 	}
 }
-

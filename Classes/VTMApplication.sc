@@ -26,10 +26,4 @@ VTMApplication : VTMContext {
 
 	prComponents{ ^super.prComponent ++ [hardwareDevices, modules, scenes, libraries]; }
 
-	//Call functions in the runtime environment with the application as first arg.
-	//The method returns the result from the called function.
-	execute{arg selector ...args;
-		^envir[selector].value(this, *args);
-	}
-
 }

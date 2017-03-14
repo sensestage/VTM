@@ -1,13 +1,17 @@
 VTMComposableContext : VTMContext {
 	var <children;
-	var subcontexts, nonSubcontexts;
 
 	*new{arg name, attributes, manager, definition;
 		^super.new(name, attributes, manager, definition).initComposableContext;
 	}
 
 	initComposableContext{
-		"VTMComposableContext initialized".postln;
+		//TODO: init children here
+	}
+
+	free{
+		children.do(_.free);
+		super.free;
 	}
 
 	isSubcontext{ ^this.parent.isKindOf(this.class); }
