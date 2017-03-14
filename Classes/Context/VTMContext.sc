@@ -16,11 +16,19 @@ VTMContext : VTMElement {
 	classvar <viewClassSymbol = 'VTMContextView';
 
 	*new{arg name, attributes, manager, definition;
-		^super.new(name, attributes, manager).initContext(definition);
+		//definition must be an object of type ContextDefinition
+		if(definition.isKindOf(VTMContextDefinition), {
+			^super.new(name, attributes, manager).initContext(definition);
+		}, {
+			Error("% - definition arg must a kind of VTMContextDefinition".format(
+				this.class
+			)).throw;
+			^nil;
+		});
 	}
 
 	initContext{arg definition_ ;
-		definition = VTMContextDefinition.new(definition_, this);
+		definition = definition_;
 		envir = definition.makeEnvir;
 		condition = Condition.new;
 		parameters = VTMParameterManager(this,
