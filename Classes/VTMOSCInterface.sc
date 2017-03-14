@@ -4,6 +4,7 @@
 //- .path method.
 //- .name method
 //- .leadingSeparator
+//- *makeOSCAPI(obj)
 VTMOSCInterface {
 	var model;
 	var responders;

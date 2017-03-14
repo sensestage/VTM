@@ -3,6 +3,7 @@ VTMAbstractDataManager {
 	var context;
 	var items;
 	var oscInterface;
+	var <commands;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
@@ -63,5 +64,9 @@ VTMAbstractDataManager {
 		}, {
 			^nil;
 		});
+	}
+
+	*makeOSCAPI{arg obj;
+		^IdentityDictionary.new;
 	}
 }
