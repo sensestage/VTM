@@ -5,7 +5,8 @@ VTMApplication : VTMContext {
 	var <libraries;
 	var <attributes;
 
-	*new{arg name, definition, attributes;
+	//manager arg is just here for getting constructor args to match superclass
+	*new{arg name, attributes, manager, definition;
 		^super.new(name, attributes, nil, definition).initApplication;
 	}
 
@@ -14,7 +15,6 @@ VTMApplication : VTMContext {
 		hardwareDevices = VTMHardwareSetup(this, attributes[\hardwareDevices]);
 		modules = VTMModuleHost(this, attributes[\module]);
 		scenes = VTMSceneOwner(this, attributes[\scenes]);
-
 		//Discover other application on the network
 		if(attributes.includesKey(\openView), {
 			if(attributes[\openView], {

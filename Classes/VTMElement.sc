@@ -1,5 +1,5 @@
 VTMElement : VTMAbstractData {
-	var commands;
+	var <commands;
 	var oscInterface;
 
 	*new{arg name, attributes, manager;

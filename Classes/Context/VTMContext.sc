@@ -10,7 +10,6 @@ VTMContext : VTMElement {
 	var <cues;
 	var <mappings;
 	var <scores;
-	var <commands;
 	var condition;
 
 	classvar <viewClassSymbol = 'VTMContextView';
