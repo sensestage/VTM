@@ -12,10 +12,20 @@ VTMAbstractDataManager {
 		^super.new.initAbstractDataManager(context, attributes);
 	}
 
+	//context is an instance of kind VTMContext.
+	//attributes is an array of Dictionaries with item attributes.
 	initAbstractDataManager{arg context_, attributes_;
 		context = context_;
 		attributes_.do({arg item;
-			this.class.dataClass.newFromAttributes(item);
+			var newItem;
+			newItem = this.class.dataClass.newFromAttributes(item);
+			this.addItem(newItem);
+		});
+	}
+
+	addItem{arg newItem;
+		if(newItem.isKindOf(this.class.dataClass), {//check arg type
+			items = items.add(newItem);
 		});
 	}
 
