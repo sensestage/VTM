@@ -33,6 +33,16 @@ VTMAbstractDataManager {
 		});
 	}
 
+	removeItem{arg itemName;
+		var indexToRemove;
+		indexToRemove = items.detectIndex({arg item; item.name == itemName; });
+		if(indexToRemove.notNil, {
+			var removedItem;
+			removedItem = items.removeAt(indexToRemove);
+			removedItem.free;
+		});
+	}
+
 	free{
 		this.disableOSC;
 		items.do(_.free);
