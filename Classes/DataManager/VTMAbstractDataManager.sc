@@ -9,7 +9,11 @@ VTMAbstractDataManager {
 	}
 
 	*new{arg context, attributes;
-		^super.new.initAbstractDataManager(context, attributes);
+		if(context.isKindOf(VTMContext), {
+			^super.new.initAbstractDataManager(context, attributes);
+		}, {
+			Error("Context argument must be kind of VTMContext").throw;
+		});
 	}
 
 	//context is an instance of kind VTMContext.
