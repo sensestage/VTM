@@ -40,7 +40,7 @@ VTMAbstractDataManager {
 			context.path,
 			this.leadingSeparator,
 			this.name
-		);
+		).asSymbol;
 	}
 
 	leadingSeparator{ ^':'; }
