@@ -2,7 +2,7 @@
 //Objects of this type has no arguments/values but works
 //as a 'command' to perform the defined action.
 
-VTMParameter : VTMAbstractData {
+VTMParameter {
 	var <name;
 	var <path, fullPathThunk; //an OSC valid path.
 	var action, hiddenAction;
@@ -13,6 +13,7 @@ VTMParameter : VTMAbstractData {
 	var <>onlyReturn = false;
 	var <isSubParameter = false;
 	var >envir;
+	var attributes;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
