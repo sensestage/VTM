@@ -7,10 +7,11 @@ VTMAbstractData{
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
 	*newFromAttributes{arg attributes;
-		var name, manager;
-		name = attributes.removeAt(\attributes);
-		manager = attributes.removeAt(\manager);
-		^this.new(name, attributes, manager);
+		var name, manager, attr;
+		attr = attributes.deepCopy;
+		name = attr.removeAt(\name);
+		manager = attr.removeAt(\manager);
+		^this.new(name, attr, manager);
 	}
 
 	*new{arg name, attributes, manager;
@@ -20,7 +21,8 @@ VTMAbstractData{
 	initAbstractData{arg name_, attributes_, manager_;
 		name = name_;
 		manager = manager_;
-		attributes = VTMAttributeList.new(attributes_);
+		// attributes = VTMAttributeList.new(attributes_);
+		attributes = attributes_.deepCopy;
 		//lazy attributesGetters and setters
 		attributeGetterFunctionsThunk = Thunk({
 			this.class.makeAttributeGetterFunctions(this);
@@ -39,6 +41,10 @@ VTMAbstractData{
 	}
 
 	prComponents{ ^nil; }
+
+	*attributeKeys{
+		^[\name];
+	}
 
 	attributes{
 		var result;
