@@ -1,7 +1,7 @@
 /*
 Test setup with three applications running on the same computer.
 */
-TestVTMApplication : VTMUnitTest {
+TestVTMApplication : TestVTMContext {
 
 	test_StartApplication{}
 

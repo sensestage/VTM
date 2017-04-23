@@ -1,0 +1,1 @@
+TestVTMLocalNetworkNode : TestVTMAbstractNetworkNode {}

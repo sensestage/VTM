@@ -1,3 +1,3 @@
-TestVTMScore : TestVTMAbstractData {
+TestVTMScore : TestVTMComposableContext {
 
 }

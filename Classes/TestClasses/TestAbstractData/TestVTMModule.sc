@@ -1,1 +1,1 @@
-TestVTMModule : UnitTest {}
+TestVTMModule : TestVTMComposableContext {}

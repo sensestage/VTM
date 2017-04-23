@@ -1,4 +1,4 @@
-TestVTMListParameter : TestVTMValueParameter {
+TestVTMListParameter : TestVTMCollectionParameter {
 	*makeRandomValue{arg params;
 		^[
 			this.makeRandomInteger,

@@ -1,1 +1,1 @@
-TestVTMModuleHost : UnitTest {}
+TestVTMModuleHost : TestVTMComposableContextManager {}

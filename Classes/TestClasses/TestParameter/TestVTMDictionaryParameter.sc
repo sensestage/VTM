@@ -1,4 +1,4 @@
-TestVTMDictionaryParameter : TestVTMListParameter {
+TestVTMDictionaryParameter : TestVTMCollectionParameter {
 	*makeRandomValue{arg params;
 		//This is a temporary solution
 		^Dictionary[

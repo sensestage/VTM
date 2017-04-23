@@ -1,0 +1,1 @@
+TestVTMAbstractNetworkNode : TestVTMElement {}

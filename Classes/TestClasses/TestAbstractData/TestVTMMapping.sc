@@ -1,4 +1,4 @@
-TestVTMMapping : TestVTMAbstractData {
+TestVTMMapping : TestVTMElement {
 	*makeRandomAttributes{arg parameterAttributes;
 
 	}

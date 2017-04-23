@@ -1,3 +1,3 @@
-TestVTMScoreManager : TestVTMAbstractDataManager {
+TestVTMScoreManager : TestVTMComposableContextManager {
 
 }

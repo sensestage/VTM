@@ -1,4 +1,4 @@
-TestVTMContext : VTMUnitTest {
+TestVTMContext : TestVTMElement {
 
 	*makeRandomContext{arg params;
 		var context, name = this.makeRandomString;

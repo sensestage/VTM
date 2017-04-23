@@ -1,1 +1,1 @@
-TestVTMScene : UnitTest {}
+TestVTMScene : TestVTMComposableContext {}

@@ -1,4 +1,4 @@
-TestVTMSceneOwner : UnitTest {
+TestVTMSceneOwner : TestVTMComposableContextManager {
 
 	test_LoadSingleModuleScene{
 

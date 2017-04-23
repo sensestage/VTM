@@ -1,1 +1,1 @@
-TestVTMHardwareDevice : UnitTest {}
+TestVTMHardwareDevice : TestVTMComposableContext {}

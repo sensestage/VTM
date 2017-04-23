@@ -1,3 +1,3 @@
-TestVTMCollectionParameter : VTMUnitTest {
+TestVTMCollectionParameter : TestVTMValueParameter {
 
 }
