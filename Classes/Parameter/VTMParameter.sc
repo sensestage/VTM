@@ -14,6 +14,7 @@ VTMParameter {
 	var <isSubParameter = false;
 	var >envir;
 	var attributes;
+	var attributeGetterFunctions;
 
 	*typeToClass{arg val;
 		^"VTM%Parameter".format(val.asString.capitalize).asSymbol.asClass;
@@ -52,19 +53,20 @@ VTMParameter {
 	//This constructor is not used directly, only for testing purposes
 	*new{arg name, attributes;
 		if(name.notNil, {
-			^super.new(attributes).initParameter(name);
+			^super.new.initParameter(name, attributes);
 		}, {
 			Error("VTMParameter needs name").throw;
 		});
 	}
 
-	initParameter{arg name_;
+	initParameter{arg name_, attributes_;
 		var tempName = name_.copy.asString;
 		if(tempName.first == $/, {
 			tempName = tempName[1..];
 			"Parameter : removed leading slash from name: %".format(tempName).warn;
 		});
 		name = tempName.asSymbol;
+		attributes = attributes_ ? IdentityDictionary.new;
 
 		fullPathThunk = Thunk.new({
 			if(isSubParameter, {
@@ -189,6 +191,18 @@ VTMParameter {
 
 	makeView{arg parent, bounds, definition, attributes;
 		^VTMParameterView.makeFromAttributes(parent, bounds, definition, attributes, this);
+	}
+
+	attributes{
+		var result = IdentityDictionary.new;
+		if(attributeGetterFunctions.isNil, {
+			attributeGetterFunctions = this.class.makeAttributeGetterFunctions(this);
+		});
+
+		this.class.attributeKeys.collect({arg key;
+			result.put(key, attributeGetterFunctions[key].value.deepCopy);
+		});
+		^result;
 	}
 
 	*attributeKeys{
