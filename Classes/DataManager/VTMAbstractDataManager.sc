@@ -9,22 +9,20 @@ VTMAbstractDataManager {
 	}
 
 	*new{arg context, attributes;
-		if(context.isKindOf(VTMContext), {
-			^super.new.initAbstractDataManager(context, attributes);
-		}, {
-			Error("Context argument must be kind of VTMContext").throw;
-		});
+		^super.new.initAbstractDataManager(context, attributes);
 	}
 
 	//context is an instance of kind VTMContext.
 	//attributes is an array of Dictionaries with item attributes.
 	initAbstractDataManager{arg context_, attributes_;
 		context = context_;
-		attributes_.do({arg item;
-			var newItem;
-			newItem = this.class.dataClass.newFromAttributes(item);
-			this.addItem(newItem);
-		});
+		// if(attributes_.notNil, {
+		// 	attributes_.do({arg item;
+		// 		var newItem;
+		// 		newItem = this.class.dataClass.newFromAttributes(item);
+		// 		this.addItem(newItem);
+		// 	});
+		// });
 	}
 
 	addItem{arg newItem;
@@ -53,7 +51,7 @@ VTMAbstractDataManager {
 
 	attributes{
 		var result;
-		items.collect({arg item; 
+		items.collect({arg item;
 			item.attributes;
 		});
 		^result;

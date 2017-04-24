@@ -16,22 +16,24 @@ VTMContext : VTMElement {
 	classvar <viewClassSymbol = 'VTMContextView';
 
 	*new{arg name, attributes, manager, definition;
+		^super.new(name, attributes, manager).initContext(definition);
+		//temp commented out
 		//definition must be an object of type ContextDefinition
-		if(definition.isKindOf(VTMContextDefinition), {
-			^super.new(name, attributes, manager).initContext(definition);
-		}, {
-			Error("% - definition arg must a kind of VTMContextDefinition".format(
-				this.class
-			)).throw;
-			^nil;
-		});
+		// if(definition.isKindOf(VTMContextDefinition), {
+		// 	^super.new(name, attributes, manager).initContext(definition);
+		// 	}, {
+		// 		Error("% - definition arg must have a kind of VTMContextDefinition".format(
+		// 			this.class
+		// 		)).throw;
+		// 		^nil;
+		// });
 	}
 
-	initContext{arg definition_ ;
-		definition = definition_;
+	initContext{arg definition_;
+		definition = definition_ ? VTMContextDefinition.new(nil, this);
 		envir = definition.makeEnvir;
 		condition = Condition.new;
-		parameters = VTMParameterManager(this,
+		parameters = VTMContextParameterManager(this,
 			definition.parameters,
 			attributes[\parameters]
 		);
@@ -60,7 +62,7 @@ VTMContext : VTMElement {
 
 	prComponents{
 	   	^[parameters, presets, cues, mappings, scores, commands];
-   	}	
+   	}
 
 	//The context that calls prepare can issue a condition to use for handling
 	//asynchronous events. If no condition is passed as argument the context will

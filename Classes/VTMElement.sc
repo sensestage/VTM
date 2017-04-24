@@ -2,6 +2,7 @@ VTMElement : VTMAbstractData {
 	var oscInterface;
 
 	*new{arg name, attributes, manager;
+		//Element objects must have 'name' in order to generate address path.
 		if(name.isNil, {
 			Error("% must have name".format(this.class.name)).throw;
 		});

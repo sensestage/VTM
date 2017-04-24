@@ -22,7 +22,12 @@ VTMAbstractData{
 		name = name_;
 		manager = manager_;
 		// attributes = VTMAttributeList.new(attributes_);
-		attributes = attributes_.deepCopy;
+		if(attributes_.isNil, {
+			attributes = IdentityDictionary.new;
+		}, {
+			attributes = attributes_.deepCopy;
+		});
+
 		//lazy attributesGetters and setters
 		attributeGetterFunctionsThunk = Thunk({
 			this.class.makeAttributeGetterFunctions(this);

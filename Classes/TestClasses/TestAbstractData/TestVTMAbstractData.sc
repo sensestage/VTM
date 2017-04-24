@@ -2,7 +2,19 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			VTMPreset
+			VTMPreset,
+			VTMCue,
+			VTMMapping,
+			VTMDefinitionLibrary,
+			VTMCommand,
+			VTMContextParameter,
+			VTMLocalNetworkNode,
+			VTMRemoteNetworkNode,
+			VTMModule,
+			VTMApplication,
+			VTMHardwareDevice,
+			VTMScore,
+			VTMScene
 		];
 	}
 
@@ -36,7 +48,7 @@ TestVTMAbstractData : VTMUnitTest {
 			this.assertEquals(
 				obj.name,
 				testAttributes.at(\name),
-				"[%] - init 'name' correctly"
+				"[%] - init 'name' correctly".format(class)
 			);
 
 		});
