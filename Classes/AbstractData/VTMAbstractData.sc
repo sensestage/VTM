@@ -6,6 +6,10 @@ VTMAbstractData{
 	var attributeSetterFunctionsThunk;
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
+	*managerClass{
+		^this.subclassResponsibility(thisMethod);
+	}
+
 	*newFromAttributes{arg attributes;
 		var name, manager, attr;
 		attr = attributes.deepCopy;
@@ -42,7 +46,6 @@ VTMAbstractData{
 		this.releaseDependants;
 		attributes = nil;
 		manager = nil;
-
 	}
 
 	prComponents{ ^nil; }
