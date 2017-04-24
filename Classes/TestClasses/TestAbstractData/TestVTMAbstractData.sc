@@ -8,7 +8,6 @@ TestVTMAbstractData : VTMUnitTest {
 			VTMDefinitionLibrary,
 			VTMCommand,
 			VTMContextParameter,
-			VTMLocalNetworkNode,
 			VTMRemoteNetworkNode,
 			VTMModule,
 			VTMApplication,
@@ -40,9 +39,21 @@ TestVTMAbstractData : VTMUnitTest {
 		var obj, testAttributes, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
+			var managerClass = class.managerClass;
+			//managerClass shouldn not be nil
+			this.assert(managerClass.notNil,
+				"[%] - found manager class for test class".format(class)
+			);
+
+			managerObj = managerClass.new;
+			this.assert(managerObj.notNil,
+				"[%] - made manager obj for test class".format(class)
+			);
+
 			testAttributes = testClass.makeRandomAttributes;
 			obj = class.newFromAttributes(
-				testAttributes
+				testAttributes,
+				managerObj
 			);
 
 			//check if name initialized
@@ -52,7 +63,14 @@ TestVTMAbstractData : VTMUnitTest {
 				"[%] - init 'name' correctly".format(class)
 			);
 
+			//the manager object must be identical
+			this.assert(
+				obj.manager === managerObj,
+				"[%] - init 'manager' correctly".format(class)
+			);
+
 			obj.free;
+			managerObj.free;
 
 		});
 	}
