@@ -24,6 +24,6 @@ VTMApplication : VTMContext {
 		});
 	}
 
-	prComponents{ ^super.prComponent ++ [hardwareDevices, modules, scenes, libraries]; }
+	prComponents{ ^super.prComponents ++ [hardwareDevices, modules, scenes, libraries]; }
 
 }
