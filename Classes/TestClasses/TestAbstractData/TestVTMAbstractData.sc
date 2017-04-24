@@ -37,7 +37,7 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	test_initAbstractData{
-		var obj, testAttributes;
+		var obj, testAttributes, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			testAttributes = testClass.makeRandomAttributes;
@@ -45,11 +45,14 @@ TestVTMAbstractData : VTMUnitTest {
 				testAttributes
 			);
 
+			//check if name initialized
 			this.assertEquals(
 				obj.name,
 				testAttributes.at(\name),
 				"[%] - init 'name' correctly".format(class)
 			);
+
+			obj.free;
 
 		});
 	}

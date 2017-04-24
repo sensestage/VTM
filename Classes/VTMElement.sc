@@ -26,7 +26,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	disableOSC{
-		oscInterface.free;
+		if(oscInterface.notNil, { oscInterface.free;});
 		oscInterface = nil;
 	}
 
