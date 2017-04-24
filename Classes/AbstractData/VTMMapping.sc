@@ -1,4 +1,6 @@
 VTMMapping : VTMElement {
+	*managerClass{ ^VTMMappingManager; }
+
 	*new{arg name, attributes, manager;
 		^super.new(name, attributes, manager).initMapping;
 	}

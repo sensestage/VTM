@@ -1,3 +1,3 @@
 VTMScore : VTMComposableContext {
-
+	*managerClass{ ^VTMScoreManager; }
 }

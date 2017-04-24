@@ -1,6 +1,8 @@
 //children may be Module
 VTMModule : VTMComposableContext {
 
+	*managerClass{ ^VTMModuleHost; }
+
 	*new{arg name, attributes, manager, definition;
 		^super.new(name, attributes, manager, definition).initModule;
 	}
