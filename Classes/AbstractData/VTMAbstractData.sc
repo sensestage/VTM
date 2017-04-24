@@ -10,12 +10,15 @@ VTMAbstractData{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*newFromAttributes{arg attributes;
-		var name, manager, attr;
-		attr = attributes.deepCopy;
-		name = attr.removeAt(\name);
-		manager = attr.removeAt(\manager);
-		^this.new(name, attr, manager);
+	*newFromAttributes{arg attributes, manager;
+		var name, attr;
+		if(attributes.notNil and: {attributes.isKindOf(Dictionary)}, {
+			if(attributes.includesKey(\name), {
+				attr = attributes.deepCopy;
+				name = attr.removeAt(\name);
+			});
+		});
+		^this.new(name, attributes, manager);
 	}
 
 	*new{arg name, attributes, manager;
