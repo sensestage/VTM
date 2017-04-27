@@ -17,6 +17,18 @@ VTMElement : VTMAbstractData {
 		super.free;
 	}
 
+	fullPath{
+		^(this.path ++ this.leadingSeparator ++ this.name).asSymbol;
+	}
+
+	path{
+		var result;
+		result = manager !? {manager.fullPath};
+		^result;
+	}
+
+	leadingSeparator{ ^'/'; }
+
 	enableOSC{
 		//make OSC interface if not already created
 		if(oscInterface.isNil, {

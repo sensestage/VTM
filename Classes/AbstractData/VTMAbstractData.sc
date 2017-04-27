@@ -35,13 +35,14 @@ VTMAbstractData{
 			attributes = attributes_.deepCopy;
 		});
 
+		//FIXME: commented out for now awating attributes implementation.
 		//lazy attributesGetters and setters
-		attributeGetterFunctionsThunk = Thunk({
-			this.class.makeAttributeGetterFunctions(this);
-		});
-		attributeSetterFunctionsThunk = Thunk({
-			this.class.makeAttributeSetterFunctions(this);
-		});
+		// attributeGetterFunctionsThunk = Thunk({
+		// 	this.class.makeAttributeGetterFunctions(this);
+		// });
+		// attributeSetterFunctionsThunk = Thunk({
+		// 	this.class.makeAttributeSetterFunctions(this);
+		// });
 	}
 
 	free{
@@ -59,15 +60,16 @@ VTMAbstractData{
 
 	attributes{
 		var result;
-		result = IdentityDictionary.new;
-		this.class.attributeKeys.do({arg attrKey;
-			var val;
-			val = this.attributeGetterFunctions[attrKey].value;
-			result.put(
-				attrKey,
-				val
-			);
-		});
+		result = IdentityDictionary.newFrom(attributes);
+		//FIXME: commented out for now awating attributes implementation.
+		// this.class.attributeKeys.do({arg attrKey;
+		// 	var val;
+		// 	val = this.attributeGetterFunctions[attrKey].value;
+		// 	result.put(
+		// 		attrKey,
+		// 		val
+		// 	);
+		// });
 		^result;
 	}
 

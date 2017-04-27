@@ -28,11 +28,7 @@ VTMOSCInterface {
 		model.class.makeOSCAPI(model).keysValuesDo({arg cmdKey, cmdFunc;
 			var responderFunc, lastCmdChar, responderPath;
 			lastCmdChar = cmdKey.asString.last;
-			responderPath = "%%%".format(
-				model.fullPath,
-				VTM.commandSeparator,
-				cmdKey
-			).asSymbol;
+			responderPath = model.fullPath;
 			switch(lastCmdChar,
 				$!, {
 					responderFunc = {arg msg, time, addr, port;

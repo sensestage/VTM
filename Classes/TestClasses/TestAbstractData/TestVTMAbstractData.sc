@@ -35,6 +35,15 @@ TestVTMAbstractData : VTMUnitTest {
 		^result;
 	}
 
+	*makeRandomManagerObject{
+		var result;
+		var managerClass;
+		managerClass = this.findTestedClass.managerClass;
+
+		result = managerClass.new();
+		^result;
+	}
+
 	test_initAbstractData{
 		var obj, testAttributes, managerObj;
 		this.class.classesForTesting.do({arg class;

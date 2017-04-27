@@ -234,23 +234,24 @@ VTMContext : VTMElement {
 	}
 
 	attributes{
-		var result = IdentityDictionary.new;
+		var result = super.attributes;
 
-		if(parameters.isEmpty.not, {
-			result.put(\parameters, parameters.attributes);
-		});
-		if(presets.isEmpty.not, {
-			result.put(\presets, presets.attributes);
-		});
-		if(cues.isEmpty.not, {
-			result.put(\cues, cues.attributes);
-		});
-		if(mappings.isEmpty.not, {
-			result.put(\mappings, mappings.attributes);
-		});
-		if(scores.isEmpty.not, {
-			result.put(\scores, scores.attributes);
-		});
+		//FIXME: commented out for now awating attributes implementation.
+		// if(parameters.isEmpty.not, {
+		// 	result.put(\parameters, parameters.attributes);
+		// });
+		// if(presets.isEmpty.not, {
+		// 	result.put(\presets, presets.attributes);
+		// });
+		// if(cues.isEmpty.not, {
+		// 	result.put(\cues, cues.attributes);
+		// });
+		// if(mappings.isEmpty.not, {
+		// 	result.put(\mappings, mappings.attributes);
+		// });
+		// if(scores.isEmpty.not, {
+		// 	result.put(\scores, scores.attributes);
+		// });
 
 		^result;
 	}

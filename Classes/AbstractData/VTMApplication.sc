@@ -3,7 +3,6 @@ VTMApplication : VTMContext {
 	var <modules;
 	var <hardwareDevices;
 	var <libraries;
-	var <attributes;
 
 	*managerClass{ ^VTMLocalNetworkNode; }
 
@@ -24,7 +23,7 @@ VTMApplication : VTMContext {
 		// 	});
 		// });
 	}
-	prComponents{ ^super.prComponents; }
-	// prComponents{ ^super.prComponents ++ [hardwareDevices, modules, scenes, libraries]; }
+
+	prComponents{ ^super.prComponents ++ [hardwareDevices, modules, scenes, libraries]; }
 
 }
