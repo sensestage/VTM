@@ -11,10 +11,10 @@ VTMApplication : VTMContext {
 	}
 
 	initApplication{
-		// libraries = VTMDefinitionLibraryManager.new(this);
-		// hardwareDevices = VTMHardwareSetup(this, attributes[\hardwareDevices]);
-		// modules = VTMModuleHost(this, attributes[\module]);
-		// scenes = VTMSceneOwner(this, attributes[\scenes]);
+		libraries = VTMDefinitionLibraryManager.new(this);
+		hardwareDevices = VTMHardwareSetup(this);
+		modules = VTMModuleHost(this);
+		scenes = VTMSceneOwner(this);
 		// //Discover other application on the network
 		// if(attributes.includesKey(\openView), {
 		// 	if(attributes[\openView], {

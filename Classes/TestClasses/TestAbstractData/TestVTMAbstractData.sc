@@ -53,7 +53,6 @@ TestVTMAbstractData : VTMUnitTest {
 			this.assert(managerClass.notNil,
 				"[%] - found manager class for test class".format(class)
 			);
-
 			managerObj = managerClass.new;
 			this.assert(managerObj.notNil,
 				"[%] - made manager obj for test class".format(class)
@@ -72,6 +71,13 @@ TestVTMAbstractData : VTMUnitTest {
 				"[%] - init 'name' correctly".format(class)
 			);
 
+			//check attributes equal
+			this.assertEquals(
+				obj.attributes,
+				testAttributes,
+				"[%] - init 'attributes' correctly".format(class)
+			);
+
 			//the manager object must be identical
 			this.assert(
 				obj.manager === managerObj,
@@ -80,6 +86,26 @@ TestVTMAbstractData : VTMUnitTest {
 
 			obj.free;
 			managerObj.free;
+
+			// {
+			// 	var testManager = testClass.makeRandomManagerObject;
+			// 	var testAttr = testClass.makeRandomAttributes;
+			// 	var testName = testClass.makeRandomSymbol;
+			//
+			// 	obj = class.new( testName, testAttr, testManager );
+			// 	[
+			// 		[\name, testName],
+			// 		[\attributes, testAttr],
+			// 		[\manager, testManager]
+			// 	].do({arg items, i;
+			// 		var method, variable;
+			// 		#method, variable = items;
+			// 		this.assertEquals(
+			// 			obj.perform(method), variable,
+			// 			"[%] - init '%' correctly".format(class, method)
+			// 		);
+			// 	});
+			// }.value;
 
 		});
 	}
