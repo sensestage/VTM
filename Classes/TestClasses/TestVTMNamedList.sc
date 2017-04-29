@@ -20,13 +20,13 @@ TestVTMNamedList : VTMUnitTest {
 		//check order of values
 		this.assertEquals(
 			obj.getItems, testList.collect(_.value),
-			"ListEnumerator returned the correct items."
+			"NamedList returned the correct items."
 		);
 
 		//check order of values
 		this.assertEquals(
 			obj.names, [\myAA, 2, \myCC],
-			"ListEnumerator returned the correct names."
+			"NamedList returned the correct names."
 		);
 
 		//check associations array
@@ -36,7 +36,7 @@ TestVTMNamedList : VTMUnitTest {
 		this.assert(
 			this.class.equalAssociations(
 				is, shouldBe),
-			"ListEnumerator returned the correct associations." ++
+			"NamedList returned the correct associations." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 	}
@@ -67,7 +67,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should add item to end without name." ++
+			"NamedList should add item to end without name." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 
@@ -79,7 +79,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should add item to third slot without name." ++
+			"NamedList should add item to third slot without name." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 
@@ -92,7 +92,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should add named item to first slot." ++
+			"NamedList should add named item to first slot." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 
@@ -105,7 +105,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should remove the second item." ++
+			"NamedList should remove the second item." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 
@@ -120,7 +120,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should remove named item." ++
+			"NamedList should remove named item." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 
@@ -135,7 +135,7 @@ TestVTMNamedList : VTMUnitTest {
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
-			"ListEnumerator should move named item to third slot." ++
+			"NamedList should move named item to third slot." ++
 			"\nIs:\n\t" + is + "\nShould be:\n\t" + shouldBe + "\n"
 		);
 	}
