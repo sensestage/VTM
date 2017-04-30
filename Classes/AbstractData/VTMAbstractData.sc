@@ -10,17 +10,6 @@ VTMAbstractData{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*newFromAttributes{arg attributes, manager;
-		var name, attr;
-		if(attributes.notNil and: {attributes.isKindOf(Dictionary)}, {
-			if(attributes.includesKey(\name), {
-				attr = attributes.deepCopy;
-				name = attr.removeAt(\name);
-			});
-		});
-		^this.new(name, attributes, manager);
-	}
-
 	*new{arg name, attributes, manager;
 		^super.new.initAbstractData(name, attributes, manager);
 	}
@@ -28,12 +17,7 @@ VTMAbstractData{
 	initAbstractData{arg name_, attributes_, manager_;
 		name = name_;
 		manager = manager_;
-		// attributes = VTMAttributeList.new(attributes_);
-		if(attributes_.isNil, {
-			attributes = IdentityDictionary.new;
-		}, {
-			attributes = attributes_.deepCopy;
-		});
+		attributes = VTMAbstractDataAttributes.newFrom(attributes_);
 
 		//FIXME: commented out for now awating attributes implementation.
 		//lazy attributesGetters and setters
@@ -46,7 +30,6 @@ VTMAbstractData{
 	}
 
 	free{
-		attributes.free;
 		this.releaseDependants;
 		attributes = nil;
 		manager = nil;
@@ -59,18 +42,7 @@ VTMAbstractData{
 	}
 
 	attributes{
-		var result;
-		result = IdentityDictionary.newFrom(attributes);
-		//FIXME: commented out for now awating attributes implementation.
-		// this.class.attributeKeys.do({arg attrKey;
-		// 	var val;
-		// 	val = this.attributeGetterFunctions[attrKey].value;
-		// 	result.put(
-		// 		attrKey,
-		// 		val
-		// 	);
-		// });
-		^result;
+		^attributes.asKeyValuePairs;
 	}
 
 	attributeGetterFunctions{
