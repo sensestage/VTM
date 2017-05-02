@@ -15,6 +15,12 @@ VTMPreset : VTMAbstractData {
 		^this.attributes;
 	}
 
+	values_{arg vals;
+		vals.pairsDo({arg key, val;
+			this.set(key, val);
+		});
+	}
+
 	*attributeKeys{
 		^super.attributeKeys ++ [\values];
 	}

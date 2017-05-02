@@ -117,4 +117,37 @@ TestVTMAbstractData : VTMUnitTest {
 
 		});
 	}
+
+	test_AttributesSetGet{
+		var obj, testAttributes, managerObj;
+		this.class.classesForTesting.do({arg class;
+			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
+
+			//All classes should implement set and get methods for
+			//every attribute.
+			testAttributes = nil;
+			obj = class.new(
+				testName,
+				testAttributes,
+				managerObj
+			);
+
+
+			class.attributeKeys.do({arg attrKey;
+				//does it respond to getter and setters for every attribute?
+				this.assert(
+					obj.respondsTo(attrKey),//test getter
+					"[%] - responded to attribute getter '%'".format(class, attrKey)
+				);
+				this.assert(
+					obj.respondsTo(attrKey.asSetter),//test getter
+					"[%] - responded to attribute setter '%'".format(class, attrKey.asSetter)
+				);
+
+			});
+
+			obj.free;
+		});
+	}
 }
