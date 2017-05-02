@@ -9,6 +9,9 @@ VTMCommand : VTMElement {
 
 	initCommand{}
 
+	*attributeKeys{
+		^super.attributeKeys ++ [\function];
+	}
 	free{
 		action = nil;
 		super.free;

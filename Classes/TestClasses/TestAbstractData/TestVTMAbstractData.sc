@@ -18,9 +18,13 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	*makeRandomAttributes{arg params;
-		var result;
+		var result = [];
 		this.findTestedClass.attributeKeys.do({arg item;
-			result = result.addAll([item, this.makeRandomAttribute(item, params.at(item))]);
+			var attrParams;
+			if(params.notNil and: {params.includesKey(item)}, {
+				attrParams = params.at(item);
+			});
+			result = result.addAll([item, this.makeRandomAttribute(item, attrParams)]);
 		});
 		^result;
 	}
@@ -63,7 +67,7 @@ TestVTMAbstractData : VTMUnitTest {
 			//check if name initialized
 			this.assertEquals(
 				obj.name,
-				testAttributes.as(IdentityDictionary).at(\name),
+				testName,
 				"[%] - init 'name' correctly".format(class)
 			);
 
@@ -82,26 +86,34 @@ TestVTMAbstractData : VTMUnitTest {
 
 			obj.free;
 			managerObj.free;
+		});
+	}
 
-			// {
-			// 	var testManager = testClass.makeRandomManagerObject;
-			// 	var testAttr = testClass.makeRandomAttributes;
-			// 	var testName = testClass.makeRandomSymbol;
-			//
-			// 	obj = class.new( testName, testAttr, testManager );
-			// 	[
-			// 		[\name, testName],
-			// 		[\attributes, testAttr],
-			// 		[\manager, testManager]
-			// 	].do({arg items, i;
-			// 		var method, variable;
-			// 		#method, variable = items;
-			// 		this.assertEquals(
-			// 			obj.perform(method), variable,
-			// 			"[%] - init '%' correctly".format(class, method)
-			// 		);
-			// 	});
-			// }.value;
+	test_attributesNil{
+		var obj, testAttributes, managerObj;
+		this.class.classesForTesting.do({arg class;
+			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
+			var managerClass = class.managerClass;
+
+			managerObj = managerClass.new;
+
+			testAttributes = nil;
+			obj = class.new(
+				testName,
+				testAttributes,
+				managerObj
+			);
+
+			//attributes should be empty array
+			this.assertEquals(
+				obj.attributes,
+				[],
+				"[%] - init nil 'attributes' to empty array".format(class)
+			);
+
+			obj.free;
+			managerObj.free;
 
 		});
 	}
