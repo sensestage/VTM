@@ -38,11 +38,20 @@ VTMAbstractData{
 	prComponents{ ^nil; }
 
 	*attributeKeys{
-		^[\name];
+		^[];
 	}
 
 	attributes{
 		^attributes.asKeyValuePairs;
+	}
+
+	set{arg attributeKey, value;
+		attributes.put(attributeKey, value);
+		this.changed(\attribute, attributeKey);
+	}
+
+	get{arg attributeKey;
+		attributes.at(attributeKey);
 	}
 
 	attributeGetterFunctions{
