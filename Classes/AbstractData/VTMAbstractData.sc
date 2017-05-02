@@ -51,7 +51,7 @@ VTMAbstractData{
 	}
 
 	get{arg attributeKey;
-		attributes.at(attributeKey);
+		^attributes.at(attributeKey);
 	}
 
 	attributeGetterFunctions{
