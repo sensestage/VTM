@@ -9,11 +9,14 @@ VTMOrderedIdentityDictionary : IdentityDictionary {
 	}
 
 	keysValuesArrayDo { arg argArray, function;
-		var arr = [
-			order,
-			order.collect({arg item; this.at(item); })
-		].lace;
-		super.keysValuesArrayDo(arr, function);
+		var arr;
+		if(this.isEmpty.not, {
+			arr = [
+				order,
+				order.collect({arg item; this.at(item); })
+			].lace;
+			super.keysValuesArrayDo(arr, function);
+		});
 	}
 
 	keys { arg species(Array);
