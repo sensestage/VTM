@@ -17,22 +17,16 @@ TestVTMAbstractData : VTMUnitTest {
 		];
 	}
 
-	*makeRandomAttributes{
-		var result = IdentityDictionary.new;
-		VTMAbstractData.attributeKeys.do({arg item;
-			result.put( item, this.makeRandomAttribute(item) );
+	*makeRandomAttributes{arg params;
+		var result;
+		this.findTestedClass.attributeKeys.do({arg item;
+			result = result.addAll([item, this.makeRandomAttribute(item, params.at(item))]);
 		});
 		^result;
 	}
 
 	*makeRandomAttribute{arg key, params;
-		var result;
-		if(result.isNil, {
-			switch(key,
-				\name, { result = this.makeRandomString(params); }
-			);
-		});
-		^result;
+		^nil;
 	}
 
 	*makeRandomManagerObject{
@@ -48,6 +42,7 @@ TestVTMAbstractData : VTMUnitTest {
 		var obj, testAttributes, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
 			var managerClass = class.managerClass;
 			//managerClass shouldn not be nil
 			this.assert(managerClass.notNil,
@@ -59,7 +54,8 @@ TestVTMAbstractData : VTMUnitTest {
 			);
 
 			testAttributes = testClass.makeRandomAttributes;
-			obj = class.newFromAttributes(
+			obj = class.new(
+				testName,
 				testAttributes,
 				managerObj
 			);
@@ -67,7 +63,7 @@ TestVTMAbstractData : VTMUnitTest {
 			//check if name initialized
 			this.assertEquals(
 				obj.name,
-				testAttributes.at(\name),
+				testAttributes.as(IdentityDictionary).at(\name),
 				"[%] - init 'name' correctly".format(class)
 			);
 
