@@ -117,5 +117,9 @@ VTMContextParameterManager : VTMAbstractDataManager {
 	presetAttributes{
 		^presetList.asKeyValuePairs;
 	}
+
+	names{
+		^this.parameters.collect(_.name);
+	}
 	//END preset methods
 }
