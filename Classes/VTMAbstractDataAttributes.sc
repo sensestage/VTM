@@ -1,15 +1,23 @@
 VTMAbstractDataAttributes : VTMOrderedIdentityDictionary {
 
 	*newFrom{arg what;
-		var result;
-		if(what.every(_.isKindOf(Association)), {
-			var d;
-			what.do({arg item;
-				d = d.addAll([item.key, item.value]);
+		if(what.notNil, {
+			if(what.isEmpty, {
+				^super.newFrom(what);
+			}, {
+				if(what.every(_.isKindOf(Association)), {
+					var d;
+					what.do({arg item;
+						d = d.addAll([item.key, item.value]);
+					});
+					^super.newFrom(d);
+				}, {
+					^super.newFrom(what);
+				});
 			});
-			^super.newFrom(d);
+		}, {
+			^this.new;
 		});
-		^super.newFrom(what);
 	}
 
 	*readFromFile{arg pathName;
@@ -29,6 +37,4 @@ VTMAbstractDataAttributes : VTMOrderedIdentityDictionary {
 	prWriteFile{arg pathName;
 		this.writeArchive(pathName);
 	}
-
-
 }
