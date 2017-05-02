@@ -119,35 +119,66 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	test_AttributesSetGet{
-		var obj, testAttributes, managerObj;
+		var obj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
+			var appendString;
 
-			//All classes should implement set and get methods for
-			//every attribute.
-			testAttributes = nil;
-			obj = class.new(
-				testName,
-				testAttributes,
-				managerObj
-			);
-
-
-			class.attributeKeys.do({arg attrKey;
-				//does it respond to getter and setters for every attribute?
-				this.assert(
-					obj.respondsTo(attrKey),//test getter
-					"[%] - responded to attribute getter '%'".format(class, attrKey)
-				);
-				this.assert(
-					obj.respondsTo(attrKey.asSetter),//test getter
-					"[%] - responded to attribute setter '%'".format(class, attrKey.asSetter)
+			//Should work with both initlialized uninitialized(nil) attributes.
+			[
+				[testClass.makeRandomAttributes,	"[pre-initialized attributes]"],
+				[nil,	"[attributes init to nil]"],
+			].do({arg items, i;
+				var testAttributes, appendString;
+				#testAttributes, appendString = items;
+				//All classes should implement set and get methods for
+				//every attribute.
+				testAttributes = nil;
+				obj = class.new(
+					testName,
+					testAttributes
 				);
 
+				class.attributeKeys.do({arg attrKey;
+					var testVal;
+					//does it respond to getter and setters for every attribute?
+					this.assert(
+						obj.respondsTo(attrKey),//test getter
+						"[%] - responded to attribute getter '%'".format(
+							class, attrKey) ++ appendString
+					);
+					this.assert(
+						obj.respondsTo(attrKey.asSetter),//test getter
+						"[%] - responded to attribute setter '%'".format(
+							class, attrKey.asSetter) ++ appendString
+					);
+
+					//check if test class has implemented random generation method for it
+					try{
+						testVal = testClass.makeRandomAttribute(attrKey);
+					} {|err|
+						this.failed(thisMethod,
+							Error("[%] - Error making random attribute value for '%'".format(class, attrKey)).throw;
+						);
+					};
+					this.assert(
+						testVal.notNil,
+						"[%] - test class generated non-nil random value for attr '%'".format(
+							class, attrKey) ++ appendString
+					);
+
+					//test setting attribute value
+					obj.set(attrKey, testVal);
+					this.assertEquals(
+						obj.get(attrKey),
+						testVal,
+						"[%] - setting and getting attribute '%' worked".format(
+							class, attrKey) ++ appendString
+					);
+				});
+				obj.free;
 			});
-
-			obj.free;
 		});
 	}
 }
