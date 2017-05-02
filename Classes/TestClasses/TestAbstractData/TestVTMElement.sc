@@ -32,4 +32,6 @@ TestVTMElement : TestVTMAbstractData {
 			};
 		});
 	}
+
+	test_Commands{}
 }

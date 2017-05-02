@@ -1,5 +1,6 @@
 VTMElement : VTMAbstractData {
 	var oscInterface;
+	var commands;
 
 	*new{arg name, attributes, manager;
 		//Element objects must have 'name' in order to generate address path.
@@ -48,5 +49,13 @@ VTMElement : VTMAbstractData {
 		}, {
 			^nil;
 		});
+	}
+
+	*commandNames{
+		^[];
+	}
+
+	*queryNames{
+		^[];
 	}
 }

@@ -26,4 +26,8 @@ VTMApplication : VTMContext {
 
 	prComponents{ ^super.prComponents ++ [hardwareDevices, modules, scenes, libraries]; }
 
+	*attributeKeys{
+		super.attributeKeys ++ [\libraries, \devices, \modules, \scenes];
+	}
+
 }

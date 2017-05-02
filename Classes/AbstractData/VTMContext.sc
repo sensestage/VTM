@@ -167,24 +167,24 @@ VTMContext : VTMElement {
 
 	//since parameter values are often set and get we have special methods for
 	//these directly in the context interface
-	set{arg ...args;
-		if(args.size > 2, {
-			args.pairsDo({arg paramName, paramVal;
-				if(parameters.includes(paramName), {
-					this.set(paramName, paramVal);
-				});
-			});
-		}, {
-			var param = parameters[args[0]];
-			if(param.notNil, {
-				param.valueAction_(*args[1]);
-			});
-		});
-	}
-
-	get{arg parameterName;
-		^parameters[parameterName].value;
-	}
+	// set{arg ...args;
+	// 	if(args.size > 2, {
+	// 		args.pairsDo({arg paramName, paramVal;
+	// 			if(parameters.includes(paramName), {
+	// 				this.set(paramName, paramVal);
+	// 			});
+	// 		});
+	// 		}, {
+	// 			var param = parameters[args[0]];
+	// 			if(param.notNil, {
+	// 				param.valueAction_(*args[1]);
+	// 			});
+	// 	});
+	// }
+	//
+	// get{arg parameterName;
+	// 	^parameters[parameterName].value;
+	// }
 
 	//Call functions in the runtime environment with this context as first arg.
 	execute{arg selector ...args;
@@ -279,5 +279,20 @@ VTMContext : VTMElement {
 			'reset!' -> {arg context; context.reset; },
 			'free!' -> {arg context; context.free; }
 		];
+	}
+
+	*attributeKeys{
+		^super.attributeKeys ++ [
+			\parameters, \presets, \cues, \scores,
+			\mappings, \commands, \definition
+		];
+	}
+
+	*commandNames{
+		^super.commandNames ++ [\prepare, \run, \free];
+	}
+
+	*queryNames{
+		^super.queryNames ++ [\state];
 	}
 }

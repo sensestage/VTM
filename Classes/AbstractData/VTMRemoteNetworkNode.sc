@@ -7,4 +7,11 @@ VTMRemoteNetworkNode : VTMAbstractNetworkNode {
 
 	initRemoveNetworkNode{}
 
+	*attributeKeys{
+		^super.attributeKeys ++ [\applications];
+	}
+
+	*commandNames{
+		^super.commandNames ++ [\start, \stop];
+	}
 }

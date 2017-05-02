@@ -11,4 +11,15 @@ VTMMapping : VTMElement {
 		//e.g. when parameter \freq > 900, action.value
 	}
 
+	*attributeKeys{
+		^super.attributeKeys ++ [\source, \destination, \when, \settings];
+	}
+
+	*commandNames{
+		^super.commandNames ++ [\enable, \disable];
+	}
+
+	*queryNames{
+		^super.queryNames ++ [\isEnabled];
+	}
 }

@@ -7,5 +7,13 @@ VTMDefinitionLibrary : VTMElement {
 	}
 
 	initDefinitionLibrary{}
+
+	*attributeKeys{
+		^super.attributeKeys ++ [\includedPaths, \excludedPaths];
+	}
+
+	*queryNames{
+		^super.queryNames ++ [\hasDefinition];
+	}
 }
 

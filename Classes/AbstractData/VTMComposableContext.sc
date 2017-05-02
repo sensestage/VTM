@@ -25,4 +25,16 @@ VTMComposableContext : VTMContext {
 			}
 		);
 	}
+
+	*attributeKeys{
+		^super.attributeKeys;
+	}
+
+	*commandNames{
+		^super.commandNames ++ [\takeOwnership];
+	}
+
+	*queryNames{
+		^super.queryNames ++ [\children, \parent, \owner, \exclusivelyOwned];
+	}
 }
