@@ -20,11 +20,14 @@ TestVTMAbstractData : VTMUnitTest {
 	*makeRandomAttributes{arg params;
 		var result = [];
 		this.findTestedClass.attributeKeys.do({arg item;
-			var attrParams;
+			var attrParams, randAttr;
 			if(params.notNil and: {params.includesKey(item)}, {
 				attrParams = params.at(item);
 			});
-			result = result.addAll([item, this.makeRandomAttribute(item, attrParams)]);
+			randAttr = this.makeRandomAttribute(item, attrParams);
+			if(randAttr.notNil, {
+				result = result.addAll([item, randAttr]);
+			});
 		});
 		^result;
 	}
