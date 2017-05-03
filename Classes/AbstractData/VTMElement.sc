@@ -1,6 +1,7 @@
 VTMElement : VTMAbstractData {
 	var oscInterface;
 	var commands;
+	var path;
 
 	*new{arg name, attributes, manager;
 		//Element objects must have 'name' in order to generate address path.
@@ -23,9 +24,31 @@ VTMElement : VTMAbstractData {
 	}
 
 	path{
-		var result;
-		result = manager !? {manager.fullPath};
-		^result;
+		if(manager.isNil, {
+			^path;
+		}, {
+			^manager.fullPath;
+		});
+	}
+
+	path_{arg val;
+		if(manager.isNil, {
+			if(val.notNil, {
+				path = val.asSymbol;
+			}, {
+				path = nil;
+			});
+
+			//TODO update/rebuild responders upon changed path, if manually set.
+			//osc interface will be an observer of this object and update its responders.
+			this.changed(\path, path);
+		}, {
+			"'%' - Can't set path manually when managed".format(this.fullPath).warn;
+		});
+	}
+
+	isDerivedPath{
+		^(manager.isNil and: {path.notNil});
 	}
 
 	leadingSeparator{ ^'/'; }
