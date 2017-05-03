@@ -2,15 +2,15 @@ TestVTMElement : TestVTMAbstractData {
 	*classesForTesting{
 		^[
 			VTMMapping,
-			// VTMDefinitionLibrary,
-			// VTMCommand,
-			// VTMContextParameter,
-			// VTMRemoteNetworkNode,
-			// VTMModule,
-			// VTMApplication,
-			// VTMHardwareDevice,
-			// VTMScore,
-			// VTMScene
+			VTMDefinitionLibrary,
+			VTMCommand,
+			VTMContextParameter,
+			VTMRemoteNetworkNode,
+			VTMModule,
+			VTMApplication,
+			VTMHardwareDevice,
+			VTMScore,
+			VTMScene
 		];
 	}
 
@@ -75,7 +75,8 @@ TestVTMElement : TestVTMAbstractData {
 			this.assertEquals(
 				obj.fullPath,
 				"%%%".format(
-					managerObj.path ++ managerObj.leadingSeparator ++ managerObj.name
+					managerObj.path ++ managerObj.leadingSeparator ++ managerObj.name ++
+					obj.leadingSeparator ++ obj.name
 				).asSymbol,
 				"[%] - fullPath is correct".format(class);
 			);
@@ -111,7 +112,7 @@ TestVTMElement : TestVTMAbstractData {
 				obj.path, testPath.asSymbol,
 				"[%] - set path and returned it as symbol".format(class)
 			);
-			this.assert(obj.hasDerivedPath,
+			this.assert(obj.hasDerivedPath.not,
 				"[%] - still has non-derived path".format(class)
 			);
 			this.assertEquals(

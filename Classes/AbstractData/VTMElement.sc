@@ -51,7 +51,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	hasDerivedPath{
-		^manager.isNil;
+		^manager.notNil;
 	}
 
 	leadingSeparator{ ^'/'; }
