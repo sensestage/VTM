@@ -14,14 +14,19 @@ VTMComposableContext : VTMContext {
 		super.free;
 	}
 
-	isSubcontext{ ^this.parent.isKindOf(this.class); }
+	isSubcontext{
+		if(manager.notNil, {
+			^this.manager.isKindOf(this.class);
+		});
+		^false;
+	}
 
 	leadingSeparator{
 		if(this.isSubcontext,
 			{
-                    ^'/';
+				^'.';
 			}, {
-                    ^'.'
+				^'/'
 			}
 		);
 	}
@@ -31,7 +36,7 @@ VTMComposableContext : VTMContext {
 	}
 
 	*commandNames{
-		^super.commandNames ++ [\takeOwnership];
+		^super.commandNames ++ [\takeOwnership, \releaseOwnership];
 	}
 
 	*queryNames{

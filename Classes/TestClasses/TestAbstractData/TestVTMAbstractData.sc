@@ -121,6 +121,10 @@ TestVTMAbstractData : VTMUnitTest {
 		});
 	}
 
+	test_DefaultAttributes{
+
+	}
+
 	test_AttributesSetGet{
 		var obj;
 		this.class.classesForTesting.do({arg class;

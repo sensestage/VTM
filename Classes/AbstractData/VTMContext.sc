@@ -121,14 +121,7 @@ VTMContext : VTMElement {
 		parameters.reset(true)
 	}
 
-	//If path is not defined the name is returned with a leading slash
-	fullPath{
-		^fullPathThunk.value;
-	}
 
-//	//Some objects need to define special separators, e.g. subscenes, submodules etc.
-//	leadingSeparator{ ^$/;	}
-//
 //	//Determine if this is a root context, i.e. having no parent.
 //	isRoot{
 //		//^parent.isNil;

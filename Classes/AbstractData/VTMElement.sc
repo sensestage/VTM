@@ -47,7 +47,7 @@ VTMElement : VTMAbstractData {
 		});
 	}
 
-	isDerivedPath{
+	hasDerivedPath{
 		^(manager.isNil and: {path.notNil});
 	}
 

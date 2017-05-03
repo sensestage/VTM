@@ -33,5 +33,81 @@ TestVTMElement : TestVTMAbstractData {
 		});
 	}
 
-	test_Commands{}
+	test_DerivedPath{
+		var obj, testAttributes, managerObj;
+		this.class.classesForTesting.do({arg class;
+			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
+			var managerClass = class.managerClass;
+
+			// managerObj = managerClass.new;
+			//
+			// testAttributes = nil;
+			// obj = class.new(
+			// 	testName,
+			// 	testAttributes,
+			// 	managerObj
+			// );
+			//
+			// obj.free;
+			// managerObj.free;
+
+		});
+
+	}
+
+	test_ManualPath{
+		var obj, testAttributes;
+		this.class.classesForTesting.do({arg class;
+			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
+			var testPath = "/%".format(this.class.makeRandomString);
+
+			obj = class.new(
+				testName,
+				testAttributes
+			);
+			//should be nil
+			this.assert(obj.path.isNil,
+				"[%] - path init to nil".format(class)
+			);
+			this.assert(obj.hasDerivedPath.not,
+				"[%] - has not derived path".format(class)
+			);
+
+			obj.path = testPath;
+			this.assertEquals(
+				obj.path, testPath.asSymbol,
+				"[%] - set path and returned it as symbol".format(class)
+			);
+			this.assert(obj.hasDerivedPath,
+				"[%] - still has non-derived path".format(class)
+			);
+			this.assertEquals(
+				obj.fullPath, "%%%".format(testPath, obj.leadingSeparator, obj.name).asSymbol,
+				"[%] - fullPath is correct".format(class);
+			);
+
+			// //change path with nonleading slash path arg
+			// //using 'g' as non-leading separator char here
+			// testPath = "g%".format(this.class.makeRandomString);
+			//
+			// //should force leading separator
+			// this.assertEquals(
+			// 	obj.path, "/%".format(testPath).asSymbol,
+			// 	"[%] - Changed and forced leading slash to set path".format(class)
+			// );
+			obj.free;
+		});
+
+	}
+
+	test_AttributeOSC{
+
+		//changing path manually should update the OSC interface paths.
+	}
+
+	test_CommandOSC{}
+
+	test_QueryOSC{}
 }
