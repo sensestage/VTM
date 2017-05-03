@@ -34,12 +34,15 @@ VTMElement : VTMAbstractData {
 	path_{arg val;
 		if(manager.isNil, {
 			if(val.notNil, {
+				if(val.asString.first != $/, {
+					val = ("/" ++ val).asSymbol;
+				});
 				path = val.asSymbol;
 			}, {
 				path = nil;
 			});
 
-			//TODO update/rebuild responders upon changed path, if manually set.
+			//TODO: update/rebuild responders upon changed path, if manually set.
 			//osc interface will be an observer of this object and update its responders.
 			this.changed(\path, path);
 		}, {
@@ -48,7 +51,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	hasDerivedPath{
-		^(manager.isNil and: {path.notNil});
+		^manager.isNil;
 	}
 
 	leadingSeparator{ ^'/'; }

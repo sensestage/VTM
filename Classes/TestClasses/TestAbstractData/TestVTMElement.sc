@@ -2,15 +2,15 @@ TestVTMElement : TestVTMAbstractData {
 	*classesForTesting{
 		^[
 			VTMMapping,
-			VTMDefinitionLibrary,
-			VTMCommand,
-			VTMContextParameter,
-			VTMRemoteNetworkNode,
-			VTMModule,
-			VTMApplication,
-			VTMHardwareDevice,
-			VTMScore,
-			VTMScene
+			// VTMDefinitionLibrary,
+			// VTMCommand,
+			// VTMContextParameter,
+			// VTMRemoteNetworkNode,
+			// VTMModule,
+			// VTMApplication,
+			// VTMHardwareDevice,
+			// VTMScore,
+			// VTMScene
 		];
 	}
 
@@ -39,18 +39,49 @@ TestVTMElement : TestVTMAbstractData {
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
 			var managerClass = class.managerClass;
+			var testPath;
 
-			// managerObj = managerClass.new;
-			//
-			// testAttributes = nil;
-			// obj = class.new(
-			// 	testName,
-			// 	testAttributes,
-			// 	managerObj
-			// );
-			//
-			// obj.free;
-			// managerObj.free;
+			managerObj = managerClass.new;
+
+			testAttributes = nil;
+			obj = class.new(
+				testName,
+				testAttributes,
+				managerObj
+			);
+
+			//should be the manager fullPath
+			this.assert(obj.path.notNil,
+				"[%] - path initially not nil".format(class)
+			);
+			this.assert(obj.hasDerivedPath,
+				"[%] - has derived path".format(class)
+			);
+			this.assertEquals(
+				obj.path, managerObj.fullPath,
+				"[%] - path is the same as manager full path".format(class)
+			);
+
+			//Should not be able to change the path when managed element object.
+			testPath = "/%".format(this.class.makeRandomString);
+			obj.path = testPath;
+			this.assertEquals(
+				obj.path, managerObj.fullPath,
+				"[%] - path is unchanged in managed element object".format(class)
+			);
+			this.assert(obj.hasDerivedPath,
+				"[%] - still has derived path".format(class)
+			);
+			this.assertEquals(
+				obj.fullPath,
+				"%%%".format(
+					managerObj.path ++ managerObj.leadingSeparator ++ managerObj.name
+				).asSymbol,
+				"[%] - fullPath is correct".format(class);
+			);
+
+			obj.free;
+			managerObj.free;
 
 		});
 
@@ -88,15 +119,16 @@ TestVTMElement : TestVTMAbstractData {
 				"[%] - fullPath is correct".format(class);
 			);
 
-			// //change path with nonleading slash path arg
-			// //using 'g' as non-leading separator char here
-			// testPath = "g%".format(this.class.makeRandomString);
-			//
-			// //should force leading separator
-			// this.assertEquals(
-			// 	obj.path, "/%".format(testPath).asSymbol,
-			// 	"[%] - Changed and forced leading slash to set path".format(class)
-			// );
+			//change path with nonleading slash path arg
+			//using 'g' as non-leading separator char here
+			testPath = "g%".format(this.class.makeRandomString);
+			obj.path = testPath;
+
+			//should force leading separator
+			this.assertEquals(
+				obj.path, "/%".format(testPath).asSymbol,
+				"[%] - Changed and forced leading slash to set path".format(class)
+			);
 			obj.free;
 		});
 
