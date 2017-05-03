@@ -12,7 +12,7 @@ VTMAbstractDataManager {
 		^super.new.initAbstractDataManager(context, attributes);
 	}
 
-	//context is an instance of kind VTMContext.
+	//context is an instance of kind VTMContext or a symbol.
 	//attributes is an array of Dictionaries with item attributes.
 	initAbstractDataManager{arg context_, attributes_;
 		context = context_;
@@ -58,11 +58,18 @@ VTMAbstractDataManager {
 	}
 
 	path{
-		^"%%%".format(
-			context.path,
-			this.leadingSeparator,
-			this.name
-		).asSymbol;
+		if(context.notNil, {
+			if(context.isKindOf(VTMContext), {
+				^context.fullPath;
+			}, {
+				"/%".format(context).asSymbol;
+			});
+		});
+		^'/';
+	}
+
+	fullPath{
+		^(this.path ++ this.leadingSeparator ++	this.name).asSymbol;
 	}
 
 	leadingSeparator{ ^':'; }
