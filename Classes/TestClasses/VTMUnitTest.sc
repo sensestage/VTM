@@ -90,6 +90,25 @@ VTMUnitTest : UnitTest {
 		^this.makeRandomString(params).asSymbol;
 	}
 
+	*makeRandomPath{arg params;
+		var numLevels;
+		var minLevels = 1;
+		var maxLevels = 3;
+		var result;
+		if(params.notNil, {
+			numLevels = params[\numLevels];
+			minLevels = params[\minLevels] ? minLevels;
+			maxLevels = params[\minLevels] ? maxLevels;
+		});
+		if(numLevels.isNil, {
+			numLevels = rrand(minLevels, maxLevels);
+		});
+		numLevels.collect({arg i;
+			result = result.addAll("/%".format(this.makeRandomString));
+		}).asSymbol;
+		^result;
+	}
+
 	*makeRandomString{arg params;
 		var chars;
 		var minLength, maxLength, noSpaces, noNumbers, noAlphas, onlyAlphaNumeric;
