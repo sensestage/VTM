@@ -98,7 +98,7 @@ VTMUnitTest : UnitTest {
 		if(params.notNil, {
 			numLevels = params[\numLevels];
 			minLevels = params[\minLevels] ? minLevels;
-			maxLevels = params[\minLevels] ? maxLevels;
+			maxLevels = params[\maxLevels] ? maxLevels;
 		});
 		if(numLevels.isNil, {
 			numLevels = rrand(minLevels, maxLevels);
@@ -171,4 +171,31 @@ VTMUnitTest : UnitTest {
 		^rrand(minVal, maxVal);
 	}
 
+	*makeRandomDictionary{arg params;
+		var result;
+		var size, minSize = 1, maxSize = 15;
+		var dataTypes;
+		var dictClass = IdentityDictionary;
+		if(params.notNil, {
+			size = params[\size];
+			minSize = params[\minSize] ? minSize;
+			maxSize = params[\maxSize] ? maxSize;
+			dictClass = params[\classSymbol].asClass ? dictClass;
+			dataTypes = params[\dataTypes];
+		});
+		if(size.isNil, {
+			size = rrand(minSize, maxSize);
+		});
+		result = dictClass.new(size);
+		if(dataTypes.isNil, {
+			dataTypes = { [\Boolean, \Integer, \Decimal, \String].choose } ! size;
+		});
+		size.do({arg i;
+			result.put(
+				this.makeRandomSymbol,
+				this.perform("makeRandom%".format(dataTypes[i]).asSymbol)
+			);
+		});
+		^result;
+	}
 }
