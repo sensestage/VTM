@@ -36,4 +36,12 @@ VTMOrderedIdentityDictionary : IdentityDictionary {
 		});
 		^result;
 	}
+
+	//adding additional check for equal order
+	== {arg what;
+		var result = super == what;
+		if(result.not, { ^false; });
+		if(order != what.order, {^false;});
+		^true;
+	}
 }
