@@ -2,15 +2,15 @@ TestVTMElement : TestVTMAbstractData {
 	*classesForTesting{
 		^[
 			VTMMapping,
-			VTMDefinitionLibrary,
-			VTMCommand,
-			VTMContextParameter,
-			VTMRemoteNetworkNode,
-			VTMModule,
-			VTMApplication,
-			VTMHardwareDevice,
-			VTMScore,
-			VTMScene
+			// VTMDefinitionLibrary,
+			// VTMCommand,
+			// VTMContextParameter,
+			// VTMRemoteNetworkNode,
+			// VTMModule,
+			// VTMApplication,
+			// VTMHardwareDevice,
+			// VTMScore,
+			// VTMScene
 		];
 	}
 
@@ -136,7 +136,57 @@ TestVTMElement : TestVTMAbstractData {
 	}
 
 	test_AttributeOSC{
+		var obj, testAttributes;
+		this.class.classesForTesting.do({arg class;
+			var testClass = VTMUnitTest.findTestClass(class);
+			var testName = VTMUnitTest.makeRandomSymbol;
 
+			testAttributes = testClass.makeRandomAttributes;
+			obj = class.new(
+				testName,
+				testAttributes
+			);
+			obj.enableOSC;
+
+			class.attributeKeys.do({arg attributeKey;
+				var oldVal, attrPath;
+				var testVal, oscValReceived = Condition.new, controller;
+				oldVal = obj.get(attributeKey);
+				attrPath = (obj.fullPath ++ '/' ++ attributeKey).asSymbol;
+
+				testVal = testClass.makeRandomAttribute(attributeKey);
+				oscValReceived.test = false;
+				controller = SimpleController(obj).put(\attribute, {arg ...args;
+					var who, what, whichAttr;
+					who = args[0];
+					what = args[1];
+					whichAttr = args[2];
+					if(whichAttr == attributeKey, {
+						oscValReceived.test = true;
+						oscValReceived.unhang;
+						"NOTOTOTOTOT: %[%] == %[%]".format(
+							whichAttr, whichAttr.class,
+							attributeKey, attributeKey.class).postln;
+					});
+				});
+
+				VTM.sendLocalMsg(attrPath, testVal);
+
+				oscValReceived.hang(1.0);
+				this.assert(oscValReceived.test,
+					"[%] - Did not receive attribute set OSC message".format(class));
+
+				controller.removeAt(\attributes);
+				controller.remove;
+				controller = nil;
+				this.assertEquals(
+					obj.perform(attributeKey.asGetter), testVal,
+					"[%] - Set attribute '%' value through OSC".format(class, attributeKey)
+				);
+			});
+			obj.disableOSC;
+			obj.free;
+		});
 		//changing path manually should update the OSC interface paths.
 	}
 

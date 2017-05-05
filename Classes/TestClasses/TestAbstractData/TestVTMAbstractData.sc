@@ -2,18 +2,18 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			VTMPreset,
-			VTMCue,
+			// VTMPreset,
+			// VTMCue,
 			VTMMapping,
-			VTMDefinitionLibrary,
-			VTMCommand,
-			VTMContextParameter,
-			VTMRemoteNetworkNode,
-			VTMModule,
-			VTMApplication,
-			VTMHardwareDevice,
-			VTMScore,
-			VTMScene
+			// VTMDefinitionLibrary,
+			// VTMCommand,
+			// VTMContextParameter,
+			// VTMRemoteNetworkNode,
+			// VTMModule,
+			// VTMApplication,
+			// VTMHardwareDevice,
+			// VTMScore,
+			// VTMScene
 		];
 	}
 

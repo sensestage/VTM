@@ -7,15 +7,15 @@
 //- *makeOSCAPI(obj)
 VTMOSCInterface {
 	var model;
-	var responders;
+	var responderDict;
 	var <enabled = false;
 
 	*new{arg model;
-		[\path, \name, \leadingSeparator].do({arg item;
-			if(model.respondsTo(item).not, {
-				NotYetImplementedError("% has not implemented '%' method yet!".format(model.class, item)).throw;
-			});
+		if(model.respondsTo(\fullPath).not, {
+			NotYetImplementedError(
+				"% has not implemented 'fullPath' method yet!".format(model.class)).throw;
 		});
+
 		^super.new.init(model);
 	}
 
@@ -25,74 +25,107 @@ VTMOSCInterface {
 
 	*prMakeResponders{arg model;
 		var result = IdentityDictionary.new;
+		/*
 		model.class.makeOSCAPI(model).keysValuesDo({arg cmdKey, cmdFunc;
-			var responderFunc, lastCmdChar, responderPath;
-			lastCmdChar = cmdKey.asString.last;
-			responderPath = model.fullPath;
-			switch(lastCmdChar,
-				$!, {
-					responderFunc = {arg msg, time, addr, port;
-						cmdFunc.value(model);
-					};
-				},
-				$?, {
-					responderFunc = {arg msg, time, addr, port;
-						var queryHost, queryPath, queryPort;
-						if(msg.size == 4, {
-							var replyData;
-							queryHost = msg[1].asString;
-							queryPort = msg[2];
-							queryPath = msg[3];
-							replyData = cmdFunc.value(model);
-							if(replyData.notNil, {
-								if(replyData.isArray, {
-									NetAddr(queryHost, queryPort).sendMsg(
-										queryPath.asSymbol,
-										*replyData
-									);
-								}, {
-									NetAddr(queryHost, queryPort).sendMsg(
-										queryPath.asSymbol,
-										replyData
-									);
-								});
-							});
-						}, {
-							"% command '%' OSC missing query addr data".format(
-								model.class,
-								responderPath
-							).warn
-						});
-					};
-				},
-				//the default case is a setter method
-				{
-					responderFunc = {arg msg, time, addr, port;
-						cmdFunc.value(msg[1..]);
-					};
-				}
-			);
+		var responderFunc, lastCmdChar, responderPath;
+		lastCmdChar = cmdKey.asString.last;
+		responderPath = model.fullPath;
+		switch(lastCmdChar,
+		$!, {
+		responderFunc = {arg msg, time, addr, port;
+		cmdFunc.value(model);
+		};
+		},
+		$?, {
+		responderFunc = {arg msg, time, addr, port;
+		var queryHost, queryPath, queryPort;
+		if(msg.size == 4, {
+		var replyData;
+		queryHost = msg[1].asString;
+		queryPort = msg[2];
+		queryPath = msg[3];
+		replyData = cmdFunc.value(model);
+		if(replyData.notNil, {
+		if(replyData.isArray, {
+		NetAddr(queryHost, queryPort).sendMsg(
+		queryPath.asSymbol,
+		*replyData
+		);
+		}, {
+		NetAddr(queryHost, queryPort).sendMsg(
+		queryPath.asSymbol,
+		replyData
+		);
+		});
+		});
+		}, {
+		"% command '%' OSC missing query addr data".format(
+		model.class,
+		responderPath
+		).warn
+		});
+		};
+		},
+		//the default case is a setter method
+		{
+		responderFunc = {arg msg, time, addr, port;
+		cmdFunc.value(msg[1..]);
+		};
+		}
+		);
+		result.put(
+		cmdKey,
+		OSCFunc(responderFunc, responderPath);
+		);
+
+		});
+		*/
+		result.put(\setters, this.prMakeSetterResponders(model));
+		result.put(\queries, this.prMakeQueryResponders(model));
+		result.put(\commands, this.prMakeCommandResponders(model));
+		^result;
+	}
+
+	*prMakeSetterResponders{arg model;
+		var result = IdentityDictionary.new;
+		model.class.attributeKeys.do({arg attributeKey;
+			//TODO: maybe move attribute separator somewhere potentionally more DRY?
+			var path = (model.fullPath ++ '/' ++ attributeKey).asSymbol;
 			result.put(
-				cmdKey,
-				OSCFunc(responderFunc, responderPath);
+				path,
+				OSCFunc({arg msg, time, resp, port;
+					model.perform(attributeKey.asSetter, VTMJSON.parseAttributesString(msg[1]));
+				}, path)
 			);
 		});
 		^result;
 	}
 
+	*prMakeQueryResponders{arg model;
+		var result = IdentityDictionary.new;
+		^result;
+	}
+
+	*prMakeCommandResponders{arg model;
+		var result = IdentityDictionary.new;
+		^result;
+	}
+
 	enable{
-		if(responders.isNil, {
-			responders = this.class.prMakeResponders(model);
+		if(responderDict.isNil, {
+			responderDict = this.class.prMakeResponders(model);
 		});
 		enabled = true;
 	}
 
 	disable{
-		if(responders.notNil, {
-			responders.do({arg resp;
-				resp.free;
+		if(responderDict.notNil, {
+			responderDict.keysValuesDo({arg respTypeKey, typeRespDict;
+				typeRespDict.keys.do({arg k;
+					typeRespDict.removeAt(k).free;
+				});
 			});
-			responders = nil;
+			responderDict = nil;
 		});
 		enabled = false;
 	}

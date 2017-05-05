@@ -7,10 +7,6 @@ VTMMapping : VTMElement {
 
 	initMapping{}
 
-	when{arg what, action;
-		//e.g. when parameter \freq > 900, action.value
-	}
-
 	*attributeKeys{
 		^super.attributeKeys ++ [\source, \destination, \when, \settings];
 	}
@@ -22,4 +18,17 @@ VTMMapping : VTMElement {
 	*queryNames{
 		^super.queryNames ++ [\isEnabled];
 	}
+
+	//Attribute getters and setters
+	source{ ^this.get(\source); }
+	source_{arg val; "haha: %".format(val).postln; this.set(\source, val); }
+
+	destination{ ^this.get(\destination); }
+	destination_{arg val; this.set(\destination, val); }
+
+	when{^this.get(\when); }//e.g. when parameter \freq > 900, action.value
+	when_{arg val; this.set(\when, val); }
+
+	settings{^this.get(\settings); }
+	settings_{arg val; this.set(\settings, val); }
 }

@@ -1,5 +1,5 @@
 VTMJSON : JSON {
-	*stringifyAttributes { arg obj;
+	*stringify { arg obj;
 		var out;
 
 		if(obj.isString, {
@@ -12,7 +12,7 @@ VTMJSON : JSON {
 		if(obj.isKindOf(Dictionary), {
 			out = List.new;
 			obj.keysValuesDo({ arg key, value;
-				out.add( key.asString.asCompileString ++ ":" + VTMJSON.stringifyAttributes(value) );
+				out.add( key.asString.asCompileString ++ ":" + VTMJSON.stringify(value) );
 			});
 			^("{" ++ (out.join(", ")) ++ "}");
 		});
@@ -48,7 +48,7 @@ VTMJSON : JSON {
 		});
 		if(obj.isKindOf(SequenceableCollection), {
 			^"[" ++ obj.collect({ arg sub;
-				VTMJSON.stringifyAttributes(sub)
+				VTMJSON.stringify(sub)
 			}).join(", ")
 			++ "]";
 		});
@@ -60,13 +60,60 @@ VTMJSON : JSON {
 		// http://en.wikipedia.org/wiki/ISO_8601
 
 		("No JSON conversion for object" + obj).warn;
-		^VTMJSON.stringifyAttributes(obj.asCompileString)
+		^VTMJSON.stringify(obj.asCompileString)
 	}
 
 	*parseAttributesString{arg str;
 		var result;
-		result = str.parseYAML(str);
-		result = result.changeScalarValuesToDataTypes;
+		if(str.isString or: {str.isKindOf(Symbol)}, {
+			result = str.asString.parseYAML;
+			if(result.isString, {
+				result = this.parseYAMLValue(result);
+			}, {
+				result = result.changeScalarValuesToDataTypes;
+			});
+		}, {
+			result = str;
+		});
+
+		^result;
+	}
+
+	*parseYAMLValue{arg str;
+		var result = str;
+		case
+		{"^<int> -?[0-9]+$".matchRegexp(str)}
+		{
+			result = str.drop(6).interpret;
+		}
+		{"^<float> [0-9a-fA-F]{16}$".matchRegexp(str)}
+		{
+			result = str.drop(8).clump(8).collect({arg it; "0x%".format(it).interpret});
+			result = Float.from64Bits(*result);
+		}
+		{"^<float> [0-9a-fA-F]{8}$".matchRegexp(str)}
+		{
+			result = "0x%".format(str.drop(8)).interpret;
+			result = Float.from32Bits(result);
+		}
+		{"^<symbol> .+$".matchRegexp(str)} {result = str.drop(9).asSymbol; }
+		{"^<string> .+$".matchRegexp(str)} {result = str.drop(9).drop(1).drop(-1); }
+		{"^<bool> true$".matchRegexp(str)} {result = true; }
+		{"^<bool> false$".matchRegexp(str)} {result = false; }
+		{"^-?[0-9]+(?:\.[0-9]+)?$".matchRegexp(str)}//if number
+		{
+			if(str.asFloat == str.asInteger,
+				{
+					result = str.asInteger;
+				}, {
+					result = str.asFloat;
+				}
+			);
+		}
+		{"^0[xX][0-9a-fA-F]+$".matchRegexp(str)} {result = str.interpret; } //hex notation
+		{"^true$".matchRegexp(str)} { result = true; }// yaml1.2 /json compatible booleans
+		{"^false$".matchRegexp(str)} { result = false; }
+		{ result = str.asString; };//convert to symbol by default
 		^result;
 	}
 }
