@@ -60,9 +60,9 @@ VTMContext : VTMElement {
 		this.prChangeState(\didInitialize);
 	}
 
-	prComponents{
-	   	^[parameters, presets, cues, mappings, scores, commands];
-   	}
+	components{
+		^[parameters, presets, cues, mappings, scores, commands];
+	}
 
 	//The context that calls prepare can issue a condition to use for handling
 	//asynchronous events. If no condition is passed as argument the context will
@@ -76,7 +76,7 @@ VTMContext : VTMElement {
 			if(envir.includesKey(\prepare), {
 				this.execute(\prepare, cond);
 			});
-			this.prComponents.do({arg it; it.prepare(cond)});
+			this.components.do({arg it; it.prepare(cond)});
 			this.enableOSC;
 			this.prChangeState(\didPrepare);
 			action.value(this);
@@ -90,7 +90,7 @@ VTMContext : VTMElement {
 			if(envir.includesKey(\run), {
 				this.execute(\run, cond);
 			});
-			this.prComponents.do({arg it; it.run(cond)});
+			this.components.do({arg it; it.run(cond)});
 			this.prChangeState(\didRun);
 			action.value(this);
 		};
@@ -104,10 +104,10 @@ VTMContext : VTMElement {
 				this.execute(\free, cond);
 			});
 			this.disableOSC;
-//			children.keysValuesDo({arg key, child;
-//				child.free(key, cond);
-//			});
-			this.prComponents.do({arg it; it.free(cond)});
+			//			children.keysValuesDo({arg key, child;
+			//				child.free(key, cond);
+			//			});
+			this.components.do({arg it; it.free(cond)});
 			this.prChangeState(\didFree);
 			action.value(this);
 			this.release; //Release this as dependant from other objects.
@@ -122,33 +122,33 @@ VTMContext : VTMElement {
 	}
 
 
-//	//Determine if this is a root context, i.e. having no parent.
-//	isRoot{
-//		//^parent.isNil;
-//	}
-//
-//	//Determine is this a lead context, i.e. having no children.
-//	isLeaf{
-//		^children.isEmpty;
-//	}
-//
-//	children{
-//		if(children.isEmpty, {
-//			^nil;
-//		}, {
-//			^children.keys.asArray;// safer to return only the children. not the dict.
-//		});
-//	}
+	//	//Determine if this is a root context, i.e. having no parent.
+	//	isRoot{
+	//		//^parent.isNil;
+	//	}
+	//
+	//	//Determine is this a lead context, i.e. having no children.
+	//	isLeaf{
+	//		^children.isEmpty;
+	//	}
+	//
+	//	children{
+	//		if(children.isEmpty, {
+	//			^nil;
+	//		}, {
+	//			^children.keys.asArray;// safer to return only the children. not the dict.
+	//		});
+	//	}
 	//Find the root for this context.
-//	root{
-//		var result;
-//		//search for context root
-//		result = this;
-//		while({result.isRoot.not}, {
-//			result = result.parent;
-//		});
-//		^result;
-//	}
+	//	root{
+	//		var result;
+	//		//search for context root
+	//		result = this;
+	//		while({result.isRoot.not}, {
+	//			result = result.parent;
+	//		});
+	//		^result;
+	//	}
 
 	prChangeState{ arg val;
 		var newState;
@@ -157,27 +157,6 @@ VTMContext : VTMElement {
 			this.changed(\state, state);
 		});
 	}
-
-	//since parameter values are often set and get we have special methods for
-	//these directly in the context interface
-	// set{arg ...args;
-	// 	if(args.size > 2, {
-	// 		args.pairsDo({arg paramName, paramVal;
-	// 			if(parameters.includes(paramName), {
-	// 				this.set(paramName, paramVal);
-	// 			});
-	// 		});
-	// 		}, {
-	// 			var param = parameters[args[0]];
-	// 			if(param.notNil, {
-	// 				param.valueAction_(*args[1]);
-	// 			});
-	// 	});
-	// }
-	//
-	// get{arg parameterName;
-	// 	^parameters[parameterName].value;
-	// }
 
 	//Call functions in the runtime environment with this context as first arg.
 	execute{arg selector ...args;
@@ -210,11 +189,11 @@ VTMContext : VTMElement {
 
 	enableOSC{
 		super.enableOSC;
-		this.prComponents.do(_.enableOSC);
+		this.components.do(_.enableOSC);
 	}
 
 	disableOSC{
-		this.prComponents.do(_.disableOSC);
+		this.components.do(_.disableOSC);
 		super.disableOSC;
 	}
 
@@ -226,59 +205,24 @@ VTMContext : VTMElement {
 		});
 	}
 
-	attributes{
+	//recursive == true pulls attributes from components
+	//recursive == false pulls only name attributes of components
+	///TODO: Implement gettin gattributes from components
+	attributes{arg recursive = false;
 		var result = super.attributes;
-
-		//FIXME: commented out for now awating attributes implementation.
-		// if(parameters.isEmpty.not, {
-		// 	result.put(\parameters, parameters.attributes);
+		// var nonEmptyComps = this.components.select({arg item; item.isEmpty.not; });
+		// if(recursive, {
+		// 	nonEmptyComps.do({arg comp;
+		// 		var val;
+		// 		val = comp.attributes(recursive: true);
+		// 		result.put(comp.name, val);
+		// 	});
+		// 	}, {
+		// 		nonEmptyComps.do({arg comp;
+		// 			result.put(comp.name, comp.names);
+		// 		});
 		// });
-		// if(presets.isEmpty.not, {
-		// 	result.put(\presets, presets.attributes);
-		// });
-		// if(cues.isEmpty.not, {
-		// 	result.put(\cues, cues.attributes);
-		// });
-		// if(mappings.isEmpty.not, {
-		// 	result.put(\mappings, mappings.attributes);
-		// });
-		// if(scores.isEmpty.not, {
-		// 	result.put(\scores, scores.attributes);
-		// });
-
 		^result;
-	}
-
-	//command keys ending with ? are getters (or more precisely queries),
-	//which function will return a value that can be sent to the application
-	//that sends the query.
-	//keys with ! are action commands that cause function to be run
-	*makeOSCAPI{arg context;
-		^IdentityDictionary[
-			'parameters?' -> {arg context;
-				context.parameters.names;
-			},
-			'presets?' -> {arg context;
-				context.presets.names;
-			},
-			'cues?' -> {arg context;
-				context.cues.names;
-			},
-			'mappings?' -> {arg context;
-				context.mappings.names;
-			},
-			'state?' -> {arg context; context.state; },
-			'attributes?' -> {arg context; VTMJSON.stringifyAttributes(context.attributes); },
-			'reset!' -> {arg context; context.reset; },
-			'free!' -> {arg context; context.free; }
-		];
-	}
-
-	*attributeKeys{
-		^super.attributeKeys ++ [
-			\parameters, \presets, \cues, \scores,
-			\mappings, \commands, \definition
-		];
 	}
 
 	*commandNames{
@@ -286,6 +230,9 @@ VTMContext : VTMElement {
 	}
 
 	*queryNames{
-		^super.queryNames ++ [\state];
+		^super.queryNames ++ [\state,
+			\parameters, \presets, \cues, \scores,
+			\mappings, \commands, \definition
+		];
 	}
 }
