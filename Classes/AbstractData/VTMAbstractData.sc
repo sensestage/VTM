@@ -42,7 +42,7 @@ VTMAbstractData{
 	}
 
 	attributes{
-		^attributes.asKeyValuePairs;
+		^attributes.copy;
 	}
 
 	set{arg attributeKey, value;
