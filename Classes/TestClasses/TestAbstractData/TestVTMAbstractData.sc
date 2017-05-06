@@ -17,8 +17,11 @@ TestVTMAbstractData : VTMUnitTest {
 		];
 	}
 
-	*makeRandomAttributes{arg params;
+	*makeRandomAttributes{arg params, makeNameAttribute = false;
 		var result = VTMAbstractDataAttributes[];
+		if(makeNameAttribute, {
+			result.put(\name, this.makeRandomAttribute(\name));
+		});
 		this.findTestedClass.attributeKeys.do({arg item;
 			var attrParams, randAttr;
 			if(params.notNil and: {params.includesKey(item)}, {
@@ -33,7 +36,11 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	*makeRandomAttribute{arg key, params;
-		^nil;
+		var result;
+		result = switch(key,
+			\name, {this.makeRandomSymbol},
+		);
+		^result;
 	}
 
 	*makeRandomManagerObject{
