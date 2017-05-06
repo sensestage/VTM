@@ -25,13 +25,13 @@ TestVTMNamedList : VTMUnitTest {
 
 		//check order of values
 		this.assertEquals(
-			obj.names, [\myAA, 2, \myCC],
+			obj.names, [\myAA, 1, \myCC],
 			"NamedList returned the correct names."
 		);
 
 		//check associations array
 		is = obj.associations;
-		shouldBe = ['myAA' -> \aa, 2 -> \bb, 'myCC' -> \cc];
+		shouldBe = ['myAA' -> \aa, 1 -> \bb, 'myCC' -> \cc];
 
 		this.assert(
 			this.class.equalAssociations(
@@ -43,7 +43,7 @@ TestVTMNamedList : VTMUnitTest {
 
 	test_NewFromKeyValuePairs{
 		var obj;
-		var testList = [\myAA, \aa, 2, \bb, \myCC, \cc];
+		var testList = [\myAA, \aa, 1, \bb, \myCC, \cc];
 		obj = VTMNamedList.newFromKeyValuePairs(testList);
 
 		this.assertEquals(
@@ -63,7 +63,7 @@ TestVTMNamedList : VTMUnitTest {
 		obj.addItem(\dd);
 		is = obj.associations;
 		shouldBe = [
-			\myAA -> \aa, 2 -> \bb, \myCC -> \cc, 4 -> \dd
+			\myAA -> \aa, 1 -> \bb, \myCC -> \cc, 3 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -72,10 +72,10 @@ TestVTMNamedList : VTMUnitTest {
 		);
 
 		//should add item to third slot without name
-		obj.addItem(\ee, slot: 3);
+		obj.addItem(\ee, slot: 2);
 		is = obj.associations;
 		shouldBe = [
-			\myAA -> \aa, 2 -> \bb, 3 -> \ee, \myCC -> \cc, 5 -> \dd
+			\myAA -> \aa, 1 -> \bb, 2 -> \ee, \myCC -> \cc, 4 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -84,11 +84,11 @@ TestVTMNamedList : VTMUnitTest {
 		);
 
 		//should add named item to first slot
-		obj.addItem(\ff, \myFF, 1);
+		obj.addItem(\ff, \myFF, 0);
 		is = obj.associations;
 		shouldBe = [
-			\myFF -> \ff, \myAA -> \aa, 3 -> \bb,
-			4 -> \ee, \myCC -> \cc, 6 -> \dd
+			\myFF -> \ff, \myAA -> \aa, 2 -> \bb,
+			3 -> \ee, \myCC -> \cc, 5 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -97,11 +97,11 @@ TestVTMNamedList : VTMUnitTest {
 		);
 
 		//should remove the second item
-		obj.removeItem(2);
+		obj.removeItem(1);
 		is = obj.associations;
 		shouldBe = [
-			\myFF -> \ff, 2 -> \bb,
-			3 -> \ee, \myCC -> \cc, 5 -> \dd
+			\myFF -> \ff, 1 -> \bb,
+			2 -> \ee, \myCC -> \cc, 4 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -114,9 +114,9 @@ TestVTMNamedList : VTMUnitTest {
 		is = obj.associations;
 		shouldBe = [
 			\myFF -> \ff,
-			2 -> \bb,
-			3 -> \ee,
-			4 -> \dd
+			1 -> \bb,
+			2 -> \ee,
+			3 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -125,13 +125,13 @@ TestVTMNamedList : VTMUnitTest {
 		);
 
 		//should move named item to third slot
-		obj.moveItem(\myFF, 3);
+		obj.moveItem(\myFF, 2);
 		is = obj.associations;
 		shouldBe = [
-			1 -> \bb,
-			2 -> \ee,
+			0 -> \bb,
+			1 -> \ee,
 			\myFF -> \ff,
-			4 -> \dd
+			3 -> \dd
 		];
 		this.assert(
 			this.class.equalAssociations(is, shouldBe),
@@ -212,40 +212,40 @@ TestVTMNamedList : VTMUnitTest {
 
 		// //should return named item ny slot number argument
 		this.assertEquals(
-			obj[2], \bb,
+			obj[1], \bb,
 			"NamedList returned named item by integer slot number argument."
 		);
 
 		//should return item name
 		this.assertEquals(
-			obj.getItemName(4), \myDict,
+			obj.getItemName(3), \myDict,
 			"NamedList returned item name from integer slot number argument."
 		);
 
 		//should retun nil as item name for unnamed items
 		this.assertEquals(
-			obj.getItemName(1), nil,
+			obj.getItemName(0), nil,
 			"NamedList returned nil as item name from unnamed item."
 		);
 
 		//should set item name for unnamed item
-		obj.setItemName(2, \myBB);
+		obj.setItemName(1, \myBB);
 		this.assertEquals(
-			obj.getItemName(2), \myBB,
+			obj.getItemName(1), \myBB,
 			"NamedList set item name from integer slot number argument."
 		);
 
 		//should rename item name for already named item
-		obj.setItemName(4, \myRenamedDict);
+		obj.setItemName(3, \myRenamedDict);
 		this.assertEquals(
-			obj.getItemName(4), \myRenamedDict,
+			obj.getItemName(3), \myRenamedDict,
 			"NamedList renamed item from integers slot number argument"
 		);
 
 		//should remove name by setting it to nil;
-		obj.setItemName(4, nil);
+		obj.setItemName(3, nil);
 		this.assertEquals(
-			obj.getItemName(4), nil,
+			obj.getItemName(3), nil,
 			"NamedList removed name from item."
 		);
 
@@ -262,9 +262,9 @@ TestVTMNamedList : VTMUnitTest {
 		obj = VTMNamedList([\aa,\myBB -> \bb,\cc]);
 
 		//change unnamed item
-		beforeChange = obj.getItemTimeLastChanged(3);
-		obj.changeItem(3, \cccc);
-		afterChange = obj.getItemTimeLastChanged(3);
+		beforeChange = obj.getItemTimeLastChanged(2);
+		obj.changeItem(2, \cccc);
+		afterChange = obj.getItemTimeLastChanged(2);
 		this.assertEquals(
 			beforeChange, nil,
 			"NamedList - item last time changed was nil upon init"
@@ -274,7 +274,7 @@ TestVTMNamedList : VTMUnitTest {
 			"NamedList marked change time for changed item in the form of Date"
 		);
 		this.assertEquals(
-			obj[3], \cccc,
+			obj[2], \cccc,
 			"NamedList changed item value"
 		);
 	}

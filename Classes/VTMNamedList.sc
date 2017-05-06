@@ -73,7 +73,7 @@ VTMNamedList {
 			if(item.includesKey(\name), {
 				item[\name];
 			}, {
-				i + 1;
+				i;
 			});
 		});
 		^result;
@@ -82,8 +82,8 @@ VTMNamedList {
 	prAt{arg val;
 		var result;
 		if(val.isInteger, {
-			if(val >= 1 and: {val <= items.size}, {
-				^items[val - 1];
+			if(val >= 0 and: {val <= items.size}, {
+				^items[val];
 			}, {
 				^nil;
 			});
@@ -115,7 +115,7 @@ VTMNamedList {
 		var result;
 		result = items.collect({arg item, i;
 			var itemName;
-			itemName = item[\name] ? (i + 1);
+			itemName = item[\name] ? (i);
 			Association.new(itemName, item[\data]);
 		});
 		^result;
@@ -186,7 +186,7 @@ VTMNamedList {
 			//add to tail by default
 			items.add(newItem);
 		}, {
-			items.insert(slot - 1, newItem);
+			items.insert(slot, newItem);
 		});
 	}
 
@@ -194,7 +194,7 @@ VTMNamedList {
 		var indexToRemove, removedItem;
 		if(items.isEmpty, {^nil});
 		if(name.isInteger, {
-			indexToRemove = name - 1;
+			indexToRemove = name;
 		}, {
 			if(name.isKindOf(Symbol), {
 				indexToRemove = items.detectIndex({arg it;
@@ -220,7 +220,7 @@ VTMNamedList {
 		var itemToMove;
 		itemToMove = this.removeItem(name);
 		if(itemToMove.notNil, {
-			items.insert(slot - 1, itemToMove);
+			items.insert(slot, itemToMove);
 		}, {
 			Error("%:% - Slot number/name not found: %.".format(
 				this.class.name, thisMethod.name, name
