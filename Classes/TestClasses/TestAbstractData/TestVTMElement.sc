@@ -164,9 +164,6 @@ TestVTMElement : TestVTMAbstractData {
 					if(whichAttr == attributeKey, {
 						oscValReceived.test = true;
 						oscValReceived.unhang;
-						"NOTOTOTOTOT: %[%] == %[%]".format(
-							whichAttr, whichAttr.class,
-							attributeKey, attributeKey.class).postln;
 					});
 				});
 

@@ -21,7 +21,7 @@ VTMMapping : VTMElement {
 
 	//Attribute getters and setters
 	source{ ^this.get(\source); }
-	source_{arg val; "haha: %".format(val).postln; this.set(\source, val); }
+	source_{arg val; this.set(\source, val); }
 
 	destination{ ^this.get(\destination); }
 	destination_{arg val; this.set(\destination, val); }

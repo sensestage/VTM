@@ -2,23 +2,23 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			// VTMPreset,
-			// VTMCue,
+			VTMPreset,
+			VTMCue,
 			VTMMapping,
-			// VTMDefinitionLibrary,
-			// VTMCommand,
-			// VTMContextParameter,
-			// VTMRemoteNetworkNode,
-			// VTMModule,
-			// VTMApplication,
-			// VTMHardwareDevice,
-			// VTMScore,
-			// VTMScene
+			VTMDefinitionLibrary,
+			VTMCommand,
+			VTMContextParameter,
+			VTMRemoteNetworkNode,
+			VTMModule,
+			VTMApplication,
+			VTMHardwareDevice,
+			VTMScore,
+			VTMScene
 		];
 	}
 
 	*makeRandomAttributes{arg params;
-		var result = [];
+		var result = VTMAbstractDataAttributes[];
 		this.findTestedClass.attributeKeys.do({arg item;
 			var attrParams, randAttr;
 			if(params.notNil and: {params.includesKey(item)}, {
@@ -26,7 +26,7 @@ TestVTMAbstractData : VTMUnitTest {
 			});
 			randAttr = this.makeRandomAttribute(item, attrParams);
 			if(randAttr.notNil, {
-				result = result.addAll([item, randAttr]);
+				result.put(item, randAttr);
 			});
 		});
 		^result;
@@ -108,10 +108,10 @@ TestVTMAbstractData : VTMUnitTest {
 				managerObj
 			);
 
-			//attributes should be empty array
+			//attributes should be empty VTMAbstractDataAttributes
 			this.assertEquals(
 				obj.attributes,
-				[],
+				VTMAbstractDataAttributes[],
 				"[%] - init nil 'attributes' to empty array".format(class)
 			);
 
