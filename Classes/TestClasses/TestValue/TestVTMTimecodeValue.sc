@@ -23,7 +23,7 @@ TestVTMTimecodeValue : TestVTMValue {
 	}
 
 	test_DefaultAttributes{
-		var param = VTMTimecodeValue.new('myTimecode');
+		var param = VTMTimecodeValue.new;
 		//Should return 0 as defaultValue
 		this.assertEquals(
 			param.defaultValue, 0,
@@ -40,7 +40,7 @@ TestVTMTimecodeValue : TestVTMValue {
 		var desc = (
 			value: 1000, defaultValue: 3000,
 		);
-		var param = VTMTimecodeValue.new('myTimecode', desc);
+		var param = VTMTimecodeValue.new(desc);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
 			"TimecodeValue set defaultValue through attributes"
@@ -52,7 +52,7 @@ TestVTMTimecodeValue : TestVTMValue {
 	}
 
 	test_GetValueInUnitFormats{
-		var param = VTMTimecodeValue.new('myTimecode');
+		var param = VTMTimecodeValue.new();
 
 		//(275128022.8 * 0.001).asTimeString(0.000001);
 		param.value = 275128022.8;//3 days, 4 hours, 25 minutes 28 seconds and 22.8 ms
@@ -90,7 +90,7 @@ TestVTMTimecodeValue : TestVTMValue {
 				days: rrand(0, 364)
 			);
 			var testSum;
-			var param = VTMTimecodeValue.new('myTimecode');
+			var param = VTMTimecodeValue.new;
 
 			param.milliseconds_(testValue[\milliseconds]);
 			this.assertFloatEquals(

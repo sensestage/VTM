@@ -19,7 +19,7 @@ TestVTMDecimalValue : TestVTMNumberValue {
 			clipmode: \both, minVal: -231, maxVal: 889,
 			stepsize: 88
 		);
-		var param = VTMDecimalValue.new('myDecimal', desc);
+		var param = VTMDecimalValue.new(desc);
 		this.assertEquals(
 			param.value.class, Float,
 			"DecimalValue changed integer value in attributes to Float"

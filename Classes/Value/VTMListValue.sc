@@ -16,8 +16,8 @@ VTMListValue : VTMCollectionValue {
 		^[];
 	}
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initListParameter;
+	*new{arg attributes;
+		^super.new(attributes).initListParameter;
 	}
 
 	initListParameter{
@@ -77,9 +77,6 @@ VTMListValue : VTMCollectionValue {
 
 				//add the base item desc, overriding some of the outer attributes values
 				newItemDesc.putAll(baseItemDesc.deepCopy);
-				newItemDesc.put(\name, itemName);
-				newItemDesc.put(\path, this.fullPath);//using the owner parameter fullPath
-				newItemDesc.put(\type, attributes[\itemType]);
 
 				//override with the values in the itemAttributes
 				newItemDesc.putAll(itemDesc);
@@ -89,16 +86,11 @@ VTMListValue : VTMCollectionValue {
 
 			//Build the item parameter objects
 			items = itemAttributes.collect({arg itemDesc;
-				VTMParameter.makeFromAttributes(itemDesc.value);
+				VTMValue.makeFromType(attributes[\itemType], itemDesc);
 			});
 
 		}, {
-			Error(
-				"ListParameter items already built, please free current and build a new parameter. [%]".format(
-					this.fullPath
-				)
-			).throw;
-			^nil;
+			Error("ListParameter items already built, please free current and build a new parameter.").throw;
 		});
 	}
 

@@ -4,17 +4,9 @@ TestVTMSchemaValue : TestVTMDictionaryValue {
 		^super.makeRandomValue(params);
 	}
 
-	setUp{
-		"Setting up a VTMSchemaValueTest".postln;
-	}
-
-	tearDown{
-		"Tearing down a VTMSchemaValueTest".postln;
-	}
-
 	test_DefaultAttributes{
 		var testValue, testSchemas;
-		var param = VTMSchemaValue.new('mySchema');
+		var param = VTMSchemaValue.new;
 		//value should be be nil
 		// this.assertEquals(
 		// 	param.value, Dictionary.new,

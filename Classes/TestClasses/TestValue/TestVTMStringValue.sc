@@ -16,17 +16,8 @@ TestVTMStringValue : TestVTMValue {
 		^result;
 	}
 
-
-	setUp{
-		"Setting up a VTMStringValueTest".postln;
-	}
-
-	tearDown{
-		"Tearing down a VTMStringValueTest".postln;
-	}
-
 	test_DefaultAttributes{
-		var param = VTMStringValue.new('myString');
+		var param = VTMStringValue.new;
 		this.assert(
 			param.defaultValue.class == String and: {param.defaultValue.isEmpty},
 			"StringValue defaultValue defaults to empty string:\n\tIS: %\n\tSHOULD BE: %".format(param.defaultValue, "")
@@ -56,7 +47,7 @@ TestVTMStringValue : TestVTMValue {
 			defaultValue: "heisann.5",
 			pattern: "^heisann\\.\\d+$"
 		);
-		param = VTMStringValue.new('myString', desc);
+		param = VTMStringValue.new(desc);
 		this.assertEquals(
 			param.value, desc[\value],
 			"StringValue set value through attributes"
@@ -79,7 +70,7 @@ TestVTMStringValue : TestVTMValue {
 			defaultValue: 'heisann.5',
 			pattern: '^heisann\\.\\d+$'
 		);
-		param = VTMStringValue.new('myString', desc);
+		param = VTMStringValue.new(desc);
 		this.assertEquals(
 			param.defaultValue.class, String,
 			"StringValue converted defaultValue symbol arg to String"
@@ -101,7 +92,7 @@ TestVTMStringValue : TestVTMValue {
 			value: "bongo",
 			pattern: "^b(a|i|o|e|y)ngo$"
 		);
-		var param = VTMStringValue.new('myString', desc);
+		var param = VTMStringValue.new(desc);
 
 		//Should ignore values that doesn't match the pattern
 		testValue = "bikke";
@@ -157,10 +148,10 @@ TestVTMStringValue : TestVTMValue {
 		var desc = (
 			defaultValue: "bingo",
 			value: "bongo",
-			pattern: "^b(a|i|o|e|y)ngo$",
-			action: {|p| wasRun = true;}
+			pattern: "^b(a|i|o|e|y)ngo$"
 		);
-		var param = VTMStringValue.new('myString', desc);
+		var param = VTMStringValue.new(desc);
+		param.action = {|p| wasRun = true;};
 		param.clear;
 		this.assertEquals(
 			param.value, param.defaultValue,

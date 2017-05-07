@@ -41,6 +41,14 @@ VTMValue {
 
 	initValue{arg attributes_;
 		attributes = VTMAttributes.newFrom(attributes_);
+		if(attributes.notEmpty, {
+			if(attributes.includesKey(\value), {
+				this.value_(attributes[\value]);
+			});
+			if(attributes.includesKey(\defaultValue), {
+				this.defaultValue_(attributes[\defaultValue]);
+			});
+		});
 
 	}
 
@@ -58,6 +66,7 @@ VTMValue {
 				})
 			});
 			if(attributes.includesKey(\defaultValue), {
+				"AAA".postln;
 				this.defaultValue_(attributes[\defaultValue]);
 			});
 			if(attributes.includesKey(\value), {

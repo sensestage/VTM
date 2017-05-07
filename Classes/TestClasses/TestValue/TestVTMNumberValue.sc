@@ -37,7 +37,7 @@ TestVTMNumberValue : TestVTMValue {
 			testClass = this.class.testclassForType( class.type );
 
 			this.assertEquals(
-				param.defaultValue, param.prDefaultValueForType, "NumberValue defaultValue defaults to 0"
+				param.defaultValue, param.class.prDefaultValueForType, "NumberValue defaultValue defaults to 0"
 			);
 			//value should default to 0 if value not defined
 			this.assertEquals(

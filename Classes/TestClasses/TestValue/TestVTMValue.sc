@@ -2,15 +2,15 @@ TestVTMValue : VTMUnitTest {
 	*testClasses{
 		^[
 			VTMBooleanValue,
-			// VTMStringValue,
-			// VTMListValue,
-			// VTMDictionaryValue,
-			// VTMArrayValue,
-			//	VTMTimecodeValue,
-			// VTMDecimalValue,
-			// VTMIntegerValue
-			// VTMSchemaValue,
-			// VTMTupleValue
+			VTMStringValue,
+			VTMDecimalValue,
+			VTMIntegerValue,
+			VTMTimecodeValue,
+			VTMListValue,
+			VTMDictionaryValue,
+			VTMArrayValue,
+			VTMSchemaValue,
+			VTMTupleValue
 		];
 	}
 
@@ -252,7 +252,7 @@ TestVTMValue : VTMUnitTest {
 			testValue = testClass.makeRandomValue;
 			param.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "Value value was set [%]".format(testClass.name)
+				param.value, testValue, "% 'value' was set".format(testClass.name)
 			);
 			param.free;
 		});
@@ -265,7 +265,7 @@ TestVTMValue : VTMUnitTest {
 			try{
 				testClass = this.class.testclassForType( class.type );
 				testValue = testClass.makeRandomValue;
-				param = class.new(attributes: (defaultValue: testValue));
+				param = class.new((defaultValue: testValue));
 				this.assertEquals(
 					param.defaultValue, testValue, "Value defaultValue was set [%]".format(testClass.name)
 				);
@@ -295,7 +295,7 @@ TestVTMValue : VTMUnitTest {
 			param.reset;
 			this.assertEquals(
 				param.value, param.defaultValue,
-				"Value value was set to defaultValue upon reset[%]".format(testClass.name)
+				"[%] - Value value was set to defaultValue upon reset".format(class)
 			);
 			wasRun = false;
 			param.action_({arg p; wasRun = true;});
@@ -304,7 +304,7 @@ TestVTMValue : VTMUnitTest {
 			param.reset(doActionUponReset: true);
 			this.assert(
 				wasRun,
-				"Value action was run upon reset when defined to do so [%]".format(testClass.name)
+				"[%] - Value action was run upon reset when defined to do so".format(class)
 			);
 			param.free;
 		});

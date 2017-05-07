@@ -19,7 +19,7 @@ TestVTMIntegerValue : TestVTMNumberValue {
 			clipmode: \both, minVal: -23.1, maxVal: 88.9,
 			stepsize: 8.8
 		);
-		var param = VTMIntegerValue.new('myInteger', desc);
+		var param = VTMIntegerValue.new(desc);
 		this.assertEquals(
 			param.value, desc[\value].asInteger,
 			"IntegerValue changed decimal value in attributes to Integer"

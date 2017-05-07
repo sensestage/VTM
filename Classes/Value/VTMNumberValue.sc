@@ -6,8 +6,8 @@ VTMNumberValue : VTMValue {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initNumberParameter;
+	*new{arg attributes;
+		^super.new(attributes).initNumberParameter;
 	}
 
 	isValidType{arg val;
@@ -41,8 +41,8 @@ VTMNumberValue : VTMValue {
 				this.changed(\minVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"NumberParameter:minVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
+				"NumberParameter:minVal_ - ignoring val because of invalid type: '%[%]'".format(
+					val, val.class
 				).warn;
 			});
 		});
@@ -58,8 +58,8 @@ VTMNumberValue : VTMValue {
 				this.changed(\maxVal);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"NumberParameter:maxVal_ '%' - ignoring val because of invalid type: '%[%]'".format(
-					this.fullPath, val, val.class
+				"NumberParameter:maxVal_ - ignoring val because of invalid type: '%[%]'".format(
+					val, val.class
 				).warn;
 			});
 
@@ -71,15 +71,13 @@ VTMNumberValue : VTMValue {
 		if(this.isValidType(val), {
 			if(newVal.isNegative, {
 				newVal = newVal.abs;
-				"NumberParameter:stepsize_ '%' - val converted to positive value".format(
-					this.fullPath
-				).warn;
+				"NumberParameter:stepsize_ - val converted to positive value".warn;
 			});
 			stepsize = newVal;
 			this.changed(\stepsize);
 		}, {
-			"NumberParameter:stepsize_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"NumberParameter:stepsize_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
@@ -91,14 +89,14 @@ VTMNumberValue : VTMValue {
 			this.value_(this.value);//update the value, might be clipped in the value set method
 			this.changed(\clipmode);
 		}, {
-			"NumberParameter:clipmode_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"NumberParameter:clipmode_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
 
 	value_{arg val;
-		this.value_(
+		super.value_(
 			this.prCheckRangeAndClipValue(val)
 		);
 	}
@@ -116,7 +114,6 @@ VTMNumberValue : VTMValue {
 					this.valueAction_(targetValue);
 					thisThread.stop;
 				});
-				// "Setting '%' ramped value: %".format(this.fullPath, val).postln;
 				this.valueAction_(val);
 				0.05.wait;
 				val = stream.next;
@@ -126,7 +123,7 @@ VTMNumberValue : VTMValue {
 
 
 	defaultValue_{arg val;
-		this.defaultValue = this.prCheckRangeAndClipValue(val);
+		super.defaultValue = this.prCheckRangeAndClipValue(val);
 	}
 
 	increment{arg doAction = true;

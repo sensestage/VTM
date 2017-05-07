@@ -7,11 +7,11 @@ VTMStringValue : VTMValue {
 	*prDefaultValueForType{ ^""; }
 
 	isValidType{arg val;
-		^val.isKindOf(String);
+		^(val.isKindOf(String) or: {val.isKindOf(Symbol)});
 	}
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initStringParameter;
+	*new{arg attributes;
+		^super.new(attributes).initStringParameter;
 	}
 
 	initStringParameter{
@@ -35,8 +35,8 @@ VTMStringValue : VTMValue {
 				});
 			});
 		}, {
-			"StringParameter:matchPattern_ '%' - ignoring val because of non-matching pattern: '%[%]'".format(
-				this.fullPath, val, val.class
+			"StringParameter:matchPattern_- ignoring val because of non-matching pattern: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
@@ -46,43 +46,46 @@ VTMStringValue : VTMValue {
 		if(val.isString or: {val.isKindOf(Symbol)}, {
 			pattern = val.asString;
 		}, {
-			"StringParameter:pattern_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"StringParameter:pattern_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
 
 	defaultValue_{arg val;
-		if(val.class == Symbol, {//Symbols are accepted and converted into strings
-			val = val.asString;
+		var inval = val.copy.asString;
+		"sdgasdf".postln;
+		if(inval.class == Symbol, {//Symbols are accepted and converted into strings
+			inval = inval.asString;
 		});
 		if(matchPattern and: {pattern.isEmpty.not}, {
-			if(pattern.matchRegexp(val), {
-				super.defaultValue_(val);
-			}, {
-				"StringParameter:defaultValue_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
-					this.fullPath, val, pattern
-				).warn;
+			if(pattern.matchRegexp(inval), {
+				super.defaultValue_(inval);
+				}, {
+					"StringParameter:defaultValue_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+						inval, pattern
+					).warn;
 			});
-		}, {
-			super.defaultValue_(val);
+			}, {
+				super.defaultValue_(inval);
 		});
 	}
 
 	value_{arg val;
-		if(val.class == Symbol, {//Symbols are accepted and converted into strings
-			val = val.asString;
+		var inval = val.copy;
+		if(inval.class == Symbol, {//Symbols are accepted and converted into strings
+			inval = inval.asString;
 		});
 		if(matchPattern and: {pattern.isEmpty.not}, {
-			if(pattern.matchRegexp(val), {
-				super.value_(val, true);
+			if(pattern.matchRegexp(inval), {
+				super.value_(inval, true);
 			}, {
-				"StringParameter:value_ '%' - ignoring val because of unmatched pattern pattern: '%[%]'".format(
-					this.fullPath, val, pattern
+				"StringParameter:value_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+					inval, pattern
 				).warn;
 			});
 		}, {
-			super.value_(val, true);
+			super.value_(inval, true);
 		});
 	}
 

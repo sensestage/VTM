@@ -10,7 +10,7 @@ VTMArrayValue : VTMCollectionValue {
 	var <itemType;
 
 	isValidType{arg val;
-		^(val.isArray and: {val.isString.not});
+		^(val.isString.not and: {val.isArray});
 	}
 
 	*type{ ^\array; }
@@ -19,8 +19,8 @@ VTMArrayValue : VTMCollectionValue {
 		^[];
 	}
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initArrayParameter;
+	*new{arg attributes;
+		^super.new(attributes).initArrayParameter;
 	}
 
 	initArrayParameter{

@@ -3,7 +3,7 @@ Class for representing timecode strings in various formats.
 Value can return in mulitple format, milliseconds being the default.
 The value is internally stored as milliseconds in decimals: 1050.20 being 1 second and 50.2 milliseconds
 */
-VTMTimecode : VTMValue {
+VTMTimecodeValue : VTMValue {
 	*type{ ^\timecode; }
 
 	*prDefaultValueForType{
@@ -14,8 +14,8 @@ VTMTimecode : VTMValue {
 		^val.isKindOf(SimpleNumber);
 	}
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initTimecodeParameter;
+	*new{arg attributes;
+		^super.new(attributes).initTimecodeParameter;
 	}
 
 	initTimecodeParameter{
@@ -84,7 +84,7 @@ VTMTimecode : VTMValue {
 			this.value_(result + val.clip(0.0, 999.999999));
 		}, {
 			"TimecodeParameter:milliseconds_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+				val, val.class
 			).warn;
 		});
 	}
@@ -100,8 +100,8 @@ VTMTimecode : VTMValue {
 			result = result + (val.clip(0, 59) * 1000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:seconds_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"TimecodeParameter:seconds_  - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
@@ -117,8 +117,8 @@ VTMTimecode : VTMValue {
 			result = result + (val.clip(0, 59) * 60000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:minutes_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"TimecodeParameter:minutes_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}
@@ -134,8 +134,8 @@ VTMTimecode : VTMValue {
 			result = result + (val.clip(0, 23) * 3600000);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:hours_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"TimecodeParameter:hours_ - ignoring val because of invalid type: '%[%]'".format(
+				 val, val.class
 			).warn;
 		});
 	}
@@ -151,8 +151,8 @@ VTMTimecode : VTMValue {
 			result = result + (val.clip(0, 364) * 86400000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:days_ '%' - ignoring val because of invalid type: '%[%]'".format(
-				this.fullPath, val, val.class
+			"TimecodeParameter:days_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
 			).warn;
 		});
 	}

@@ -3,7 +3,7 @@ VTMDictionaryValue : VTMCollectionValue {
 	isValidType{arg val;
 		^val.isKindOf(Dictionary);
 	}
-	value{^this.value.copy}
+	value{^super.value.copy}
 	*type{ ^\dictionary; }
 
 }
