@@ -203,7 +203,7 @@ VTMNumberValue : VTMValue {
 			).warn;
 		});
 	}
-	stepsize{ ^this.get(\stepsize); }
+	stepsize{ ^this.get(\stepsize) ? 0; }
 
 	clipmode_{ arg val;
 		if(#['none', 'low', 'high', 'both'].includes(val.asSymbol), {
@@ -216,7 +216,7 @@ VTMNumberValue : VTMValue {
 			).warn;
 		});
 	}
-	clipmode{ ^this.get(\clipmode); }
+	clipmode{ ^this.get(\clipmode) ? \none; }
 
 	value_{arg val;
 		super.value_(

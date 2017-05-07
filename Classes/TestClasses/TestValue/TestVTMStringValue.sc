@@ -33,9 +33,9 @@ TestVTMStringValue : TestVTMValue {
 			"StringValue pattern is empty symbol by default"
 		);
 
-		//matchPattern should be true by default
+		//matchPattern should be false by default
 		this.assertEquals(
-			param.matchPattern, true,
+			param.matchPattern, false,
 			"StringValue matchPattern is true by default"
 		);
 	}
@@ -90,7 +90,8 @@ TestVTMStringValue : TestVTMValue {
 		var desc = (
 			defaultValue: "bingo",
 			value: "bongo",
-			pattern: "^b(a|i|o|e|y)ngo$"
+			pattern: "^b(a|i|o|e|y)ngo$",
+			matchPattern: true
 		);
 		var param = VTMStringValue.new(desc);
 

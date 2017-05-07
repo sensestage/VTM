@@ -12,7 +12,7 @@ VTMStringValue : VTMValue {
 		^super.new(attributes).initStringParameter;
 	}
 
-	initStringParameter{
+	initStringParameter{arg stringAttr_;
 		if(attributes.notEmpty, {
 			if(attributes.includesKey(\pattern), {
 				this.pattern_(attributes[\pattern]);
@@ -22,8 +22,6 @@ VTMStringValue : VTMValue {
 			});
 		});
 	}
-
-
 
 	clear{arg doActionUponClear = false;
 		var valToSet;
@@ -92,11 +90,9 @@ VTMStringValue : VTMValue {
 	}
 
 	value_{arg val;
-		var inval;
+		var inval = val.copy.asString;
 		if(inval.class == Symbol, {//Symbols are accepted and converted into strings
-			inval = val.asString;
-		}, {
-			inval = val.copy;
+			inval = inval.asString;
 		});
 		if(this.matchPattern and: {this.pattern.isEmpty.not}, {
 			if(this.pattern.matchRegexp(inval), {
