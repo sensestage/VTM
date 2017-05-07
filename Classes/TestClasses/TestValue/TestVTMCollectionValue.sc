@@ -1,0 +1,3 @@
+TestVTMCollectionValue : TestVTMValue {
+
+}
