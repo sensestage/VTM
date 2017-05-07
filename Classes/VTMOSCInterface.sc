@@ -94,7 +94,7 @@ VTMOSCInterface {
 			result.put(
 				path,
 				OSCFunc({arg msg, time, resp, port;
-					model.perform(attributeKey.asSetter, VTMJSON.parseAttributesString(msg[1]));
+					model.perform(attributeKey.asSetter, VTMJSON.parse(msg[1]));
 				}, path)
 			);
 		});

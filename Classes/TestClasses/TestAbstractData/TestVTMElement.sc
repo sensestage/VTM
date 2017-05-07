@@ -2,15 +2,15 @@ TestVTMElement : TestVTMAbstractData {
 	*classesForTesting{
 		^[
 			VTMMapping,
-			// VTMDefinitionLibrary,
-			// VTMCommand,
-			// VTMContextParameter,
-			// VTMRemoteNetworkNode,
-			// VTMModule,
-			// VTMApplication,
-			// VTMHardwareDevice,
-			// VTMScore,
-			// VTMScene
+			VTMDefinitionLibrary,
+			VTMCommand,
+			VTMContextParameter,
+			VTMRemoteNetworkNode,
+			VTMModule,
+			VTMApplication,
+			VTMHardwareDevice,
+			VTMScore,
+			VTMScene
 		];
 	}
 

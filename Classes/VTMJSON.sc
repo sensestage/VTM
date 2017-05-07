@@ -1,4 +1,5 @@
 VTMJSON : JSON {
+
 	*stringify { arg obj;
 		var out;
 
@@ -63,19 +64,16 @@ VTMJSON : JSON {
 		^VTMJSON.stringify(obj.asCompileString)
 	}
 
-	*parseAttributesString{arg str;
+	*parse{arg str;
 		var result;
-		if(str.isString or: {str.isKindOf(Symbol)}, {
-			result = str.asString.parseYAML;
-			if(result.isString, {
-				result = this.parseYAMLValue(result);
-			}, {
-				result = result.changeScalarValuesToDataTypes;
-			});
-		}, {
-			result = str;
+		result = str;
+		if(result.isKindOf(Symbol), {
+			result = result.asString;
 		});
-
+		result = result.parseYAML;
+		case
+		{result.isString;} {result = this.parseYAMLValue(result);}
+		{result.isKindOf(Collection)} {result = result.collect({arg item; this.parse(item);})}
 		^result;
 	}
 

@@ -6,7 +6,7 @@ TestVTMMapping : TestVTMElement {
 			\source, { this.makeRandomPath; },
 			\destination, { this.makeRandomPath; },
 			\when, {this.makeRandomString},//TODO: Change this to whatever we use to express conditionals
-			\settings, {this.makeRandomDictionary;}
+			\settings, {this.makeRandomDictionary((classSymbol: \Dictionary));}
 		);
 		^result;
 	}

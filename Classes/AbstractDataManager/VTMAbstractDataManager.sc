@@ -16,13 +16,14 @@ VTMAbstractDataManager {
 	//attributes is an array of Dictionaries with item attributes.
 	initAbstractDataManager{arg context_, attributes_;
 		context = context_;
-		// if(attributes_.notNil, {
-		// 	attributes_.do({arg item;
-		// 		var newItem;
-		// 		newItem = this.class.dataClass.newFromAttributes(item);
-		// 		this.addItem(newItem);
-		// 	});
-		// });
+		items = VTMNamedList.new;
+		if(attributes_.notNil, {
+			attributes_.do({arg item;
+				var newItem;
+				newItem = this.class.dataClass.newFromAttributes(item);
+				this.addItem(newItem);
+			});
+		});
 	}
 
 	addItem{arg newItem;
@@ -41,18 +42,30 @@ VTMAbstractDataManager {
 		});
 	}
 
+	isEmpty{ ^items.isEmpty; }
+
 	free{
 		this.disableOSC;
 		items.do(_.free);
 		context = nil;
 	}
 
+	names{
+		^items.collect(_.name);
+	}
+
 	name{ this.subclassResponsibility(thisMethod); }
 
-	attributes{
+	attributes{arg recursive;
 		var result;
-		items.collect({arg item;
-			item.attributes;
+		if(recursive, {
+			items.do({arg item;
+				result = result.addAll([item.name, item.attributes]);
+			});
+		}, {
+			items.do({arg item;
+				result = result.addAll([item.name]);
+			});
 		});
 		^result;
 	}
@@ -98,4 +111,17 @@ VTMAbstractDataManager {
 	*makeOSCAPI{arg obj;
 		^IdentityDictionary.new;
 	}
+
+	*attributeKeys{
+		^[];
+	}
+
+	*commandNames{
+		^[];
+	}
+
+	*queryNames{
+		^[];
+	}
+
 }
