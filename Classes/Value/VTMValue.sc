@@ -48,6 +48,10 @@ VTMValue {
 			if(attributes.includesKey(\defaultValue), {
 				this.defaultValue_(attributes[\defaultValue]);
 			});
+			if(attributes.includesKey(\enum), {
+				this.enum_(attributes[\enum]);
+			});
+
 		});
 
 	}

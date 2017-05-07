@@ -4,9 +4,9 @@ TestVTMStringValue : TestVTMValue {
 		^this.makeRandomString(params);
 	}
 
-	*prMakeRandomAttribute{arg key, params;
+	*makeRandomAttribute{arg key, params;
 		var result;
-		result = super.prMakeRandomAttribute(key, params);
+		result = super.makeRandomAttribute(key, params);
 		if(result.isNil, {
 			switch(key,
 				\pattern, { result = this.makeRandomString(params); },

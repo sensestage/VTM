@@ -1,15 +1,15 @@
 TestVTMNumberValue : TestVTMValue {
 
-	*testClasses{
+	*classesForTesting{
 		^[
 			VTMDecimalValue,
 			VTMIntegerValue
 		];
 	}
 
-	*prMakeRandomAttribute{arg key, params;
+	*makeRandomAttribute{arg key, params;
 		var result;
-		result = super.prMakeRandomAttribute(key, params);
+		result = super.makeRandomAttribute(key, params);
 		if(result.isNil, {
 			switch(key,
 				\minVal, { result = this.makeRandomValue(params); },
@@ -21,16 +21,8 @@ TestVTMNumberValue : TestVTMValue {
 		^result;
 	}
 
-	setUp{
-		"Setting up a VTMNumberValueTest".postln;
-	}
-
-	tearDown{
-		"Tearing down a VTMNumberValueTest".postln;
-	}
-
 	test_DefaultAttributes{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -64,7 +56,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_SetGetValue{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -78,7 +70,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	// test_OnlyCheckRangesWhenMinValAndMaxValAreDefined{
-	// 	TestVTMNumberValue.testClasses.do({arg class;
+	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param = class.new(name);
@@ -100,7 +92,7 @@ TestVTMNumberValue : TestVTMValue {
 	// }
 
 	test_SetGetAttributes{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -124,7 +116,7 @@ TestVTMNumberValue : TestVTMValue {
 				param.stepsize, testValue, "NumberValue stepsize was set"
 			);
 			//SetGet 'clipmode'
-			testValue = testClass.prMakeRandomAttribute(\clipmode);
+			testValue = testClass.makeRandomAttribute(\clipmode);
 			param.clipmode = testValue;
 			this.assertEquals(
 				param.clipmode, testValue.asSymbol, "NumberValue clipmode was set"
@@ -133,7 +125,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_IgnoreAndWarnOnWrongTypes{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -174,7 +166,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_CheckValueTypeValidity{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -196,7 +188,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_Clipmode{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -259,7 +251,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_StepsizeIncrementAndDecrement{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -369,7 +361,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_UpdateValueWhenMinValAndMaxValChange{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -413,7 +405,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_AllowSettingMinValAndMaxValToNil{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -453,7 +445,7 @@ TestVTMNumberValue : TestVTMValue {
 
 
 	test_OnlyClipValuesWhenMinValAndMaxValAreDefined{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);
@@ -497,7 +489,7 @@ TestVTMNumberValue : TestVTMValue {
 	}
 
 	test_UpdateValueWhenClipmodeChange{
-		TestVTMNumberValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
 			var param = class.new(name);

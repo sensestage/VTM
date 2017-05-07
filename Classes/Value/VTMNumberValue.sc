@@ -1,8 +1,4 @@
 VTMNumberValue : VTMValue {
-	var <minVal;
-	var <maxVal;
-	var <stepsize = 0;
-	var <clipmode = \none;
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
@@ -31,75 +27,7 @@ VTMNumberValue : VTMValue {
 		});
 	}
 
-	minVal_{ arg val;
-		if(val.isNil, {
-			minVal = nil;
-			this.changed(\minVal);
-		}, {
-			if(this.isValidType(val), {
-				minVal = val;
-				this.changed(\minVal);
-				this.value_(this.value);//update the value, might be clipped in the value set method
-			}, {
-				"NumberParameter:minVal_ - ignoring val because of invalid type: '%[%]'".format(
-					val, val.class
-				).warn;
-			});
-		});
-	}
 
-	maxVal_{ arg val;
-		if(val.isNil, {
-			maxVal = nil;
-			this.changed(\maxVal);
-		}, {
-			if(this.isValidType(val), {
-				maxVal = val;
-				this.changed(\maxVal);
-				this.value_(this.value);//update the value, might be clipped in the value set method
-			}, {
-				"NumberParameter:maxVal_ - ignoring val because of invalid type: '%[%]'".format(
-					val, val.class
-				).warn;
-			});
-
-		});
-	}
-
-	stepsize_{ arg val;
-		var newVal = val;
-		if(this.isValidType(val), {
-			if(newVal.isNegative, {
-				newVal = newVal.abs;
-				"NumberParameter:stepsize_ - val converted to positive value".warn;
-			});
-			stepsize = newVal;
-			this.changed(\stepsize);
-		}, {
-			"NumberParameter:stepsize_ - ignoring val because of invalid type: '%[%]'".format(
-				val, val.class
-			).warn;
-		});
-	}
-
-	clipmode_{ arg val;
-		if(#['none', 'low', 'high', 'both'].includes(val.asSymbol), {
-			var newVal;
-			clipmode = val.asSymbol;
-			this.value_(this.value);//update the value, might be clipped in the value set method
-			this.changed(\clipmode);
-		}, {
-			"NumberParameter:clipmode_ - ignoring val because of invalid type: '%[%]'".format(
-				val, val.class
-			).warn;
-		});
-	}
-
-	value_{arg val;
-		super.value_(
-			this.prCheckRangeAndClipValue(val)
-		);
-	}
 
 	ramp{arg targetValue, time, curve = \lin;
 		if(scheduler.isPlaying, {
@@ -128,17 +56,17 @@ VTMNumberValue : VTMValue {
 
 	increment{arg doAction = true;
 		if(doAction, {
-			this.valueAction_(this.value + stepsize);
+			this.valueAction_(this.value + this.stepsize);
 		}, {
-			this.value_(this.value + stepsize);
+			this.value_(this.value + this.stepsize);
 		});
 	}
 
 	decrement{ arg doAction = true;
 		if(doAction, {
-			this.valueAction_(this.value - stepsize);
+			this.valueAction_(this.value - this.stepsize);
 		}, {
-			this.value_(this.value - stepsize);
+			this.value_(this.value - this.stepsize);
 		});
 	}
 
@@ -188,7 +116,7 @@ VTMNumberValue : VTMValue {
 	}
 
 	*attributeKeys{
-		^(super.attributeKeys ++ [\minVal, \maxVal, \stepsize, \clipmode, \dataspace]);
+		^(super.attributeKeys ++ [\minVal, \maxVal, \stepsize, \clipmode/*, \dataspace*/]);
 	}
 
 
@@ -201,22 +129,22 @@ VTMNumberValue : VTMValue {
 			},
 			\low, {
 				// "LOW CLIPPING".postln;
-				if(minVal.notNil and: {val < this.minVal}, {
+				if(this.minVal.notNil and: {val < this.minVal}, {
 					result = val.max(this.minVal);
 				});
 			},
 			\high, {
 				// "HIGH CLIPPING".postln;
-				if(maxVal.notNil and: {val > this.maxVal}, {
+				if(this.maxVal.notNil and: {val > this.maxVal}, {
 					result = val.min(this.maxVal);
 				});
 			},
 			\both, {
 				// "BOTH CLIPPING".postln;
-				if(minVal.notNil and: {val < this.minVal}, {
+				if(this.minVal.notNil and: {val < this.minVal}, {
 					result = val.max(this.minVal);
 				}, {
-					if(maxVal.notNil and: {val > this.maxVal}, {
+					if(this.maxVal.notNil and: {val > this.maxVal}, {
 						result = val.min(this.maxVal);
 					});
 				});
@@ -226,5 +154,74 @@ VTMNumberValue : VTMValue {
 	}
 
 	*defaultViewType{ ^\slider; }
+
+	//Attributes setters and getters
+	minVal_{ arg val;
+		if(val.isNil, {
+			this.set(\minVal, nil);
+		}, {
+			if(this.isValidType(val), {
+				this.set(\minVal, val);
+				this.value_(this.value);//update the value, might be clipped in the value set method
+			}, {
+				"NumberParameter:minVal_ - ignoring val because of invalid type: '%[%]'".format(
+					val, val.class
+				).warn;
+			});
+		});
+	}
+	minVal{ ^this.get(\minVal); }
+
+	maxVal_{ arg val;
+		if(val.isNil, {
+			this.set(\maxVal, nil);
+		}, {
+			if(this.isValidType(val), {
+				this.set(\maxVal, val);
+				this.value_(this.value);//update the value, might be clipped in the value set method
+			}, {
+				"NumberParameter:maxVal_ - ignoring val because of invalid type: '%[%]'".format(
+					val, val.class
+				).warn;
+			});
+
+		});
+	}
+	maxVal{ ^this.get(\maxVal); }
+
+	stepsize_{ arg val;
+		var newVal = val;
+		if(this.isValidType(val), {
+			if(newVal.isNegative, {
+				newVal = newVal.abs;
+				"NumberParameter:stepsize_ - val converted to positive value".warn;
+			});
+			this.set(\stepsize, newVal);
+		}, {
+			"NumberParameter:stepsize_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
+			).warn;
+		});
+	}
+	stepsize{ ^this.get(\stepsize); }
+
+	clipmode_{ arg val;
+		if(#['none', 'low', 'high', 'both'].includes(val.asSymbol), {
+			var newVal;
+			this.set(\clipmode, val.asSymbol);
+			this.value_(this.value);//update the value, might be clipped in the value set method
+		}, {
+			"NumberParameter:clipmode_ - ignoring val because of invalid type: '%[%]'".format(
+				val, val.class
+			).warn;
+		});
+	}
+	clipmode{ ^this.get(\clipmode); }
+
+	value_{arg val;
+		super.value_(
+			this.prCheckRangeAndClipValue(val)
+		);
+	}
 
 }

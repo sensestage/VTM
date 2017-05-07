@@ -1,5 +1,5 @@
 TestVTMValue : VTMUnitTest {
-	*testClasses{
+	*classesForTesting{
 		^[
 			VTMBooleanValue,
 			VTMStringValue,
@@ -19,7 +19,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	*testTypes{
-		^this.testClasses.collect(_.type);
+		^this.classesForTesting.collect(_.type);
 	}
 
 	*generateRandomAttributes{arg description;
@@ -51,7 +51,7 @@ TestVTMValue : VTMUnitTest {
 					//If it is a \random -> (minVal: 7) i.e. \random Assiciation
 					//the class' random function will be used
 					\random, {
-						result = this.prMakeRandomAttribute(key, data.value);
+						result = this.makeRandomAttribute(key, data.value);
 					},
 					//use the result of the function
 					\function, {
@@ -65,21 +65,20 @@ TestVTMValue : VTMUnitTest {
 		}, {
 			//If it is nil we make a random attribute with
 			//undefined Values.
-			result = this.prMakeRandomAttribute(key);
+			result = this.makeRandomAttribute(key);
 		});
 		^Association.new(key, result);
 	}
 
-	*prMakeRandomAttribute{arg key, params;
+	*makeRandomAttribute{arg key, params;
 		var result;
 		switch(key,
-			\enabled, {result = this.makeRandomBoolean.value(params)},
+			\enabled, {result = this.makeRandomBoolean(params)},
 			\filterRepetitions, { result = this.makeRandomBoolean(params); },
 			\value, { result = this.makeRandomValue(params); },
 			\defaultValue, { result = this.makeRandomValue(params); },
 			\enum, { result = this.makeRandomEnum(params); },
-			\restrictValueToEnum, { result = this.makeRandomBoolean(params); },
-			{result = nil;}
+			\restrictValueToEnum, { result = this.makeRandomBoolean(params); }
 		);
 		^result;
 	}
@@ -104,16 +103,39 @@ TestVTMValue : VTMUnitTest {
 		^result;
 	}
 
-	setUp{
-		"Setting up a VTMValueTest".postln;
-	}
 
-	tearDown{
-		"Tearing down a VTMValueTest".postln;
+	test_AreAllAttributesSettersAndGettersImplemented{
+		this.class.classesForTesting.do({arg class;
+			var obj = class.new;
+			var testClass = this.class.findTestClass(class);
+			obj.class.attributeKeys.do({arg attributeKey;
+				var testVal;
+				this.assert(obj.respondsTo(attributeKey),
+					"[%] - responds to attribute getter '%'".format(class, attributeKey)
+				);
+				this.assert(obj.respondsTo(attributeKey.asSetter),
+					"[%] - responds to attribute setter '%'".format(class, attributeKey.asSetter)
+				);
+				//setting attribute should affect the obj attributes
+				testVal = testClass.makeRandomAttribute(attributeKey);
+				try{
+					obj.perform(attributeKey.asSetter, testVal);
+					this.assertEquals(
+						obj.attributes[attributeKey],
+						testVal,
+						"[%] - Attribute setter changed the internal attributes for '%'".format(class, attributeKey)
+					);
+				} {
+					this.failed(thisMethod,
+						"[%] - Should not throw error when calling attribute setter for '%'".format(class, attributeKey)
+					);
+				}
+			});
+		});
 	}
 
 	test_SetAndDoActionWithParamAsArg{
-		this.class.testClasses.do({arg testClass;
+		this.class.classesForTesting.do({arg testClass;
 			var param = testClass.new();
 			var wasRun = false;
 			var gotParamAsArg = false;
@@ -131,7 +153,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_SetGetRemoveEnableAndDisableAction{
-		this.class.testClasses.do({arg testClass;
+		this.class.classesForTesting.do({arg testClass;
 			var param = testClass.new();
 			var wasRun, aValue;
 			var anAction, anotherAction;
@@ -202,7 +224,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_SetVariablesThroughAttributes{
-		this.class.testClasses.do({arg testClass;
+		this.class.classesForTesting.do({arg testClass;
 			var param, aAttributes, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
@@ -228,7 +250,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_GetAttributes{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var wasRun = false;
 			var testClass = this.class.findTestClass(class);
 			var attributes = testClass.makeRandomAttributes(class.type);
@@ -245,7 +267,7 @@ TestVTMValue : VTMUnitTest {
 
 	//previously Value PArameter test methods
 	test_SetGetValue{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param = class.new();
 			testClass = this.class.testclassForType( class.type );
@@ -259,7 +281,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_SetGetDefaultValue{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param;
 			try{
@@ -284,7 +306,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_ResetSetValueToDefault{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
 			var param;
 			testClass = this.class.testclassForType( class.type );
@@ -311,7 +333,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_DefaultValueShouldNotBeNil{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
 			var param;
 			testClass = this.class.testclassForType( class.type );
@@ -339,7 +361,7 @@ TestVTMValue : VTMUnitTest {
 			schema: \hei,
 			tuple: \halo
 		);
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
 			var param;
 			testClass = this.class.testclassForType( class.type );
@@ -360,7 +382,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_AccessValueInAction{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			try{
 				var testClass, testValue, wasRun;
 				var param, gotValue = false, gotParamPassed = false;
@@ -390,7 +412,7 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 	test_ValueAction{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param, wasRun, gotUpdatedValue;
 			wasRun = false;
@@ -412,7 +434,7 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 	test_FilterRepeatingValues{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param;
 			var wasRun = false;
@@ -433,7 +455,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_SetVariablesFromAttributes{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param;
 			var testAttributes;
@@ -459,9 +481,8 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	test_Enum{
-		TestVTMValue.testClasses.do({arg class;
+		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
 			var param;
 			var testEnum;
 			var testAttributes;
@@ -479,14 +500,14 @@ TestVTMValue : VTMUnitTest {
 			param = VTMValue.makeFromType(class.type, testAttributes);
 			this.assertEquals(
 				param.enum, testEnum,
-				"ValueValue set and returned correct enum[%]".format(class.name)
+				"[%] set and returned correct enum".format(class)
 			);
 			param.free;
 		});
 	}
 
 	// test_GetAttributes{
-	// 	TestVTMValueValue.testClasses.do({arg class;
+	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param;
