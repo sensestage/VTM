@@ -1,7 +1,7 @@
 VTMBooleanValue : VTMValue {
 	var <doActionOn = \change;
 
-	prDefaultValueForType{ ^false; }
+	*prDefaultValueForType{ ^false; }
 
 	*type{ ^\boolean; }
 
@@ -9,8 +9,8 @@ VTMBooleanValue : VTMValue {
 		^val.isKindOf(Boolean);
 	}
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initBooleanParameter;
+	*new{arg attributes;
+		^super.new(attributes).initBooleanParameter;
 	}
 
 	initBooleanParameter{

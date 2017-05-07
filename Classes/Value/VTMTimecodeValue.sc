@@ -6,7 +6,7 @@ The value is internally stored as milliseconds in decimals: 1050.20 being 1 seco
 VTMTimecode : VTMValue {
 	*type{ ^\timecode; }
 
-	prDefaultValueForType{
+	*prDefaultValueForType{
 		^0;
 	}
 
@@ -23,7 +23,7 @@ VTMTimecode : VTMValue {
 
 	//get only milliseconds as integer
 	milliseconds{arg wrap = true;
-		var result = value;
+		var result = this.value;
 		if(wrap, {
 			result = result % 1000.0;
 		});
@@ -71,7 +71,7 @@ VTMTimecode : VTMValue {
 	}
 
 	timestring{arg precision, maxDays, dropDaysIfPossible;
-		^value.asTimeString(precision, maxDays, dropDaysIfPossible);
+		^this.value.asTimeString(precision, maxDays, dropDaysIfPossible);
 	}
 
 	milliseconds_{arg val;
@@ -79,7 +79,7 @@ VTMTimecode : VTMValue {
 		//Should be a SimpleNumber maximum value 999.999999. Values outside this range will be clipped
 		if(val.isKindOf(SimpleNumber), {
 			//subtract the existing milliseconds from value
-			result = value - this.milliseconds;
+			result = this.value - this.milliseconds;
 			//add back the new millisecond value
 			this.value_(result + val.clip(0.0, 999.999999));
 		}, {
@@ -95,7 +95,7 @@ VTMTimecode : VTMValue {
 		//Floats will be converted into Integer
 		if(val.isKindOf(SimpleNumber), {
 			//subtract the existing seconds from value
-			result = value - (this.seconds / 1000.0);
+			result = this.value - (this.seconds / 1000.0);
 			//add back the new second value
 			result = result + (val.clip(0, 59) * 1000.0);
 			this.value_(result);
@@ -112,7 +112,7 @@ VTMTimecode : VTMValue {
 		//Floats will be converted into Integer
 		if(val.isKindOf(SimpleNumber), {
 			//subtract the existing minutes from value
-			result = value - (this.minutes / 60000.0);
+			result = this.value - (this.minutes / 60000.0);
 			//add back the new minutes value
 			result = result + (val.clip(0, 59) * 60000.0);
 			this.value_(result);
@@ -129,7 +129,7 @@ VTMTimecode : VTMValue {
 		//Floats will be converted into Integer
 		if(val.isKindOf(SimpleNumber), {
 			//subtract the existing minutes from value
-			result = value - (this.hours / 3600000);
+			result = this.value - (this.hours / 3600000);
 			//add back the new minutes value
 			result = result + (val.clip(0, 23) * 3600000);
 			this.value_(result);
@@ -146,7 +146,7 @@ VTMTimecode : VTMValue {
 		//Floats will be converted into Integer
 		if(val.isKindOf(SimpleNumber), {
 			//subtract the existing minutes from value
-			result = value - (this.days / 86400000.0);
+			result = this.value - (this.days / 86400000.0);
 			//add back the new minutes value
 			result = result + (val.clip(0, 364) * 86400000.0);
 			this.value_(result);

@@ -1,15 +1,38 @@
 VTMValue {
-	var value;
-	var <>filterRepetitions = false;//only perform action when incoming value is unequal to current value.
-	var <>defaultValue;
 	var enum;
+	var <>action;
 	var <selectedEnum;
-	var <restrictValueToEnum = false;
 	var scheduler;
 	var attributes;
 
-	prDefaultValueForType{
+	*prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
+	}
+
+	*typeToClass{arg val;
+		^"VTM%Value".format(val.asString.capitalize).asSymbol.asClass;
+	}
+
+	*classToType{arg val;
+		^val.name.asString.findRegexp("^VTM(.+)Value$")[1][1].toLower;
+	}
+
+	*type{
+		this.subclassResponsibility(thisMethod);
+	}
+
+	type{
+		^this.class.type;
+	}
+
+	*makeFromType{arg type, attributes;
+		var class;
+		class = this.typeToClass(type);
+		if(class.notNil, {
+			^class.new(attributes);
+		}, {
+			Error("Unknown type").throw;
+		});
 	}
 
 	*new{arg attributes;
@@ -18,10 +41,7 @@ VTMValue {
 
 	initValue{arg attributes_;
 		attributes = VTMAttributes.newFrom(attributes_);
-	}
 
-	value{
-		^value;
 	}
 
 	//only non-abstract sub classes will implement this.
@@ -31,6 +51,12 @@ VTMValue {
 
 	initValueParameter{
 		if(attributes.notEmpty, {
+			if(attributes.includesKey(\enabled), {
+				//Is enabled by default so only disabled if defined
+				if(attributes[\enabled].not, {
+					this.disable;
+				})
+			});
 			if(attributes.includesKey(\defaultValue), {
 				this.defaultValue_(attributes[\defaultValue]);
 			});
@@ -38,78 +64,66 @@ VTMValue {
 				this.value_(attributes[\value]);
 			});
 			if(attributes.includesKey(\filterRepetitions), {
-				filterRepetitions = attributes[\filterRepetitions];
+				this.filterRepetitions = attributes[\filterRepetitions];
 			});
 			if(attributes.includesKey(\enum), {
 				//enums are stored as key value pairs
-				enum = VTMNamedList.newFromKeyValuePairs(attributes[\enum]);
+				this.enum = VTMNamedList.newFromKeyValuePairs(attributes[\enum]);
 			});
 			if(attributes.includesKey(\restrictValueToEnum), {
-				restrictValueToEnum = attributes[\restrictValueToEnum];
+				this.restrictValueToEnum = attributes[\restrictValueToEnum];
 			});
 		});
 		enum = enum ? VTMNamedList();
-		if(defaultValue.isNil, {
+		if(this.defaultValue.isNil, {
 			this.defaultValue_(this.prDefaultValueForType.deepCopy);
 		});
-		if(value.isNil, {
-			this.value_( defaultValue );
+		if(this.value.isNil, {
+			this.value_( this.defaultValue );
 		});
 		scheduler = Routine{};
 	}
 
 	//set value to default
 	reset{arg doActionUponReset = false;
-		if(defaultValue.notNil, {
-			this.value_(defaultValue);
+		if(this.defaultValue.notNil, {
+			this.value_(this.defaultValue);
 			if(doActionUponReset, {
 				this.doAction;
 			});
 		});
 	}
 
-	enum_{arg val;
-		//All enum must be valid
-		if(val.isKindOf(SequenceableCollection), {
-			if(val.every({arg it; this.isValidType(it)}), {
-				enum = val;
-				}, {
-					"%:% - All enum must be valid. [%]".format(
-						this.class.name,
-						thisMethod.name,
-						val
-					).warn;
-			});
-			}, {
-				"%:% - enum must be an array. [%]".format(
-					this.class.name,
-					thisMethod.name,
-					val
-				).warn;
-		});
-	}
-
-	value_{arg val;
-		if(restrictValueToEnum, {
-			if(enum.includes(val), {
-				value = val;
-			});
-			}, {
-				value = val;
-		});
-		this.changed(\value);
-	}
-
 	valueAction_{arg val;
-		if(filterRepetitions, {
-			var willDoAction = val != value; //check if new value is different
+		if(this.filterRepetitions, {
+			var willDoAction = val != this.value; //check if new value is different
 			this.value_(val);
 			if(willDoAction, {
 				this.doAction;
 			});
-			}, {
-				this.value_(val);
-				this.doAction;
+		}, {
+			this.value_(val);
+			this.doAction;
+		});
+	}
+
+	//Enabled by default.
+	//Will enable action to be run
+	enable{arg doActionWhenEnabled = false;
+		this.enabled_(true);
+		if(doActionWhenEnabled, {
+			this.doAction;
+		});
+	}
+
+	//Will disable action from being run
+	disable{
+		this.enabled_(false);
+	}
+
+	doAction{
+		if(this.enabled, {
+			action.value(this);
 		});
 	}
 
@@ -121,16 +135,6 @@ VTMValue {
 			time.wait;
 			this.valueAction_(val);
 		};
-	}
-
-	free{
-		value = nil;
-		defaultValue = nil;
-		super.free;
-	}
-
-	enum{
-		^enum.asKeyValuePairs;
 	}
 
 	addEnum{arg val, name, slot;
@@ -163,38 +167,48 @@ VTMValue {
 		^enum[slotOrName];
 	}
 
-	*makeAttributeGetterFunctions{arg param;
-		^super.makeAttributeGetterFunctions(param).putAll(
-			IdentityDictionary[
-				\value -> {param.value},
-				\defaultValue -> {param.defaultValue;},
-				\filterRepetitions -> {param.filterRepetitions;},
-				\enum -> {param.enum;},
-				\restrictValueToEnum -> { param.restrictValueToEnum; }
-			]
-		);
-	}
-
-	*makeAttributeSetterFunctions{arg param;
-		^super.makeAttributeSetterFunctions(param).putAll(IdentityDictionary[
-			'value' -> {arg ...args; param.valueAction_(*args); },
-			'filterRepetitions' -> {arg ...args;
-			param.filterRepetitions_(args[0].booleanValue); },
-			'restrictValueToEnum' -> {arg ...args;
-			param.restrictValueToEnum_(args[0].booleanValue); }
-		]);
-	}
-
 	*attributeKeys{
-		^(super.attributeKeys ++ [\value, \defaultValue, \filterRepetitions, \enum,
-			\restrictValueToEnum
-		]);
+		^[\enabled, \filterRepetitions, \value, \defaultValue, \enum, \restrictValueToEnum];
 	}
 
-	*makeOSCAPI{arg param;
-		^super.makeOSCAPI(param).putAll(IdentityDictionary[
-			'ramp' -> {arg ...args; param.ramp(*args); }
-		]);
+	set{arg key, val;
+		attributes.put(key, val);
+		this.changed(\attributes, key);
 	}
+
+	get{arg key;
+		^attributes[key];
+	}
+
+	attributes{
+		^attributes.copy;
+	}
+
+	//Attribute setters and getters
+	enabled{ ^this.get(\enabled) ? true; }
+	enabled_{arg val; this.set(\enabled, val); }
+
+	filterRepetitions{ ^this.get(\filterRepetitions) ? false; }
+	filterRepetitions_{arg val; this.set(\filterRepetitions, val); }
+
+	value{ ^this.get(\value) ? this.defaultValue; }
+	value_{arg val;
+		if(this.restrictValueToEnum, {
+			if(this.enum.includes(val), {
+				this.set(\value, val);
+			});
+		}, {
+			this.set(\value, val);
+		});
+	}
+
+	defaultValue{ ^this.get(\defaultValue) ? this.class.prDefaultValueForType; }
+	defaultValue_{arg val; this.set(\defaultValue, val); }
+
+	enum{ ^this.get(\enum); }
+	enum_{arg val; this.set(\enum, val); }
+
+	restrictValueToEnum{ ^this.get(\restrictValueToEnum) ? false; }
+	restrictValueToEnum_{arg val; this.set(\restrictValueToEnum, val); }
 
 }

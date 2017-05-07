@@ -98,7 +98,7 @@ VTMNumberValue : VTMValue {
 	}
 
 	value_{arg val;
-		super.value_(
+		this.value_(
 			this.prCheckRangeAndClipValue(val)
 		);
 	}
@@ -126,22 +126,22 @@ VTMNumberValue : VTMValue {
 
 
 	defaultValue_{arg val;
-		defaultValue = this.prCheckRangeAndClipValue(val);
+		this.defaultValue = this.prCheckRangeAndClipValue(val);
 	}
 
 	increment{arg doAction = true;
 		if(doAction, {
-			this.valueAction_(value + stepsize);
+			this.valueAction_(this.value + stepsize);
 		}, {
-			this.value_(value + stepsize);
+			this.value_(this.value + stepsize);
 		});
 	}
 
 	decrement{ arg doAction = true;
 		if(doAction, {
-			this.valueAction_(value - stepsize);
+			this.valueAction_(this.value - stepsize);
 		}, {
-			this.value_(value - stepsize);
+			this.value_(this.value - stepsize);
 		});
 	}
 

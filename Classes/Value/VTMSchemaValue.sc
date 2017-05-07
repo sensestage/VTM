@@ -41,7 +41,7 @@ VTMSchemaValue : VTMDictionaryValue {
 		^result;
 	}
 	*type{ ^\schema; }
-	prDefaultValueForType{
+	*prDefaultValueForType{
 		^[];
 	}
 	validate{arg val;

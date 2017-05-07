@@ -4,14 +4,6 @@ TestVTMBooleanValue : TestVTMValue {
 		^this.makeRandomBoolean(params);
 	}
 
-	setUp{
-		"Setting up a VTMDecimalValueTest".postln;
-	}
-
-	tearDown{
-		"Tearing down a VTMDecimalValueTest".postln;
-	}
-
 	test_DefaultAttributes{
 		var param = VTMBooleanValue.new('myBoolean');
 

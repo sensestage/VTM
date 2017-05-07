@@ -15,7 +15,7 @@ VTMArrayValue : VTMCollectionValue {
 
 	*type{ ^\array; }
 
-	prDefaultValueForType{
+	*prDefaultValueForType{
 		^[];
 	}
 

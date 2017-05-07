@@ -1,7 +1,7 @@
 VTMIntegerValue : VTMNumberValue {
 	*type{ ^\integer; }
 
-	prDefaultValueForType{ ^0; }
+	*prDefaultValueForType{ ^0; }
 	//this class will accept numbers, either Integers or Floats
 	//but it will convert Float numbers to Integers
 

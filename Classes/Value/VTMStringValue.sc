@@ -4,7 +4,7 @@ VTMStringValue : VTMValue {
 
 	*type{ ^\string; }
 
-	prDefaultValueForType{ ^""; }
+	*prDefaultValueForType{ ^""; }
 
 	isValidType{arg val;
 		^val.isKindOf(String);

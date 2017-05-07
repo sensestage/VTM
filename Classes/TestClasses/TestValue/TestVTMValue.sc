@@ -2,13 +2,13 @@ TestVTMValue : VTMUnitTest {
 	*testClasses{
 		^[
 			VTMBooleanValue,
-			VTMStringValue,
+			// VTMStringValue,
 			// VTMListValue,
 			// VTMDictionaryValue,
 			// VTMArrayValue,
 			//	VTMTimecodeValue,
-			VTMDecimalValue,
-			VTMIntegerValue
+			// VTMDecimalValue,
+			// VTMIntegerValue
 			// VTMSchemaValue,
 			// VTMTupleValue
 		];
@@ -23,7 +23,7 @@ TestVTMValue : VTMUnitTest {
 	}
 
 	*generateRandomAttributes{arg description;
-		var result = IdentityDictionary.new;
+		var result = VTMAttributes.new;
 		if(description.notNil, {
 			description.do({arg item;
 				if(item.isKindOf(Symbol), {
@@ -73,24 +73,7 @@ TestVTMValue : VTMUnitTest {
 	*prMakeRandomAttribute{arg key, params;
 		var result;
 		switch(key,
-			\name, {result = this.makeRandomSymbol(params ? (noNumbers: true)); },
-			\path, {
-				var minLevels, maxLevels;
-				if(params.notNil and: { params.isKindOf(Dictionary) },{
-					minLevels = params[\minLevels] ? 1;
-					maxLevels = params[\maxLevels] ? 3;
-				}, {
-					minLevels = 1;
-					maxLevels = 3;
-				});
-				result = rrand(minLevels,maxLevels).collect({
-					"/%".format(this.makeRandomString.value(params));
-				});
-				result = String.newFrom(result.flat).asSymbol;
-			},
 			\enabled, {result = this.makeRandomBoolean.value(params)},
-			\willStore, {result = this.makeRandomBoolean.value(params)},
-			\onlyReturn, {result = this.makeRandomBoolean.value(params)},
 			\filterRepetitions, { result = this.makeRandomBoolean(params); },
 			\value, { result = this.makeRandomValue(params); },
 			\defaultValue, { result = this.makeRandomValue(params); },
@@ -105,7 +88,7 @@ TestVTMValue : VTMUnitTest {
 		var minRand = 5, maxRand = 10;
 		^rrand(minRand, maxRand).collect({arg i;
 			[
-				[i + 1, this.makeRandomSymbol((noNumbers: true, noSpaces: true))].choose,
+				[i, this.makeRandomSymbol((noNumbers: true, noSpaces: true))].choose,
 				this.makeRandomValue
 			];
 		}).flatten;
@@ -117,7 +100,6 @@ TestVTMValue : VTMUnitTest {
 		class = "VTM%Value".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
 		attrKeys = class.attributeKeys;
-		attrKeys.add(\type -> type);
 		result = testClass.generateRandomAttributes(attrKeys);
 		^result;
 	}
@@ -130,118 +112,9 @@ TestVTMValue : VTMUnitTest {
 		"Tearing down a VTMValueTest".postln;
 	}
 
-	test_ShouldErrorIfNameNotDefined{
-		this.class.testClasses.do({arg testClass;
-			try{
-				var param;
-				param = testClass.new();
-				this.failed(
-					thisMethod,
-					"Value should fail if name not defined [%]".format(testClass)
-				);
-				param.free;
-			} {|err|
-				this.passed(thisMethod,
-					"Value failed correctly when name was not defined. [%]".format(testClass)
-				)
-			}
-		});
-	}
-
-	test_SettingName{
-		this.class.testClasses.do({arg testClass;
-			try{
-				var param, name = "my%".format(testClass.name).asSymbol;
-				param = testClass.new(name);
-				this.assertEquals(
-					param.name, name,
-					"Value returned 'name' correctly[%]".format(testClass)
-				);
-				param.free;
-			} {|err|
-				this.failed(thisMethod,
-					"Value test failed due to unknown error. [%]\n\t%".format(
-						testClass, err.errorString);
-				)
-			};
-		});
-	}
-
-	test_ReturnFullPathAsPrefixedNameByDefault{
-		this.class.testClasses.do({arg testClass;
-			var param, name = "my%".format(testClass.name).asSymbol;
-			param = testClass.new(name);
-			this.assertEquals(
-				param.fullPath, "/%".format(name).asSymbol,
-				"Value returned 'fullPath' with 'name' prefixed with slash [%]".format(testClass)
-			);
-			param.free;
-		});
-	}
-
-	test_ReturnPathAsAsNilIfNotSet{
-		this.class.testClasses.do({arg testClass;
-			var param, name = "my%".format(testClass.name).asSymbol;
-			param = testClass.new(name);
-			this.assertEquals(
-				param.path, nil,
-				"Value returned 'path' as nil. [%]".format(testClass)
-			);
-			param.free;
-		});
-	}
-
-	test_RemoveLeadingSlashInNameIfDefined{
-		this.class.testClasses.do({arg testClass;
-			var param, name = "my%".format(testClass.name).asSymbol;
-			param = testClass.new("/%".format(name).asSymbol);
-			this.assertEquals(
-				param.name, name,
-				"Value: Uneccesary leading slash in name removed. [%]".format(testClass)
-			);
-			param.free;
-		});
-	}
-
-	test_SetGetPathAndFullPath{
-		this.class.testClasses.do({arg testClass;
-			var name = "my%".format(testClass.name).asSymbol;
-			var param = testClass.new(name);
-			var aPath = '/myPath';
-			param.path = aPath;
-			this.assertEquals(
-				param.path, '/myPath',
-				"Value return correct path [%]".format(testClass.name)
-			);
-			this.assertEquals(
-				param.fullPath, "/myPath/%".format(name).asSymbol,
-				"Value return correct fullPath [%]".format(testClass)
-			);
-			param.free;
-		});
-	}
-
-	test_AddLeadingSlashToPathIfNotDefined{
-		this.class.testClasses.do({arg testClass;
-			var name = "my%".format(testClass.name).asSymbol;
-			var param = testClass.new(name);
-			param.path = 'myPath';
-			this.assertEquals(
-				param.path, '/myPath',
-				"Value leading path slash was added. [%]".format(testClass)
-			);
-			this.assertEquals(
-				param.fullPath, "/myPath/%".format(name).asSymbol,
-				"Value leading path slash was added. [%]".format(testClass)
-			);
-			param.free;
-		});
-	}
-
 	test_SetAndDoActionWithParamAsArg{
 		this.class.testClasses.do({arg testClass;
-			var name = "my%".format(testClass.name).asSymbol;
-			var param = testClass.new(name);
+			var param = testClass.new();
 			var wasRun = false;
 			var gotParamAsArg = false;
 			param.action = {arg param;
@@ -251,7 +124,7 @@ TestVTMValue : VTMUnitTest {
 			param.doAction;
 			this.assert(
 				wasRun and: {gotParamAsArg},
-				"Value action was set, run and got passed itself as arg. [%]".format(testClass.name)
+				"[%] - Value action was set, run and got passed itself as arg.".format(testClass)
 			);
 			param.free;
 		});
@@ -259,8 +132,7 @@ TestVTMValue : VTMUnitTest {
 
 	test_SetGetRemoveEnableAndDisableAction{
 		this.class.testClasses.do({arg testClass;
-			var name = "my%".format(testClass.name).asSymbol;
-			var param = testClass.new(name);
+			var param = testClass.new();
 			var wasRun, aValue;
 			var anAction, anotherAction;
 			anAction = {arg param; wasRun = true; };
@@ -331,24 +203,15 @@ TestVTMValue : VTMUnitTest {
 
 	test_SetVariablesThroughAttributes{
 		this.class.testClasses.do({arg testClass;
-			var name = "my%".format(testClass.name).asSymbol;
 			var param, aAttributes, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
 			aAttributes = (
-				action: anAction,
-				path: '/myPath',
-				enabled: false,
+				enabled: false
 			);
-			param = testClass.new(name, aAttributes);
+			param = testClass.new(aAttributes);
+			param.action = anAction;
 
-			//path is set through attributes
-			this.assertEquals(param.path, '/myPath',
-				"Path was defined through attributes"
-			);
-			this.assertEquals(param.fullPath, "/myPath/%".format(name).asSymbol,
-				"Full path was defined through attributes"
-			);
 			//enabled is set through attributes
 			this.assert(param.enabled.not,
 				"Value was disabled through attributes"
@@ -363,48 +226,17 @@ TestVTMValue : VTMUnitTest {
 			param.free;
 		});
 	}
-	//
-	//	test_ValueFree{
-	//		//Should free responders, internal Values, mappings, and oscInterface
-	//	}
-	//
+
 	test_GetAttributes{
-		//Only testing for attributes relevant to VTMValue class
-		topEnvironment.put('paramTest', ());
-		TestVTMValue.testClasses.do({arg testClass;
+		TestVTMValue.testClasses.do({arg class;
 			var wasRun = false;
-			var attributes = this.class.makeRandomAttributes(testClass.type);
-			var param = testClass.makeFromAttributes(attributes);
-			topEnvironment['paramTest'].put(param.name,
-				(attributes: param.attributes.deepCopy, attributes: attributes.deepCopy)
-			);
+			var testClass = this.class.findTestClass(class);
+			var attributes = testClass.makeRandomAttributes(class.type);
+			var param = class.makeFromType(class.type, attributes);
 
 			this.assertEquals(
 				param.attributes, attributes,
-				"% returned correct attributes.\nA:\t%\nB:\t%".format(
-					testClass,
-					param.attributes.keys.asArray.sort,
-					attributes.keys.asArray.sort
-				)
-			);
-			// topEnvironment.put(\response, param.attributes);
-			// topEnvironment.put(\attributes, attributes);
-
-			/*
-			"Attributes:".postln;
-			param.attributes.keysValuesDo({arg key, val;
-			"\t:% - [%]%".format(key, val.class, val).postln;
-			});
-			"Attributes".postln;
-			attributes.keysValuesDo({arg key, val;
-			"\t:% - [%]%".format(key, val.class, val).postln;
-			});
-			*/
-			//If the action is not a closed function it should not get returned as attribute
-			param.action = {|p| wasRun = true;};
-			this.assert(
-				param.attributes[\action].isNil,
-				"% returned open function as nil. [%]".format(testClass)
+				"% returned correct attributes.".format(class)
 			);
 			param.free;
 		});
@@ -415,8 +247,7 @@ TestVTMValue : VTMUnitTest {
 	test_SetGetValue{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var param = class.new();
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
 			param.value = testValue;
@@ -430,12 +261,11 @@ TestVTMValue : VTMUnitTest {
 	test_SetGetDefaultValue{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
 			var param;
 			try{
 				testClass = this.class.testclassForType( class.type );
 				testValue = testClass.makeRandomValue;
-				param = class.new(name, attributes: (defaultValue: testValue));
+				param = class.new(attributes: (defaultValue: testValue));
 				this.assertEquals(
 					param.defaultValue, testValue, "Value defaultValue was set [%]".format(testClass.name)
 				);
@@ -456,11 +286,10 @@ TestVTMValue : VTMUnitTest {
 	test_ResetSetValueToDefault{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
-			var name = "my%".format(class.name);
 			var param;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new(name);
+			param = class.new;
 			param.value = testClass.makeRandomValue;
 			param.defaultValue = testClass.makeRandomValue;
 			param.reset;
@@ -484,10 +313,9 @@ TestVTMValue : VTMUnitTest {
 	test_DefaultValueShouldNotBeNil{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
-			var name = "my%".format(class.name);
 			var param;
 			testClass = this.class.testclassForType( class.type );
-			param = class.new(name);
+			param = class.new();
 			this.assert(
 				param.defaultValue.notNil,
 				"Value did not initialize defaultValue to nil [%]".format(
@@ -513,10 +341,9 @@ TestVTMValue : VTMUnitTest {
 		);
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue, wasRun;
-			var name = "my%".format(class.name);
 			var param;
 			testClass = this.class.testclassForType( class.type );
-			param = class.new(name);
+			param = class.new();
 			testValue = wrongValuesForType[class.type];
 			try{
 				this.assert(
@@ -536,10 +363,9 @@ TestVTMValue : VTMUnitTest {
 		TestVTMValue.testClasses.do({arg class;
 			try{
 				var testClass, testValue, wasRun;
-				var name = "my%".format(class.name);
 				var param, gotValue = false, gotParamPassed = false;
 				testClass = this.class.testclassForType( class.type );
-				param = class.new(name);
+				param = class.new();
 				testValue = testClass.makeRandomValue;
 				param.value = testValue;
 				param.action = {arg p;
@@ -566,13 +392,12 @@ TestVTMValue : VTMUnitTest {
 	test_ValueAction{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
 			var param, wasRun, gotUpdatedValue;
 			wasRun = false;
 			gotUpdatedValue = false;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new(name);
+			param = class.new();
 			param.action = {arg p;
 				wasRun = true;
 				gotUpdatedValue = p.value == testValue;
@@ -589,12 +414,11 @@ TestVTMValue : VTMUnitTest {
 	test_FilterRepeatingValues{
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue;
-			var name = "my%".format(class.name);
 			var param;
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new(name);
+			param = class.new();
 			param.filterRepetitions = true;
 			param.action = {arg p;
 				wasRun = true;
@@ -612,42 +436,24 @@ TestVTMValue : VTMUnitTest {
 		TestVTMValue.testClasses.do({arg class;
 			var testClass, testValue;
 			var param;
-			var testAttributes, wasRun = false;
+			var testAttributes;
 			testClass = this.class.testclassForType( class.type );
 			testAttributes = testClass.generateRandomAttributes(
 				[
 					\value,
 					\defaultValue,
-					\path,
-					\action -> {arg p; wasRun = true; },
-					\filterRepetitions,
-					\name,
-					\type -> class.type
+					\filterRepetitions
 				]
 			);
 
-			param = VTMValue.makeFromAttributes(testAttributes);
+			param = VTMValue.makeFromType(class.type, testAttributes);
 
-			//Change string values to symbols for testing object return values
-			testAttributes[\name] = testAttributes[\name].asSymbol;
-			testAttributes[\path] = testAttributes[\path].asSymbol;
-
-			[\value, \defaultValue, \path, \name, \filterRepetitions].do({arg item;
-				// "CHECKING %: \n\t%[%]\n\t%[%]".format(
-				// 	item,
-				// 	param.perform(item), param.perform(item).class,
-				// 	testAttributes[item], testAttributes[item].class
-				// ).postln;
+			[\value, \defaultValue, \filterRepetitions].do({arg item;
 				this.assertEquals(
 					param.perform(item), testAttributes[item],
 					"Value set % through attributes [%]".format(item, class.name)
 				);
 			});
-			param.doAction;
-			this.assert(
-				wasRun,
-				"Value action was set through attributes [%]".format(class.name)
-			);
 			param.free;
 		});
 	}
@@ -664,18 +470,13 @@ TestVTMValue : VTMUnitTest {
 				[
 					\value,
 					\defaultValue,
-					\path,
-					\action -> {arg p; 1 + 1 },
 					\filterRepetitions,
-					\name,
-					\type -> class.type,
 					\enabled -> true,
 					\enum
 				]
 			);
 			testEnum = testAttributes.at(\enum);
-			param = VTMValue.makeFromAttributes(testAttributes);
-			testAttributes.put(\action, testAttributes[\action].asCompileString);
+			param = VTMValue.makeFromType(class.type, testAttributes);
 			this.assertEquals(
 				param.enum, testEnum,
 				"ValueValue set and returned correct enum[%]".format(class.name)

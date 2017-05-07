@@ -1,9 +1,9 @@
 VTMDictionaryValue : VTMCollectionValue {
-	prDefaultValueForType {^Dictionary.new}
+	*prDefaultValueForType {^Dictionary.new}
 	isValidType{arg val;
 		^val.isKindOf(Dictionary);
 	}
-	value{^value.copy}
+	value{^this.value.copy}
 	*type{ ^\dictionary; }
 
 }

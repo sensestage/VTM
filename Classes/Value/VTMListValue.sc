@@ -12,7 +12,7 @@ VTMListValue : VTMCollectionValue {
 
 	*type{ ^\list; }
 
-	prDefaultValueForType{
+	*prDefaultValueForType{
 		^[];
 	}
 
