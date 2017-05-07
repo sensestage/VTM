@@ -18,7 +18,7 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	*makeRandomAttributes{arg params, makeNameAttribute = false;
-		var result = VTMAbstractDataAttributes[];
+		var result = VTMAttributes[];
 		if(makeNameAttribute, {
 			result.put(\name, this.makeRandomAttribute(\name));
 		});
@@ -115,10 +115,10 @@ TestVTMAbstractData : VTMUnitTest {
 				managerObj
 			);
 
-			//attributes should be empty VTMAbstractDataAttributes
+			//attributes should be empty VTMAttributes
 			this.assertEquals(
 				obj.attributes,
-				VTMAbstractDataAttributes[],
+				VTMAttributes[],
 				"[%] - init nil 'attributes' to empty array".format(class)
 			);
 

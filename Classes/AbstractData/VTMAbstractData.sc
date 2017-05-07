@@ -17,7 +17,7 @@ VTMAbstractData{
 	initAbstractData{arg name_, attributes_, manager_;
 		name = name_;
 		manager = manager_;
-		attributes = VTMAbstractDataAttributes.newFrom(attributes_);
+		attributes = VTMAttributes.newFrom(attributes_);
 
 		//FIXME: commented out for now awating attributes implementation.
 		//lazy attributesGetters and setters
