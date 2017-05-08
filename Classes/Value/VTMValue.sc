@@ -25,6 +25,18 @@ VTMValue {
 		^this.class.type;
 	}
 
+	*string{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*boolean{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*timecode{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*integer{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*decimal{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*array{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*dictionary{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*schema{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*list{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+	*tuple{arg attr; ^this.makeFromType(thisMethod.name, attr); }
+
+
 	*makeFromType{arg type, attributes;
 		var class;
 		class = this.typeToClass(type);
