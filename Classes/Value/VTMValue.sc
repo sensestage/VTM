@@ -205,8 +205,19 @@ VTMValue {
 		^attributes[key];
 	}
 
-	attributes{
-		^attributes.copy;
+	attributes{arg includeDefaultValues = true;
+		var result = attributes.deepCopy;
+		if(includeDefaultValues, {
+			this.class.attributeKeys.do({arg attrKey;
+				var attrVal = this.perform(attrKey);
+				//don't use the one that are nil
+				if(attrVal.notNil, {
+					result.put(attrKey, attrVal);
+				});
+			});
+		});
+
+		^result;
 	}
 
 	//Attribute setters and getters

@@ -41,6 +41,10 @@ VTMAbstractData{
 		^[];
 	}
 
+	attributeKeys{
+		^this.class.attributeKeys;
+	}
+
 	attributes{
 		^attributes.copy;
 	}
