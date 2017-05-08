@@ -149,15 +149,18 @@ TestVTMStringValue : TestVTMValue {
 		var desc = (
 			defaultValue: "bingo",
 			value: "bongo",
-			pattern: "^b(a|i|o|e|y)ngo$"
+			pattern: "^b(a|i|o|e|y)ngo$",
+			patternMatching: false
 		);
 		var param = VTMStringValue.new(desc);
 		param.action = {|p| wasRun = true;};
-		param.clear;
-		this.assertEquals(
-			param.value, param.defaultValue,
-			"StringValue set value to defaultValue upon clearing with pattern matching off"
-		);
+
+		//temporary diabled as it is unclear what this behaviour should be yet.
+		// param.clear;
+		// this.assertEquals(
+		// 	param.value, param.defaultValue,
+		// 	"StringValue set value to defaultValue upon clearing with pattern matching off"
+		// );
 
 		//Should set to empty when pattern matching is not active
 		param.matchPattern = false;
