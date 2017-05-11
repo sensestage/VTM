@@ -7,7 +7,7 @@ TestVTMAbstractData : VTMUnitTest {
 			VTMMapping,
 			VTMDefinitionLibrary,
 			VTMCommand,
-			VTMContextParameter,
+			// VTMContextParameter,
 			VTMRemoteNetworkNode,
 			VTMModule,
 			VTMApplication,
@@ -33,6 +33,18 @@ TestVTMAbstractData : VTMUnitTest {
 			});
 		});
 		^result;
+	}
+
+	*makeRandomAttributesForObject{arg object;
+		var testClass, class;
+		var result = VTMAttributes[];
+		class = object.class;
+		testClass = this.findTestClass(class);
+
+		//omit name
+		object.attributes.keysValuesDo({arg attrKey, attrVal;
+			"Object attr '%' - %".format(attrKey, attrVal).postln;
+		});
 	}
 
 	*makeRandomAttribute{arg key, params;

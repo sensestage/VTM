@@ -210,7 +210,7 @@ VTMValue {
 		if(includeDefaultValues, {
 			this.class.attributeKeys.do({arg attrKey;
 				var attrVal = this.perform(attrKey);
-				//don't use the one that are nil
+				//don't use the ones that are nil
 				if(attrVal.notNil, {
 					result.put(attrKey, attrVal);
 				});

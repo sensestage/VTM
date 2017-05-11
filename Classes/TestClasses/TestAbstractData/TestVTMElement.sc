@@ -4,7 +4,7 @@ TestVTMElement : TestVTMAbstractData {
 			VTMMapping,
 			VTMDefinitionLibrary,
 			VTMCommand,
-			VTMContextParameter,
+			// VTMContextParameter,
 			VTMRemoteNetworkNode,
 			VTMModule,
 			VTMApplication,
@@ -171,7 +171,7 @@ TestVTMElement : TestVTMAbstractData {
 
 				oscValReceived.hang(1.0);
 				this.assert(oscValReceived.test,
-					"[%] - Did not receive attribute set OSC message".format(class));
+				"[%] - Did not receive attribute set OSC message".format(class));
 
 				controller.removeAt(\attributes);
 				controller.remove;
