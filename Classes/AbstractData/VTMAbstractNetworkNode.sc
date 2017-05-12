@@ -3,8 +3,8 @@ VTMAbstractNetworkNode : VTMElement {
 
 	*managerClass{ ^VTMNetworkNodeManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initAbstractNetworkNode;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initAbstractNetworkNode;
 	}
 
 	initAbstractNetworkNode{}

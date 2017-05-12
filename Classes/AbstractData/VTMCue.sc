@@ -8,16 +8,16 @@ VTMCue : VTMAbstractData {
 
 	*managerClass{ ^VTMCueManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initCue;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initCue;
 	}
 
 	initCue{
 		condition = Condition.new;
 	}
 
-	*attributeKeys{
-		^super.attributeKeys ++ [
+	*declarationKeys{
+		^super.declarationKeys ++ [
 			\preDelay,
 			\duration,
 			\postDelay,
@@ -82,7 +82,7 @@ VTMCue : VTMAbstractData {
 		});
 	}
 
-	//Attribute getter and setters
+	//Attribute getters
 	preDelay{ ^this.get(\preDelay) ? 0.0; }
 	preDelay_{arg val; this.set(\preDelay, val); }
 

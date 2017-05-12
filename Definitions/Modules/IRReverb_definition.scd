@@ -3,20 +3,20 @@
 	var irFilePath;
 	var fftSize = 2048;
 	var irSpectrumBufferSize, irBuffer, bufferLoaded = false;
-	var attributes = module.attributes;
+	var declaration = module.declaration;
 
-	if(attributes.includesKey(\irFilePath), {
+	if(declaration.includesKey(\irFilePath), {
 		var irFile;
-		if(File.exists(attributes.at(\irFilePath)), {
-			irFilePath = attributes.at(\irFilePath);
+		if(File.exists(declaration.at(\irFilePath)), {
+			irFilePath = declaration.at(\irFilePath);
 		}, {
-			Error("irReverb module failed to build: ir file not found '%'".format(attributes.at(\irFilePath))).throw;
+			Error("irReverb module failed to build: ir file not found '%'".format(declaration.at(\irFilePath))).throw;
 		})
 	}, {
 		Error("irReverb module failed to build: Needs irFilePath").throw;
 	});
-	if(attributes.includesKey(\fftSize), {
-		if(attributes[\fftSize].isNumber.not, {
+	if(declaration.includesKey(\fftSize), {
+		if(declaration[\fftSize].isNumber.not, {
 			Error().throw;
 		})
 	});

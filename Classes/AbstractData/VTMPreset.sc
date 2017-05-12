@@ -3,8 +3,8 @@ VTMPreset : VTMAbstractData {
 
 	*managerClass{ ^VTMPresetManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initPreset;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initPreset;
 	}
 
 	initPreset{
@@ -12,7 +12,7 @@ VTMPreset : VTMAbstractData {
 	}
 
 	values{
-		^this.attributes;
+		^this.declaration;
 	}
 
 	values_{arg vals;
@@ -21,13 +21,13 @@ VTMPreset : VTMAbstractData {
 		});
 	}
 
-	*attributeKeys{
-		^super.attributeKeys ++ [\values];
+	*declarationKeys{
+		^super.declarationKeys ++ [\values];
 	}
 
 	//check if preset covers all parameters in the arg context
 	isComplete{arg context;
-		^(context.parameters.names.asSet == attributes.keys);
+		^(context.parameters.names.asSet == declaration.keys);
 	}
 
 	interpolate{arg anotherPreset, fraction = 0.5, transitionPoints;

@@ -13,12 +13,12 @@ VTMContext : VTMElement {
 
 	classvar <viewClassSymbol = 'VTMContextView';
 
-	*new{arg name, attributes, manager, definition;
-		^super.new(name, attributes, manager).initContext(definition);
+	*new{arg name, declaration, manager, definition;
+		^super.new(name, declaration, manager).initContext(definition);
 		//temp commented out
 		//definition must be an object of type ContextDefinition
 		// if(definition.isKindOf(VTMContextDefinition), {
-		// 	^super.new(name, attributes, manager).initContext(definition);
+		// 	^super.new(name, declaration, manager).initContext(definition);
 		// 	}, {
 		// 		Error("% - definition arg must have a kind of VTMContextDefinition".format(
 		// 			this.class
@@ -33,19 +33,19 @@ VTMContext : VTMElement {
 		condition = Condition.new;
 		presets = VTMPresetManager(this,
 			definition.presets,
-			attributes[\presets]
+			declaration[\presets]
 		);
 		cues = VTMCueManager(this,
 			definition.cues,
-			attributes[\cues]
+			declaration[\cues]
 		);
 		mappings = VTMMappingManager(this,
 			definition.mappings,
-			attributes[\mappings]
+			declaration[\mappings]
 		);
 		scores = VTMScoreManager(this,
 			definition.scores,
-			attributes[\scores]
+			declaration[\scores]
 		);
 		this.prChangeState(\didInitialize);
 	}
@@ -195,16 +195,16 @@ VTMContext : VTMElement {
 		});
 	}
 
-	//recursive == true pulls attributes from components
-	//recursive == false pulls only name attributes of components
-	///TODO: Implement gettin gattributes from components
-	attributes{arg recursive = false;
-		var result = super.attributes;
+	//recursive == true pulls declaration from components
+	//recursive == false pulls only name declaration of components
+	///TODO: Implement gettin gdeclaration from components
+	declaration{arg recursive = false;
+		var result = super.declaration;
 		// var nonEmptyComps = this.components.select({arg item; item.isEmpty.not; });
 		// if(recursive, {
 		// 	nonEmptyComps.do({arg comp;
 		// 		var val;
-		// 		val = comp.attributes(recursive: true);
+		// 		val = comp.declaration(recursive: true);
 		// 		result.put(comp.name, val);
 		// 	});
 		// 	}, {

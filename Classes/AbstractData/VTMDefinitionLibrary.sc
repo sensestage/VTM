@@ -2,21 +2,21 @@ VTMDefinitionLibrary : VTMElement {
 
 	*managerClass{ ^VTMDefinitionLibraryManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initDefinitionLibrary;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initDefinitionLibrary;
 	}
 
 	initDefinitionLibrary{}
 
-	*attributeKeys{
-		^super.attributeKeys ++ [\includedPaths, \excludedPaths];
+	*declarationKeys{
+		^super.declarationKeys ++ [\includedPaths, \excludedPaths];
 	}
 
 	*queryNames{
 		^super.queryNames ++ [\hasDefinition];
 	}
 
-	//Attribute getters and setters
+	//Attribute getters
 	includedPaths{ ^this.get(\includedPaths); }
 	includedPaths_{arg val; this.set(\includedPaths, val); }
 

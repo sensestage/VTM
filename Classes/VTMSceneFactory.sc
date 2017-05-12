@@ -17,7 +17,7 @@ VTMSceneFactory{
 		^sceneOwner.application.hardwareSetup;
 	}
 
-	build{arg sceneDefinition, sceneAttributes;
+	build{arg sceneDefinition, sceneDeclaration;
 		var newScene, buildResult;
 		var modules = (
 			local: (static: [], dynamic: []),
@@ -31,23 +31,23 @@ VTMSceneFactory{
 			success: false,
 			errors: []
 		);
-		//>Check if scene attributes contains a name. Issue error if not.
-		if(sceneAttributes.includesKey(\name).not, {
-			buildResult[\errors] = buildResult[\error].add(Error("Scene attributes must have name"));
+		//>Check if scene declaration contains a name. Issue error if not.
+		if(sceneDeclaration.includesKey(\name).not, {
+			buildResult[\errors] = buildResult[\error].add(Error("Scene declaration must have name"));
 		});
 
-		//>determine the build order by searching the scene attributes for references
+		//>determine the build order by searching the scene declaration for references
 		//to other modules and find a resolving build order.
 		//>if finding a build order fails
 		//	>then throw build error.
 
-		//>Find out if the scene attributes has sub scenes.
+		//>Find out if the scene declaration has sub scenes.
 		//>For all sub scenes
 		//	>if this context overrides any values for the subscene
-		//		>then overwrite the overriden values in the subscene attributes
+		//		>then overwrite the overriden values in the subscene declaration
 
-		//if scene attributes has any module attributes
-		if(sceneAttributes.includesKey(\modules), {
+		//if scene declaration has any module declaration
+		if(sceneDeclaration.includesKey(\modules), {
 			//>Separate local and remote modules.
 			//Determine if they are existing or dynamic.
 			//An existing module is referred to using the 'path' keyword. This indicates
@@ -74,7 +74,7 @@ VTMSceneFactory{
 		});
 
 
-		newScene = VTMScene.new(sceneAttributes[\name], sceneDefinition, sceneAttributes, sceneOwner);
+		newScene = VTMScene.new(sceneDeclaration[\name], sceneDefinition, sceneDeclaration, sceneOwner);
 		buildResult.put(\scene, newScene);
 		^buildResult;
 	}

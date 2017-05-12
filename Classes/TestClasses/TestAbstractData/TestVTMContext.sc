@@ -2,29 +2,29 @@ TestVTMContext : TestVTMElement {
 
 	*makeRandomContext{arg params;
 		var context, name = this.makeRandomString;
-		var parameterAttributes;
-		var definition, attributes;
+		var parameterDeclaration;
+		var definition, declaration;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
 		var parent;
 		params !? { parent = params.at(\parent) };
-		parameterAttributes = numParameters.collect({arg i;
-			TestVTMParameter.makeRandomAttributes(
+		parameterDeclaration = numParameters.collect({arg i;
+			TestVTMParameter.makeRandomDeclaration(
 				[\integer, \decimal, \string, \boolean].choose
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
 		});
 		definition	= Environment.make{
-			~parameters = parameterAttributes;
-			~presets = TestVTMParameterManager.makeRandomPresetAttributesForParameterAttributes(
-				parameterAttributes
+			~parameters = parameterDeclaration;
+			~presets = TestVTMParameterManager.makeRandomPresetDeclarationForParameterDeclaration(
+				parameterDeclaration
 			);
 		};
-		attributes = (
+		declaration = (
 			path: "/%".format(this.makeRandomString).asSymbol
 		);
-		context = VTMContext(name, definition, attributes, parent);
+		context = VTMContext(name, definition, declaration, parent);
 		^context;
 	}
 
@@ -53,7 +53,7 @@ TestVTMContext : TestVTMElement {
 
 	test_DefaultConstruction{
 		var context, testName;
-		//construct without definition and attributes
+		//construct without definition and declaration
 		testName = this.class.makeRandomString.asSymbol;
 		context = VTMContext(testName);
 		this.assertEquals(
@@ -95,29 +95,29 @@ TestVTMContext : TestVTMElement {
 			"Context initialized addr to local address"
 		);
 
-		//Constructor extracts definition from attributes if defined
+		//Constructor extracts definition from declaration if defined
 	}
 
-	test_NewAndInitWithAttributes{
+	test_NewAndInitWithDeclaration{
 		var context, testName;
-		var attributes;
+		var declaration;
 		var definition;
 		var paramsAttr, presetsAttr, cuesAttr, mappingsAttr;
 		var scoresAttr, commandsAttr;
-		//Construct with definition and attributes
+		//Construct with definition and declaration
 		testName = this.class.makeRandomString.asSymbol;
 		definition = Environment[];
-		paramsAttr = TestVTMParameterManager.makeTestAttributes;
-		commandsAttr = TestVTMCommandManager.makeRandomAttributes(paramsAttr);
-		mappingsAttr = TestVTMMappingManager.makeRandomAttributes(paramsAttr, commandsAttr);
+		paramsAttr = TestVTMParameterManager.makeTestDeclaration;
+		commandsAttr = TestVTMCommandManager.makeRandomDeclaration(paramsAttr);
+		mappingsAttr = TestVTMMappingManager.makeRandomDeclaration(paramsAttr, commandsAttr);
 
-		presetsAttr = TestVTMPresetManager.makeRandomAttributes(paramsAttr);
-		cuesAttr = TestVTMCueManager.makeRandomAttributes(paramsAttr, commandsAttr);
-		scoresAttr = TestVTMScoreManager.makeRandomAttributes(
+		presetsAttr = TestVTMPresetManager.makeRandomDeclaration(paramsAttr);
+		cuesAttr = TestVTMCueManager.makeRandomDeclaration(paramsAttr, commandsAttr);
+		scoresAttr = TestVTMScoreManager.makeRandomDeclaration(
 			paramsAttr, commandsAttr, mappingsAttr, presetsAttr, cuesAttr
 		);
 
-		attributes = (
+		declaration = (
 			path: "/%".format(this.class.makeRandomString).asSymbol,
 			parameters: paramsAttr,
 			presets: presetsAttr,
@@ -126,19 +126,19 @@ TestVTMContext : TestVTMElement {
 			scores: scoresAttr,
 			commands: commandsAttr
 		);
-		context = VTMContext(testName, definition, attributes);
+		context = VTMContext(testName, definition, declaration);
 		context.free;
 	}
 
 	test_ForceLeadingSlashInPath{
 		var context, testPath, testName;
-		var definition, attributes;
+		var definition, declaration;
 		testName = this.class.makeRandomString.asSymbol;
 		testPath = 'pathWithout/leadingSlash';
-		attributes = (
+		declaration = (
 			path: testPath
 		);
-		context = VTMContext(testName, attributes: attributes);
+		context = VTMContext(testName, declaration: declaration);
 		//should add missing leading slash
 		this.assertEquals(
 			context.path,
@@ -158,7 +158,7 @@ TestVTMContext : TestVTMElement {
 
 	test_DefinitionInitAndPrepareRunFreeAndStateChange{
 		var context, testCondition = Condition.new;
-		var definition, attributes, name;
+		var definition, declaration, name;
 		var runtimeSteps = [\prepare, \run, \free];
 		var contextStates = [
 			\willPrepare, \didPrepare,
@@ -266,46 +266,46 @@ TestVTMContext : TestVTMElement {
 
 	test_initParametersAndPresets{
 		var context, name = this.class.makeRandomString;
-		var parameterAttributes;
-		var presetAttributes;
-		var definition, attributes;
+		var parameterDeclaration;
+		var presetDeclaration;
+		var definition, declaration;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
-		parameterAttributes = numParameters.collect({arg i;
-			TestVTMParameter.makeRandomAttributes(
+		parameterDeclaration = numParameters.collect({arg i;
+			TestVTMParameter.makeRandomDeclaration(
 				[\integer, \decimal, \string, \boolean].choose
 			).put(\action, {|p|
 				parameterValues[i] = p.value;
 			});
 		});
-		presetAttributes = TestVTMParameterManager.makeRandomPresetAttributesForParameterAttributes(
-			parameterAttributes);
+		presetDeclaration = TestVTMParameterManager.makeRandomPresetDeclarationForParameterDeclaration(
+			parameterDeclaration);
 		definition	= Environment.make{
-			~parameters = parameterAttributes;
-			~presets = presetAttributes;
+			~parameters = parameterDeclaration;
+			~presets = presetDeclaration;
 		};
-		attributes = (
+		declaration = (
 			path: "/%".format(this.class.makeRandomString).asSymbol
 		);
-		context = VTMContext(name, definition, attributes);
+		context = VTMContext(name, definition, declaration);
 		context.prepare;
 
 		//Should return parameter names
 		this.assertEquals(
 			context.parameters,
-			parameterAttributes.collect({arg it; it[\name].asSymbol}),
+			parameterDeclaration.collect({arg it; it[\name].asSymbol}),
 			"Context initialized parameter names in the right order"
 		);
 
 		//Should return preset names
 		this.assertEquals(
 			context.presets,
-			presetAttributes.collect({arg it; it[\name].asSymbol}),
+			presetDeclaration.collect({arg it; it[\name].asSymbol}),
 			"Context initialized parameter names in the right order"
 		);
 
 		//check that the param path was built with the context path
-		parameterAttributes.do({arg item;
+		parameterDeclaration.do({arg item;
 			var pathShouldBe;
 			// item[\name].postln;
 			pathShouldBe = "%/%".format(context.fullPath, item[\name]).asSymbol;
@@ -376,48 +376,48 @@ TestVTMContext : TestVTMElement {
 			});
 		}.value;
 
-		{//test the OSC API attributes responder
+		{//test the OSC API declaration responder
 			var tempResponder, response, cond;
 			var responded = false;
-			var respPath = "%:attributes?_testreply".format(context.fullPath).asSymbol;
-			var attributes;
+			var respPath = "%:declaration?_testreply".format(context.fullPath).asSymbol;
+			var declaration;
 
 			cond = Condition.new;
 			tempResponder = OSCFunc({arg msg, time, addr, port;
 				topEnvironment.put(\json, msg[1]);
-				response = VTMJSON.parseAttributesString(msg[1].asString);
+				response = VTMJSON.parse(msg[1].asString);
 				responded = true;
 				cond.unhang;
 			}, respPath);
 			context.addr.sendMsg(
-				"%:attributes?".format(context.fullPath).asSymbol,
+				"%:declaration?".format(context.fullPath).asSymbol,
 				NetAddr.localAddr.hostname,
 				NetAddr.localAddr.port,
 				respPath
 			);
 			cond.hang(0.2);
 			this.assert(responded,
-				"Context OSC API command 'attributes?' responded"
+				"Context OSC API command 'declaration?' responded"
 			);
 
-			attributes = context.attributes;
-
-			this.assertEquals(
-				response.keys.asArray.sort, attributes.keys.asArray.sort,
-				"Context OSC API command 'attributes?' returned equal dictionary keys"
-			);
+			declaration = context.declaration;
 
 			this.assertEquals(
-				response, context.attributes,
-				"Context OSC API got correct Context attributes"
+				response.keys.asArray.sort, declaration.keys.asArray.sort,
+				"Context OSC API command 'declaration?' returned equal dictionary keys"
 			);
-			/*			attributes.keysValuesDo({arg attrKey, attrVal;
+
+			this.assertEquals(
+				response, context.declaration,
+				"Context OSC API got correct Context declaration"
+			);
+			/*			declaration.keysValuesDo({arg attrKey, attrVal;
 
 			if(attrVal.isKindOf(Float), {
 			this.assertFloatEquals(
 			response[attrKey],
 			attrVal,
-			"Context 'attributes?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
+			"Context 'declaration?' OSC getter responded with correct value for '%'[floatEquals].".format(attrKey)
 			);
 			}, {
 			if(attrVal.isArray, {
@@ -435,20 +435,20 @@ TestVTMContext : TestVTMElement {
 			});
 			});
 			this.assert(valItemEqualities.every({arg it; it;}),
-			"Context 'attributes?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
+			"Context 'declaration?' OSC getter responded with correct value for '%'[array equals].".format(attrKey)
 			);
 			}, {
 			this.assertEquals(
 			response[attrKey],
 			attrVal,
-			"Context 'attributes?' OSC getter responded with correct value for '%'.".format(attrKey)
+			"Context 'declaration?' OSC getter responded with correct value for '%'.".format(attrKey)
 			);
 			});
 			});
 			});*/
 
 			topEnvironment.put(\response, response);
-			topEnvironment.put(\attributes, attributes);
+			topEnvironment.put(\declaration, declaration);
 
 			tempResponder.free;
 		}.value;

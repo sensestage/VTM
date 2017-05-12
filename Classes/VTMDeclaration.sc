@@ -1,4 +1,4 @@
-VTMAttributes : VTMOrderedIdentityDictionary {
+VTMDeclaration : VTMOrderedIdentityDictionary {
 
 	*newFrom{arg what;
 		if(what.notNil, {

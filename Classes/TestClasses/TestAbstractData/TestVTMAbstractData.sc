@@ -2,28 +2,28 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			// VTMPreset,
-			// VTMCue,
-			// VTMMapping,
-			// VTMDefinitionLibrary,
+			VTMPreset,
+			VTMCue,
+			VTMMapping,
+			VTMDefinitionLibrary,
 			VTMCommand,
 			VTMParameter,
 			VTMQuery,
-			// VTMRemoteNetworkNode,
-			// VTMModule,
-			// VTMApplication,
-			// VTMHardwareDevice,
-			// VTMScore,
-			// VTMScene
+			VTMRemoteNetworkNode,
+			VTMModule,
+			VTMApplication,
+			VTMHardwareDevice,
+			VTMScore,
+			VTMScene
 		];
 	}
 
-	*makeRandomAttributes{arg params, makeNameAttribute = false;
-		var result = VTMAttributes[];
+	*makeRandomDeclaration{arg params, makeNameAttribute = false;
+		var result = VTMDeclaration[];
 		if(makeNameAttribute, {
 			result.put(\name, this.makeRandomAttribute(\name));
 		});
-		this.findTestedClass.attributeKeys.do({arg item;
+		this.findTestedClass.declarationKeys.do({arg item;
 			var attrParams, randAttr;
 			if(params.notNil and: {params.includesKey(item)}, {
 				attrParams = params.at(item);
@@ -36,14 +36,14 @@ TestVTMAbstractData : VTMUnitTest {
 		^result;
 	}
 
-	*makeRandomAttributesForObject{arg object;
+	*makeRandomDeclarationForObject{arg object;
 		var testClass, class;
-		var result = VTMAttributes[];
+		var result = VTMDeclaration[];
 		class = object.class;
 		testClass = this.findTestClass(class);
 
 		//omit name
-		object.attributes.keysValuesDo({arg attrKey, attrVal;
+		object.declaration.keysValuesDo({arg attrKey, attrVal;
 			"Object attr '%' - %".format(attrKey, attrVal).postln;
 		});
 	}
@@ -66,7 +66,7 @@ TestVTMAbstractData : VTMUnitTest {
 	}
 
 	test_initAbstractData{
-		var obj, testAttributes, managerObj;
+		var obj, testDeclaration, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -80,10 +80,10 @@ TestVTMAbstractData : VTMUnitTest {
 				"[%] - made manager obj for test class".format(class)
 			);
 
-			testAttributes = testClass.makeRandomAttributes;
+			testDeclaration = testClass.makeRandomDeclaration;
 			// obj = class.new(
 			// 	testName,
-			// 	testAttributes,
+			// 	testDeclaration,
 			// 	managerObj
 			// );
 			//
@@ -94,11 +94,11 @@ TestVTMAbstractData : VTMUnitTest {
 			// 	"[%] - init 'name' correctly".format(class)
 			// );
 			//
-			// //check attributes equal
+			// //check declaration equal
 			// this.assertEquals(
-			// 	obj.attributes,
-			// 	testAttributes,
-			// 	"[%] - init 'attributes' correctly".format(class)
+			// 	obj.declaration,
+			// 	testDeclaration,
+			// 	"[%] - init 'declaration' correctly".format(class)
 			// );
 			//
 			// //the manager object must be identical
@@ -112,8 +112,8 @@ TestVTMAbstractData : VTMUnitTest {
 		});
 	}
 
-	test_attributesNil{
-		var obj, testAttributes, managerObj;
+	test_declarationNil{
+		var obj, testDeclaration, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -121,18 +121,18 @@ TestVTMAbstractData : VTMUnitTest {
 
 			managerObj = managerClass.new;
 
-			testAttributes = nil;
+			testDeclaration = nil;
 			obj = class.new(
 				testName,
-				testAttributes,
+				testDeclaration,
 				managerObj
 			);
 
-			//attributes should be empty VTMAttributes
+			//declaration should be empty VTMDeclaration
 			this.assertEquals(
-				obj.attributes,
-				VTMAttributes[],
-				"[%] - init nil 'attributes' to empty array".format(class)
+				obj.declaration,
+				VTMDeclaration[],
+				"[%] - init nil 'declaration' to empty array".format(class)
 			);
 
 			obj.free;
@@ -141,43 +141,43 @@ TestVTMAbstractData : VTMUnitTest {
 		});
 	}
 
-	test_DefaultAttributes{
+	test_DefaultDeclaration{
 
 	}
 
-	test_AttributesSetGet{
+	test_DeclarationSetGet{
 		var obj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
 			var appendString;
 
-			//Should work with both initlialized uninitialized(nil) attributes.
+			//Should work with both initlialized uninitialized(nil) declaration.
 			[
-				[testClass.makeRandomAttributes,	"[pre-initialized attributes]"],
-				[nil,	"[attributes init to nil]"],
+				[testClass.makeRandomDeclaration,	"[pre-initialized declaration]"],
+				[nil,	"[declaration init to nil]"],
 			].do({arg items, i;
-				var testAttributes, appendString;
-				#testAttributes, appendString = items;
+				var testDeclaration, appendString;
+				#testDeclaration, appendString = items;
 				//All classes should implement set and get methods for
-				//every attribute.
-				testAttributes = nil;
+				//every declaration.
+				testDeclaration = nil;
 				obj = class.new(
 					testName,
-					testAttributes
+					testDeclaration
 				);
 
-				class.attributeKeys.do({arg attrKey;
+				class.declarationKeys.do({arg attrKey;
 					var testVal;
-					//does it respond to getter and setters for every attribute?
+					//does it respond to getter and setters for every declaration?
 					this.assert(
 						obj.respondsTo(attrKey),//test getter
-						"[%] - responded to attribute getter '%'".format(
+						"[%] - responded to declaration getter '%'".format(
 							class, attrKey) ++ appendString
 					);
 					this.assert(
 						obj.respondsTo(attrKey.asSetter),//test getter
-						"[%] - responded to attribute setter '%'".format(
+						"[%] - responded to declaration setter '%'".format(
 							class, attrKey.asSetter) ++ appendString
 					);
 
@@ -186,7 +186,7 @@ TestVTMAbstractData : VTMUnitTest {
 						testVal = testClass.makeRandomAttribute(attrKey);
 					} {|err|
 						this.failed(thisMethod,
-							Error("[%] - Error making random attribute value for '%'".format(class, attrKey)).throw;
+							Error("[%] - Error making random declaration value for '%'".format(class, attrKey)).throw;
 						);
 					};
 					this.assert(
@@ -195,12 +195,12 @@ TestVTMAbstractData : VTMUnitTest {
 							class, attrKey) ++ appendString
 					);
 
-					//test setting attribute value
+					//test setting declaration value
 					obj.set(attrKey, testVal);
 					this.assertEquals(
 						obj.get(attrKey),
 						testVal,
-						"[%] - setting and getting attribute '%' worked".format(
+						"[%] - setting and getting declaration '%' worked".format(
 							class, attrKey) ++ appendString
 					);
 				});

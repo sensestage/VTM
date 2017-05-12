@@ -6,11 +6,11 @@ TestVTMAbstractDataManager : VTMUnitTest {
 
 
 	//settings: minItems, maxItems
-	//if attributes are defined the settings are overriden, and the
-	//attributes array size defines the number of data item attributes
+	//if declaration are defined the settings are overriden, and the
+	//declaration array size defines the number of data item declaration
 	//that are generated.
 
-	*makeRandomAttributes{arg settings ...args;
+	*makeRandomDeclaration{arg settings ...args;
 		var result;
 		var numItems;
 		if(settings.isNil, {
@@ -23,7 +23,7 @@ TestVTMAbstractDataManager : VTMUnitTest {
 		result = numItems.collect({arg i;
 			[
 				[i + 1, {this.makeRandomString}].choose.value,
-				this.dataTestClass.makeRandomAttributes(*args)
+				this.dataTestClass.makeRandomDeclaration(*args)
 			]
 		}).flatten;
 		^result;

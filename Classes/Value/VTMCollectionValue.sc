@@ -1,17 +1,17 @@
 VTMCollectionValue : VTMValue {
 	var <items;
-	var <itemAttributes;
+	var <itemDeclaration;
 	var <maxLength;
 	var <minLength;
 
-	*new{arg name, attributes;
-		^super.new(name, attributes).initCollectionParameter;
+	*new{arg name, declaration;
+		^super.new(name, declaration).initCollectionParameter;
 	}
 
 	initCollectionParameter{
-		if(attributes.notEmpty, {
-			if(attributes.includesKey(\itemAttributes), {
-				itemAttributes = attributes[\itemAttributes];
+		if(declaration.notEmpty, {
+			if(declaration.includesKey(\itemDeclaration), {
+				itemDeclaration = declaration[\itemDeclaration];
 			});
 		});
 	}

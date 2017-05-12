@@ -1,12 +1,12 @@
 (
 	prototypes: [\mappable],
 	prepare: {arg context;
-		var attributes = context.attributes;
+		var declaration = context.declaration;
 		var inDeviceName, inPortName, outDeviceName, outPortName;
-		inDeviceName = attributes[\input][\deviceName];
-		inPortName = attributes[\input][\portName];
-		outDeviceName = attributes[\output][\deviceName];
-		outPortName = attributes[\output][\portName];
+		inDeviceName = declaration[\input][\deviceName];
+		inPortName = declaration[\input][\portName];
+		outDeviceName = declaration[\output][\deviceName];
+		outPortName = declaration[\output][\portName];
 		MIDIOut.connect();
 
 		~midiController = MIDIDevice.new(inDeviceName, inPortName, outDeviceName, outPortName, context.name);

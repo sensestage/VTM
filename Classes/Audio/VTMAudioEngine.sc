@@ -24,9 +24,9 @@ VTMAudioEngine {
 // 	start{arg condition;
 // 		var serverOptions;
 // 		forkIfNeeded{
-// 			// if(attributes.includesKey(\serverOptions), {
+// 			// if(declaration.includesKey(\serverOptions), {
 // 			// 	serverOptions = ServerOptions.new;
-// 			// 	attributes[\serverOptions].keysValuesDo({arg opt, val;
+// 			// 	declaration[\serverOptions].keysValuesDo({arg opt, val;
 // 			// 		serverOptions.perform(opt.asSetter, val);
 // 			// 	});
 // 			// });

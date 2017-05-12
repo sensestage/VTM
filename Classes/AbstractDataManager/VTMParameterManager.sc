@@ -6,18 +6,18 @@ VTMParameterManager : VTMAbstractDataManager {
 	*dataClass{ ^VTMParameter; }
 	name{ ^\parameters; }
 
-	loadParameterAttributes{arg parameterAttributes;
-		if(parameterAttributes.notNil, {
-			parameterAttributes.do({arg paramAttributes;
+	loadParameterDeclaration{arg parameterDeclaration;
+		if(parameterDeclaration.notNil, {
+			parameterDeclaration.do({arg paramDeclaration;
 				var newParam;
-				paramAttributes.put(\path, context.fullPath);
-				newParam = VTMParameter.makeFromAttributes(paramAttributes);
+				paramDeclaration.put(\path, context.fullPath);
+				newParam = VTMParameter.makeFromDeclaration(paramDeclaration);
 				newParam.envir = context.envir;
 				if(newParam.notNil, {
 					this.addParameter(newParam);
 				}, {
-					"Failed to build parameter attributes: '%' for context: '%'".format(
-						paramAttributes, context.path;
+					"Failed to build parameter declaration: '%' for context: '%'".format(
+						paramDeclaration, context.path;
 					).warn;
 				});
 			});
@@ -114,7 +114,7 @@ VTMParameterManager : VTMAbstractDataManager {
 		});
 	}
 
-	presetAttributes{
+	presetDeclaration{
 		^presetList.asKeyValuePairs;
 	}
 

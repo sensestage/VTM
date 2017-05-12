@@ -1,8 +1,8 @@
 VTMRemoteNetworkNode : VTMAbstractNetworkNode {
 	*managerClass{ ^VTMNetworkNodeManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initRemoveNetworkNode;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initRemoveNetworkNode;
 	}
 
 	initRemoveNetworkNode{}

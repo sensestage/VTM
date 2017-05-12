@@ -12,8 +12,8 @@ VTMContextView : VTMView {
 		defaultWidth = unitSize.width;
 	}
 
-	*new{arg parent, bounds, definition, attributes, context;
-		^super.new(parent, bounds, definition, attributes).initContextView(context);
+	*new{arg parent, bounds, definition, settings, context;
+		^super.new(parent, bounds, definition, settings).initContextView(context);
 	}
 
 	initContextView{arg context_;

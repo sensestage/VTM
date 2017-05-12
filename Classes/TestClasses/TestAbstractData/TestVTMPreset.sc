@@ -5,8 +5,8 @@ TestVTMPreset : TestVTMAbstractData {
 		result = super.makeRandomAttribute(key, params);
 		switch(key,
 			\values, {
-				var parameterAttributesArray = params;
-				if(parameterAttributesArray.isNil, {
+				var parameterDeclarationArray = params;
+				if(parameterDeclarationArray.isNil, {
 					[
 						\boolean,
 						\timecode,
@@ -25,17 +25,17 @@ TestVTMPreset : TestVTMAbstractData {
 						]);
 					});
 				}, {
-					parameterAttributesArray.do({arg parameterAttribute;
-						if(parameterAttribute.isKindOf(Dictionary).not, {
-							parameterAttribute = (
+					parameterDeclarationArray.do({arg parameterDeclaration;
+						if(parameterDeclaration.isKindOf(Dictionary).not, {
+							parameterDeclaration = (
 								name: this.makeRandomSymbol,
-								type: parameterAttribute
+								type: parameterDeclaration
 							);
 						});
 						result = result.addAll([
-							parameterAttribute[\name] ? this.makeRandomSymbol,
-							TestVTMValue.testclassForType(parameterAttribute[\type]).makeRandomValue(
-								parameterAttribute
+							parameterDeclaration[\name] ? this.makeRandomSymbol,
+							TestVTMValue.testclassForType(parameterDeclaration[\type]).makeRandomValue(
+								parameterDeclaration
 							)
 						]);
 					});

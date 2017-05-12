@@ -8,19 +8,19 @@ VTMAbstractDataManager {
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg context, attributes;
-		^super.new.initAbstractDataManager(context, attributes);
+	*new{arg context, declaration;
+		^super.new.initAbstractDataManager(context, declaration);
 	}
 
 	//context is an instance of kind VTMContext or a symbol.
-	//attributes is an array of Dictionaries with item attributes.
-	initAbstractDataManager{arg context_, attributes_;
+	//declaration is an array of Dictionaries with item declaration.
+	initAbstractDataManager{arg context_, declaration_;
 		context = context_;
 		items = VTMNamedList.new;
-		if(attributes_.notNil, {
-			attributes_.do({arg item;
+		if(declaration_.notNil, {
+			declaration_.do({arg item;
 				var newItem;
-				newItem = this.class.dataClass.newFromAttributes(item);
+				newItem = this.class.dataClass.newFromDeclaration(item);
 				this.addItem(newItem);
 			});
 		});
@@ -56,11 +56,11 @@ VTMAbstractDataManager {
 
 	name{ this.subclassResponsibility(thisMethod); }
 
-	attributes{arg recursive;
+	declaration{arg recursive;
 		var result;
 		if(recursive, {
 			items.do({arg item;
-				result = result.addAll([item.name, item.attributes]);
+				result = result.addAll([item.name, item.declaration]);
 			});
 		}, {
 			items.do({arg item;
@@ -112,7 +112,7 @@ VTMAbstractDataManager {
 		^IdentityDictionary.new;
 	}
 
-	*attributeKeys{
+	*declarationKeys{
 		^[];
 	}
 

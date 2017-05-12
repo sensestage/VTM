@@ -18,7 +18,7 @@ TestVTMElement : TestVTMAbstractData {
 		//should error if created without name
 		this.class.classesForTesting.do({arg class;
 			try {
-				obj = class.new(name: nil, attributes: nil, manager: nil);
+				obj = class.new(name: nil, declaration: nil, manager: nil);
 				this.failed(thisMethod,
 					"[%] - Should have thrown error when created without 'name'".format(class)
 				);
@@ -33,7 +33,7 @@ TestVTMElement : TestVTMAbstractData {
 	}
 
 	test_DerivedPath{
-		var obj, testAttributes, managerObj;
+		var obj, testDeclaration, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -42,10 +42,10 @@ TestVTMElement : TestVTMAbstractData {
 
 			managerObj = managerClass.new;
 
-			testAttributes = nil;
+			testDeclaration = nil;
 			obj = class.new(
 				testName,
-				testAttributes,
+				testDeclaration,
 				managerObj
 			);
 
@@ -88,7 +88,7 @@ TestVTMElement : TestVTMAbstractData {
 	}
 
 	test_ManualPath{
-		var obj, testAttributes;
+		var obj, testDeclaration;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -96,7 +96,7 @@ TestVTMElement : TestVTMAbstractData {
 
 			obj = class.new(
 				testName,
-				testAttributes
+				testDeclaration
 			);
 			//should be nil
 			this.assert(obj.path.isNil,
@@ -134,33 +134,33 @@ TestVTMElement : TestVTMAbstractData {
 
 	}
 
-	test_AttributeOSC{
-		var obj, testAttributes;
+	test_DeclarationOSC{
+		var obj, testDeclaration;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
 
-			testAttributes = testClass.makeRandomAttributes;
+			testDeclaration = testClass.makeRandomDeclaration;
 			obj = class.new(
 				testName,
-				testAttributes
+				testDeclaration
 			);
 			obj.enableOSC;
 
-			class.attributeKeys.do({arg attributeKey;
+			class.declarationKeys.do({arg declarationKey;
 				var oldVal, attrPath;
 				var testVal, oscValReceived = Condition.new, controller;
-				oldVal = obj.get(attributeKey);
-				attrPath = (obj.fullPath ++ '/' ++ attributeKey).asSymbol;
+				oldVal = obj.get(declarationKey);
+				attrPath = (obj.fullPath ++ '/' ++ declarationKey).asSymbol;
 
-				testVal = testClass.makeRandomAttribute(attributeKey);
+				testVal = testClass.makeRandomAttribute(declarationKey);
 				oscValReceived.test = false;
-				controller = SimpleController(obj).put(\attribute, {arg ...args;
+				controller = SimpleController(obj).put(\declaration, {arg ...args;
 					var who, what, whichAttr;
 					who = args[0];
 					what = args[1];
 					whichAttr = args[2];
-					if(whichAttr == attributeKey, {
+					if(whichAttr == declarationKey, {
 						oscValReceived.test = true;
 						oscValReceived.unhang;
 					});
@@ -170,14 +170,14 @@ TestVTMElement : TestVTMAbstractData {
 
 				oscValReceived.hang(1.0);
 				this.assert(oscValReceived.test,
-				"[%] - Did not receive attribute set OSC message".format(class));
+				"[%] - Did not receive declaration set OSC message".format(class));
 
-				controller.removeAt(\attributes);
+				controller.removeAt(\declaration);
 				controller.remove;
 				controller = nil;
 				this.assertEquals(
-					obj.perform(attributeKey.asGetter), testVal,
-					"[%] - Set attribute '%' value through OSC".format(class, attributeKey)
+					obj.perform(declarationKey.asGetter), testVal,
+					"[%] - Set declaration '%' value through OSC".format(class, declarationKey)
 				);
 			});
 			obj.disableOSC;

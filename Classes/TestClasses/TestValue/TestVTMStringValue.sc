@@ -16,7 +16,7 @@ TestVTMStringValue : TestVTMValue {
 		^result;
 	}
 
-	test_DefaultAttributes{
+	test_DefaultDeclaration{
 		var param = VTMStringValue.new;
 		this.assert(
 			param.defaultValue.class == String and: {param.defaultValue.isEmpty},
@@ -40,7 +40,7 @@ TestVTMStringValue : TestVTMValue {
 		);
 	}
 
-	test_SettingAttributesWithAttributes{
+	test_SettingDeclarationWithDeclaration{
 		var desc, param;
 		desc = (
 			value: "heisann.3",
@@ -50,15 +50,15 @@ TestVTMStringValue : TestVTMValue {
 		param = VTMStringValue.new(desc);
 		this.assertEquals(
 			param.value, desc[\value],
-			"StringValue set value through attributes"
+			"StringValue set value through declaration"
 		);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
-			"StringValue set defaultValue through attributes"
+			"StringValue set defaultValue through declaration"
 		);
 		this.assertEquals(
 			param.pattern, desc[\pattern],
-			"StringValue set value through attributes"
+			"StringValue set value through declaration"
 		);
 	}
 

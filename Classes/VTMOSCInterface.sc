@@ -88,13 +88,13 @@ VTMOSCInterface {
 
 	*prMakeSetterResponders{arg model;
 		var result = IdentityDictionary.new;
-		model.class.attributeKeys.do({arg attributeKey;
-			//TODO: maybe move attribute separator somewhere potentionally more DRY?
-			var path = (model.fullPath ++ '/' ++ attributeKey).asSymbol;
+		model.class.declarationKeys.do({arg declarationKey;
+			//TODO: maybe move declaration separator somewhere potentionally more DRY?
+			var path = (model.fullPath ++ '/' ++ declarationKey).asSymbol;
 			result.put(
 				path,
 				OSCFunc({arg msg, time, resp, port;
-					model.perform(attributeKey.asSetter, VTMJSON.parse(msg[1]));
+					model.perform(declarationKey.asSetter, VTMJSON.parse(msg[1]));
 				}, path)
 			);
 		});

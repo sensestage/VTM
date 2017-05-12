@@ -2,8 +2,8 @@ VTMNumberValue : VTMValue {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
-	*new{arg attributes;
-		^super.new(attributes).initNumberParameter;
+	*new{arg declaration;
+		^super.new(declaration).initNumberParameter;
 	}
 
 	isValidType{arg val;
@@ -11,18 +11,18 @@ VTMNumberValue : VTMValue {
 	}
 
 	initNumberParameter{
-		if(attributes.notEmpty, {
-			if(attributes.includesKey(\clipmode), {
-				this.clipmode = attributes[\clipmode];
+		if(declaration.notEmpty, {
+			if(declaration.includesKey(\clipmode), {
+				this.clipmode = declaration[\clipmode];
 			});
-			if(attributes.includesKey(\minVal), {
-				this.minVal = attributes[\minVal];
+			if(declaration.includesKey(\minVal), {
+				this.minVal = declaration[\minVal];
 			});
-			if(attributes.includesKey(\maxVal), {
-				this.maxVal = attributes[\maxVal];
+			if(declaration.includesKey(\maxVal), {
+				this.maxVal = declaration[\maxVal];
 			});
-			if(attributes.includesKey(\stepsize), {
-				this.stepsize = attributes[\stepsize];
+			if(declaration.includesKey(\stepsize), {
+				this.stepsize = declaration[\stepsize];
 			});
 		});
 	}
@@ -70,53 +70,8 @@ VTMNumberValue : VTMValue {
 		});
 	}
 
-	*makeAttributeGetterFunctions{arg param;
-		var result;
-		result = super.makeAttributeGetterFunctions(param).putAll(
-			IdentityDictionary[
-				\minVal -> {param.minVal},
-				\maxVal -> {param.maxVal},
-				\stepsize -> {param.stepsize},
-				\clipmode -> {param.clipmode},
-				\dataspace -> {
-					var val;
-					if(param.dataspace.notNil, {
-						val = param.dataspace.attributes;
-					});
-					val;
-				}
-			]
-		);
-		^result;
-	}
-
-	*makeAttributeSetterFunctions{arg param;
-		var result;
-		result = super.makeAttributeGetterFunctions(param).putAll(
-			IdentityDictionary[
-				\minVal -> {arg ...args; param.minVal_(args[0]); },
-				\maxVal -> {arg ...args; param.maxVal_(args[0]); },
-				\stepsize -> {arg ...args; param.stepsize_(args[0]); },
-				\clipmode -> {arg ...args; param.clipmode_(args[0]); },
-				\dataspace -> {arg ...args;
-					if(param.dataspace.notNil, {
-						param.dataspace_(*args);
-					});
-				}
-			]
-		);
-		^result;
-	}
-
-	*makeOSCAPI{arg param;
-		^super.makeOSCAPI(param).putAll(IdentityDictionary[
-			'increment!' -> {param.increment;},
-			'decrement!' -> {param.decrement;}
-		]);
-	}
-
-	*attributeKeys{
-		^(super.attributeKeys ++ [\minVal, \maxVal, \stepsize, \clipmode/*, \dataspace*/]);
+	*declarationKeys{
+		^(super.declarationKeys ++ [\minVal, \maxVal, \stepsize, \clipmode/*, \dataspace*/]);
 	}
 
 
@@ -155,7 +110,7 @@ VTMNumberValue : VTMValue {
 
 	*defaultViewType{ ^\slider; }
 
-	//Attributes setters and getters
+	//Declaration setters and getters
 	minVal_{ arg val;
 		if(val.isNil, {
 			this.set(\minVal, nil);

@@ -1,11 +1,11 @@
 VTMContextProxy {
 	var implementation;
 
-	*new{arg name, definition, attributes, manager;
-		^super.new().initContextProxy(name, definition, attributes, manager);
+	*new{arg name, definition, declaration, manager;
+		^super.new().initContextProxy(name, definition, declaration, manager);
 	}
 
-	initContextProxy{arg name, definition, attributes, manager;
+	initContextProxy{arg name, definition, declaration, manager;
 		//determine which implementation to use
 	}
 

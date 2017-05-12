@@ -1,15 +1,15 @@
 VTMValueElement : VTMElement {
 	var valueObj;
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initValueElement;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initValueElement;
 	}
 
 	initValueElement{
-		if(attributes.includesKey(\type), {
+		if(declaration.includesKey(\type), {
 			try{
 				var type, attr;
-				attr = attributes.deepCopy;
+				attr = declaration.deepCopy;
 				type = attr.at(\type);
 				valueObj = VTMValue.makeFromType(type, attr);
 			} {
@@ -21,13 +21,11 @@ VTMValueElement : VTMElement {
 
 	}
 
-	*attributeKeys{
-		^super.attributeKeys ++ [\type];
+	*declarationKeys{
+		^super.declarationKeys ++ [\type];
 	}
 
 	action_{arg func;
 		valueObj.action = func;
 	}
-
-
 }

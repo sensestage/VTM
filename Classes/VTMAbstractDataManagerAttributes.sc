@@ -1,3 +1,0 @@
-VTMAbstractDataManagerAttributes : VTMNamedList {
-
-}

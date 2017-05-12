@@ -1,28 +1,26 @@
 VTMAbstractData{
 	var <name;
-	var attributes;
+	var declaration;
 	var <manager;
-	var attributeGetterFunctionsThunk;
-	var attributeSetterFunctionsThunk;
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
 	*managerClass{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg name, attributes, manager;
-		^super.new.initAbstractData(name, attributes, manager);
+	*new{arg name, declaration, manager;
+		^super.new.initAbstractData(name, declaration, manager);
 	}
 
-	initAbstractData{arg name_, attributes_, manager_;
+	initAbstractData{arg name_, declaration_, manager_;
 		name = name_;
 		manager = manager_;
-		attributes = VTMAttributes.newFrom(attributes_);
+		declaration = VTMDeclaration.newFrom(declaration_);
 	}
 
 	free{
 		this.releaseDependants;
-		attributes = nil;
+		declaration = nil;
 		manager = nil;
 	}
 
@@ -30,51 +28,40 @@ VTMAbstractData{
 		^nil;
 	}
 
-	*attributeKeys{
+	*declarationKeys{
 		^[];
 	}
 
-	attributeKeys{
-		^this.class.attributeKeys;
+	declarationKeys{
+		^this.class.declarationKeys;
 	}
 
-	attributes{
-		^attributes.copy;
+	declaration{
+		^declaration.copy;
 	}
 
-	set{arg attributeKey, value;
-		attributes.put(attributeKey, value);
-		this.changed(\attribute, attributeKey);
+	//can only set parameter values.
+	set{arg key, value;
+		var val;
+		//try to get parameter
+		declaration.put(key, value);
+		//TODO: set parameter value.
+		//parameters[key].valueAction_(value);
 	}
 
-	get{arg attributeKey;
-		^attributes.at(attributeKey);
+	//can only get parameter values.
+	get{arg key;
+		^declaration.at(key);
 	}
 
-	attributeGetterFunctions{
-		^attributeGetterFunctionsThunk.value;
-	}
-
-	attributeSetterFunctions{
-		^attributeSetterFunctionsThunk.value;
-	}
-
-	*makeAttributeGetterFunctions{arg data;
-		this.subclassResponsibility(thisMethod);
-	}
-
-	*makeAttributeSetterFunctions{arg param;
-		this.subclassResponsibility(thisMethod);
-	}
-
-	makeView{arg parent, bounds, definition, attributes;
+	makeView{arg parent, bounds, definition, settings;
 		var viewClass = this.class.viewClassSymbol.asClass;
-		//override class if defined in attributes.
-		if(attributes.notNil, {
-			if(attributes.includesKey(\viewClass), {
-				viewClass = attributes[\viewClass];
+		//override class if defined in settings.
+		if(settings.notNil, {
+			if(settings.includesKey(\viewClass), {
+				viewClass = settings[\viewClass];
 			});
 		});
-		^viewClass.new(parent, bounds, definition, attributes, this);
+		^viewClass.new(parent, bounds, definition, settings, this);
 	}
 }

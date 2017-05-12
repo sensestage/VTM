@@ -3,7 +3,7 @@ VTMValue {
 	var <>action;
 	var <selectedEnum;
 	var scheduler;
-	var attributes;
+	var declaration;
 
 	*prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
@@ -37,31 +37,31 @@ VTMValue {
 	*tuple{arg attr; ^this.makeFromType(thisMethod.name, attr); }
 
 
-	*makeFromType{arg type, attributes;
+	*makeFromType{arg type, declaration;
 		var class;
 		class = this.typeToClass(type);
 		if(class.notNil, {
-			^class.new(attributes);
+			^class.new(declaration);
 		}, {
 			Error("Unknown type").throw;
 		});
 	}
 
-	*new{arg attributes;
-		^super.new.initValue(attributes);
+	*new{arg declaration;
+		^super.new.initValue(declaration);
 	}
 
-	initValue{arg attributes_;
-		attributes = VTMAttributes.newFrom(attributes_);
-		if(attributes.notEmpty, {
-			if(attributes.includesKey(\value), {
-				this.value_(attributes[\value]);
+	initValue{arg declaration_;
+		declaration = VTMDeclaration.newFrom(declaration_);
+		if(declaration.notEmpty, {
+			if(declaration.includesKey(\value), {
+				this.value_(declaration[\value]);
 			});
-			if(attributes.includesKey(\defaultValue), {
-				this.defaultValue_(attributes[\defaultValue]);
+			if(declaration.includesKey(\defaultValue), {
+				this.defaultValue_(declaration[\defaultValue]);
 			});
-			if(attributes.includesKey(\enum), {
-				this.enum_(attributes[\enum]);
+			if(declaration.includesKey(\enum), {
+				this.enum_(declaration[\enum]);
 			});
 
 		});
@@ -74,29 +74,29 @@ VTMValue {
 	}
 
 	initValueParameter{
-		if(attributes.notEmpty, {
-			if(attributes.includesKey(\enabled), {
+		if(declaration.notEmpty, {
+			if(declaration.includesKey(\enabled), {
 				//Is enabled by default so only disabled if defined
-				if(attributes[\enabled].not, {
+				if(declaration[\enabled].not, {
 					this.disable;
 				})
 			});
-			if(attributes.includesKey(\defaultValue), {
+			if(declaration.includesKey(\defaultValue), {
 				"AAA".postln;
-				this.defaultValue_(attributes[\defaultValue]);
+				this.defaultValue_(declaration[\defaultValue]);
 			});
-			if(attributes.includesKey(\value), {
-				this.value_(attributes[\value]);
+			if(declaration.includesKey(\value), {
+				this.value_(declaration[\value]);
 			});
-			if(attributes.includesKey(\filterRepetitions), {
-				this.filterRepetitions = attributes[\filterRepetitions];
+			if(declaration.includesKey(\filterRepetitions), {
+				this.filterRepetitions = declaration[\filterRepetitions];
 			});
-			if(attributes.includesKey(\enum), {
+			if(declaration.includesKey(\enum), {
 				//enums are stored as key value pairs
-				this.enum = VTMNamedList.newFromKeyValuePairs(attributes[\enum]);
+				this.enum = VTMNamedList.newFromKeyValuePairs(declaration[\enum]);
 			});
-			if(attributes.includesKey(\restrictValueToEnum), {
-				this.restrictValueToEnum = attributes[\restrictValueToEnum];
+			if(declaration.includesKey(\restrictValueToEnum), {
+				this.restrictValueToEnum = declaration[\restrictValueToEnum];
 			});
 		});
 		enum = enum ? VTMNamedList();
@@ -192,23 +192,23 @@ VTMValue {
 		^enum[slotOrName];
 	}
 
-	*attributeKeys{
+	*declarationKeys{
 		^[\enabled, \filterRepetitions, \value, \defaultValue, \enum, \restrictValueToEnum];
 	}
 
 	set{arg key, val;
-		attributes.put(key, val);
-		this.changed(\attributes, key);
+		declaration.put(key, val);
+		this.changed(\declaration, key);
 	}
 
 	get{arg key;
-		^attributes[key];
+		^declaration[key];
 	}
 
-	attributes{arg includeDefaultValues = true;
-		var result = attributes.deepCopy;
+	declaration{arg includeDefaultValues = true;
+		var result = declaration.deepCopy;
 		if(includeDefaultValues, {
-			this.class.attributeKeys.do({arg attrKey;
+			this.class.declarationKeys.do({arg attrKey;
 				var attrVal = this.perform(attrKey);
 				//don't use the ones that are nil
 				if(attrVal.notNil, {
@@ -220,7 +220,7 @@ VTMValue {
 		^result;
 	}
 
-	//Attribute setters and getters
+	//Attribute getters
 	enabled{ ^this.get(\enabled) ? true; }
 	enabled_{arg val; this.set(\enabled, val); }
 

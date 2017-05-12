@@ -22,8 +22,8 @@ TestVTMValue : VTMUnitTest {
 		^this.classesForTesting.collect(_.type);
 	}
 
-	*generateRandomAttributes{arg description;
-		var result = VTMAttributes.new;
+	*generateRandomDeclaration{arg description;
+		var result = VTMDeclaration.new;
 		if(description.notNil, {
 			description.do({arg item;
 				if(item.isKindOf(Symbol), {
@@ -63,7 +63,7 @@ TestVTMValue : VTMUnitTest {
 				result = data;
 			});
 		}, {
-			//If it is nil we make a random attribute with
+			//If it is nil we make a random declaration with
 			//undefined Values.
 			result = this.makeRandomAttribute(key);
 		});
@@ -94,40 +94,40 @@ TestVTMValue : VTMUnitTest {
 	}
 
 
-	*makeRandomAttributes{arg type;
+	*makeRandomDeclaration{arg type;
 		var testClass, class, attrKeys, result;
 		class = "VTM%Value".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
-		attrKeys = class.attributeKeys;
-		result = testClass.generateRandomAttributes(attrKeys);
+		attrKeys = class.declarationKeys;
+		result = testClass.generateRandomDeclaration(attrKeys);
 		^result;
 	}
 
 
-	test_AreAllAttributesSettersAndGettersImplemented{
+	test_AreAllDeclarationSettersAndGettersImplemented{
 		this.class.classesForTesting.do({arg class;
 			var obj = class.new;
 			var testClass = this.class.findTestClass(class);
-			obj.class.attributeKeys.do({arg attributeKey;
+			obj.class.declarationKeys.do({arg declarationKey;
 				var testVal;
-				this.assert(obj.respondsTo(attributeKey),
-					"[%] - responds to attribute getter '%'".format(class, attributeKey)
+				this.assert(obj.respondsTo(declarationKey),
+					"[%] - responds to declaration getter '%'".format(class, declarationKey)
 				);
-				this.assert(obj.respondsTo(attributeKey.asSetter),
-					"[%] - responds to attribute setter '%'".format(class, attributeKey.asSetter)
+				this.assert(obj.respondsTo(declarationKey.asSetter),
+					"[%] - responds to declaration setter '%'".format(class, declarationKey.asSetter)
 				);
-				//setting attribute should affect the obj attributes
-				testVal = testClass.makeRandomAttribute(attributeKey);
+				//setting declaration should affect the obj declaration
+				testVal = testClass.makeRandomAttribute(declarationKey);
 				try{
-					obj.perform(attributeKey.asSetter, testVal);
+					obj.perform(declarationKey.asSetter, testVal);
 					this.assertEquals(
-						obj.attributes[attributeKey],
+						obj.declaration[declarationKey],
 						testVal,
-						"[%] - Attribute setter changed the internal attributes for '%'".format(class, attributeKey)
+						"[%] - Attribute setter changed the internal declaration for '%'".format(class, declarationKey)
 					);
 				} {
 					this.failed(thisMethod,
-						"[%] - Should not throw error when calling attribute setter for '%'".format(class, attributeKey)
+						"[%] - Should not throw error when calling declaration setter for '%'".format(class, declarationKey)
 					);
 				}
 			});
@@ -223,42 +223,42 @@ TestVTMValue : VTMUnitTest {
 
 	}
 
-	test_SetVariablesThroughAttributes{
+	test_SetVariablesThroughDeclaration{
 		this.class.classesForTesting.do({arg testClass;
-			var param, aAttributes, anAction;
+			var param, aDeclaration, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
-			aAttributes = (
+			aDeclaration = (
 				enabled: false
 			);
-			param = testClass.new(aAttributes);
+			param = testClass.new(aDeclaration);
 			param.action = anAction;
 
-			//enabled is set through attributes
+			//enabled is set through declaration
 			this.assert(param.enabled.not,
-				"Value was disabled through attributes"
+				"Value was disabled through declaration"
 			);
 
-			//action is set through attributes
+			//action is set through declaration
 			param.enable; //Reenable Value
 			param.doAction;
 			this.assert(wasRun and: {param.action === anAction},
-				"Value action was set through attributes"
+				"Value action was set through declaration"
 			);
 			param.free;
 		});
 	}
 
-	test_GetAttributes{
+	test_GetDeclaration{
 		this.class.classesForTesting.do({arg class;
 			var wasRun = false;
 			var testClass = this.class.findTestClass(class);
-			var attributes = testClass.makeRandomAttributes(class.type);
-			var param = class.makeFromType(class.type, attributes);
+			var declaration = testClass.makeRandomDeclaration(class.type);
+			var param = class.makeFromType(class.type, declaration);
 
 			this.assertEquals(
-				param.attributes, attributes,
-				"% returned correct attributes.".format(class)
+				param.declaration, declaration,
+				"% returned correct declaration.".format(class)
 			);
 			param.free;
 		});
@@ -454,13 +454,13 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 
-	test_SetVariablesFromAttributes{
+	test_SetVariablesFromDeclaration{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param;
-			var testAttributes;
+			var testDeclaration;
 			testClass = this.class.testclassForType( class.type );
-			testAttributes = testClass.generateRandomAttributes(
+			testDeclaration = testClass.generateRandomDeclaration(
 				[
 					\value,
 					\defaultValue,
@@ -468,12 +468,12 @@ TestVTMValue : VTMUnitTest {
 				]
 			);
 
-			param = VTMValue.makeFromType(class.type, testAttributes);
+			param = VTMValue.makeFromType(class.type, testDeclaration);
 
 			[\value, \defaultValue, \filterRepetitions].do({arg item;
 				this.assertEquals(
-					param.perform(item), testAttributes[item],
-					"Value set % through attributes [%]".format(item, class.name)
+					param.perform(item), testDeclaration[item],
+					"Value set % through declaration [%]".format(item, class.name)
 				);
 			});
 			param.free;
@@ -485,9 +485,9 @@ TestVTMValue : VTMUnitTest {
 			var testClass, testValue;
 			var param;
 			var testEnum;
-			var testAttributes;
+			var testDeclaration;
 			testClass = this.class.testclassForType( class.type );
-			testAttributes = testClass.generateRandomAttributes(
+			testDeclaration = testClass.generateRandomDeclaration(
 				[
 					\value,
 					\defaultValue,
@@ -496,8 +496,8 @@ TestVTMValue : VTMUnitTest {
 					\enum
 				]
 			);
-			testEnum = testAttributes.at(\enum);
-			param = VTMValue.makeFromType(class.type, testAttributes);
+			testEnum = testDeclaration.at(\enum);
+			param = VTMValue.makeFromType(class.type, testDeclaration);
 			this.assertEquals(
 				param.enum, testEnum,
 				"[%] set and returned correct enum".format(class)
@@ -506,14 +506,14 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 
-	// test_GetAttributes{
+	// test_GetDeclaration{
 	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param;
-	// 		var testAttributes, testAttributes;
+	// 		var testDeclaration, testDeclaration;
 	// 		testClass = this.class.testclassForType( class.type );
-	// 		testAttributes = testClass.generateRandomAttributes(
+	// 		testDeclaration = testClass.generateRandomDeclaration(
 	// 			[
 	// 				\value,
 	// 				\defaultValue,
@@ -526,17 +526,17 @@ TestVTMValue : VTMUnitTest {
 	// 				\enum
 	// 			]
 	// 		);
-	// 		param = VTMValue.makeFromAttributes(testAttributes);
-	// 		testAttributes = testAttributes.deepCopy;
-	// 		testAttributes.put(\action, testAttributes[\action].asCompileString);
+	// 		param = VTMValue.makeFromDeclaration(testDeclaration);
+	// 		testDeclaration = testDeclaration.deepCopy;
+	// 		testDeclaration.put(\action, testDeclaration[\action].asCompileString);
 	// 		this.assert(
-	// 			testAttributes.keys.sect(param.attributes.keys) == testAttributes.keys,
-	// 			"ValueValue returned correct attribute keys for ValueValue level [%]".format(class.name)
+	// 			testDeclaration.keys.sect(param.declaration.keys) == testDeclaration.keys,
+	// 			"ValueValue returned correct declaration keys for ValueValue level [%]".format(class.name)
 	// 		);
 	// 		//			this.assertEquals(
-	// 		//				testAttributes.sect(param.attributes),
-	// 		//			   	testAttributes,
-	// 		//			   	"ValueValue returned correct attribute values for ValueValue level [%]".format(class.name)
+	// 		//				testDeclaration.sect(param.declaration),
+	// 		//			   	testDeclaration,
+	// 		//			   	"ValueValue returned correct declaration values for ValueValue level [%]".format(class.name)
 	// 		//			);
 	// 		param.free;
 	// 	});

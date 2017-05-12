@@ -6,18 +6,18 @@ VTMElement : VTMAbstractData {
 	var commands;
 	var queries;
 
-	*new{arg name, attributes, manager;
+	*new{arg name, declaration, manager;
 		//Element objects must have 'name' in order to generate address path.
 		if(name.isNil, {
 			Error("% must have name".format(this.class.name)).throw;
 		});
-		^super.new(name, attributes, manager).initElement;
+		^super.new(name, declaration, manager).initElement;
 	}
 
 	initElement{
-		this.prInitQueries(attributes[\queries]);
-		this.prInitCommands(attributes[\commands]);
-		this.prInitParameters(attributes[\parameters]);
+		this.prInitQueries(declaration[\queries]);
+		this.prInitCommands(declaration[\commands]);
+		this.prInitParameters(declaration[\parameters]);
 	}
 
 	prInitParameters{arg attr;

@@ -9,8 +9,8 @@ VTMBooleanValue : VTMValue {
 		^val.isKindOf(Boolean);
 	}
 
-	*new{arg attributes;
-		^super.new(attributes).initBooleanParameter;
+	*new{arg declaration;
+		^super.new(declaration).initBooleanParameter;
 	}
 
 	initBooleanParameter{

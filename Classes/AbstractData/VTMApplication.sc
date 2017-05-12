@@ -6,8 +6,8 @@ VTMApplication : VTMContext {
 
 	*managerClass{ ^VTMLocalNetworkNode; }
 
-	*new{arg name, attributes, manager, definition;
-		^super.new(name, attributes, manager, definition).initApplication;
+	*new{arg name, declaration, manager, definition;
+		^super.new(name, declaration, manager, definition).initApplication;
 	}
 
 	initApplication{
@@ -16,10 +16,10 @@ VTMApplication : VTMContext {
 		modules = VTMModuleHost(this);
 		scenes = VTMSceneOwner(this);
 		// //Discover other application on the network
-		// if(attributes.includesKey(\openView), {
-		// 	if(attributes[\openView], {
+		// if(declaration.includesKey(\openView), {
+		// 	if(declaration[\openView], {
 		// 		var viewDesc, viewDef;
-		// 		this.makeView( attributes[\viewDefinition], attributes[\viewAttributes] );
+		// 		this.makeView( declaration[\viewDefinition], declaration[\viewSettings] );
 		// 	});
 		// });
 	}

@@ -1,15 +1,15 @@
 VTMContextProxyImplementation {
 	var context;
-	var attributes;
+	var declaration;
 	var definition;
 
-	*new{arg context, definition, attributes;
-		^super.new.initContextProxyImplementation(context, definition, attributes);
+	*new{arg context, definition, declaration;
+		^super.new.initContextProxyImplementation(context, definition, declaration);
 	}
 
-	initContextProxyImplementation{arg context_, definition_, attributes_;
+	initContextProxyImplementation{arg context_, definition_, declaration_;
 		context = context_;
-		attributes = attributes_;
+		declaration = declaration_;
 		definition = definition_;
 	}
 

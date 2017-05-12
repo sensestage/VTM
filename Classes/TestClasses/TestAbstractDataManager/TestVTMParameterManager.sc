@@ -1,8 +1,8 @@
 TestVTMParameterManager : TestVTMAbstractDataManager {
 
-	*makeRandomPresetForParameterAttributes{arg attributes;
+	*makeRandomPresetForParameterDeclaration{arg declaration;
 		var result = IdentityDictionary.new;
-		attributes.do({arg attr;
+		declaration.do({arg attr;
 			result.put(
 				attr[\name],
 				TestVTMParameter.testclassForType(attr[\type]).makeRandomValue
@@ -12,9 +12,9 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 	}
 
 	//make one of each type for testing
-	*makeTestAttributes{
+	*makeTestDeclaration{
 		^TestVTMParameter.testTypes.collect{arg item;
-			TestVTMParameter.makeRandomAttributes(item)
+			TestVTMParameter.makeRandomDeclaration(item)
 		};
 	}
 
@@ -28,7 +28,7 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetAttributesForElement{arg element;
+	*makeRandomPresetDeclarationForElement{arg element;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
 			result.put(this.makeRandomString, this.makeRandomPresetForElement(element));
@@ -36,10 +36,10 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetAttributesForParameterAttributes{arg attributes;
+	*makeRandomPresetDeclarationForParameterDeclaration{arg declaration;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
-			result.put(this.makeRandomString, this.makeRandomPresetForParameterAttributes(attributes));
+			result.put(this.makeRandomString, this.makeRandomPresetForParameterDeclaration(declaration));
 		};
 		^result.asKeyValuePairs;
 	}
@@ -52,7 +52,7 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 		element.prepare;
 
 		//make some random presets
-		testPresets = this.class.makeRandomPresetAttributesForElement(element);
+		testPresets = this.class.makeRandomPresetDeclarationForElement(element);
 		testPresetNames = testPresets.clump(2).flop[0];
 
 		testPresets.pairsDo({arg presetName, presetData;
@@ -65,8 +65,8 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 		);
 
 		this.assertEquals(
-			element.presetAttributes, testPresets,
-			"ParameterManager returned preset attributes correctly"
+			element.presetDeclaration, testPresets,
+			"ParameterManager returned preset declaration correctly"
 		);
 
 		element.free;

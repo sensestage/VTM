@@ -1,14 +1,14 @@
 VTMMapping : VTMElement {
 	*managerClass{ ^VTMMappingManager; }
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initMapping;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initMapping;
 	}
 
 	initMapping{}
 
-	*attributeKeys{
-		^super.attributeKeys ++ [\source, \destination, \when, \settings];
+	*declarationKeys{
+		^super.declarationKeys ++ [\source, \destination, \when, \settings];
 	}
 
 	*commandNames{
@@ -19,7 +19,7 @@ VTMMapping : VTMElement {
 		^super.queryNames ++ [\isEnabled];
 	}
 
-	//Attribute getters and setters
+	//Attributes getters
 	source{ ^this.get(\source); }
 	source_{arg val; this.set(\source, val); }
 

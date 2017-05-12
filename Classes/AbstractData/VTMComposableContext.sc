@@ -1,8 +1,8 @@
 VTMComposableContext : VTMContext {
 	var <children;
 
-	*new{arg name, attributes, manager, definition;
-		^super.new(name, attributes, manager, definition).initComposableContext;
+	*new{arg name, declaration, manager, definition;
+		^super.new(name, declaration, manager, definition).initComposableContext;
 	}
 
 	initComposableContext{
@@ -31,8 +31,8 @@ VTMComposableContext : VTMContext {
 		);
 	}
 
-	*attributeKeys{
-		^super.attributeKeys;
+	*declarationKeys{
+		^super.declarationKeys;
 	}
 
 	*commandNames{
