@@ -1,4 +1,4 @@
-VTMCommand : VTMElement {
+VTMCommand : VTMValueElement {
 	var <>action;
 
 	*managerClass{ ^VTMCommandManager; }

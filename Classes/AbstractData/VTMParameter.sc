@@ -1,0 +1,3 @@
+VTMParameter : VTMValueElement {
+	*managerClass{ ^VTMParameterManager; }
+}

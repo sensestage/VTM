@@ -18,15 +18,6 @@ VTMAbstractData{
 		name = name_;
 		manager = manager_;
 		attributes = VTMAttributes.newFrom(attributes_);
-
-		//FIXME: commented out for now awating attributes implementation.
-		//lazy attributesGetters and setters
-		// attributeGetterFunctionsThunk = Thunk({
-		// 	this.class.makeAttributeGetterFunctions(this);
-		// });
-		// attributeSetterFunctionsThunk = Thunk({
-		// 	this.class.makeAttributeSetterFunctions(this);
-		// });
 	}
 
 	free{
@@ -35,7 +26,9 @@ VTMAbstractData{
 		manager = nil;
 	}
 
-	prComponents{ ^nil; }
+	components{
+		^nil;
+	}
 
 	*attributeKeys{
 		^[];

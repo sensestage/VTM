@@ -4,7 +4,6 @@ TestVTMElement : TestVTMAbstractData {
 			VTMMapping,
 			VTMDefinitionLibrary,
 			VTMCommand,
-			// VTMContextParameter,
 			VTMRemoteNetworkNode,
 			VTMModule,
 			VTMApplication,

@@ -1,4 +1,4 @@
-TestVTMContextParameterManager : TestVTMAbstractDataManager {
+TestVTMParameterManager : TestVTMAbstractDataManager {
 
 	*makeRandomPresetForParameterAttributes{arg attributes;
 		var result = IdentityDictionary.new;
@@ -18,20 +18,20 @@ TestVTMContextParameterManager : TestVTMAbstractDataManager {
 		};
 	}
 
-	*makeRandomPresetForContext{arg context;
+	*makeRandomPresetForElement{arg element;
 		var result = IdentityDictionary.new;
-		context.parameters.do({arg paramName;
+		element.parameters.do({arg paramName;
 			var param;
-			param = context.getParameter(paramName);
+			param = element.getParameter(paramName);
 			result.put(paramName, TestVTMParameter.testclassForType(param.type).makeRandomValue);
 		});
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetAttributesForContext{arg context;
+	*makeRandomPresetAttributesForElement{arg element;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
-			result.put(this.makeRandomString, this.makeRandomPresetForContext(context));
+			result.put(this.makeRandomString, this.makeRandomPresetForElement(element));
 		};
 		^result.asKeyValuePairs;
 	}
@@ -46,33 +46,33 @@ TestVTMContextParameterManager : TestVTMAbstractDataManager {
 
 
 	test_AddingAndRemovingPresets{
-		var context, testPresets;
+		var element, testPresets;
 		var testPresetNames;
-		context = TestVTMContext.makeRandomContext;
-		context.prepare;
+		element = TestVTMElement.makeRandomElement;
+		element.prepare;
 
 		//make some random presets
-		testPresets = this.class.makeRandomPresetAttributesForContext(context);
+		testPresets = this.class.makeRandomPresetAttributesForElement(element);
 		testPresetNames = testPresets.clump(2).flop[0];
 
 		testPresets.pairsDo({arg presetName, presetData;
-			context.addPreset(presetData, presetName);
+			element.addPreset(presetData, presetName);
 		});
 
 		this.assertEquals(
-			context.presets, testPresetNames,
-			"ContextParameterManager added preset names correctly"
+			element.presets, testPresetNames,
+			"ParameterManager added preset names correctly"
 		);
 
 		this.assertEquals(
-			context.presetAttributes, testPresets,
-			"ContextParameterManager returned preset attributes correctly"
+			element.presetAttributes, testPresets,
+			"ParameterManager returned preset attributes correctly"
 		);
 
-		context.free;
+		element.free;
 	}
 
-	test_InitContextWithPresets{}
+	test_InitElementWithPresets{}
 
 
 }

@@ -23,7 +23,7 @@ VTMContextView : VTMView {
 		labelView = StaticText().string_(context.name).font_(this.font);
 		labelView.background_(Color.green);
 
-		parameterManagerView = VTMContextParameterManagerView.new(this);
+		parameterManagerView = VTMParameterManagerView.new(this);
 
 		contentView = View(this).layout_(
 			VLayout(

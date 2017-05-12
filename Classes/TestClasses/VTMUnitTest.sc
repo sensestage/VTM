@@ -10,7 +10,6 @@ VTMUnitTest : UnitTest {
 			VTMContext,
 			VTMNamedList,
 			// VTMApplication, //buggy testing when using .wait andhaung etc.
-			VTMContextParameterManager
 		].do({arg cl;
 			this.runTestForClass(cl, recursive: true);
 		});

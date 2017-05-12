@@ -7,7 +7,6 @@ TestVTMAbstractData : VTMUnitTest {
 			VTMMapping,
 			VTMDefinitionLibrary,
 			VTMCommand,
-			// VTMContextParameter,
 			VTMRemoteNetworkNode,
 			VTMModule,
 			VTMApplication,

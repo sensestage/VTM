@@ -1,7 +1,7 @@
-TestVTMContextParameter : TestVTMElement {
+TestVTMParameter : TestVTMElement {
 
 	//this method overides the superclass because wee need to define
-	//a type for the ContextParameter clas to be able to generate random
+	//a type for the Parameter clas to be able to generate random
 	//attributes.
 	*makeRandomAttributes{arg params, makeNameAttribute = false;
 		var result = VTMAttributes[];

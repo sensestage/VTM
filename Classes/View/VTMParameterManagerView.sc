@@ -1,17 +1,17 @@
-VTMContextParameterManagerView : VTMView {
+VTMParameterManagerView : VTMView {
 	var contextView;
 	var parameterViews;
 
 	*new{arg parent, bounds, definition, attributes;
 		if(parent.isKindOf(VTMContextView), {
-			^super.new(parent, bounds, definition, attributes).initContextParameterManagerView;
+			^super.new(parent, bounds, definition, attributes).initParameterManagerView;
 		}, {
-			"VTMContextParameterManagerView - parent View must be a kind of VTMContextView".warn;
+			"VTMParameterManagerView - parent View must be a kind of VTMContextView".warn;
 			^nil;
 		});
 	}
 
-	initContextParameterManagerView{
+	initParameterManagerView{
 		parameterViews = [];
 		"Context parameters are : %".format(this.context.parameters).postln;
 		if(this.context.parameters.notEmpty, {

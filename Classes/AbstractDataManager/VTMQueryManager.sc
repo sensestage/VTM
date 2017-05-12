@@ -1,0 +1,3 @@
+VTMQueryManager : VTMAbstractDataManager{
+	*dataClass{ ^VTMQuery; }
+}

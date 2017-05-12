@@ -5,12 +5,10 @@ VTMContext : VTMElement {
 	var <envir;
 	var <addr; //the address for this object instance.
 	var <state;
-	var <parameters;
 	var <presets;
 	var <cues;
 	var <mappings;
 	var <scores;
-	var <commands;
 	var condition;
 
 	classvar <viewClassSymbol = 'VTMContextView';
@@ -33,14 +31,6 @@ VTMContext : VTMElement {
 		definition = definition_ ? VTMContextDefinition.new(nil, this);
 		envir = definition.makeEnvir;
 		condition = Condition.new;
-		parameters = VTMContextParameterManager(this,
-			definition.parameters,
-			attributes[\parameters]
-		);
-		commands = VTMCommandManager(this,
-			definition.commands,
-			attributes[\commands]
-		);
 		presets = VTMPresetManager(this,
 			definition.presets,
 			attributes[\presets]
@@ -61,7 +51,7 @@ VTMContext : VTMElement {
 	}
 
 	components{
-		^[parameters, presets, cues, mappings, scores, commands];
+		^super.components ++ [presets, cues, mappings, scores];
 	}
 
 	//The context that calls prepare can issue a condition to use for handling

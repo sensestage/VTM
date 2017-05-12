@@ -17,7 +17,7 @@ TestVTMContext : TestVTMElement {
 		});
 		definition	= Environment.make{
 			~parameters = parameterAttributes;
-			~presets = TestVTMContextParameterManager.makeRandomPresetAttributesForParameterAttributes(
+			~presets = TestVTMParameterManager.makeRandomPresetAttributesForParameterAttributes(
 				parameterAttributes
 			);
 		};
@@ -278,7 +278,7 @@ TestVTMContext : TestVTMElement {
 				parameterValues[i] = p.value;
 			});
 		});
-		presetAttributes = TestVTMContextParameterManager.makeRandomPresetAttributesForParameterAttributes(
+		presetAttributes = TestVTMParameterManager.makeRandomPresetAttributesForParameterAttributes(
 			parameterAttributes);
 		definition	= Environment.make{
 			~parameters = parameterAttributes;
