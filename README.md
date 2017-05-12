@@ -99,4 +99,4 @@ GPIO.cleanup()
 
 ###logo
 
-![alt text](https://oddodd.org/lib/VTM.png "VTM")
+![alt text](https://oddodd.org/lib/VT/VTM.png "VTM")
