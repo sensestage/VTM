@@ -2,17 +2,19 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			VTMPreset,
-			VTMCue,
-			VTMMapping,
-			VTMDefinitionLibrary,
+			// VTMPreset,
+			// VTMCue,
+			// VTMMapping,
+			// VTMDefinitionLibrary,
 			VTMCommand,
-			VTMRemoteNetworkNode,
-			VTMModule,
-			VTMApplication,
-			VTMHardwareDevice,
-			VTMScore,
-			VTMScene
+			VTMParameter,
+			VTMQuery,
+			// VTMRemoteNetworkNode,
+			// VTMModule,
+			// VTMApplication,
+			// VTMHardwareDevice,
+			// VTMScore,
+			// VTMScene
 		];
 	}
 
@@ -79,34 +81,34 @@ TestVTMAbstractData : VTMUnitTest {
 			);
 
 			testAttributes = testClass.makeRandomAttributes;
-			obj = class.new(
-				testName,
-				testAttributes,
-				managerObj
-			);
-
-			//check if name initialized
-			this.assertEquals(
-				obj.name,
-				testName,
-				"[%] - init 'name' correctly".format(class)
-			);
-
-			//check attributes equal
-			this.assertEquals(
-				obj.attributes,
-				testAttributes,
-				"[%] - init 'attributes' correctly".format(class)
-			);
-
-			//the manager object must be identical
-			this.assert(
-				obj.manager === managerObj,
-				"[%] - init 'manager' correctly".format(class)
-			);
-
-			obj.free;
-			managerObj.free;
+			// obj = class.new(
+			// 	testName,
+			// 	testAttributes,
+			// 	managerObj
+			// );
+			//
+			// //check if name initialized
+			// this.assertEquals(
+			// 	obj.name,
+			// 	testName,
+			// 	"[%] - init 'name' correctly".format(class)
+			// );
+			//
+			// //check attributes equal
+			// this.assertEquals(
+			// 	obj.attributes,
+			// 	testAttributes,
+			// 	"[%] - init 'attributes' correctly".format(class)
+			// );
+			//
+			// //the manager object must be identical
+			// this.assert(
+			// 	obj.manager === managerObj,
+			// 	"[%] - init 'manager' correctly".format(class)
+			// );
+			//
+			// obj.free;
+			// managerObj.free;
 		});
 	}
 

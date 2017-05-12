@@ -21,7 +21,7 @@ TestVTMPreset : TestVTMAbstractData {
 					].do({arg paramType;
 						result = result.addAll([
 							this.makeRandomSymbol,
-							TestVTMParameter.testclassForType(paramType).makeRandomValue
+							TestVTMValue.testclassForType(paramType).makeRandomValue
 						]);
 					});
 				}, {
@@ -34,7 +34,7 @@ TestVTMPreset : TestVTMAbstractData {
 						});
 						result = result.addAll([
 							parameterAttribute[\name] ? this.makeRandomSymbol,
-							TestVTMParameter.testclassForType(parameterAttribute[\type]).makeRandomValue(
+							TestVTMValue.testclassForType(parameterAttribute[\type]).makeRandomValue(
 								parameterAttribute
 							)
 						]);
