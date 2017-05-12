@@ -15,6 +15,7 @@
 	};
 };
 
+// is this needed?
 ~free = {arg module, condition;
     "freeing BufWrMonster".postln;
 };
