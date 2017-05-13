@@ -2,13 +2,13 @@
 VTM - system for Verdensteatret ( www.verdensteatret.com )
 This code is in a state of severe alpha and early development. That means that restructuring the class tree, and renaming, adding and removing methods/classes may – and will – happen.
 
-###requirements
+### requirements
 
 * UnitTesting quark
 * API quark
 * sc3-plugins
 
-###install VTM
+### install VTM
 
 * Install supercollider
 * `git clone https://github.com/blacksound/VTM.git`
@@ -16,7 +16,7 @@ This code is in a state of severe alpha and early development. That means that r
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
   - On OS X it is usually in `~/Library/Application Support/SuperCollider`.
 
-###install VTM on a raspberry pi
+### install VTM on a raspberry pi
 
 * first install supercollider from <https://github.com/redFrik/supercolliderStandaloneRPI2> (now includes sc3-plugins)
 * then start sclang and do `Quarks.install("UnitTesting")`
@@ -25,9 +25,9 @@ This code is in a state of severe alpha and early development. That means that r
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
   - for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM/Classes` under includePaths
 
-#general raspberry pi instructions
+# general raspberry pi instructions
 
-###install jessie on raspberry pi and amend settings
+### install jessie on raspberry pi and amend settings
 
 * burn image or etch .zip to SD card <https://www.etcher.io/>
 * boot raspberry ...
@@ -35,7 +35,7 @@ This code is in a state of severe alpha and early development. That means that r
 * enable VNC (in raspi-config)
 * set gpu_mem to `192` via the desktop environment or edit in `/boot/config.txt`
 
-###how to solve problem with mounting a usb drive:
+### how to solve problem with mounting a usb drive:
 
 * `lsusb` - should do the trick
 * if not then ..
@@ -46,7 +46,7 @@ This code is in a state of severe alpha and early development. That means that r
   - `ls /media/usb`
 
 
-###shotdown.py for raspberry pi
+### shotdown.py for raspberry pi
 
 * use the following python script
 ```python
@@ -69,7 +69,7 @@ GPIO.cleanup()
   - #and add the following…
   - `@reboot python /home/pi/shutdown.py`
 
-###additional
+### additional
 
 ##### if needed.. build and include sc3-plugins on raspberry pi
 * if not already done, install cmake
@@ -97,6 +97,7 @@ GPIO.cleanup()
   - `rm -rf SC3plugins/share`
   - `rm -rf SC3plugins/local`
 
-###logo
+### misc
 
-![alt text](https://oddodd.org/lib/VT/VTM.png "VTM")
+![alt text](https://oddodd.org/lib/VTM/VTM.png "VTM")
+![alt text](https://oddodd.org/lib/VTM/VTM_old.png "VTM")
