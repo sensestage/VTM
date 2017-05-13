@@ -2,6 +2,10 @@ VTMAbstractData{
 	var <name;
 	var declaration;
 	var <manager;
+	var parameters;
+	var commands;
+	var queries;
+
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
 	*managerClass{
@@ -16,25 +20,40 @@ VTMAbstractData{
 		name = name_;
 		manager = manager_;
 		declaration = VTMDeclaration.newFrom(declaration_);
+		this.prInitQueries(declaration[\queries]);
+		this.prInitCommands(declaration[\commands]);
+		this.prInitParameters(declaration[\parameters]);
+	}
+
+	prInitParameters{arg attr;
+		parameters = VTMParameterManager(this, attr);
+	}
+
+	prInitQueries{arg attr;
+		queries = VTMQueryManager(this, attr );
+	}
+
+	prInitCommands{arg attr;
+		commands = VTMCommandManager(this, attr);
+	}
+
+	components{
+		^[parameters, queries, commands];
 	}
 
 	free{
+		this.components.do(_.free);
 		this.releaseDependants;
 		declaration = nil;
 		manager = nil;
 	}
 
-	components{
-		^nil;
-	}
+	*parameterKeys{ ^[]; }
+	*attributeKeys{ ^[]; }
+	*commandKeys{ ^[]; }
+	*queryKeys{ ^[]; }
+	*declarationKeys{ ^this.attributeKeys ++ this.parameterKeys; }
 
-	*declarationKeys{
-		^[];
-	}
-
-	declarationKeys{
-		^this.class.declarationKeys;
-	}
 
 	declaration{
 		^declaration.copy;
@@ -46,12 +65,12 @@ VTMAbstractData{
 		//try to get parameter
 		declaration.put(key, value);
 		//TODO: set parameter value.
-		//parameters[key].valueAction_(value);
+		parameters[key].valueAction_(value);
 	}
 
 	//can only get parameter values.
 	get{arg key;
-		^declaration.at(key);
+		^VTMDeclaration.newFrom(declaration).putAll(parameters.declaration);
 	}
 
 	makeView{arg parent, bounds, definition, settings;

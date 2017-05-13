@@ -1,10 +1,6 @@
 VTMElement : VTMAbstractData {
 	var oscInterface;
-	var commands;
 	var path;
-	var parameters;
-	var commands;
-	var queries;
 
 	*new{arg name, declaration, manager;
 		//Element objects must have 'name' in order to generate address path.
@@ -15,30 +11,10 @@ VTMElement : VTMAbstractData {
 	}
 
 	initElement{
-		this.prInitQueries(declaration[\queries]);
-		this.prInitCommands(declaration[\commands]);
-		this.prInitParameters(declaration[\parameters]);
-	}
-
-	prInitParameters{arg attr;
-		parameters = VTMParameterManager(this, attr);
-	}
-
-	prInitQueries{arg attr;
-		queries = VTMQueryManager(this, attr );
-	}
-
-	prInitCommands{arg attr;
-		commands = VTMCommandManager(this, attr);
-	}
-
-	components{
-		^super.components ++ [parameters, queries, commands];
 	}
 
 	free{
 		this.disableOSC;
-		this.components.do(_.free);
 		super.free;
 	}
 
@@ -98,13 +74,5 @@ VTMElement : VTMAbstractData {
 		}, {
 			^nil;
 		});
-	}
-
-	*commandNames{
-		^[];
-	}
-
-	*queryNames{
-		^[];
 	}
 }

@@ -82,6 +82,7 @@ VTMCue : VTMAbstractData {
 		});
 	}
 
+
 	//Attribute getters
 	preDelay{ ^this.get(\preDelay) ? 0.0; }
 	preDelay_{arg val; this.set(\preDelay, val); }
