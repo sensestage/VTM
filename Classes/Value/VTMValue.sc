@@ -87,7 +87,6 @@ VTMValue {
 				})
 			});
 			if(description.includesKey(\defaultValue), {
-				"AAA".postln;
 				this.defaultValue_(description[\defaultValue]);
 			});
 			if(description.includesKey(\value), {

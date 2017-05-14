@@ -17,10 +17,10 @@ VTMListValue : VTMCollectionValue {
 	}
 
 	*new{arg description;
-		^super.new(description).initListParameter;
+		^super.new(description).initListValue;
 	}
 
-	initListParameter{
+	initListValue{
 		if(description.notEmpty, {
 			if(description.includesKey(\itemType), {
 				itemType = description[\itemType];
@@ -32,7 +32,7 @@ VTMListValue : VTMCollectionValue {
 		itemDescription = [ () ];
 
 		//build the internal parameters
-		this.prBuildItemParameters;
+		this.prBuildItemValues;
 		orderThunk = Thunk{
 			items.collect(_.name);
 		};
@@ -43,7 +43,7 @@ VTMListValue : VTMCollectionValue {
 		});
 	}
 
-	prBuildItemParameters{
+	prBuildItemValues{
 		//Check if the items are already built.
 		//This forces you to always make a new list parameter if one is
 		//already made.
@@ -51,11 +51,11 @@ VTMListValue : VTMCollectionValue {
 			var itemClass, itemDescription, descriptionKeys;
 			var baseItemDesc;
 			items = Dictionary.new;
-			itemClass = VTMParameter.typeToClass(itemType);
+			itemClass = VTMValue.typeToClass(itemType);
 
 			//all sub parameters have this base item description
 			baseItemDesc = (
-				isSubParameter: true
+				isSubValue: true
 			);
 
 			//Expand all the items in the item description, e.g. arrayed keys etc.
@@ -90,7 +90,7 @@ VTMListValue : VTMCollectionValue {
 			});
 
 		}, {
-			Error("ListParameter items already built, please free current and build a new parameter.").throw;
+			Error("ListValue items already built, please free current and build a new parameter.").throw;
 		});
 	}
 
