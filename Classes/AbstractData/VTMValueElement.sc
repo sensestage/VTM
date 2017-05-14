@@ -30,4 +30,9 @@ VTMValueElement : VTMAbstractData {
 	value{
 		^valueObj.value;
 	}
+
+	free{
+		valueObj = nil;
+	}
+	
 }

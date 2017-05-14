@@ -3,6 +3,8 @@ VTMAbstractData{
 	var <manager;
 	var declaration;
 	var attributes;
+	var oscInterface;
+	var path;
 
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
@@ -28,10 +30,11 @@ VTMAbstractData{
 	}
 
 	prInitAttributes{
-		attributes = VTMAttributes(this, declaration[\attributes]);
+		attributes = VTMAttributeManager(this, declaration[\attributes]);
 	}
 
 	free{
+		this.disableOSC;
 		this.releaseDependants;
 		declaration = nil;
 		manager = nil;
@@ -67,5 +70,63 @@ VTMAbstractData{
 			});
 		});
 		^viewClass.new(parent, bounds, definition, settings, this);
+	}
+
+	fullPath{
+		^(this.path ++ this.leadingSeparator ++ this.name).asSymbol;
+	}
+
+	path{
+		if(manager.isNil, {
+			^path;
+		}, {
+			^manager.fullPath;
+		});
+	}
+
+	path_{arg val;
+		if(manager.isNil, {
+			if(val.notNil, {
+				if(val.asString.first != $/, {
+					val = ("/" ++ val).asSymbol;
+				});
+				path = val.asSymbol;
+			}, {
+				path = nil;
+			});
+
+			//TODO: update/rebuild responders upon changed path, if manually set.
+			//osc interface will be an observer of this object and update its responders.
+			this.changed(\path, path);
+		}, {
+			"'%' - Can't set path manually when managed".format(this.fullPath).warn;
+		});
+	}
+
+	hasDerivedPath{
+		^manager.notNil;
+	}
+
+	leadingSeparator{ ^'/'; }
+
+	enableOSC{
+		//make OSC interface if not already created
+		if(oscInterface.isNil, {
+			oscInterface = VTMOSCInterface.new(this);
+		});
+		oscInterface.enable;
+	}
+
+	disableOSC{
+		if(oscInterface.notNil, { oscInterface.free;});
+		oscInterface = nil;
+	}
+
+	oscEnabled{
+		^if(oscInterface.notNil, {
+			oscInterface.enabled;
+		}, {
+			^nil;
+		});
 	}
 }

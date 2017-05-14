@@ -1,5 +1,4 @@
 VTMPreset : VTMAbstractData {
-	var values;
 
 	*managerClass{ ^VTMPresetManager; }
 
