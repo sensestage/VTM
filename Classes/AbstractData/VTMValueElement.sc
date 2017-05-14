@@ -1,4 +1,4 @@
-VTMValueElement : VTMElement {
+VTMValueElement : VTMAbstractData {
 	var valueObj;
 
 	*new{arg name, declaration, manager;
@@ -8,10 +8,12 @@ VTMValueElement : VTMElement {
 	initValueElement{
 		if(declaration.includesKey(\type), {
 			try{
-				var type, attr;
-				attr = declaration.deepCopy;
-				type = attr.at(\type);
-				valueObj = VTMValue.makeFromType(type, attr);
+				var type, decl;
+				decl = declaration.deepCopy;
+				type = decl.at(\type);
+				//no ValueElement can define action externally.
+				decl.removeAt(\action);
+				valueObj = VTMValue.makeFromType(type, decl);
 			} {
 				Error("[%] - Unknown parameter type: '%'".format(this.fullPath, this.type)).throw;
 			}
@@ -25,7 +27,7 @@ VTMValueElement : VTMElement {
 		^super.declarationKeys ++ [\type];
 	}
 
-	action_{arg func;
-		valueObj.action = func;
+	value{
+		^valueObj.value;
 	}
 }

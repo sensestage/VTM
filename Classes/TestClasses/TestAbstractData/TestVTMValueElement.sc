@@ -33,6 +33,4 @@ TestVTMValueElement : TestVTMElement {
 		var result = valueTestClass.makeRandomAttribute(key, params);
 		^result;
 	}
-
-
 }

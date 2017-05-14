@@ -1,2 +1,2 @@
-VTMComposableContextManager : VTMAbstractDataManager {
+VTMComposableContextManager : VTMContextComponent {
 }

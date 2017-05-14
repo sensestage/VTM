@@ -1,4 +1,4 @@
-VTMDefinitionLibraryManager : VTMAbstractDataManager {
+VTMDefinitionLibraryManager : VTMContextComponent {
 	classvar <global;
 
 	*initClass{

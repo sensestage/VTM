@@ -1,3 +1,6 @@
-VTMAbstractDataComponent : VTMAbstractDataManager{
+VTMElementComponent : VTMAbstractDataManager{
 
+	*new{
+		^super.new()
+	}
 }

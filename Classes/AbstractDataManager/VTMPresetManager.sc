@@ -1,4 +1,4 @@
-VTMPresetManager : VTMAbstractDataManager{
+VTMPresetManager : VTMContextComponent{
 	*dataClass{ ^VTMPreset; }
 	name{ ^\presets; }
 

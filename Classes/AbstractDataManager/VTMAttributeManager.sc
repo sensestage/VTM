@@ -1,3 +1,3 @@
-VTMAttributeManager : VTMAbstractDataComponent{
-	*dataClass{ ^VTMAttribute; }
+VTMAttributeManager : VTMOrderedIdentityDictionary {
+
 }

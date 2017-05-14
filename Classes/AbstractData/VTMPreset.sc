@@ -11,26 +11,13 @@ VTMPreset : VTMAbstractData {
 
 	}
 
-	values{
-		^this.declaration;
+	*parameterDefinitions{
+		^super.parameterDescriptions ++ [
+			(name: \values, \type: \dictionary)
+		];
 	}
 
-	values_{arg vals;
-		vals.pairsDo({arg key, val;
-			this.set(key, val);
-		});
-	}
-
-	*declarationKeys{
-		^super.declarationKeys ++ [\values];
-	}
-
-	//check if preset covers all parameters in the arg context
-	isComplete{arg context;
-		^(context.parameters.names.asSet == declaration.keys);
-	}
-
-	interpolate{arg anotherPreset, fraction = 0.5, transitionPoints;
+	*interpolate{arg aPreset, bPreset, fraction = 0.5, transitionPoints;
 		//
 	}
 }

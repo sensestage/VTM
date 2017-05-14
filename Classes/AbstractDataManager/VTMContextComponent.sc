@@ -1,0 +1,3 @@
+VTMContextComponent : VTMElementComponent {
+
+}

@@ -12,23 +12,44 @@ VTMCue : VTMAbstractData {
 		^super.new(name, declaration, manager).initCue;
 	}
 
+	*newFromCueFile{
+		//TODO: Load a scd file with cue code
+	}
+
 	initCue{
 		condition = Condition.new;
 	}
 
-	*declarationKeys{
-		^super.declarationKeys ++ [
-			\preDelay,
-			\duration,
-			\postDelay,
-			\points,
-			\hangBeforeStart,
-			\maxStartHangTime,
-			\hangBeforeEnd,
-			\maxEndHangTime,
-			\pointOrder,
-			\hangBetweenPoints,
-			\delayBetweenPoints
+	*parameterDescriptions{
+		^[
+			(name: \preDelay, type: \decimal),
+			(name: \duration, type: \decimal),
+			(name: \postDelay, type: \decimal),
+			(name: \duration, type: \decimal),
+			(name: \hangBeforeStart, type: \boolean),
+			(name: \maxStartHangTime, type: \decimal),
+			(name: \hangBeforeEnd, type: \boolean),
+			(name: \maxEndHangTime, type: \decimal),
+			(name: \pointOrder, type: \string,
+				enum: [\normal, \reverse, \random],
+				restrictValueToEnum: false),
+			(name: \hangBetweenPoints, type: \boolean),
+			(name: \delayBetweenPoints, type: \decimal)
+		];
+	}
+
+	*attributeDescriptions{
+		^[
+			(name: \points),//no type when input is an array of functions?
+		];
+	}
+
+	*commandDescriptions{
+		^[
+			(name: \go, action: {this.go;}),
+			(name: \signal, action: {this.signal;}),
+			(name: \stop, action: {this.stop;}),
+			(name: \reset, action: {this.reset;})
 		];
 	}
 

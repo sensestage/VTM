@@ -1,4 +1,4 @@
-VTMMappingManager : VTMAbstractDataManager {
+VTMMappingManager : VTMContextComponent {
 	*dataClass{ ^VTMMapping; }
 	name{ ^\mappings; }
 }
