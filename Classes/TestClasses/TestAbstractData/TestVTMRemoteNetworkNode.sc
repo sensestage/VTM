@@ -1,1 +1,1 @@
-TestVTMRemoteNetworkNode : TestVTMAbstractNetworkNode {}
+TestVTMRemoteNetworkNode : TestVTMElement {}

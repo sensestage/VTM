@@ -1,4 +1,4 @@
-VTMRemoteNetworkNode : VTMAbstractNetworkNode {
+VTMRemoteNetworkNode : VTMElement {
 	*managerClass{ ^VTMNetworkNodeManager; }
 
 	*new{arg name, declaration, manager;
@@ -7,11 +7,4 @@ VTMRemoteNetworkNode : VTMAbstractNetworkNode {
 
 	initRemoveNetworkNode{}
 
-	*commandNames{
-		^super.commandNames ++ [\start, \stop];
-	}
-
-	*queryNames{
-		^super.queryNames ++ [\applications];
-	}
 }

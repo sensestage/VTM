@@ -1,1 +1,1 @@
-TestVTMLocalNetworkNode : TestVTMAbstractNetworkNode {}
+TestVTMLocalNetworkNode : TestVTMAbstractDataManager {}
