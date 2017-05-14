@@ -1,5 +1,4 @@
-VTMPresetManager : VTMContextComponent{
-	*dataClass{ ^VTMPreset; }
+VTMPresetManager : VTMNamedList{
 	name{ ^\presets; }
 
 //	loadPreset{arg presetName, ramping;

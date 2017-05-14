@@ -3,6 +3,7 @@ VTMAbstractDataManager {
 	var context;
 	var items;
 	var oscInterface;
+	var declaration;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
@@ -16,6 +17,7 @@ VTMAbstractDataManager {
 	//declaration is an array of Dictionaries with item declaration.
 	initAbstractDataManager{arg context_, declaration_;
 		context = context_;
+		declaration = declaration_;
 		items = VTMNamedList.new;
 		if(declaration_.notNil, {
 			declaration_.do({arg item;

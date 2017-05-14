@@ -2,7 +2,6 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			VTMPreset,
 			VTMCue,
 			VTMMapping,
 			VTMDefinitionLibrary,

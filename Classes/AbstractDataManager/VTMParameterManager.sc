@@ -1,11 +1,19 @@
 VTMParameterManager : VTMElementComponent {
 	var <parameters;
 	var <order;
-	var presetList;
+	var presets;
 
 	*dataClass{ ^VTMParameter; }
 	name{ ^\parameters; }
 
+	*new{arg context, declaration;
+		^super.new(context, declaration).initParameterManager;
+	}
+
+	initParameterManager{
+		presets = VTMPresetManager(declaration[\presets]);
+	}
+	
 	loadParameterDeclaration{arg parameterDeclaration;
 		if(parameterDeclaration.notNil, {
 			parameterDeclaration.do({arg paramDeclaration;
@@ -80,32 +88,32 @@ VTMParameterManager : VTMElementComponent {
 		if(context.envir.includesKey(\presets), {
 			result = result.addAll(context.envir[\presets].collect({arg assoc; assoc.key;}));
 		});
-		if(presetList.notNil, {
-			result = result.addAll(presetList.names);
+		if(presets.notNil, {
+			result = result.addAll(presets.names);
 		});
 		^result;
 		// ^result;
 	}
 
 	getPreset{arg presetName;
-		^presetList.at(presetName);
+		^presets.at(presetName);
 	}
 
 	addPreset{arg data, presetName, slot;
 		//if this is the first preset to be added we have to create
-		//a presetList first
+		//a presets first
 		"Adding preset slot %[%]:\n\t%".format(presetName, slot, data).postln;
-		if(presetList.isNil, {
-			presetList = VTMNamedList.new;
+		if(presets.isNil, {
+			presets = VTMNamedList.new;
 		});
-		presetList.addItem(data, presetName, slot);
+		presets.addItem(data, presetName, slot);
 		this.changed(\presetAdded, presetName);
 	}
 
 	removePreset{arg presetName;
 		var removedPreset;
-		if(presetList.notNil, {
-			removedPreset = presetList.removeItem(presetName);
+		if(presets.notNil, {
+			removedPreset = presets.removeItem(presetName);
 			if(removedPreset.notNil, {
 				"Context: % - removed preset '%'".format(this.fullPath, presetName).postln;
 			});
@@ -115,7 +123,7 @@ VTMParameterManager : VTMElementComponent {
 	}
 
 	presetDeclaration{
-		^presetList.asKeyValuePairs;
+		^presets.asKeyValuePairs;
 	}
 
 	names{

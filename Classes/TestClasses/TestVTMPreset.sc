@@ -1,4 +1,4 @@
-TestVTMPreset : TestVTMAbstractData {
+TestVTMPreset : VTMUnitTest {
 
 	*makeRandomAttribute{arg key, params;
 		var result;

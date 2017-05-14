@@ -17,9 +17,6 @@ TestVTMContext : TestVTMElement {
 		});
 		definition	= Environment.make{
 			~parameters = parameterDeclaration;
-			~presets = TestVTMParameterManager.makeRandomPresetDeclarationForParameterDeclaration(
-				parameterDeclaration
-			);
 		};
 		declaration = (
 			path: "/%".format(this.makeRandomString).asSymbol
@@ -102,7 +99,7 @@ TestVTMContext : TestVTMElement {
 		var context, testName;
 		var declaration;
 		var definition;
-		var paramsAttr, presetsAttr, cuesAttr, mappingsAttr;
+		var paramsAttr, cuesAttr, mappingsAttr;
 		var scoresAttr, commandsAttr;
 		//Construct with definition and declaration
 		testName = this.class.makeRandomString.asSymbol;
@@ -111,16 +108,14 @@ TestVTMContext : TestVTMElement {
 		commandsAttr = TestVTMCommandManager.makeRandomDeclaration(paramsAttr);
 		mappingsAttr = TestVTMMappingManager.makeRandomDeclaration(paramsAttr, commandsAttr);
 
-		presetsAttr = TestVTMPresetManager.makeRandomDeclaration(paramsAttr);
 		cuesAttr = TestVTMCueManager.makeRandomDeclaration(paramsAttr, commandsAttr);
 		scoresAttr = TestVTMScoreManager.makeRandomDeclaration(
-			paramsAttr, commandsAttr, mappingsAttr, presetsAttr, cuesAttr
+			paramsAttr, commandsAttr, mappingsAttr, cuesAttr
 		);
 
 		declaration = (
 			path: "/%".format(this.class.makeRandomString).asSymbol,
 			parameters: paramsAttr,
-			presets: presetsAttr,
 			cues: cuesAttr,
 			mappings: mappingsAttr,
 			scores: scoresAttr,
@@ -267,7 +262,6 @@ TestVTMContext : TestVTMElement {
 	test_initParametersAndPresets{
 		var context, name = this.class.makeRandomString;
 		var parameterDeclaration;
-		var presetDeclaration;
 		var definition, declaration;
 		var numParameters = rrand(3,8);
 		var parameterValues = Array.newClear(numParameters);
@@ -278,11 +272,8 @@ TestVTMContext : TestVTMElement {
 				parameterValues[i] = p.value;
 			});
 		});
-		presetDeclaration = TestVTMParameterManager.makeRandomPresetDeclarationForParameterDeclaration(
-			parameterDeclaration);
 		definition	= Environment.make{
 			~parameters = parameterDeclaration;
-			~presets = presetDeclaration;
 		};
 		declaration = (
 			path: "/%".format(this.class.makeRandomString).asSymbol
@@ -297,12 +288,6 @@ TestVTMContext : TestVTMElement {
 			"Context initialized parameter names in the right order"
 		);
 
-		//Should return preset names
-		this.assertEquals(
-			context.presets,
-			presetDeclaration.collect({arg it; it[\name].asSymbol}),
-			"Context initialized parameter names in the right order"
-		);
 
 		//check that the param path was built with the context path
 		parameterDeclaration.do({arg item;
@@ -346,7 +331,7 @@ TestVTMContext : TestVTMElement {
 
 		{//test the OSC API getters
 			[
-				'children?', 'parameters?', 'state?', 'presets?'
+				'children?', 'parameters?', 'state?'
 			].do({arg cmdKey;
 				var tempResponder, response, cond;
 				var responded = false;
