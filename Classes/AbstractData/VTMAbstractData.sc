@@ -1,10 +1,8 @@
 VTMAbstractData{
 	var <name;
-	var declaration;
 	var <manager;
-	var parameters;
-	var commands;
-	var queries;
+	var declaration;
+	var attributes;
 
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
@@ -16,61 +14,48 @@ VTMAbstractData{
 		^super.new.initAbstractData(name, declaration, manager);
 	}
 
+	*newFromDeclaration{arg declaration, manager;
+		var dec = declaration.deepCopy;
+		^this.new(dec.removeAt(\name), dec, manager);
+	}
+
 	initAbstractData{arg name_, declaration_, manager_;
 		name = name_;
 		manager = manager_;
+
 		declaration = VTMDeclaration.newFrom(declaration_);
-		this.prInitQueries(declaration[\queries]);
-		this.prInitCommands(declaration[\commands]);
-		this.prInitParameters(declaration[\parameters]);
+		this.prInitAttributes;
 	}
 
-	prInitParameters{arg attr;
-		parameters = VTMParameterManager(this, attr);
-	}
-
-	prInitQueries{arg attr;
-		queries = VTMQueryManager(this, attr );
-	}
-
-	prInitCommands{arg attr;
-		commands = VTMCommandManager(this, attr);
-	}
-
-	components{
-		^[parameters, queries, commands];
+	prInitAttributes{
+		attributes = VTMAttributes(this, declaration[\attributes]);
 	}
 
 	free{
-		this.components.do(_.free);
 		this.releaseDependants;
 		declaration = nil;
 		manager = nil;
 	}
 
-	*parameterKeys{ ^[]; }
-	*attributeKeys{ ^[]; }
-	*commandKeys{ ^[]; }
-	*queryKeys{ ^[]; }
-	*declarationKeys{ ^this.attributeKeys ++ this.parameterKeys; }
+	*declarationKeys{
+		var result;
+		result = this.attributeDefinitions.collect({arg it; it[\name]});
+		^result;
+	}
 
+	*attributeDefinitions{ ^[
+		(name: \name, type: \string)
+	]; }
+
+	description{
+		var result = VTMOrderedIdentityDictionary[
+			\attributes -> this.class.attributeDefinitions,
+		];
+		^result;
+	}
 
 	declaration{
 		^declaration.copy;
-	}
-
-	//can only set parameter values.
-	set{arg key, value;
-		var val;
-		//try to get parameter
-		declaration.put(key, value);
-		//TODO: set parameter value.
-		parameters[key].valueAction_(value);
-	}
-
-	//can only get parameter values.
-	get{arg key;
-		^VTMDeclaration.newFrom(declaration).putAll(parameters.declaration);
 	}
 
 	makeView{arg parent, bounds, definition, settings;
