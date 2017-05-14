@@ -42,6 +42,10 @@ VTMAbstractDataManager {
 		});
 	}
 
+	at{arg key;
+		^items.at(key);
+	}
+
 	isEmpty{ ^items.isEmpty; }
 
 	free{

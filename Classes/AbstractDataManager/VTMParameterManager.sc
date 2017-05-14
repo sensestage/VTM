@@ -1,4 +1,4 @@
-VTMParameterManager : VTMAbstractDataManager {
+VTMParameterManager : VTMAbstractDataComponent {
 	var <parameters;
 	var <order;
 	var presetList;

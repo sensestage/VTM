@@ -1,6 +1,4 @@
-//This class is for commands specified in an
-//ContextDefinition.
-VTMCommandManager : VTMAbstractDataManager {
+VTMCommandManager : VTMAbstractDataComponent {
 	*dataClass{ ^VTMCommand; }
 	name{ ^\commands; }
 }

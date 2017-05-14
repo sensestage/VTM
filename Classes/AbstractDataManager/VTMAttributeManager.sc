@@ -1,0 +1,3 @@
+VTMAttributeManager : VTMAbstractDataComponent{
+	*dataClass{ ^VTMAttribute; }
+}
