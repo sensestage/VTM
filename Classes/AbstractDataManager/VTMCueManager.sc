@@ -1,4 +1,4 @@
-VTMCueManager : VTMContextComponent {
+VTMCueManager : VTMComposableContextManager {
 	*dataClass{ ^VTMCue; }
 	name{ ^\cues; }
 }

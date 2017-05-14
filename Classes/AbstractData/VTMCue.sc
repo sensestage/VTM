@@ -1,4 +1,4 @@
-VTMCue : VTMAbstractData {
+VTMCue : VTMComposableContext {
 	var routine;
 	var >startAction; //a function
 	var >endAction; //a function
