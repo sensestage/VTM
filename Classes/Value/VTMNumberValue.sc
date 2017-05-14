@@ -2,8 +2,8 @@ VTMNumberValue : VTMValue {
 	var <dataspace;//Optional instance of VTMDataspace
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
-	*new{arg declaration;
-		^super.new(declaration).initNumberParameter;
+	*new{arg description;
+		^super.new(description).initNumberParameter;
 	}
 
 	isValidType{arg val;
@@ -11,18 +11,18 @@ VTMNumberValue : VTMValue {
 	}
 
 	initNumberParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\clipmode), {
-				this.clipmode = declaration[\clipmode];
+		if(description.notEmpty, {
+			if(description.includesKey(\clipmode), {
+				this.clipmode = description[\clipmode];
 			});
-			if(declaration.includesKey(\minVal), {
-				this.minVal = declaration[\minVal];
+			if(description.includesKey(\minVal), {
+				this.minVal = description[\minVal];
 			});
-			if(declaration.includesKey(\maxVal), {
-				this.maxVal = declaration[\maxVal];
+			if(description.includesKey(\maxVal), {
+				this.maxVal = description[\maxVal];
 			});
-			if(declaration.includesKey(\stepsize), {
-				this.stepsize = declaration[\stepsize];
+			if(description.includesKey(\stepsize), {
+				this.stepsize = description[\stepsize];
 			});
 		});
 	}
@@ -70,8 +70,8 @@ VTMNumberValue : VTMValue {
 		});
 	}
 
-	*declarationKeys{
-		^(super.declarationKeys ++ [\minVal, \maxVal, \stepsize, \clipmode/*, \dataspace*/]);
+	*descriptionKeys{
+		^(super.descriptionKeys ++ [\minVal, \maxVal, \stepsize, \clipmode/*, \dataspace*/]);
 	}
 
 
@@ -110,7 +110,7 @@ VTMNumberValue : VTMValue {
 
 	*defaultViewType{ ^\slider; }
 
-	//Declaration setters and getters
+	//Description setters and getters
 	minVal_{ arg val;
 		if(val.isNil, {
 			this.set(\minVal, nil);

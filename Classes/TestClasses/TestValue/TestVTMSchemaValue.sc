@@ -4,7 +4,7 @@ TestVTMSchemaValue : TestVTMDictionaryValue {
 		^super.makeRandomValue(params);
 	}
 
-	test_DefaultDeclaration{
+	test_DefaultDescription{
 		var testValue, testSchemas;
 		var param = VTMSchemaValue.new;
 		//value should be be nil

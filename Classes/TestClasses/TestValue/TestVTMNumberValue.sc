@@ -21,7 +21,7 @@ TestVTMNumberValue : TestVTMValue {
 		^result;
 	}
 
-	test_DefaultDeclaration{
+	test_DefaultDescription{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
@@ -91,7 +91,7 @@ TestVTMNumberValue : TestVTMValue {
 	// 	});
 	// }
 
-	test_SetGetDeclaration{
+	test_SetGetDescription{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);

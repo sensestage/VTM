@@ -3,7 +3,7 @@ VTMValue {
 	var <>action;
 	var <selectedEnum;
 	var scheduler;
-	var declaration;
+	var description;
 
 	*prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
@@ -25,48 +25,48 @@ VTMValue {
 		^this.class.type;
 	}
 
-	*string{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*boolean{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*timecode{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*integer{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*decimal{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*array{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*dictionary{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*schema{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*list{arg decl; ^this.makeFromType(thisMethod.name, decl); }
-	*tuple{arg decl; ^this.makeFromType(thisMethod.name, decl); }
+	*string{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*boolean{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*timecode{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*integer{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*decimal{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*array{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*dictionary{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*schema{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*list{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*tuple{arg description; ^this.makeFromType(thisMethod.name, description); }
 
-	*makeFromDeclaration{arg declaration;
-		var dec = declaration.deepCopy;
+	*makeFromDescription{arg description;
+		var dec = description.deepCopy;
 		var type = dec.removeAt(\type);
 		^this.makeFromType(type, dec);
 	}
 
-	*makeFromType{arg type, declaration;
+	*makeFromType{arg type, description;
 		var class;
 		class = this.typeToClass(type);
 		if(class.notNil, {
-			^class.new(declaration);
+			^class.new(description);
 		}, {
 			Error("Unknown type").throw;
 		});
 	}
 
-	*new{arg declaration;
-		^super.new.initValue(declaration);
+	*new{arg description;
+		^super.new.initValue(description);
 	}
 
-	initValue{arg declaration_;
-		declaration = VTMDeclaration.newFrom(declaration_);
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\value), {
-				this.value_(declaration[\value]);
+	initValue{arg description_;
+		description = VTMValueDescription.newFrom(description_);
+		if(description.notEmpty, {
+			if(description.includesKey(\value), {
+				this.value_(description[\value]);
 			});
-			if(declaration.includesKey(\defaultValue), {
-				this.defaultValue_(declaration[\defaultValue]);
+			if(description.includesKey(\defaultValue), {
+				this.defaultValue_(description[\defaultValue]);
 			});
-			if(declaration.includesKey(\enum), {
-				this.enum_(declaration[\enum]);
+			if(description.includesKey(\enum), {
+				this.enum_(description[\enum]);
 			});
 
 		});
@@ -79,29 +79,29 @@ VTMValue {
 	}
 
 	initValueParameter{
-		if(declaration.notEmpty, {
-			if(declaration.includesKey(\enabled), {
+		if(description.notEmpty, {
+			if(description.includesKey(\enabled), {
 				//Is enabled by default so only disabled if defined
-				if(declaration[\enabled].not, {
+				if(description[\enabled].not, {
 					this.disable;
 				})
 			});
-			if(declaration.includesKey(\defaultValue), {
+			if(description.includesKey(\defaultValue), {
 				"AAA".postln;
-				this.defaultValue_(declaration[\defaultValue]);
+				this.defaultValue_(description[\defaultValue]);
 			});
-			if(declaration.includesKey(\value), {
-				this.value_(declaration[\value]);
+			if(description.includesKey(\value), {
+				this.value_(description[\value]);
 			});
-			if(declaration.includesKey(\filterRepetitions), {
-				this.filterRepetitions = declaration[\filterRepetitions];
+			if(description.includesKey(\filterRepetitions), {
+				this.filterRepetitions = description[\filterRepetitions];
 			});
-			if(declaration.includesKey(\enum), {
+			if(description.includesKey(\enum), {
 				//enums are stored as key value pairs
-				this.enum = VTMNamedList.newFromKeyValuePairs(declaration[\enum]);
+				this.enum = VTMNamedList.newFromKeyValuePairs(description[\enum]);
 			});
-			if(declaration.includesKey(\restrictValueToEnum), {
-				this.restrictValueToEnum = declaration[\restrictValueToEnum];
+			if(description.includesKey(\restrictValueToEnum), {
+				this.restrictValueToEnum = description[\restrictValueToEnum];
 			});
 		});
 		enum = enum ? VTMNamedList();
@@ -197,23 +197,23 @@ VTMValue {
 		^enum[slotOrName];
 	}
 
-	*declarationKeys{
+	*descriptionKeys{
 		^[\enabled, \filterRepetitions, \value, \defaultValue, \enum, \restrictValueToEnum];
 	}
 
 	set{arg key, val;
-		declaration.put(key, val);
-		this.changed(\declaration, key);
+		description.put(key, val);
+		this.changed(\description, key);
 	}
 
 	get{arg key;
-		^declaration[key];
+		^description[key];
 	}
 
-	declaration{arg includeDefaultValues = true;
-		var result = declaration.deepCopy;
+	description{arg includeDefaultValues = true;
+		var result = description.deepCopy;
 		if(includeDefaultValues, {
-			this.class.declarationKeys.do({arg attrKey;
+			this.class.descriptionKeys.do({arg attrKey;
 				var attrVal = this.perform(attrKey);
 				//don't use the ones that are nil
 				if(attrVal.notNil, {
