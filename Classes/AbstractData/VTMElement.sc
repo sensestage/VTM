@@ -75,8 +75,8 @@ VTMElement : VTMAbstractData {
 		if(param.notNil, {
 			^param.value;
 		});
-		//if no parameter found try getting an attribute.
-		^attributes.at(key).value;
+		//if no parameter found try getting an attribute. 
+		^super.get(key);
 	}
 
 	//do command with possible value args. Only run-time.
