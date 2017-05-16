@@ -23,8 +23,10 @@ VTMValueElement : VTMAbstractData {
 
 	}
 
-	*declarationKeys{
-		^super.declarationKeys ++ [\type];
+	*attributeDescriptions{
+		^super.attributeDescriptions.addAll([
+			(name: \type, type: \string)
+		]);
 	}
 
 	value{
@@ -33,6 +35,10 @@ VTMValueElement : VTMAbstractData {
 
 	free{
 		valueObj = nil;
+	}
+
+	type{
+		^this.get(\type);
 	}
 	
 }
