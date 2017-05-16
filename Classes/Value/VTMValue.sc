@@ -57,7 +57,7 @@ VTMValue {
 	}
 
 	initValue{arg description_;
-		description = VTMValueDescription.newFrom(description_);
+		description = VTMValueDescription.newFrom(description_ ? []);
 		if(description.notEmpty, {
 			if(description.includesKey(\value), {
 				this.value_(description[\value]);
@@ -68,7 +68,6 @@ VTMValue {
 			if(description.includesKey(\enum), {
 				this.enum_(description[\enum]);
 			});
-
 		});
 
 	}
