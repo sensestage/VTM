@@ -42,21 +42,21 @@ VTMElement : VTMAbstractData {
 		var result;
 		result = super.declarationKeys;
 		result = result.addAll(
-			this.parameterDefinitions.collect({arg it; it[\name]})
+			this.parameterDescriptions.collect({arg it; it[\name]})
 		);
 		^result;
 	}
 
-	*parameterDefinitions{	^[]; }
-	*commandDefinitions{ ^[]; }
-	*queryDefinitions{ ^[]; }
+	*parameterDescriptions{	^[]; }
+	*commandDescriptions{ ^[]; }
+	*queryDescriptions{ ^[]; }
 
 	description{
 		var result = super.description;
 		result.putAll(VTMOrderedIdentityDictionary[
-			\parameters -> this.class.parameterDefinitions,
-			\commands -> this.class.commandDefinitions,
-			\queries -> this.class.queryDefinitions
+			\parameters -> this.class.parameterDescriptions,
+			\commands -> this.class.commandDescriptions,
+			\queries -> this.class.queryDescriptions
 		]);
 		^result;
 	}

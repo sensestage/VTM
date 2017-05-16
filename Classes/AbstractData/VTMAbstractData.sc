@@ -30,7 +30,7 @@ VTMAbstractData{
 	}
 
 	prInitAttributes{
-		attributes = VTMAttributeManager(this, declaration[\attributes]);
+		attributes = VTMAttributeManager.newFrom(declaration[\attributes] ? []);
 	}
 
 	free{
@@ -42,17 +42,17 @@ VTMAbstractData{
 
 	*declarationKeys{
 		var result;
-		result = this.attributeDefinitions.collect({arg it; it[\name]});
+		result = this.attributeDescriptions.collect({arg it; it[\name]});
 		^result;
 	}
 
-	*attributeDefinitions{ ^[
-		(name: \name, type: \string)
-	]; }
+	*attributeDescriptions{
+		^[ (name: \name, type: \string) ]; 
+	}
 
 	description{
 		var result = VTMOrderedIdentityDictionary[
-			\attributes -> this.class.attributeDefinitions,
+			\attributes -> this.class.attributeDescriptions,
 		];
 		^result;
 	}
