@@ -24,8 +24,8 @@ This code is in a state of severe alpha and early development. That means that r
 * Start sclang and do `Quarks.install("UnitTesting")` and `Quarks.install("API")`
 * `git clone https://github.com/blacksound/VTM.git`
 * Add the VTM / Classes folder path to under `- includePaths` in the `sclang_conf.yaml` file.
-- Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
-- for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM/Classes` under includePaths
+  - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
+  - for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM/Classes` under includePaths
 
 ## general raspberry pi instructions
 
