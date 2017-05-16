@@ -2,30 +2,32 @@
 VTM - system for Verdensteatret ( www.verdensteatret.com )
 This code is in a state of severe alpha and early development. That means that restructuring the class tree, and renaming, adding and removing methods/classes may – and will – happen.
 
-### requirements
+## requirements
 
 * UnitTesting quark
 * API quark
 * sc3-plugins
 
-### install VTM
+## install VTM
 
-* Install supercollider
+### osx
+
+* Install [SuperCollider](http://supercollider.github.io/download)
+* Install [SC3-plugins](https://github.com/supercollider/sc3-plugins)
+* Start SuperCollider and run `Quarks.install("UnitTesting")` and `Quarks.install("API")`
 * `git clone https://github.com/blacksound/VTM.git`
-* Add the path to the VTM folder under `- includePaths` in the `sclang_conf.yaml` file.
-  - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
-  - On OS X it is usually in `~/Library/Application Support/SuperCollider`.
+* In SuperCollider Preferences / Interpreter menu, include the path to the VTM / Classes folder
 
-### install VTM on a raspberry pi
+### raspberry pi
 
-* first install supercollider from <https://github.com/redFrik/supercolliderStandaloneRPI2> (now includes sc3-plugins)
-* then start sclang and do `Quarks.install("UnitTesting")`
+* Install SuperCollider from <https://github.com/redFrik/supercolliderStandaloneRPI2> (sc3-plugins are included)
+* Start sclang and do `Quarks.install("UnitTesting")` and `Quarks.install("API")`
 * `git clone https://github.com/blacksound/VTM.git`
-* Add the VTM folder path to under `- includePaths` in the `sclang_conf.yaml` file.
+* Add the VTM / Classes folder path to under `- includePaths` in the `sclang_conf.yaml` file.
   - Run `Platform.userAppSupportDir` in SuperCollider to see where this file is located.
   - for supercolliderStandaloneRPI2: `nano ~/supercolliderStandaloneRPI2/sclang.yaml` and add `- /home/pi/VTM/Classes` under includePaths
 
-# general raspberry pi instructions
+## general raspberry pi instructions
 
 ### install jessie on raspberry pi and amend settings
 
@@ -46,7 +48,7 @@ This code is in a state of severe alpha and early development. That means that r
   - `ls /media/usb`
 
 
-### shotdown.py for raspberry pi
+### shutdown.py for raspberry pi
 
 * use the following python script
 ```python
@@ -57,10 +59,10 @@ pin= 3
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(pin, GPIO.IN)
 try:
-	GPIO.wait_for_edge(pin, GPIO.FALLING)
-	os.system("sudo halt -p")
+    GPIO.wait_for_edge(pin, GPIO.FALLING)
+    os.system("sudo halt -p")
 except:
-	pass
+    pass
 GPIO.cleanup()
 ```
 
