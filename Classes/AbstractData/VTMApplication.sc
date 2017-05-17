@@ -25,9 +25,4 @@ VTMApplication : VTMContext {
 	}
 
 	components{ ^super.components ++ [hardwareDevices, modules, scenes, libraries]; }
-
-	*queryNames{
-		^super.queryNames ++ [\libraries, \devices, \modules, \scenes];
-	}
-
 }

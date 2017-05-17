@@ -12,8 +12,21 @@ VTMDefinitionLibrary : VTMElement {
 		^super.declarationKeys ++ [\includedPaths, \excludedPaths];
 	}
 
-	*queryNames{
-		^super.queryNames ++ [\hasDefinition];
+	*attributeDescriptions{
+		^super.attributeDescriptions.putAll(
+			VTMOrderedIdentityDictionary[
+				\includedPaths -> (type: \array, itemType: \string),
+				\excludedPaths -> (type: \array, itemType: \string)
+			]
+		);
+	}
+
+	*queryDescriptions{
+		^super.queryDescriptions.putAll(
+		   VTMOrderedIdentityDictionary[
+			   \hasDefinition -> (type: \boolean)
+		   ]
+	   );
 	}
 
 	//Attribute getters

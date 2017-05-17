@@ -47,9 +47,9 @@ VTMElement : VTMAbstractData {
 		^result;
 	}
 
-	*parameterDescriptions{	^[]; }
-	*commandDescriptions{ ^[]; }
-	*queryDescriptions{ ^[]; }
+	*parameterDescriptions{	^VTMOrderedIdentityDictionary[]; }
+	*commandDescriptions{ ^VTMOrderedIdentityDictionary[]; }
+	*queryDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 
 	description{
 		var result = super.description;

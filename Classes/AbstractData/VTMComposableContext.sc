@@ -31,15 +31,22 @@ VTMComposableContext : VTMContext {
 		);
 	}
 
-	*declarationKeys{
-		^super.declarationKeys;
+	*attributeDescriptions{
+		^super.attributeDescriptions.putAll(VTMOrderedIdentityDictionary[
+			\exclusivelyOwned -> (type: \boolean, defaultValue: true)
+		]);
 	}
 
-	*commandNames{
-		^super.commandNames ++ [\takeOwnership, \releaseOwnership];
+	*commandDescriptions{
+		^super.commandDescriptions.putAll(VTMOrderedIdentityDictionary[
+			\takeOwnership -> (type: \string), //which type to describe scene or application here?
+			\releaseOwnership -> (type: \string)
+		]);
 	}
 
-	*queryNames{
-		^super.queryNames ++ [\children, \parent, \owner, \exclusivelyOwned];
+	*queryDescriptions{
+		^super.queryDescriptions.putAll(VTMOrderedIdentityDictionary[
+			\owner -> (type: \string)
+		]);
 	}
 }

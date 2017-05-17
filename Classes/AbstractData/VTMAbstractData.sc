@@ -48,9 +48,9 @@ VTMAbstractData{
 	}
 
 	*attributeDescriptions{
-		^[
-			(name: \name, type: \string),
-			(name: \path, type: \string),
+		^VTMOrderedIdentityDictionary[
+			\name -> (type: \string, optional: true),
+			\path -> (type: \string, optional: true)
 	   	]; 
 	}
 

@@ -6,24 +6,25 @@ VTMValueElement : VTMAbstractData {
 	}
 
 	initValueElement{
-		if(declaration.includesKey(\type), {
-			try{
-				var type, decl;
-				decl = declaration.deepCopy;
-				type = decl.at(\type);
-				valueObj = VTMValue.makeFromType(type, decl);
-			} {
-				Error("[%] - Unknown parameter type: '%'".format(this.fullPath, this.type)).throw;
-			};
-		},{
-			Error("[%] - Value type for value element not defined.".format(this.fullPath)).throw;
-		});
+	}
+
+	prInitValueObject{
+		try{
+			var type, decl;
+			decl = declaration.deepCopy;
+			type = decl.at(\type);
+			valueObj = VTMValue.makeFromType(type, decl);
+		} {
+			Error("[%] - Unknown value type: '%'".format(this.fullPath, this.type)).throw;
+		};
 	}
 
 	*attributeDescriptions{
-		^super.attributeDescriptions.addAll([
-			(name: \type, type: \string)
-		]);
+		^super.attributeDescriptions.putAll(
+			VTMOrderedIdentityDictionary[
+				\type -> (type: \string, optional: true)
+			]
+		);
 	}
 
 	get{arg key;

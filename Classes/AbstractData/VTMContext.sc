@@ -215,14 +215,23 @@ VTMContext : VTMElement {
 		^result;
 	}
 
-	*commandNames{
-		^super.commandNames ++ [\prepare, \run, \free];
+	*attributeDescriptions{
+		^super.attributeDescriptions.putAll( VTMOrderedIdentityDictionary[
+			\definition -> (type: \string, optional: false)
+		]);
 	}
 
-	*queryNames{
-		^super.queryNames ++ [\state,
-			\parameters, \presets, \cues, \scores,
-			\mappings, \commands, \definition
-		];
+	*commandDescriptions{
+		^super.commandDescriptions.putAll( VTMOrderedIdentityDictionary[
+			\prepare -> (type: \none),
+			\run -> (type: \none),
+			\free -> (type: \none)
+		]);
 	}
+
+	*queryDescriptions{
+		^super.queryDescriptions.putAll( VTMOrderedIdentityDictionary[
+			\state -> (type: \string)
+		]);
+   	}
 }
