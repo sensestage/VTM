@@ -42,9 +42,7 @@ VTMAbstractData{
 	}
 
 	*declarationKeys{
-		var result;
-		result = this.attributeDescriptions.collect({arg it; it[\name]});
-		^result;
+		^this.attributeDescriptions.keys;
 	}
 
 	*attributeDescriptions{
