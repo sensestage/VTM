@@ -1,7 +1,8 @@
 VTMElement : VTMAbstractData {
-	var parameters;
-	var commands;
-	var queries;
+	var <parameters;
+	var <commands;
+	var <queries;
+	var initDeclarationKeys;//for separating init declaration with run-time changes
 
 	*new{arg name, declaration, manager;
 		//Element objects must have 'name' in order to generate address path.
@@ -12,13 +13,22 @@ VTMElement : VTMAbstractData {
 	}
 
 	initElement{
+		initDeclarationKeys = declaration.keys;
+		this.prInitParameters;
 		this.prInitQueries;
 		this.prInitCommands;
-		this.prInitParameters;
 	}
 
 	prInitParameters{
-		parameters = VTMParameterManager(this, declaration[\parameters]);
+		var paramDeclaration = VTMOrderedIdentityDictionary.new;
+		this.class.parameterDescriptions.keysValuesDo({arg paramKey, paramDesc;
+			paramDeclaration.put(paramKey, paramDesc.deepCopy);
+			if(declaration.includesKey(paramKey), {
+				paramDeclaration.at(paramKey).put(\value, declaration[paramKey]);
+			});
+		});
+		"Making with it: %".format(paramDeclaration).postln;
+		parameters = VTMParameterManager(this, paramDeclaration);
 	}
 
 	prInitQueries{
@@ -47,7 +57,11 @@ VTMElement : VTMAbstractData {
 		^result;
 	}
 
-	*parameterDescriptions{	^VTMOrderedIdentityDictionary[]; }
+	*parameterDescriptions{
+		^VTMOrderedIdentityDictionary[
+			\testParam -> (type: \integer)
+		];
+	}
 	*commandDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 	*queryDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 
