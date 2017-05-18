@@ -21,27 +21,28 @@ VTMCue : VTMComposableContext {
 	}
 
 	*parameterDescriptions{
-		^[
-			(name: \preDelay, type: \decimal),
-			(name: \duration, type: \decimal),
-			(name: \postDelay, type: \decimal),
-			(name: \duration, type: \decimal),
-			(name: \hangBeforeStart, type: \boolean),
-			(name: \maxStartHangTime, type: \decimal),
-			(name: \hangBeforeEnd, type: \boolean),
-			(name: \maxEndHangTime, type: \decimal),
-			(name: \pointOrder, type: \string,
+		^super.parameterDescriptions.putAll(VTMOrderedIdentityDictionary[
+			\preDelay -> (type: \decimal),
+			\duration -> (type: \decimal),
+			\postDelay -> (type: \decimal),
+			\duration -> (type: \decimal),
+			\hangBeforeStart -> (type: \boolean),
+			\maxStartHangTime -> (type: \decimal),
+			\hangBeforeEnd -> (type: \boolean),
+			\maxEndHangTime -> (type: \decimal),
+			\pointOrder -> (type: \string,
 				enum: [\normal, \reverse, \random],
 				restrictValueToEnum: false),
-			(name: \hangBetweenPoints, type: \boolean),
-			(name: \delayBetweenPoints, type: \decimal)
-		];
+			\hangBetweenPoints -> (type: \boolean),
+			\delayBetweenPoints -> (type: \decimal)
+		]);
 	}
 
-	*attributeDescriptions{
-		^[
-			(name: \points),//no type when input is an array of functions?
-		];
+	*queryDescriptions{
+		^super.queryDescriptions.putAll(VTMOrderedIdentityDictionary[
+			//points are loaded from the definition file so this only represents the names/numbers of the points
+			\points -> (type: \array, itemType: \string)
+		]);
 	}
 
 	*commandDescriptions{
