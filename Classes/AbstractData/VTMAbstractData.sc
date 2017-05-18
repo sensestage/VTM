@@ -52,6 +52,10 @@ VTMAbstractData{
 	   	]; 
 	}
 
+	attributes{
+		^attributes.as(VTMOrderedIdentityDictionary);
+	}
+
 	description{
 		var result = VTMOrderedIdentityDictionary[
 			\attributes -> this.class.attributeDescriptions,
@@ -60,7 +64,7 @@ VTMAbstractData{
 	}
 
 	declaration{
-		^declaration.copy;
+		^declaration.deepCopy;
 	}
 
 	makeView{arg parent, bounds, definition, settings;
