@@ -28,14 +28,14 @@ VTMAbstractData{
 		this.prInitParameters;
 	}
 
-	prInitParmeters{
+	prInitParameters{
 		var tempAttr;
 		this.class.parameterDescriptions.keysValuesDo({arg key, val;
 			//check if parameter is defined in parameter values
 			if(declaration.includesKey(key), {
 				var checkType;
 				var checkValue;
-				var tempVal = VTMValue.makeFromDescription(val);
+				var tempVal = VTMValue.makeFromProperties(val);
 				//is type strict? true by default
 				checkType = val[\strictType] ? true;
 				if(checkType, {
