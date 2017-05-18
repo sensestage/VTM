@@ -1,12 +1,12 @@
 VTMParameter : VTMValueElement {
 	*managerClass{ ^VTMParameterManager; }
 
-	*new{arg name, declaration, manager;
-		^super.new(name, declaration, manager).initParameter;
+	*new{arg name, attributes, manager;
+		^super.new(name, attributes, manager).initParameter;
 	}
 
 	initParameter{
-		if(declaration.includesKey(\type), {
+		if(attributes.includesKey(\type), {
 			this.prInitValueObject;
 		},{
 			Error("[%] - Value type for parameter not defined.".format(this.fullPath)).throw;

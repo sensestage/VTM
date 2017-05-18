@@ -2,6 +2,7 @@ VTMElement : VTMAbstractData {
 	var <parameters;
 	var <commands;
 	var <queries;
+	var declaration;
 	var initDeclarationKeys;//for separating init declaration with run-time changes
 
 	*new{arg name, declaration, manager;

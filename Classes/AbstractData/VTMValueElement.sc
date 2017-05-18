@@ -1,8 +1,8 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
 
-	*new{arg name, declaration, manager;
-		^super.new(name, declaration, manager).initValueElement;
+	*new{arg name, attributes, manager;
+		^super.new(name, attributes, manager).initValueElement;
 	}
 
 	initValueElement{
@@ -11,7 +11,7 @@ VTMValueElement : VTMAbstractData {
 	prInitValueObject{
 		try{
 			var type, decl;
-			decl = declaration.deepCopy;
+			decl = attributes.deepCopy;
 			type = decl.at(\type);
 			valueObj = VTMValue.makeFromType(type, decl);
 		} {

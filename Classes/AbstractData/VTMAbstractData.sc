@@ -1,7 +1,6 @@
 VTMAbstractData{
 	var <name;
 	var <manager;
-	var declaration;
 	var attributes;
 	var oscInterface;
 	var path;
@@ -12,36 +11,30 @@ VTMAbstractData{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg name, declaration, manager;
-		^super.new.initAbstractData(name, declaration, manager);
+	*new{arg name, attributes, manager;
+		^super.new.initAbstractData(name, attributes, manager);
 	}
 
-	*newFromDeclaration{arg declaration, manager;
-		var dec = declaration.deepCopy;
+	*newFromDeclaration{arg attributes, manager;
+		var dec = attributes.deepCopy;
 		^this.new(dec.removeAt(\name), dec, manager);
 	}
 
-	initAbstractData{arg name_, declaration_, manager_;
+	initAbstractData{arg name_, attributes_, manager_;
 		name = name_;
 		manager = manager_;
 
-		declaration = VTMDeclaration.newFrom(declaration_);
-		this.prInitAttributes;
-	}
-
-	prInitAttributes{
-		attributes = VTMAttributeManager.newFrom(declaration);
-		attributes.put(\name, this.name);
+		attributes = VTMAttributeManager.newFrom(attributes_);
 	}
 
 	free{
 		this.disableOSC;
 		this.releaseDependants;
-		declaration = nil;
+		attributes = nil;
 		manager = nil;
 	}
 
-	*declarationKeys{
+	*attributesKeys{
 		^this.attributeDescriptions.keys;
 	}
 
@@ -61,10 +54,6 @@ VTMAbstractData{
 			\attributes -> this.class.attributeDescriptions,
 		];
 		^result;
-	}
-
-	declaration{
-		^declaration.deepCopy;
 	}
 
 	makeView{arg parent, bounds, definition, settings;
