@@ -22,23 +22,23 @@ TestVTMIntegerValue : TestVTMNumberValue {
 		var param = VTMIntegerValue.new(desc);
 		this.assertEquals(
 			param.value, desc[\value].asInteger,
-			"IntegerValue changed decimal value in description to Integer"
+			"IntegerValue changed decimal value in properties to Integer"
 		);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue].asInteger,
-			"IntegerValue changed decimal defaultValue in description to Integer"
+			"IntegerValue changed decimal defaultValue in properties to Integer"
 		);
 		this.assertEquals(
 			param.minVal, desc[\minVal].asInteger,
-			"IntegerValue changed decimal minVal in description to Integer"
+			"IntegerValue changed decimal minVal in properties to Integer"
 		);
 		this.assertEquals(
 			param.maxVal, desc[\maxVal].asInteger,
-			"IntegerValue changed decimal maxVal in description to Integer"
+			"IntegerValue changed decimal maxVal in properties to Integer"
 		);
 		this.assertEquals(
 			param.stepsize, desc[\stepsize].asInteger,
-			"IntegerValue changed decimal stepsize in description to Integer"
+			"IntegerValue changed decimal stepsize in properties to Integer"
 		);
 
 		//Test the setter methods also

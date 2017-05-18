@@ -1,35 +1,27 @@
 VTMElement : VTMAbstractData {
-	var <parameters;
+	var <attributes;
 	var <commands;
 	var <queries;
-	var declaration;
-	var initDeclarationKeys;//for separating init declaration with run-time changes
 
 	*new{arg name, declaration, manager;
-		//Element objects must have 'name' in order to generate address path.
-		if(name.isNil, {
-			Error("% must have name".format(this.class.name)).throw;
-		});
 		^super.new(name, declaration, manager).initElement;
 	}
 
 	initElement{
-		initDeclarationKeys = declaration.keys;
-		this.prInitParameters;
+		this.prInitAttributes;
 		this.prInitQueries;
 		this.prInitCommands;
 	}
 
-	prInitParameters{
-		var paramDeclaration = VTMOrderedIdentityDictionary.new;
-		this.class.parameterDescriptions.keysValuesDo({arg paramKey, paramDesc;
-			paramDeclaration.put(paramKey, paramDesc.deepCopy);
-			if(declaration.includesKey(paramKey), {
-				paramDeclaration.at(paramKey).put(\value, declaration[paramKey]);
+	prInitAttributes{
+		var attrDeclaration = VTMOrderedIdentityDictionary.new;
+		this.class.attributeDescriptions.keysValuesDo({arg attrKey, attrDesc;
+			attrDeclaration.put(attrKey, attrDesc.deepCopy);
+			if(declaration.includesKey(attrKey), {
+				attrDeclaration.at(attrKey).put(\value, declaration[attrKey]);
 			});
 		});
-		"Making with it: %".format(paramDeclaration).postln;
-		parameters = VTMParameterManager(this, paramDeclaration);
+		attributes = VTMAttributeManager(this, attrDeclaration);
 	}
 
 	prInitQueries{
@@ -41,7 +33,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	components{
-		^[parameters, queries, commands];
+		^[attributes, queries, commands];
 	}
 
 	free{
@@ -49,48 +41,35 @@ VTMElement : VTMAbstractData {
 		super.free;
 	}
 
-	*declarationKeys{
-		var result;
-		result = super.declarationKeys;
-		result = result.addAll(
-			this.parameterDescriptions.collect({arg it; it[\name]})
-		);
-		^result;
-	}
-
-	*parameterDescriptions{
-		^VTMOrderedIdentityDictionary[
-			\testParam -> (type: \integer)
-		];
-	}
+	*attributeDescriptions{  ^VTMOrderedIdentityDictionary[]; }
 	*commandDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 	*queryDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 
 	description{
 		var result = super.description;
 		result.putAll(VTMOrderedIdentityDictionary[
-			\parameters -> this.class.parameterDescriptions,
+			\attributes -> this.class.attributeDescriptions,
 			\commands -> this.class.commandDescriptions,
 			\queries -> this.class.queryDescriptions
 		]);
 		^result;
 	}
 
-	//set parameter values.
+	//set attribute values.
 	set{arg key, value;
-		var param = parameters[key];
-		if(param.notNil, {
-			param.valueAction_(value);
+		var attr = attributes[key];
+		if(attr.notNil, {
+			attr.valueAction_(value);
 		});
 	}
 
-	//get parameter(init or run-time) or attribute(init-time) values.
+	//get attribute(init or run-time) or parameter(init-time) values.
 	get{arg key;
-		var param = parameters[key];
-		if(param.notNil, {
-			^param.value;
+		var attr = attributes[key];
+		if(attr.notNil, {
+			^attr.value;
 		});
-		//if no parameter found try getting an attribute. 
+		//if no attribute found try getting a parameter
 		^super.get(key);
 	}
 

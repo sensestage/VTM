@@ -1,8 +1,8 @@
 TestVTMCue : TestVTMAbstractData {
 
-	*makeRandomAttribute{arg key, params;
+	*makeRandomParameter{arg key, params;
 		var result;
-		result = super.makeRandomAttribute(key, params);
+		result = super.makeRandomParameter(key, params);
 		result = switch(key,
 			\preDelay, {rrand(0.0, 10.0)},
 			\duration, {rrand(0.0, 10.0)},

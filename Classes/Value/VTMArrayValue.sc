@@ -19,20 +19,20 @@ VTMArrayValue : VTMCollectionValue {
 		^[];
 	}
 
-	*new{arg description;
-		^super.new(description).initArrayParameter;
+	*new{arg properties;
+		^super.new(properties).initArrayParameter;
 	}
 
 	initArrayParameter{
-		if(description.notEmpty, {
-			if(description.includesKey(\size), {
-				size = description[\size];
+		if(properties.notEmpty, {
+			if(properties.includesKey(\size), {
+				size = properties[\size];
 			});
-			if(description.includesKey(\fixedSize), {
-				fixedSize = description[\fixedSize];
+			if(properties.includesKey(\fixedSize), {
+				fixedSize = properties[\fixedSize];
 			});
-			if(description.includesKey(\itemType), {
-				itemType = description[\itemType];
+			if(properties.includesKey(\itemType), {
+				itemType = properties[\itemType];
 			});
 		});
 	}

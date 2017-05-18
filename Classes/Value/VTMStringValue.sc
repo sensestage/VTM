@@ -8,17 +8,17 @@ VTMStringValue : VTMValue {
 		^(val.isKindOf(String) or: {val.isKindOf(Symbol)});
 	}
 
-	*new{arg description;
-		^super.new(description).initStringParameter;
+	*new{arg properties;
+		^super.new(properties).initStringParameter;
 	}
 
 	initStringParameter{arg stringAttr_;
-		if(description.notEmpty, {
-			if(description.includesKey(\pattern), {
-				this.pattern_(description[\pattern]);
+		if(properties.notEmpty, {
+			if(properties.includesKey(\pattern), {
+				this.pattern_(properties[\pattern]);
 			});
-			if(description.includesKey(\matchPattern), {
-				this.matchPattern_(description[\matchPattern]);
+			if(properties.includesKey(\matchPattern), {
+				this.matchPattern_(properties[\matchPattern]);
 			});
 		});
 	}
@@ -37,11 +37,11 @@ VTMStringValue : VTMValue {
 		});
 	}
 
-	*descriptionKeys{
-		^(super.descriptionKeys ++ [\matchPattern, \pattern]);
+	*propertyKeys{
+		^(super.propertyKeys ++ [\matchPattern, \pattern]);
 	}
 
-	//Description getters and setters
+	//Properties getters and setters
 	matchPattern_{arg val;
 		if(val.isKindOf(Boolean), {
 			this.set(\matchPattern, val);

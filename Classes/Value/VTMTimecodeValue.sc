@@ -14,8 +14,8 @@ VTMTimecodeValue : VTMValue {
 		^val.isKindOf(SimpleNumber);
 	}
 
-	*new{arg description;
-		^super.new(description).initTimecodeParameter;
+	*new{arg properties;
+		^super.new(properties).initTimecodeParameter;
 	}
 
 	initTimecodeParameter{

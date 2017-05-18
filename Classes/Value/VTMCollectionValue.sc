@@ -4,14 +4,14 @@ VTMCollectionValue : VTMValue {
 	var <maxLength;
 	var <minLength;
 
-	*new{arg name, description;
-		^super.new(name, description).initCollectionParameter;
+	*new{arg name, properties;
+		^super.new(name, properties).initCollectionParameter;
 	}
 
 	initCollectionParameter{
-		if(description.notEmpty, {
-			if(description.includesKey(\itemDescription), {
-				itemDescription = description[\itemDescription];
+		if(properties.notEmpty, {
+			if(properties.includesKey(\itemDescription), {
+				itemDescription = properties[\itemDescription];
 			});
 		});
 	}

@@ -22,10 +22,10 @@ TestVTMValue : VTMUnitTest {
 		^this.classesForTesting.collect(_.type);
 	}
 
-	*generateRandomDescription{arg description;
-		var result = VTMValueDescription.new;
-		if(description.notNil, {
-			description.do({arg item;
+	*generateRandomProperties{arg properties;
+		var result = VTMValueProperties.new;
+		if(properties.notNil, {
+			properties.do({arg item;
 				if(item.isKindOf(Symbol), {
 					result.add(this.prConstructAttribute(item));
 				});
@@ -63,7 +63,7 @@ TestVTMValue : VTMUnitTest {
 				result = data;
 			});
 		}, {
-			//If it is nil we make a random description with
+			//If it is nil we make a random properties with
 			//undefined Values.
 			result = this.makeRandomAttribute(key);
 		});
@@ -94,40 +94,40 @@ TestVTMValue : VTMUnitTest {
 	}
 
 
-	*makeRandomDescription{arg type;
+	*makeRandomProperties{arg type;
 		var testClass, class, attrKeys, result;
 		class = "VTM%Value".format(type.asString.capitalize).asSymbol.asClass;
 		testClass = "Test%".format(class.name).asSymbol.asClass;
-		attrKeys = class.descriptionKeys;
-		result = testClass.generateRandomDescription(attrKeys);
+		attrKeys = class.propertyKeys;
+		result = testClass.generateRandomProperties(attrKeys);
 		^result;
 	}
 
 
-	test_AreAllDescriptionSettersAndGettersImplemented{
+	test_AreAllPropertiesSettersAndGettersImplemented{
 		this.class.classesForTesting.do({arg class;
 			var obj = class.new;
 			var testClass = this.class.findTestClass(class);
-			obj.class.descriptionKeys.do({arg descriptionKey;
+			obj.class.propertyKeys.do({arg propertyKey;
 				var testVal;
-				this.assert(obj.respondsTo(descriptionKey),
-					"[%] - responds to description getter '%'".format(class, descriptionKey)
+				this.assert(obj.respondsTo(propertyKey),
+					"[%] - responds to properties getter '%'".format(class, propertyKey)
 				);
-				this.assert(obj.respondsTo(descriptionKey.asSetter),
-					"[%] - responds to description setter '%'".format(class, descriptionKey.asSetter)
+				this.assert(obj.respondsTo(propertyKey.asSetter),
+					"[%] - responds to properties setter '%'".format(class, propertyKey.asSetter)
 				);
-				//setting description should affect the obj description
-				testVal = testClass.makeRandomAttribute(descriptionKey);
+				//setting properties should affect the obj properties
+				testVal = testClass.makeRandomAttribute(propertyKey);
 				try{
-					obj.perform(descriptionKey.asSetter, testVal);
+					obj.perform(propertyKey.asSetter, testVal);
 					this.assertEquals(
-						obj.description[descriptionKey],
+						obj.properties[propertyKey],
 						testVal,
-						"[%] - Attribute setter changed the internal description for '%'".format(class, descriptionKey)
+						"[%] - Attribute setter changed the internal properties for '%'".format(class, propertyKey)
 					);
 				} {
 					this.failed(thisMethod,
-						"[%] - Should not throw error when calling description setter for '%'".format(class, descriptionKey)
+						"[%] - Should not throw error when calling properties setter for '%'".format(class, propertyKey)
 					);
 				}
 			});
@@ -223,42 +223,42 @@ TestVTMValue : VTMUnitTest {
 
 	}
 
-	test_SetVariablesThroughDescription{
+	test_SetVariablesThroughProperties{
 		this.class.classesForTesting.do({arg testClass;
-			var param, aDescription, anAction;
+			var param, aProperties, anAction;
 			var wasRun = false;
 			anAction = {arg param; wasRun = true;};
-			aDescription = (
+			aProperties = (
 				enabled: false
 			);
-			param = testClass.new(aDescription);
+			param = testClass.new(aProperties);
 			param.action = anAction;
 
-			//enabled is set through description
+			//enabled is set through properties
 			this.assert(param.enabled.not,
-				"Value was disabled through description"
+				"Value was disabled through properties"
 			);
 
-			//action is set through description
+			//action is set through properties
 			param.enable; //Reenable Value
 			param.doAction;
 			this.assert(wasRun and: {param.action === anAction},
-				"Value action was set through description"
+				"Value action was set through properties"
 			);
 			param.free;
 		});
 	}
 
-	test_GetDescription{
+	test_GetProperties{
 		this.class.classesForTesting.do({arg class;
 			var wasRun = false;
 			var testClass = this.class.findTestClass(class);
-			var description = testClass.makeRandomDescription(class.type);
-			var param = class.makeFromType(class.type, description);
+			var properties = testClass.makeRandomProperties(class.type);
+			var param = class.makeFromType(class.type, properties);
 
 			this.assertEquals(
-				param.description, description,
-				"% returned correct description.".format(class)
+				param.properties, properties,
+				"% returned correct properties.".format(class)
 			);
 			param.free;
 		});
@@ -454,13 +454,13 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 
-	test_SetVariablesFromDescription{
+	test_SetVariablesFromProperties{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var param;
-			var testDescription;
+			var testProperties;
 			testClass = this.class.testclassForType( class.type );
-			testDescription = testClass.generateRandomDescription(
+			testProperties = testClass.generateRandomProperties(
 				[
 					\value,
 					\defaultValue,
@@ -468,12 +468,12 @@ TestVTMValue : VTMUnitTest {
 				]
 			);
 
-			param = VTMValue.makeFromType(class.type, testDescription);
+			param = VTMValue.makeFromType(class.type, testProperties);
 
 			[\value, \defaultValue, \filterRepetitions].do({arg item;
 				this.assertEquals(
-					param.perform(item), testDescription[item],
-					"Value set % through description [%]".format(item, class.name)
+					param.perform(item), testProperties[item],
+					"Value set % through properties [%]".format(item, class.name)
 				);
 			});
 			param.free;
@@ -485,9 +485,9 @@ TestVTMValue : VTMUnitTest {
 			var testClass, testValue;
 			var param;
 			var testEnum;
-			var testDescription;
+			var testProperties;
 			testClass = this.class.testclassForType( class.type );
-			testDescription = testClass.generateRandomDescription(
+			testProperties = testClass.generateRandomProperties(
 				[
 					\value,
 					\defaultValue,
@@ -496,8 +496,8 @@ TestVTMValue : VTMUnitTest {
 					\enum
 				]
 			);
-			testEnum = testDescription.at(\enum);
-			param = VTMValue.makeFromType(class.type, testDescription);
+			testEnum = testProperties.at(\enum);
+			param = VTMValue.makeFromType(class.type, testProperties);
 			this.assertEquals(
 				param.enum, testEnum,
 				"[%] set and returned correct enum".format(class)
@@ -506,14 +506,14 @@ TestVTMValue : VTMUnitTest {
 		});
 	}
 
-	// test_GetDescription{
+	// test_GetProperties{
 	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
 	// 		var param;
-	// 		var testDescription, testDescription;
+	// 		var testProperties, testProperties;
 	// 		testClass = this.class.testclassForType( class.type );
-	// 		testDescription = testClass.generateRandomDescription(
+	// 		testProperties = testClass.generateRandomProperties(
 	// 			[
 	// 				\value,
 	// 				\defaultValue,
@@ -526,17 +526,17 @@ TestVTMValue : VTMUnitTest {
 	// 				\enum
 	// 			]
 	// 		);
-	// 		param = VTMValue.makeFromDescription(testDescription);
-	// 		testDescription = testDescription.deepCopy;
-	// 		testDescription.put(\action, testDescription[\action].asCompileString);
+	// 		param = VTMValue.makeFromProperties(testProperties);
+	// 		testProperties = testProperties.deepCopy;
+	// 		testProperties.put(\action, testProperties[\action].asCompileString);
 	// 		this.assert(
-	// 			testDescription.keys.sect(param.description.keys) == testDescription.keys,
-	// 			"ValueValue returned correct description keys for ValueValue level [%]".format(class.name)
+	// 			testProperties.keys.sect(param.properties.keys) == testProperties.keys,
+	// 			"ValueValue returned correct properties keys for ValueValue level [%]".format(class.name)
 	// 		);
 	// 		//			this.assertEquals(
-	// 		//				testDescription.sect(param.description),
-	// 		//			   	testDescription,
-	// 		//			   	"ValueValue returned correct description values for ValueValue level [%]".format(class.name)
+	// 		//				testProperties.sect(param.properties),
+	// 		//			   	testProperties,
+	// 		//			   	"ValueValue returned correct properties values for ValueValue level [%]".format(class.name)
 	// 		//			);
 	// 		param.free;
 	// 	});

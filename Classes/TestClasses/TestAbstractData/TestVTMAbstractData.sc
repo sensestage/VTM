@@ -2,55 +2,53 @@ TestVTMAbstractData : VTMUnitTest {
 
 	*classesForTesting{
 		^[
-			VTMCue,
-			VTMMapping,
-			VTMDefinitionLibrary,
-			VTMCommand,
-			VTMParameter,
-			VTMQuery,
-			VTMRemoteNetworkNode,
-			VTMModule,
-			VTMApplication,
-			VTMHardwareDevice,
-			VTMScore,
-			VTMScene
+			VTMAttribute,
+//			VTMCommand,
+//			VTMQuery,
+//			VTMMapping,
+//			VTMDefinitionLibrary,
+//			VTMRemoteNetworkNode,
+//			VTMApplication,
+//			VTMCue,
+//			VTMHardwareDevice,
+//			VTMScore,
+//			VTMModule,
+//			VTMScene
 		];
 	}
 
-	*makeRandomDeclaration{arg params, makeNameAttribute = false;
-		var result = VTMDeclaration[];
-		if(makeNameAttribute, {
-			result.put(\name, this.makeRandomAttribute(\name));
-		});
-		this.findTestedClass.declarationKeys.do({arg item;
-			var attrParams, randAttr;
-			if(params.notNil and: {params.includesKey(item)}, {
-				attrParams = params.at(item);
+	*makeRandomParameters{arg params;
+		var result = VTMParameters[];
+		this.findTestedClass.parameterKeys.do({arg attrKey;
+			var attrParams, attrVal;
+			if(params.notNil and: {params.includesKey(attrKey)}, {
+				attrParams = params.at(attrKey);
 			});
-			randAttr = this.makeRandomAttribute(item, attrParams);
-			if(randAttr.notNil, {
-				result.put(item, randAttr);
+			attrVal = this.makeRandomParameter(attrKey, attrParams);
+			if(attrVal.notNil, {
+				result.put(attrKey, attrVal);
 			});
 		});
 		^result;
 	}
 
-	*makeRandomDeclarationForObject{arg object;
+	*makeRandomParametersForObject{arg object;
 		var testClass, class;
-		var result = VTMDeclaration[];
+		var result = VTMParameters[];
 		class = object.class;
 		testClass = this.findTestClass(class);
 
 		//omit name
-		object.declaration.keysValuesDo({arg attrKey, attrVal;
+		object.description.keysValuesDo({arg attrKey, attrVal;
 			"Object attr '%' - %".format(attrKey, attrVal).postln;
 		});
 	}
 
-	*makeRandomAttribute{arg key, params;
+	*makeRandomParameter{arg key, params;
 		var result;
 		result = switch(key,
 			\name, {this.makeRandomSymbol},
+			\path, {this.makeRandomPath}
 		);
 		^result;
 	}
@@ -64,8 +62,8 @@ TestVTMAbstractData : VTMUnitTest {
 		^result;
 	}
 
-	test_initAbstractData{
-		var obj, testDeclaration, managerObj;
+	test_initAbstractDataParameters{
+		var obj, testParameters, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -79,12 +77,12 @@ TestVTMAbstractData : VTMUnitTest {
 				"[%] - made manager obj for test class".format(class)
 			);
 
-			testDeclaration = testClass.makeRandomDeclaration;
-			// obj = class.new(
-			// 	testName,
-			// 	testDeclaration,
-			// 	managerObj
-			// );
+			testParameters = testClass.makeRandomParameters;
+			obj = class.new(
+				testName,
+				testParameters
+				//managerObj
+			);
 			//
 			// //check if name initialized
 			// this.assertEquals(
@@ -93,11 +91,11 @@ TestVTMAbstractData : VTMUnitTest {
 			// 	"[%] - init 'name' correctly".format(class)
 			// );
 			//
-			// //check declaration equal
+			// //check parameters equal
 			// this.assertEquals(
-			// 	obj.declaration,
-			// 	testDeclaration,
-			// 	"[%] - init 'declaration' correctly".format(class)
+			// 	obj.parameters,
+			// 	testParameters,
+			// 	"[%] - init 'parameters' correctly".format(class)
 			// );
 			//
 			// //the manager object must be identical
@@ -106,13 +104,13 @@ TestVTMAbstractData : VTMUnitTest {
 			// 	"[%] - init 'manager' correctly".format(class)
 			// );
 			//
-			// obj.free;
+			obj.free;
 			// managerObj.free;
 		});
 	}
 
-	test_declarationNil{
-		var obj, testDeclaration, managerObj;
+	test_parametersNil{
+		var obj, testParameters, managerObj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
@@ -120,18 +118,18 @@ TestVTMAbstractData : VTMUnitTest {
 
 			managerObj = managerClass.new;
 
-			testDeclaration = nil;
+			testParameters = nil;
 			obj = class.new(
 				testName,
-				testDeclaration,
+				testParameters,
 				managerObj
 			);
 
-			//declaration should be empty VTMDeclaration
+			//Parameters should be empty VTMParameters
 			this.assertEquals(
-				obj.declaration,
-				VTMDeclaration[],
-				"[%] - init nil 'declaration' to empty array".format(class)
+				obj.parameters,
+				VTMParameters[],
+				"[%] - init nil 'parameters' to empty array".format(class)
 			);
 
 			obj.free;
@@ -140,52 +138,52 @@ TestVTMAbstractData : VTMUnitTest {
 		});
 	}
 
-	test_DefaultDeclaration{
+	test_DefaultParameters{
 
 	}
 
-	test_DeclarationSetGet{
+	test_ParametersGet{
 		var obj;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);
 			var testName = VTMUnitTest.makeRandomSymbol;
 			var appendString;
 
-			//Should work with both initlialized uninitialized(nil) declaration.
+			//Should work with both initlialized uninitialized(nil) parameters.
 			[
-				[testClass.makeRandomDeclaration,	"[pre-initialized declaration]"],
-				[nil,	"[declaration init to nil]"],
+				[testClass.makeRandomParameters,	"[pre-initialized parameters]"],
+				[nil,	"[parameters init to nil]"],
 			].do({arg items, i;
-				var testDeclaration, appendString;
-				#testDeclaration, appendString = items;
-				//All classes should implement set and get methods for
-				//every declaration.
-				testDeclaration = nil;
+				var testParameters, appendString;
+				#testParameters, appendString = items;
+				//All classes should implement get methods for
+				//every Parameters.
+				testParameters = nil;
 				obj = class.new(
 					testName,
-					testDeclaration
+					testParameters
 				);
 
-				class.declarationKeys.do({arg attrKey;
+				class.parameters.do({arg attrKey;
 					var testVal;
-					//does it respond to getter and setters for every declaration?
+					//does it respond to getter and setters for every parameters?
 					this.assert(
 						obj.respondsTo(attrKey),//test getter
-						"[%] - responded to declaration getter '%'".format(
+						"[%] - responded to parameters getter '%'".format(
 							class, attrKey) ++ appendString
 					);
 					this.assert(
 						obj.respondsTo(attrKey.asSetter),//test getter
-						"[%] - responded to declaration setter '%'".format(
+						"[%] - responded to parameters setter '%'".format(
 							class, attrKey.asSetter) ++ appendString
 					);
 
 					//check if test class has implemented random generation method for it
 					try{
-						testVal = testClass.makeRandomAttribute(attrKey);
+						testVal = testClass.makeRandomParameter(attrKey);
 					} {|err|
 						this.failed(thisMethod,
-							Error("[%] - Error making random declaration value for '%'".format(class, attrKey)).throw;
+							Error("[%] - Error making random parameters value for '%'".format(class, attrKey)).throw;
 						);
 					};
 					this.assert(
@@ -194,12 +192,12 @@ TestVTMAbstractData : VTMUnitTest {
 							class, attrKey) ++ appendString
 					);
 
-					//test setting declaration value
+					//test setting parameters value
 					obj.set(attrKey, testVal);
 					this.assertEquals(
 						obj.get(attrKey),
 						testVal,
-						"[%] - setting and getting declaration '%' worked".format(
+						"[%] - setting and getting parameters '%' worked".format(
 							class, attrKey) ++ appendString
 					);
 				});

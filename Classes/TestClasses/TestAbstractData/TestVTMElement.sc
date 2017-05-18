@@ -153,7 +153,7 @@ TestVTMElement : TestVTMAbstractData {
 				oldVal = obj.get(declarationKey);
 				attrPath = (obj.fullPath ++ '/' ++ declarationKey).asSymbol;
 
-				testVal = testClass.makeRandomAttribute(declarationKey);
+				testVal = testClass.makeRandomParameter(declarationKey);
 				oscValReceived.test = false;
 				controller = SimpleController(obj).put(\declaration, {arg ...args;
 					var who, what, whichAttr;

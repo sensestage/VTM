@@ -1,4 +1,4 @@
-VTMValueDescription : VTMOrderedIdentityDictionary {
+VTMValueProperties : VTMOrderedIdentityDictionary {
 	*newFrom{arg what;
 		if(what.notNil, {
 			if(what.isEmpty, {

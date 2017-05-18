@@ -8,12 +8,8 @@ VTMDefinitionLibrary : VTMElement {
 
 	initDefinitionLibrary{}
 
-	*declarationKeys{
-		^super.declarationKeys ++ [\includedPaths, \excludedPaths];
-	}
-
-	*attributeDescriptions{
-		^super.attributeDescriptions.putAll(
+	*parameterDescriptions{
+		^super.parameterDescriptions.putAll(
 			VTMOrderedIdentityDictionary[
 				\includedPaths -> (type: \array, itemType: \string),
 				\excludedPaths -> (type: \array, itemType: \string)
@@ -28,12 +24,5 @@ VTMDefinitionLibrary : VTMElement {
 		   ]
 	   );
 	}
-
-	//Attribute getters
-	includedPaths{ ^this.get(\includedPaths); }
-	includedPaths_{arg val; this.set(\includedPaths, val); }
-
-	excludedPaths{ ^this.get(\excludedPaths); }
-	excludedPaths_{arg val; this.set(\excludedPaths, val); }
 }
 

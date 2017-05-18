@@ -22,7 +22,7 @@ TestVTMTimecodeValue : TestVTMValue {
 		"Tearing down a VTMStringValueTest".postln;
 	}
 
-	test_DefaultDescription{
+	test_DefaultProperties{
 		var param = VTMTimecodeValue.new;
 		//Should return 0 as defaultValue
 		this.assertEquals(
@@ -36,18 +36,18 @@ TestVTMTimecodeValue : TestVTMValue {
 		);
 	}
 
-	test_SettingDescriptionThroughDescription{
+	test_SettingPropertiesThroughProperties{
 		var desc = (
 			value: 1000, defaultValue: 3000,
 		);
 		var param = VTMTimecodeValue.new(desc);
 		this.assertEquals(
 			param.defaultValue, desc[\defaultValue],
-			"TimecodeValue set defaultValue through description"
+			"TimecodeValue set defaultValue through properties"
 		);
 		this.assertEquals(
 			param.value, desc[\value],
-			"TimecodeValue set value through description"
+			"TimecodeValue set value through properties"
 		);
 	}
 

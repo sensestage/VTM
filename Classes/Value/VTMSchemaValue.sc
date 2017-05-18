@@ -31,7 +31,6 @@ Regex pattern for additionalProperty keys. Can additionally define types etc.
 */
 VTMSchemaValue : VTMDictionaryValue {
 	var <schema;
-	var <properties;
 
 	isValidType{arg val;
 		var result = false;

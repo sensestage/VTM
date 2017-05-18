@@ -106,11 +106,6 @@ VTMContext : VTMElement {
 		};
 	}
 
-	reset{
-		//set all parameters to default and evaluate the action
-		parameters.reset(true)
-	}
-
 
 	//	//Determine if this is a root context, i.e. having no parent.
 	//	isRoot{
@@ -215,8 +210,8 @@ VTMContext : VTMElement {
 		^result;
 	}
 
-	*attributeDescriptions{
-		^super.attributeDescriptions.putAll( VTMOrderedIdentityDictionary[
+	*parameterDescriptions{
+		^super.parameterDescriptions.putAll( VTMOrderedIdentityDictionary[
 			\definition -> (type: \string, optional: false)
 		]);
 	}

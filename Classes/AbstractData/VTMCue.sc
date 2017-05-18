@@ -20,8 +20,8 @@ VTMCue : VTMComposableContext {
 		condition = Condition.new;
 	}
 
-	*parameterDescriptions{
-		^super.parameterDescriptions.putAll(VTMOrderedIdentityDictionary[
+	*attributeDescriptions{
+		^super.attributeDescriptions.putAll(VTMOrderedIdentityDictionary[
 			\preDelay -> (type: \decimal),
 			\duration -> (type: \decimal),
 			\postDelay -> (type: \decimal),

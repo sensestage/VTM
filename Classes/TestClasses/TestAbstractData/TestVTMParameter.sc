@@ -1,3 +1,0 @@
-TestVTMParameter : TestVTMValueElement {
-
-}

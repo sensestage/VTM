@@ -31,8 +31,8 @@ VTMComposableContext : VTMContext {
 		);
 	}
 
-	*attributeDescriptions{
-		^super.attributeDescriptions.putAll(VTMOrderedIdentityDictionary[
+	*parameterDescriptions{
+		^super.parameterDescriptions.putAll(VTMOrderedIdentityDictionary[
 			\exclusivelyOwned -> (type: \boolean, defaultValue: true)
 		]);
 	}

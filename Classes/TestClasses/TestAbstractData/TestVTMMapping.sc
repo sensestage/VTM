@@ -1,7 +1,7 @@
 TestVTMMapping : TestVTMElement {
-	*makeRandomAttribute{arg key, params;
+	*makeRandomParameter{arg key, params;
 		var result;
-		result = super.makeRandomAttribute(key, params);
+		result = super.makeRandomParameter(key, params);
 		result = switch(key,
 			\source, { this.makeRandomPath; },
 			\destination, { this.makeRandomPath; },

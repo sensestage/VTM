@@ -1,7 +1,7 @@
 VTMAbstractDataManager {
 	var name;
 	var context;
-	var items;
+	var <items;//TEMP getter
 	var oscInterface;
 	var declaration;
 
@@ -18,7 +18,7 @@ VTMAbstractDataManager {
 	initAbstractDataManager{arg context_, declaration_;
 		context = context_;
 		declaration = declaration_;
-		items = VTMNamedList.new;
+		items = VTMOrderedIdentityDictionary.new;
 		if(declaration_.notNil, {
 			declaration_.do({arg item;
 				var newItem;
@@ -30,16 +30,14 @@ VTMAbstractDataManager {
 
 	addItem{arg newItem;
 		if(newItem.isKindOf(this.class.dataClass), {//check arg type
-			items = items.add(newItem);
+			items.put(newItem.name, newItem);
 		});
 	}
 
 	removeItem{arg itemName;
-		var indexToRemove;
-		indexToRemove = items.detectIndex({arg item; item.name == itemName; });
-		if(indexToRemove.notNil, {
+		if(items.includesKey(itemName), {
 			var removedItem;
-			removedItem = items.removeAt(indexToRemove);
+			removedItem = items.removeAt(itemName);
 			removedItem.free;
 		});
 	}
@@ -128,6 +126,17 @@ VTMAbstractDataManager {
 
 	*queryNames{
 		^[];
+	}
+
+	*makeDataManagerDeclaration{arg descriptions, valueDeclarations;
+		var result = VTMOrderedIdentityDictionary[];
+		descriptions.keysValuesDo({arg key, val;
+			result.put(key, val);
+			if(valueDeclarations.includesKey(key), {
+				result[key].put(\value, valueDeclarations[key]);
+			});
+		});
+		^result;
 	}
 
 }

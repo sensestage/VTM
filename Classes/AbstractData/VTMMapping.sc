@@ -10,9 +10,16 @@ VTMMapping : VTMElement {
 	*parameterDescriptions{
 		^super.parameterDescriptions.putAll(
 			VTMOrderedIdentityDictionary[
-				(name: \source, type: \string),
-			   	(name: \destination, type: \string),
-				(name: \enabled, type: \boolean)
+				(name: \source, type: \string, optional: false),
+			   	(name: \destination, type: \string, optional: false)
+			]
+		); 
+	}
+
+	*attributeDescriptions{
+		^super.attributeDescriptions.putAll(
+			VTMOrderedIdentityDictionary[
+				(name: \enabled, type: \boolean, defaultValue: true)
 			]
 		); 
 	}

@@ -1,36 +1,18 @@
 TestVTMValueElement : TestVTMElement {
 	//this method overides the superclass because wee need to define
 	//a type for the ValueElement class to be able to generate a random
-	//declaration.
-	*makeRandomDeclaration{arg params, makeNameAttribute = false;
-		var result = VTMDeclaration[];
-		if(makeNameAttribute, {
-			result.put(\name, this.makeRandomAttribute(\name));
-		});
+	//parameters.
+	*makeRandomParameters{arg params;
+		var result = super.makeRandomParameters(params);
+		var valueType;
+
 		//use random value type if not defined
 		if(params.notNil and: {params.includesKey(\type)}, {
-			result.put(\type, params[\type]);
+			valueType = params[\type];
 		}, {
-			result.put(\type, TestVTMValue.classesForTesting.collect(_.type).choose);
+			valueType = TestVTMValue.classesForTesting.collect(_.type).choose;
 		});
-
-		this.findTestedClass.declarationKeys.do({arg item;
-			var attrParams, randAttr;
-			if(params.notNil and: {params.includesKey(item)}, {
-				attrParams = params.at(item);
-			});
-			randAttr = this.makeRandomAttribute(item, attrParams, result[\type]);
-			if(randAttr.notNil, {
-				result.put(item, randAttr);
-			});
-		});
-		^result;
-	}
-
-
-	*makeRandomAttribute{arg key, params, valueType;
-		var valueTestClass = this.findTestClass(VTMValue.typeToClass(valueType));
-		var result = valueTestClass.makeRandomAttribute(key, params);
+		result.put(\type, valueType);
 		^result;
 	}
 }

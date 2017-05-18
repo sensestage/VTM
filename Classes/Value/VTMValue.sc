@@ -3,7 +3,7 @@ VTMValue {
 	var <>action;
 	var <selectedEnum;
 	var scheduler;
-	var description;
+	var properties;
 
 	*prDefaultValueForType{
 		this.subclassResponsibility(thisMethod);
@@ -25,48 +25,48 @@ VTMValue {
 		^this.class.type;
 	}
 
-	*string{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*boolean{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*timecode{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*integer{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*decimal{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*array{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*dictionary{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*schema{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*list{arg description; ^this.makeFromType(thisMethod.name, description); }
-	*tuple{arg description; ^this.makeFromType(thisMethod.name, description); }
+	*string{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*boolean{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*timecode{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*integer{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*decimal{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*array{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*dictionary{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*schema{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*list{arg properties; ^this.makeFromType(thisMethod.name, properties); }
+	*tuple{arg properties; ^this.makeFromType(thisMethod.name, properties); }
 
-	*makeFromDescription{arg description;
-		var dec = description.deepCopy;
+	*makeFromProperties{arg properties;
+		var dec = properties.deepCopy;
 		var type = dec.removeAt(\type);
 		^this.makeFromType(type, dec);
 	}
 
-	*makeFromType{arg type, description;
+	*makeFromType{arg type, properties;
 		var class;
 		class = this.typeToClass(type);
 		if(class.notNil, {
-			^class.new(description);
+			^class.new(properties);
 		}, {
 			Error("Unknown type").throw;
 		});
 	}
 
-	*new{arg description;
-		^super.new.initValue(description);
+	*new{arg properties;
+		^super.new.initValue(properties);
 	}
 
-	initValue{arg description_;
-		description = VTMValueDescription.newFrom(description_ ? []);
-		if(description.notEmpty, {
-			if(description.includesKey(\value), {
-				this.value_(description[\value]);
+	initValue{arg properties_;
+		properties = VTMValueProperties.newFrom(properties_ ? []);
+		if(properties.notEmpty, {
+			if(properties.includesKey(\value), {
+				this.value_(properties[\value]);
 			});
-			if(description.includesKey(\defaultValue), {
-				this.defaultValue_(description[\defaultValue]);
+			if(properties.includesKey(\defaultValue), {
+				this.defaultValue_(properties[\defaultValue]);
 			});
-			if(description.includesKey(\enum), {
-				this.enum_(description[\enum]);
+			if(properties.includesKey(\enum), {
+				this.enum_(properties[\enum]);
 			});
 		});
 
@@ -78,28 +78,28 @@ VTMValue {
 	}
 
 	initValueParameter{
-		if(description.notEmpty, {
-			if(description.includesKey(\enabled), {
+		if(properties.notEmpty, {
+			if(properties.includesKey(\enabled), {
 				//Is enabled by default so only disabled if defined
-				if(description[\enabled].not, {
+				if(properties[\enabled].not, {
 					this.disable;
 				})
 			});
-			if(description.includesKey(\defaultValue), {
-				this.defaultValue_(description[\defaultValue]);
+			if(properties.includesKey(\defaultValue), {
+				this.defaultValue_(properties[\defaultValue]);
 			});
-			if(description.includesKey(\value), {
-				this.value_(description[\value]);
+			if(properties.includesKey(\value), {
+				this.value_(properties[\value]);
 			});
-			if(description.includesKey(\filterRepetitions), {
-				this.filterRepetitions = description[\filterRepetitions];
+			if(properties.includesKey(\filterRepetitions), {
+				this.filterRepetitions = properties[\filterRepetitions];
 			});
-			if(description.includesKey(\enum), {
+			if(properties.includesKey(\enum), {
 				//enums are stored as key value pairs
-				this.enum = VTMNamedList.newFromKeyValuePairs(description[\enum]);
+				this.enum = VTMNamedList.newFromKeyValuePairs(properties[\enum]);
 			});
-			if(description.includesKey(\restrictValueToEnum), {
-				this.restrictValueToEnum = description[\restrictValueToEnum];
+			if(properties.includesKey(\restrictValueToEnum), {
+				this.restrictValueToEnum = properties[\restrictValueToEnum];
 			});
 		});
 		enum = enum ? VTMNamedList();
@@ -171,7 +171,7 @@ VTMValue {
 	}
 
 	removeEnum{arg slotOrName;
-		if(enum.removedItem(slotOrName).notNil, {§
+		if(enum.removedItem(slotOrName).notNil, {
 			this.changed(\enum);
 		});
 	}
@@ -195,23 +195,23 @@ VTMValue {
 		^enum[slotOrName];
 	}
 
-	*descriptionKeys{
+	*propertyKeys{
 		^[\enabled, \filterRepetitions, \value, \defaultValue, \enum, \restrictValueToEnum];
 	}
 
 	set{arg key, val;
-		description.put(key, val);
-		this.changed(\description, key);
+		properties.put(key, val);
+		this.changed(\properties, key);
 	}
 
 	get{arg key;
-		^description[key];
+		^properties[key];
 	}
 
-	description{arg includeDefaultValues = true;
-		var result = description.deepCopy;
+	properties{arg includeDefaultValues = true;
+		var result = properties.deepCopy;
 		if(includeDefaultValues, {
-			this.class.descriptionKeys.do({arg attrKey;
+			this.class.propertyKeys.do({arg attrKey;
 				var attrVal = this.perform(attrKey);
 				//don't use the ones that are nil
 				if(attrVal.notNil, {

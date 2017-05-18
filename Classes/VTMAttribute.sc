@@ -1,3 +1,0 @@
-VTMAttribute : VTMValueElement{
-	*managerClass{ ^VTMAttributeManager; }
-}

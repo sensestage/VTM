@@ -1,9 +1,10 @@
 VTMAbstractData{
 	var <name;
 	var <manager;
-	var attributes;
+	var parameters;
 	var oscInterface;
 	var path;
+	var declaration;
 
 	classvar viewClassSymbol = \VTMAbstractDataView;
 
@@ -11,49 +12,88 @@ VTMAbstractData{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg name, attributes, manager;
-		^super.new.initAbstractData(name, attributes, manager);
+	*new{arg name, declaration, manager;
+		^super.new.initAbstractData(name, declaration, manager);
 	}
 
-	*newFromDeclaration{arg attributes, manager;
-		var dec = attributes.deepCopy;
+	*newFromDeclaration{arg declaration, manager;
+		var dec = declaration.deepCopy;
 		^this.new(dec.removeAt(\name), dec, manager);
 	}
 
-	initAbstractData{arg name_, attributes_, manager_;
+	initAbstractData{arg name_, declaration_, manager_;
 		name = name_;
 		manager = manager_;
+		declaration = VTMDeclaration.newFrom(declaration_ ? []);
+		this.prInitParameters;
+	}
 
-		attributes = VTMAttributeManager.newFrom(attributes_);
+	prInitParmeters{
+		var tempAttr;
+		this.class.parameterDescriptions.keysValuesDo({arg key, val;
+			//check if parameter is defined in parameter values
+			if(declaration.includesKey(key), {
+				var checkType;
+				var checkValue;
+				var tempVal = VTMValue.makeFromDescription(val);
+				//is type strict? true by default
+				checkType = val[\strictType] ? true;
+				if(checkType, {
+					if(tempVal.isValidType(declaration[key]).not, {
+						Error("Parameter value '%' must be of type '%'".format(key, tempVal.type)).throw;
+					});
+				});
+				//check if value is e.g. within described range.
+				checkValue = val[\strictValid] ? false;
+				if(checkValue, {
+					if(tempVal.isValidValue(declaration[key]).not, {
+						Error("Parameter value '%' is invalid".format(key)).throw;
+					});
+				});
+			}, {
+				var optional;
+				//if not check if it is optional, true by default
+				optional = val[\optional] ? true;
+				if(optional.not, {
+					Error("Parameters is missing non-optional value '%'".format(key)).throw;
+				});
+			});
+
+		});
+		parameters = VTMParameterManager.newFrom(declaration);
 	}
 
 	free{
 		this.disableOSC;
 		this.releaseDependants;
-		attributes = nil;
+		parameters = nil;
 		manager = nil;
 	}
 
-	*attributesKeys{
-		^this.attributeDescriptions.keys;
+	*parameterKeys{
+		^this.parameterDescriptions.keys;
 	}
 
-	*attributeDescriptions{
+	*parameterDescriptions{
 		^VTMOrderedIdentityDictionary[
 			\name -> (type: \string, optional: true),
 			\path -> (type: \string, optional: true)
 	   	]; 
 	}
 
-	attributes{
-		^attributes.as(VTMOrderedIdentityDictionary);
+	parameters{
+		^parameters.as(VTMOrderedIdentityDictionary);
 	}
 
 	description{
 		var result = VTMOrderedIdentityDictionary[
-			\attributes -> this.class.attributeDescriptions,
+			\parameters -> this.class.parameterDescriptions,
 		];
 		^result;
+	}
+
+	declaration{
+		this.subclassResponsibility(thisMethod);
 	}
 
 	makeView{arg parent, bounds, definition, settings;
@@ -73,7 +113,7 @@ VTMAbstractData{
 
 	path{
 		if(manager.isNil, {
-			^attributes.at(\path);
+			^parameters.at(\path);
 		}, {
 			^manager.fullPath;
 		});
@@ -84,7 +124,7 @@ VTMAbstractData{
 	}
 
 	get{arg key;
-		^attributes.at(key);
+		^parameters.at(key);
 	}
 
 	leadingSeparator{ ^'/'; }

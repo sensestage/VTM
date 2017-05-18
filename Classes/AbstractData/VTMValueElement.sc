@@ -1,26 +1,28 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
+	var properties;
 
-	*new{arg name, attributes, manager;
-		^super.new(name, attributes, manager).initValueElement;
+	*new{arg name, declaration, manager;
+		^super.new(name, declaration, manager).initValueElement;
 	}
 
 	initValueElement{
+		var valueClass = VTMValue.classFromType(\integer);
+		//extract property values from declaration
+		properties = VTMOrderedIdentityDictionary.new;
+		valueClass.propertyKeys.do({arg propKey;
+			if(declaration.includesKey(propKey), {
+				properties.put(propKey, declaration[propKey]);
+			});
+		});
+		valueObj = VTMValue.makeFromType(declaration[\type], properties);
 	}
 
 	prInitValueObject{
-		try{
-			var type, decl;
-			decl = attributes.deepCopy;
-			type = decl.at(\type);
-			valueObj = VTMValue.makeFromType(type, decl);
-		} {
-			Error("[%] - Unknown value type: '%'".format(this.fullPath, this.type)).throw;
-		};
 	}
 
-	*attributeDescriptions{
-		^super.attributeDescriptions.putAll(
+	*parameterDescriptions{
+		^super.parameterDescriptions.putAll(
 			VTMOrderedIdentityDictionary[
 				\type -> (type: \string, optional: true)
 			]
