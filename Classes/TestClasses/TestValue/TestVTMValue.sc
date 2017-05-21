@@ -136,116 +136,116 @@ TestVTMValue : VTMUnitTest {
 
 	test_SetAndDoActionWithParamAsArg{
 		this.class.classesForTesting.do({arg testClass;
-			var param = testClass.new();
+			var valueObj = testClass.new();
 			var wasRun = false;
 			var gotParamAsArg = false;
-			param.action = {arg param;
+			valueObj.action = {arg valueObj;
 				wasRun = true;
-				gotParamAsArg = param === param;
+				gotParamAsArg = valueObj === valueObj;
 			};
-			param.doAction;
+			valueObj.doAction;
 			this.assert(
 				wasRun and: {gotParamAsArg},
 				"[%] - Value action was set, run and got passed itself as arg.".format(testClass)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
 	test_SetGetRemoveEnableAndDisableAction{
 		this.class.classesForTesting.do({arg testClass;
-			var param = testClass.new();
+			var valueObj = testClass.new();
 			var wasRun, aValue;
 			var anAction, anotherAction;
-			anAction = {arg param; wasRun = true; };
-			anotherAction = {arg param; wasRun = true; };
+			anAction = {arg valueObj; wasRun = true; };
+			anotherAction = {arg valueObj; wasRun = true; };
 
 			//action should point to identical action as defined
-			param.action = anAction;
+			valueObj.action = anAction;
 			this.assert(
-				anAction === param.action, "Value action point to correct action");
+				anAction === valueObj.action, "Value action point to correct action");
 
 			//Remove action
-			param.action = nil;
-			this.assert(param.action.isNil, "Removed Value action succesfully");
+			valueObj.action = nil;
+			this.assert(valueObj.action.isNil, "Removed Value action succesfully");
 
 			//should be enabled by default
-			this.assert( param.enabled, "Value should be enabled by default" );
+			this.assert( valueObj.enabled, "Value should be enabled by default" );
 
 			//disable should set 'enabled' false
-			param.disable;
-			this.assert( param.enabled.not, "Value should be disabled by calling '.disable'" );
+			valueObj.disable;
+			this.assert( valueObj.enabled.not, "Value should be disabled by calling '.disable'" );
 
 			//disable should prevent action from being run
 			wasRun = false;
-			param.action = anAction;
-			param.doAction;
+			valueObj.action = anAction;
+			valueObj.doAction;
 			this.assert(wasRun.not, "Value action was prevented to run by disable");
 
 			//We should still be able to acces the action instance
 			this.assert(
-				param.action.notNil and: {param.action === anAction},
+				valueObj.action.notNil and: {valueObj.action === anAction},
 				"Wasn't able to access Value action while being disabled"
 			);
 
 			//enable should set 'enabled' true
-			param.enable;
-			this.assert(param.enabled, "Value was enabled again");
+			valueObj.enable;
+			this.assert(valueObj.enabled, "Value was enabled again");
 
 			//enable should allow action to be run
 			wasRun = false;
-			param.doAction;
+			valueObj.doAction;
 			this.assert(wasRun, "Value enabled, reenabled action to run");
 
 			//If another action is set when Value is disabled, the
 			//other action should be returned and run when the Value is enabled
 			//again
-			anAction = {arg param; aValue = 111;};
-			anotherAction = {arg param; aValue = 222;};
-			param.action = anAction;
-			param.disable;
-			param.action = anotherAction;
-			param.enable;
-			param.doAction;
-			this.assert(param.action === anotherAction and: { aValue == 222; },
+			anAction = {arg valueObj; aValue = 111;};
+			anotherAction = {arg valueObj; aValue = 222;};
+			valueObj.action = anAction;
+			valueObj.disable;
+			valueObj.action = anotherAction;
+			valueObj.enable;
+			valueObj.doAction;
+			this.assert(valueObj.action === anotherAction and: { aValue == 222; },
 				"Value action was changed correctly during disabled state"
 			);
 
 			//Action should be run upon enable if optionally defined in enable call
 			wasRun = false;
-			param.disable;
-			param.action = {arg param; wasRun = true; };
-			param.enable(doActionWhenEnabled: true);
+			valueObj.disable;
+			valueObj.action = {arg valueObj; wasRun = true; };
+			valueObj.enable(doActionWhenEnabled: true);
 			this.assert(wasRun,
 				"Value action was optionally performed on enabled");
-			param.free;
+			valueObj.free;
 		});
 
 	}
 
 	test_SetVariablesThroughProperties{
 		this.class.classesForTesting.do({arg testClass;
-			var param, aProperties, anAction;
+			var valueObj, aProperties, anAction;
 			var wasRun = false;
-			anAction = {arg param; wasRun = true;};
+			anAction = {arg valueObj; wasRun = true;};
 			aProperties = (
 				enabled: false
 			);
-			param = testClass.new(aProperties);
-			param.action = anAction;
+			valueObj = testClass.new(aProperties);
+			valueObj.action = anAction;
 
 			//enabled is set through properties
-			this.assert(param.enabled.not,
+			this.assert(valueObj.enabled.not,
 				"Value was disabled through properties"
 			);
 
 			//action is set through properties
-			param.enable; //Reenable Value
-			param.doAction;
-			this.assert(wasRun and: {param.action === anAction},
+			valueObj.enable; //Reenable Value
+			valueObj.doAction;
+			this.assert(wasRun and: {valueObj.action === anAction},
 				"Value action was set through properties"
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
@@ -254,13 +254,13 @@ TestVTMValue : VTMUnitTest {
 			var wasRun = false;
 			var testClass = this.class.findTestClass(class);
 			var properties = testClass.makeRandomProperties(class.type);
-			var param = class.makeFromType(class.type, properties);
+			var valueObj = class.makeFromType(class.type, properties);
 
 			this.assertEquals(
-				param.properties, properties,
+				valueObj.properties, properties,
 				"% returned correct properties.".format(class)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
@@ -269,33 +269,33 @@ TestVTMValue : VTMUnitTest {
 	test_SetGetValue{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param = class.new();
+			var valueObj = class.new();
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "% 'value' was set".format(testClass.name)
+				valueObj.value, testValue, "% 'value' was set".format(testClass.name)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
 	test_SetGetDefaultValue{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param;
+			var valueObj;
 			try{
 				testClass = this.class.testclassForType( class.type );
 				testValue = testClass.makeRandomValue;
-				param = class.new((defaultValue: testValue));
+				valueObj = class.new((defaultValue: testValue));
 				this.assertEquals(
-					param.defaultValue, testValue, "Value defaultValue was set [%]".format(testClass.name)
+					valueObj.defaultValue, testValue, "Value defaultValue was set [%]".format(testClass.name)
 				);
 				this.assertEquals(
-					param.value, testValue,
+					valueObj.value, testValue,
 					"Value value was set to defined defaultValue when value was not defined [%]".format(testClass.name)
 				);
-				param.free;
+				valueObj.free;
 			} {|err|
 				this.failed(
 					thisMethod,
@@ -308,43 +308,43 @@ TestVTMValue : VTMUnitTest {
 	test_ResetSetValueToDefault{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
-			var param;
+			var valueObj;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new;
-			param.value = testClass.makeRandomValue;
-			param.defaultValue = testClass.makeRandomValue;
-			param.reset;
+			valueObj = class.new;
+			valueObj.value = testClass.makeRandomValue;
+			valueObj.defaultValue = testClass.makeRandomValue;
+			valueObj.reset;
 			this.assertEquals(
-				param.value, param.defaultValue,
+				valueObj.value, valueObj.defaultValue,
 				"[%] - Value value was set to defaultValue upon reset".format(class)
 			);
 			wasRun = false;
-			param.action_({arg p; wasRun = true;});
-			param.value = testClass.makeRandomValue;
-			param.defaultValue = testClass.makeRandomValue;
-			param.reset(doActionUponReset: true);
+			valueObj.action_({arg p; wasRun = true;});
+			valueObj.value = testClass.makeRandomValue;
+			valueObj.defaultValue = testClass.makeRandomValue;
+			valueObj.reset(doActionUponReset: true);
 			this.assert(
 				wasRun,
 				"[%] - Value action was run upon reset when defined to do so".format(class)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
 	test_DefaultValueShouldNotBeNil{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
-			var param;
+			var valueObj;
 			testClass = this.class.testclassForType( class.type );
-			param = class.new();
+			valueObj = class.new();
 			this.assert(
-				param.defaultValue.notNil,
+				valueObj.defaultValue.notNil,
 				"Value did not initialize defaultValue to nil [%]".format(
 					class.name
 				)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
@@ -363,13 +363,13 @@ TestVTMValue : VTMUnitTest {
 		);
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue, wasRun;
-			var param;
+			var valueObj;
 			testClass = this.class.testclassForType( class.type );
-			param = class.new();
+			valueObj = class.new();
 			testValue = wrongValuesForType[class.type];
 			try{
 				this.assert(
-					param.isValidType(testValue).not,
+					valueObj.isValidType(testValue).not,
 					"Value value input of wrong type failed validation check corretly [%]".format(class.name)
 				);
 			} {|err|
@@ -385,21 +385,21 @@ TestVTMValue : VTMUnitTest {
 		this.class.classesForTesting.do({arg class;
 			try{
 				var testClass, testValue, wasRun;
-				var param, gotValue = false, gotParamPassed = false;
+				var valueObj, gotValue = false, gotParamPassed = false;
 				testClass = this.class.testclassForType( class.type );
-				param = class.new();
+				valueObj = class.new();
 				testValue = testClass.makeRandomValue;
-				param.value = testValue;
-				param.action = {arg p;
-					gotParamPassed = p === param;
+				valueObj.value = testValue;
+				valueObj.action = {arg p;
+					gotParamPassed = p === valueObj;
 					gotValue = p.value == testValue;
 				};
-				param.doAction;
+				valueObj.doAction;
 				this.assert(gotParamPassed,
-					"ValueValue got param passed in action [%]".format(class.name));
+					"ValueValue got valueObj passed in action [%]".format(class.name));
 				this.assert(gotValue,
 					"ValueValue got value in action [%]".format(class.name));
-				param.free;
+				valueObj.free;
 			} {|err|
 				this.failed(
 					thisMethod,
@@ -414,40 +414,40 @@ TestVTMValue : VTMUnitTest {
 	test_ValueAction{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param, wasRun, gotUpdatedValue;
+			var valueObj, wasRun, gotUpdatedValue;
 			wasRun = false;
 			gotUpdatedValue = false;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new();
-			param.action = {arg p;
+			valueObj = class.new();
+			valueObj.action = {arg p;
 				wasRun = true;
 				gotUpdatedValue = p.value == testValue;
 			};
-			param.value = testClass.makeRandomValue;
-			param.valueAction_(testValue);
+			valueObj.value = testClass.makeRandomValue;
+			valueObj.valueAction_(testValue);
 			this.assert(
 				wasRun and: {gotUpdatedValue},
 				"ValueValue valueAction set correct value and passed it into action"
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 	test_FilterRepeatingValues{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param;
+			var valueObj;
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param = class.new();
-			param.filterRepetitions = true;
-			param.action = {arg p;
+			valueObj = class.new();
+			valueObj.filterRepetitions = true;
+			valueObj.action = {arg p;
 				wasRun = true;
 			};
 			//Action should not be run when input value are equal to current value
-			param.value = testValue;
-			param.valueAction_(testValue);
+			valueObj.value = testValue;
+			valueObj.valueAction_(testValue);
 			this.assert(
 				wasRun.not, "ValueValue action was prevented to run since values where equal"
 			);
@@ -457,7 +457,7 @@ TestVTMValue : VTMUnitTest {
 	test_SetVariablesFromProperties{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param;
+			var valueObj;
 			var testProperties;
 			testClass = this.class.testclassForType( class.type );
 			testProperties = testClass.generateRandomProperties(
@@ -468,22 +468,22 @@ TestVTMValue : VTMUnitTest {
 				]
 			);
 
-			param = VTMValue.makeFromType(class.type, testProperties);
+			valueObj = VTMValue.makeFromType(class.type, testProperties);
 
 			[\value, \defaultValue, \filterRepetitions].do({arg item;
 				this.assertEquals(
-					param.perform(item), testProperties[item],
+					valueObj.perform(item), testProperties[item],
 					"Value set % through properties [%]".format(item, class.name)
 				);
 			});
-			param.free;
+			valueObj.free;
 		});
 	}
 
 	test_Enum{
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
-			var param;
+			var valueObj;
 			var testEnum;
 			var testProperties;
 			testClass = this.class.testclassForType( class.type );
@@ -497,12 +497,12 @@ TestVTMValue : VTMUnitTest {
 				]
 			);
 			testEnum = testProperties.at(\enum);
-			param = VTMValue.makeFromType(class.type, testProperties);
+			valueObj = VTMValue.makeFromType(class.type, testProperties);
 			this.assertEquals(
-				param.enum, testEnum,
+				valueObj.enum, testEnum,
 				"[%] set and returned correct enum".format(class)
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
@@ -510,7 +510,7 @@ TestVTMValue : VTMUnitTest {
 	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
-	// 		var param;
+	// 		var valueObj;
 	// 		var testProperties, testProperties;
 	// 		testClass = this.class.testclassForType( class.type );
 	// 		testProperties = testClass.generateRandomProperties(
@@ -526,19 +526,19 @@ TestVTMValue : VTMUnitTest {
 	// 				\enum
 	// 			]
 	// 		);
-	// 		param = VTMValue.makeFromProperties(testProperties);
+	// 		valueObj = VTMValue.makeFromProperties(testProperties);
 	// 		testProperties = testProperties.deepCopy;
 	// 		testProperties.put(\action, testProperties[\action].asCompileString);
 	// 		this.assert(
-	// 			testProperties.keys.sect(param.properties.keys) == testProperties.keys,
+	// 			testProperties.keys.sect(valueObj.properties.keys) == testProperties.keys,
 	// 			"ValueValue returned correct properties keys for ValueValue level [%]".format(class.name)
 	// 		);
 	// 		//			this.assertEquals(
-	// 		//				testProperties.sect(param.properties),
+	// 		//				testProperties.sect(valueObj.properties),
 	// 		//			   	testProperties,
 	// 		//			   	"ValueValue returned correct properties values for ValueValue level [%]".format(class.name)
 	// 		//			);
-	// 		param.free;
+	// 		valueObj.free;
 	// 	});
 	// }
 

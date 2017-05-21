@@ -17,70 +17,70 @@ TestVTMStringValue : TestVTMValue {
 	}
 
 	test_DefaultProperties{
-		var param = VTMStringValue.new;
+		var valueObj = VTMStringValue.new;
 		this.assert(
-			param.defaultValue.class == String and: {param.defaultValue.isEmpty},
-			"StringValue defaultValue defaults to empty string:\n\tIS: %\n\tSHOULD BE: %".format(param.defaultValue, "")
+			valueObj.defaultValue.class == String and: {valueObj.defaultValue.isEmpty},
+			"StringValue defaultValue defaults to empty string:\n\tIS: %\n\tSHOULD BE: %".format(valueObj.defaultValue, "")
 		);
 		//value should default to empty string if value not defined
 		this.assert(
-			param.value.class == String and: { param.value == param.defaultValue },
-			"StringValue value defaults to empty string.\n\tIS: %\n\tSHOULD BE: %".format(param.value.asCompileString, "".asCompileString)
+			valueObj.value.class == String and: { valueObj.value == valueObj.defaultValue },
+			"StringValue value defaults to empty string.\n\tIS: %\n\tSHOULD BE: %".format(valueObj.value.asCompileString, "".asCompileString)
 		);
 		//pattern should be empty string by default
 		this.assertEquals(
-			param.pattern, "",
+			valueObj.pattern, "",
 			"StringValue pattern is empty symbol by default"
 		);
 
 		//matchPattern should be false by default
 		this.assertEquals(
-			param.matchPattern, false,
+			valueObj.matchPattern, false,
 			"StringValue matchPattern is true by default"
 		);
 	}
 
 	test_SettingPropertiesWithProperties{
-		var desc, param;
+		var desc, valueObj;
 		desc = (
 			value: "heisann.3",
 			defaultValue: "heisann.5",
 			pattern: "^heisann\\.\\d+$"
 		);
-		param = VTMStringValue.new(desc);
+		valueObj = VTMStringValue.new(desc);
 		this.assertEquals(
-			param.value, desc[\value],
+			valueObj.value, desc[\value],
 			"StringValue set value through properties"
 		);
 		this.assertEquals(
-			param.defaultValue, desc[\defaultValue],
+			valueObj.defaultValue, desc[\defaultValue],
 			"StringValue set defaultValue through properties"
 		);
 		this.assertEquals(
-			param.pattern, desc[\pattern],
+			valueObj.pattern, desc[\pattern],
 			"StringValue set value through properties"
 		);
 	}
 
 
 	test_ConvertingSymbolArgsToStrings{
-		var desc, param;
+		var desc, valueObj;
 		desc = (
 			value: 'heisann.3',
 			defaultValue: 'heisann.5',
 			pattern: '^heisann\\.\\d+$'
 		);
-		param = VTMStringValue.new(desc);
+		valueObj = VTMStringValue.new(desc);
 		this.assertEquals(
-			param.defaultValue.class, String,
+			valueObj.defaultValue.class, String,
 			"StringValue converted defaultValue symbol arg to String"
 		);
 		this.assertEquals(
-			param.value.class, String,
+			valueObj.value.class, String,
 			"StringValue converted value symbol arg to String"
 		);
 		this.assertEquals(
-			param.pattern.class, String,
+			valueObj.pattern.class, String,
 			"StringValue converted pattern symbol arg to String"
 		);
 	}
@@ -93,52 +93,52 @@ TestVTMStringValue : TestVTMValue {
 			pattern: "^b(a|i|o|e|y)ngo$",
 			matchPattern: true
 		);
-		var param = VTMStringValue.new(desc);
+		var valueObj = VTMStringValue.new(desc);
 
 		//Should ignore values that doesn't match the pattern
 		testValue = "bikke";
-		param.value_(testValue);
+		valueObj.value_(testValue);
 		this.assertEquals(
-			param.value, desc[\value],
+			valueObj.value, desc[\value],
 			"StringValue ignored setting unmatched value string"
 		);
 
 		//Should set values that match the pattern
 		testValue = "bango";
-		param.value_(testValue);
+		valueObj.value_(testValue);
 		this.assertEquals(
-			param.value, testValue,
+			valueObj.value, testValue,
 			"StringValue set setting matched value string"
 		);
 
 		//Should not check pattern is pattern is empty
-		param.pattern = "";
+		valueObj.pattern = "";
 		testValue = "baila";
-		param.value_(testValue);
+		valueObj.value_(testValue);
 		this.assertEquals(
-			param.value, testValue,
+			valueObj.value, testValue,
 			"StringValue did not check pattern when pattern was empty string"
 		);
 
 		//Should not check pattern if matchPattern is false
-		param.pattern = "^b(a|i|o|e|y)ngo$";
-		param.matchPattern = false;
+		valueObj.pattern = "^b(a|i|o|e|y)ngo$";
+		valueObj.matchPattern = false;
 		testValue = "bokfngo";
-		param.value = testValue;
+		valueObj.value = testValue;
 		this.assertEquals(
-			param.value, testValue,
+			valueObj.value, testValue,
 			"StringValue did not check pattern when matchPatter is false"
 		);
 
 		//Should set pattern to default when matchPattern is turned on
 		//and current value is non-matching
-		param.matchPattern = false;
-		param.pattern = "^b(a|i|o|e|y)ngo$";
+		valueObj.matchPattern = false;
+		valueObj.pattern = "^b(a|i|o|e|y)ngo$";
 		testValue = "jogge";
-		param.value = testValue;
-		param.matchPattern = true;
+		valueObj.value = testValue;
+		valueObj.matchPattern = true;
 		this.assertEquals(
-			param.value, param.defaultValue,
+			valueObj.value, valueObj.defaultValue,
 			"StringValue set value to default when matchPattern is turned on and current value don't match"
 		);
 
@@ -152,30 +152,30 @@ TestVTMStringValue : TestVTMValue {
 			pattern: "^b(a|i|o|e|y)ngo$",
 			patternMatching: false
 		);
-		var param = VTMStringValue.new(desc);
-		param.action = {|p| wasRun = true;};
+		var valueObj = VTMStringValue.new(desc);
+		valueObj.action = {|p| wasRun = true;};
 
 		//temporary diabled as it is unclear what this behaviour should be yet.
-		// param.clear;
+		// valueObj.clear;
 		// this.assertEquals(
-		// 	param.value, param.defaultValue,
+		// 	valueObj.value, valueObj.defaultValue,
 		// 	"StringValue set value to defaultValue upon clearing with pattern matching off"
 		// );
 
 		//Should set to empty when pattern matching is not active
-		param.matchPattern = false;
-		param.value = "bingo";
-		param.clear;
+		valueObj.matchPattern = false;
+		valueObj.value = "bingo";
+		valueObj.clear;
 		this.assertEquals(
-			param.value, "",
+			valueObj.value, "",
 			"StringValue set value to empty string upon clear when pattern matchng is disabled"
 		);
 
 		//Should run action if doActionUponClear is true
-		param.value = "bungo";
+		valueObj.value = "bungo";
 		wasRun = false;
-		param.matchPattern = true;
-		param.clear(doActionUponClear: true);
+		valueObj.matchPattern = true;
+		valueObj.clear(doActionUponClear: true);
 		this.assertEquals(
 			wasRun, true,
 			"StringValue did do Action when clearing with doActionUponClear is true"
@@ -183,9 +183,9 @@ TestVTMStringValue : TestVTMValue {
 
 		///Should do action when pattern match is disabled and doActionUponClear is true
 		wasRun = false;
-		param.value = "bango";
-		param.matchPattern = false;
-		param.clear(doActionUponClear: true);
+		valueObj.value = "bango";
+		valueObj.matchPattern = false;
+		valueObj.clear(doActionUponClear: true);
 		this.assertEquals(
 			wasRun, true,
 			"StringValue did do Action when clearing with doActionUponClear true, and pattern matching active"

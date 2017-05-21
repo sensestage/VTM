@@ -134,7 +134,9 @@ TestVTMElement : TestVTMAbstractData {
 
 	}
 
-	test_DeclarationOSC{
+	test_ParameterOSC{}
+
+	test_AttributeOSC{
 		var obj, testDeclaration;
 		this.class.classesForTesting.do({arg class;
 			var testClass = VTMUnitTest.findTestClass(class);

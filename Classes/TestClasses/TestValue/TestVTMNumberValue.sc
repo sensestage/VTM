@@ -25,33 +25,33 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			testClass = this.class.testclassForType( class.type );
 
 			this.assertEquals(
-				param.defaultValue, param.class.prDefaultValueForType, "NumberValue defaultValue defaults to 0"
+				valueObj.defaultValue, valueObj.class.prDefaultValueForType, "NumberValue defaultValue defaults to 0"
 			);
 			//value should default to 0 if value not defined
 			this.assertEquals(
-				param.value, param.defaultValue, "NumberValue value defaults to 0"
+				valueObj.value, valueObj.defaultValue, "NumberValue value defaults to 0"
 			);
 			//stepsize should default to 0
 			this.assertEquals(
-				param.stepsize, 0, "NumberValue stepsize defaults to 0"
+				valueObj.stepsize, 0, "NumberValue stepsize defaults to 0"
 			);
 			//clipmode should default to 'none'
 			this.assertEquals(
-				param.clipmode, \none, "NumberValue clipmode defaults to 'none'"
+				valueObj.clipmode, \none, "NumberValue clipmode defaults to 'none'"
 			);
 			//minVal should default to nil (this might change later)
 			this.assert(
-				param.minVal.isNil, "NumberValue minVal defaults to nil"
+				valueObj.minVal.isNil, "NumberValue minVal defaults to nil"
 			);
 			//maxVal should default to nil (this might change later)
 			this.assert(
-				param.maxVal.isNil, "NumberValue maxVal defaults to nil"
+				valueObj.maxVal.isNil, "NumberValue maxVal defaults to nil"
 			);
-			param.free;
+			valueObj.free;
 		});
 	}
 
@@ -59,12 +59,12 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			testClass = this.class.testclassForType( class.type );
 			testValue = testClass.makeRandomValue;
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "NumberValue value was set"
+				valueObj.value, testValue, "NumberValue value was set"
 			);
 		});
 	}
@@ -73,20 +73,20 @@ TestVTMNumberValue : TestVTMValue {
 	// 	this.class.classesForTesting.do({arg class;
 	// 		var testClass, testValue;
 	// 		var name = "my%".format(class.name);
-	// 		var param = class.new(name);
+	// 		var valueObj = class.new(name);
 	// 		var testMinVal, testMaxVal;
 	// 		testClass = this.class.testclassForType( class.type );
 	//
 	// 		//Should only check higher values when maxVal is not nil
 	// 		testValue = testClass.makeRandomValue();
 	// 		testMaxVal = testClass.makeRandomValue((minVal: testValue + 1));
-	// 		param.value = testValue;
+	// 		valueObj.value = testValue;
 	//
 	//
 	// 		//Should only check lower values when minVal is not nil
 	//
 	// 		this.assertEquals(
-	// 			param.value, testValue, "NumberValue value was set"
+	// 			valueObj.value, testValue, "NumberValue value was set"
 	// 		);
 	// 	});
 	// }
@@ -95,31 +95,31 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			testClass = this.class.testclassForType( class.type );
 			//SetGet 'minVal'
 			testValue = testClass.makeRandomValue;
-			param.minVal = testValue;
+			valueObj.minVal = testValue;
 			this.assertEquals(
-				param.minVal, testValue, "NumberValue minVal was set"
+				valueObj.minVal, testValue, "NumberValue minVal was set"
 			);
 			//SetGet 'maxVal'
 			testValue = testClass.makeRandomValue;
-			param.maxVal = testValue;
+			valueObj.maxVal = testValue;
 			this.assertEquals(
-				param.maxVal, testValue, "NumberValue maxVal was set"
+				valueObj.maxVal, testValue, "NumberValue maxVal was set"
 			);
 			//SetGet 'stepsize'
 			testValue = testClass.makeRandomValue.abs;
-			param.stepsize = testValue;
+			valueObj.stepsize = testValue;
 			this.assertEquals(
-				param.stepsize, testValue, "NumberValue stepsize was set"
+				valueObj.stepsize, testValue, "NumberValue stepsize was set"
 			);
 			//SetGet 'clipmode'
 			testValue = testClass.makeRandomAttribute(\clipmode);
-			param.clipmode = testValue;
+			valueObj.clipmode = testValue;
 			this.assertEquals(
-				param.clipmode, testValue.asSymbol, "NumberValue clipmode was set"
+				valueObj.clipmode, testValue.asSymbol, "NumberValue clipmode was set"
 			);
 		});
 	}
@@ -128,39 +128,39 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			testClass = this.class.testclassForType( class.type );
 
 			//Should ignore and warn on wrong 'minVal' type
 			testValue = -100;
-			param.minVal = testValue;
-			param.minVal = \notAValidValue;
+			valueObj.minVal = testValue;
+			valueObj.minVal = \notAValidValue;
 			this.assertEquals(
-				param.minVal, testValue, "% minVal wasn't changed by val of invalid type".format(testClass)
+				valueObj.minVal, testValue, "% minVal wasn't changed by val of invalid type".format(testClass)
 			);
 
 			//Should ignore and warn on wrong 'maxVal' type
 			testValue = 300;
-			param.maxVal = testValue;
-			param.maxVal = \notAValidValue;
+			valueObj.maxVal = testValue;
+			valueObj.maxVal = \notAValidValue;
 			this.assertEquals(
-				param.maxVal, testValue, "% maxVal wasn't changed by val of invalid type".format(testClass)
+				valueObj.maxVal, testValue, "% maxVal wasn't changed by val of invalid type".format(testClass)
 			);
 
 			//Should ignore and warn on wrong 'stepsize' type
 			testValue = 11;
-			param.stepsize = testValue;
-			param.stepsize = \notAValidValue;
+			valueObj.stepsize = testValue;
+			valueObj.stepsize = \notAValidValue;
 			this.assertEquals(
-				param.stepsize, testValue, "% stepsize wasn't changed by val of invalid type".format(testClass)
+				valueObj.stepsize, testValue, "% stepsize wasn't changed by val of invalid type".format(testClass)
 			);
 
 			//Should ignore and warn on wrong 'clipmode' type
 			testValue = \low;
-			param.clipmode = testValue;
-			param.clipmode = 4321;
+			valueObj.clipmode = testValue;
+			valueObj.clipmode = 4321;
 			this.assertEquals(
-				param.clipmode, testValue, "% clipmode wasn't changed by val of invalid type".format(testClass)
+				valueObj.clipmode, testValue, "% clipmode wasn't changed by val of invalid type".format(testClass)
 			);
 		});
 	}
@@ -169,20 +169,20 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var invalidValue;
 			testClass = this.class.testclassForType( class.type );
 
 			//type validation should block setting value
-			param.clipmode = \none;
+			valueObj.clipmode = \none;
 			testValue = 299;
-			param.value = testValue;
+			valueObj.value = testValue;
 			invalidValue = \notANumber;
-			if(param.isValidType(invalidValue), {
-				param.value = invalidValue;
+			if(valueObj.isValidType(invalidValue), {
+				valueObj.value = invalidValue;
 			});
 			this.assertEquals(
-				param.value, testValue, "% value wasn't changed by val of invalid type".format(testClass)
+				valueObj.value, testValue, "% value wasn't changed by val of invalid type".format(testClass)
 			);
 		});
 	}
@@ -191,61 +191,61 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			testClass = this.class.testclassForType( class.type );
-			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 100.0));
-			param.maxVal = testClass.makeRandomValue((minVal: 101.0, maxVal: 1000.0));
+			valueObj.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 100.0));
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 101.0, maxVal: 1000.0));
 
 			//Should not clip values when clipmode == none
-			param.clipmode = \none; //should be set by default
+			valueObj.clipmode = \none; //should be set by default
 			testValue = testClass.makeRandomValue((minVal: -200.0, maxVal: -101.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "% lower value was not clipped in clipmode 'none'".format(testClass)
+				valueObj.value, testValue, "% lower value was not clipped in clipmode 'none'".format(testClass)
 			);
 			testValue = testClass.makeRandomValue((minVal: 1001.0, maxVal: 2000.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "% higher value was not clipped in clipmode 'none'".format(testClass)
+				valueObj.value, testValue, "% higher value was not clipped in clipmode 'none'".format(testClass)
 			);
 
 			//Should clip larger values than maxVal when clipmode == high
-			param.clipmode = \high;
+			valueObj.clipmode = \high;
 			testValue = testClass.makeRandomValue((minVal: 1001.0, maxVal: 2000.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.maxVal, "% higher value was clipped in clipmode 'high'".format(testClass)
+				valueObj.value, valueObj.maxVal, "% higher value was clipped in clipmode 'high'".format(testClass)
 			);
 			testValue = testClass.makeRandomValue((minVal: -200.0, maxVal: -101.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "% lower value was not clipped in clipmode 'high'".format(testClass)
+				valueObj.value, testValue, "% lower value was not clipped in clipmode 'high'".format(testClass)
 			);
 
 			//Should clip smaller values than minVal when clipmode == low
-			param.clipmode = \low;
+			valueObj.clipmode = \low;
 			testValue = testClass.makeRandomValue((minVal: 1001.0, maxVal: 2000.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, testValue, "% higher value was not clipped in clipmode 'low'".format(testClass)
+				valueObj.value, testValue, "% higher value was not clipped in clipmode 'low'".format(testClass)
 			);
 			testValue = testClass.makeRandomValue((minVal: -200.0, maxVal: -101.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.minVal, "% lower value was clipped in clipmode 'low'".format(testClass)
+				valueObj.value, valueObj.minVal, "% lower value was clipped in clipmode 'low'".format(testClass)
 			);
 
 			//Should clip all values outside range when clipmode == both
-			param.clipmode = \both;
+			valueObj.clipmode = \both;
 			testValue = testClass.makeRandomValue((minVal: 1001.0, maxVal: 2000.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.maxVal, "% higher value was clipped in clipmode 'both'".format(testClass)
+				valueObj.value, valueObj.maxVal, "% higher value was clipped in clipmode 'both'".format(testClass)
 			);
 			testValue = testClass.makeRandomValue((minVal: -200.0, maxVal: -101.0));
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.minVal, "% lower value was clipped in clipmode 'both'".format(testClass)
+				valueObj.value, valueObj.minVal, "% lower value was clipped in clipmode 'both'".format(testClass)
 			);
 		});
 	}
@@ -254,30 +254,30 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var testStepsize, wasRun, wasCorrectValue;
 			testClass = this.class.testclassForType( class.type );
-			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
-			param.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 200.0));
-			param.clipmode = \both;
+			valueObj.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 200.0));
+			valueObj.clipmode = \both;
 
 			//Stepsize should be positive numbers only
 			//Convert into absolute value and print warning if negative value is used.
 			testStepsize = testClass.makeRandomValue((minVal: -10.0, maxVal: -1.0));
-			param.stepsize = testStepsize;
+			valueObj.stepsize = testStepsize;
 			this.assertEquals(
-				param.stepsize, testStepsize.abs, "% converted negative stepsize to positive".format(testClass)
+				valueObj.stepsize, testStepsize.abs, "% converted negative stepsize to positive".format(testClass)
 			);
 
 			//Should increment according to stepsize
-			param.clipmode_(\none);
+			valueObj.clipmode_(\none);
 			testValue = testClass.makeRandomValue((minVal: 50.0, maxVal: 100.0));
 			testStepsize = testClass.makeRandomValue((minVal: 1.0, maxVal: 4.0));
-			param.stepsize = testStepsize;
-			param.value = testValue;
-			{ param.increment; } ! 3; // increment 3 times
+			valueObj.stepsize = testStepsize;
+			valueObj.value = testValue;
+			{ valueObj.increment; } ! 3; // increment 3 times
 			this.assertEquals(
-				param.value, testValue + (testStepsize * 3), "% value was incremented correctly with stepsize %".format(testClass, testStepsize)
+				valueObj.value, testValue + (testStepsize * 3), "% value was incremented correctly with stepsize %".format(testClass, testStepsize)
 			);
 
 			//Should run action send new value to it
@@ -285,13 +285,13 @@ TestVTMNumberValue : TestVTMValue {
 			wasCorrectValue = false;
 			testValue = testClass.makeRandomValue((minVal: 1.0, maxVal: 15.0));
 			testStepsize = testClass.makeRandomValue((minVal: 1.0, maxVal: 5.0));
-			param.clipmode = \none;
-			param.action = {arg p;
+			valueObj.clipmode = \none;
+			valueObj.action = {arg p;
 				wasRun = true;
 				wasCorrectValue = (testValue + testStepsize) == p.value; };
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			param.increment;
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			valueObj.increment;
 			this.assert(
 				wasRun and: {wasCorrectValue}, "% ran action with correct value".format(testClass)
 			);
@@ -299,62 +299,62 @@ TestVTMNumberValue : TestVTMValue {
 			//Should decrement according to stepsize
 			testValue = testClass.makeRandomValue((minVal: 20.0, maxVal: 30.0));
 			testStepsize = testClass.makeRandomValue((minVal: 1.0, maxVal: 5.0));
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			{param.decrement} ! 2;
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			{valueObj.decrement} ! 2;
 			this.assertEquals(
-				param.value, testValue - (testStepsize * 2), "% value was decremented correctly".format(testClass)
+				valueObj.value, testValue - (testStepsize * 2), "% value was decremented correctly".format(testClass)
 			);
 
 			//Should not increment outside range if clipped
-			param.minVal = -100.0;
-			param.maxVal = 100.0;
+			valueObj.minVal = -100.0;
+			valueObj.maxVal = 100.0;
 			testValue = 99.0;
 			testStepsize = 3.0;
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			param.clipmode = \both;
-			{ param.increment; } ! 5;
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			valueObj.clipmode = \both;
+			{ valueObj.increment; } ! 5;
 			this.assertEquals(
-				param.value, param.maxVal, "% value was clipped when incremented more than maxVal".format(testClass)
+				valueObj.value, valueObj.maxVal, "% value was clipped when incremented more than maxVal".format(testClass)
 			);
 
 			//Should not decrement outside range if clipped
 			testValue = -99.0;
 			testStepsize = 10.0;
-			param.minVal = -100.0;
-			param.maxVal = 100.0;
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			param.clipmode = \both;
-			{ param.decrement; } ! 5;
+			valueObj.minVal = -100.0;
+			valueObj.maxVal = 100.0;
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			valueObj.clipmode = \both;
+			{ valueObj.decrement; } ! 5;
 			this.assertEquals(
-				param.value, param.minVal, "% value was clipped when decremented more than minVal".format(testClass)
+				valueObj.value, valueObj.minVal, "% value was clipped when decremented more than minVal".format(testClass)
 			);
 
 			//Should disable doAction optionally when incrementing
 			wasRun = false;
-			param.action = {arg p; wasRun = true};
+			valueObj.action = {arg p; wasRun = true};
 			testValue = 0.0;
 			testStepsize = 3.0;
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			param.increment(doAction: false);
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			valueObj.increment(doAction: false);
 			this.assert(
-				param.value == (testValue + testStepsize) and: {wasRun.not},
+				valueObj.value == (testValue + testStepsize) and: {wasRun.not},
 				"% value was incremented with optional doAction false causing action not to be run".format(testClass)
 			);
 
 			//Should disable doAction optionally when decrementing
 			wasRun = false;
-			param.action = {arg p; wasRun = true};
+			valueObj.action = {arg p; wasRun = true};
 			testValue = 0.0;
 			testStepsize = 3.0;
-			param.value = testValue;
-			param.stepsize = testStepsize;
-			param.decrement(doAction: false);
+			valueObj.value = testValue;
+			valueObj.stepsize = testStepsize;
+			valueObj.decrement(doAction: false);
 			this.assert(
-				param.value == (testValue - testStepsize) and: {wasRun.not},
+				valueObj.value == (testValue - testStepsize) and: {wasRun.not},
 				"% value was decremented with optional doAction false causing action not to be run".format(testClass)
 			)
 		});
@@ -364,21 +364,21 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
-			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
-			param.maxVal = testClass.makeRandomValue((minVal: 100.0, maxVal: 200.0));
-			param.action = {|p| wasRun = true; };
-			param.clipmode = \both;
+			valueObj.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 100.0, maxVal: 200.0));
+			valueObj.action = {|p| wasRun = true; };
+			valueObj.clipmode = \both;
 			//set the value higher than defined maxVal
-			param.value = testClass.makeRandomValue((minVal: 201.0, maxVal: 300.0));
+			valueObj.value = testClass.makeRandomValue((minVal: 201.0, maxVal: 300.0));
 
 			//Should update the value after maxVal set
 			//Should not run the action when maxVal change
-			param.maxVal = testClass.makeRandomValue((minVal: 50.0, maxVal: 90.0));
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 50.0, maxVal: 90.0));
 			this.assertEquals(
-				param.value, param.maxVal,
+				valueObj.value, valueObj.maxVal,
 				"% value adjusted value when maxVal changed".format(testClass)
 			);
 			this.assert(
@@ -389,12 +389,12 @@ TestVTMNumberValue : TestVTMValue {
 			//Should update the value after minVal set
 			//Should not run the action when minVal change
 			wasRun = false;
-			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));//0.0;
-			param.maxVal = testClass.makeRandomValue((minVal: 100.0, maxVal: 200.0));//5.0;
-			param.value = testClass.makeRandomValue((minVal: 1.0, maxVal: 20.0));//1.0;
-			param.minVal = testClass.makeRandomValue((minVal: 21.0, maxVal: 50.0));//1.5;
+			valueObj.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));//0.0;
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 100.0, maxVal: 200.0));//5.0;
+			valueObj.value = testClass.makeRandomValue((minVal: 1.0, maxVal: 20.0));//1.0;
+			valueObj.minVal = testClass.makeRandomValue((minVal: 21.0, maxVal: 50.0));//1.5;
 			this.assertEquals(
-				param.value, param.minVal,
+				valueObj.value, valueObj.minVal,
 				"% value adjusted value when minVal changed".format(testClass)
 			);
 			this.assert(
@@ -408,18 +408,18 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
 
-			param.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
-			param.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 100.0));
+			valueObj.minVal = testClass.makeRandomValue((minVal: -100.0, maxVal: 0.0));
+			valueObj.maxVal = testClass.makeRandomValue((minVal: 1.0, maxVal: 100.0));
 
 			//Should allow setting minVal to nil
 			try{
-				param.minVal = nil;
+				valueObj.minVal = nil;
 				this.assert(
-					param.minVal.isNil,
+					valueObj.minVal.isNil,
 					"% allowed setting minVal to nil".format(testClass)
 				);
 			} {
@@ -430,9 +430,9 @@ TestVTMNumberValue : TestVTMValue {
 
 			//Should allow setting maxVal to nil
 			try{
-				param.maxVal = nil;
+				valueObj.maxVal = nil;
 				this.assert(
-					param.maxVal.isNil,
+					valueObj.maxVal.isNil,
 					"% allowed setting maxVal to nil".format(testClass)
 				);
 			} {
@@ -448,41 +448,41 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
 
 			//Should only check for lower value in clipmode 'both' if 'maxVal' is not defined
-			param.clipmode = \both;
+			valueObj.clipmode = \both;
 			testValue = 999999.0;
-			param.value = testValue;
-			param.maxVal = nil;
-			param.minVal = 0.0;
+			valueObj.value = testValue;
+			valueObj.maxVal = nil;
+			valueObj.minVal = 0.0;
 			this.assert(
-				param.maxVal.isNil and: {param.value == testValue},
+				valueObj.maxVal.isNil and: {valueObj.value == testValue},
 				message: "% didn't clip value when maxVal was nil.".format(testClass)
 			);
 			testValue = -999999.0;
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.minVal,
+				valueObj.value, valueObj.minVal,
 				"% clipped value to minVal in clipmode 'both' when maxVal was nil.".format(testClass)
 			);
 
 			//Should only check for higher value in clipmode 'both' if 'minVal' is not defined
-			param.clipmode = \both;
-			param.minVal = nil;
-			param.maxVal = 1000.0;
+			valueObj.clipmode = \both;
+			valueObj.minVal = nil;
+			valueObj.maxVal = 1000.0;
 			testValue = -999999.0;
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assert(
-				param.minVal.isNil and: {param.value == testValue},
+				valueObj.minVal.isNil and: {valueObj.value == testValue},
 				message: "% didn't clip value when minVal was nil.".format(testClass)
 			);
 			testValue = 999999.0;
-			param.value = testValue;
+			valueObj.value = testValue;
 			this.assertEquals(
-				param.value, param.maxVal,
+				valueObj.value, valueObj.maxVal,
 				"% clipped value to maxVal in clipmode 'both' when minVal was nil.".format(testClass)
 			);
 		});
@@ -492,19 +492,19 @@ TestVTMNumberValue : TestVTMValue {
 		this.class.classesForTesting.do({arg class;
 			var testClass, testValue;
 			var name = "my%".format(class.name);
-			var param = class.new(name);
+			var valueObj = class.new(name);
 			var wasRun = false;
 			testClass = this.class.testclassForType( class.type );
-			param.minVal = -2.0;
-			param.maxVal = 22.0;
-			param.clipmode = \none;
-			param.action = {|p| wasRun = true; };
-			param.value = 25.0;
+			valueObj.minVal = -2.0;
+			valueObj.maxVal = 22.0;
+			valueObj.clipmode = \none;
+			valueObj.action = {|p| wasRun = true; };
+			valueObj.value = 25.0;
 
 			//Should update the higher-than-maxVal-value when clipmode changes from 'none' to 'high'
-			param.clipmode = \high;
+			valueObj.clipmode = \high;
 			this.assertEquals(
-				param.value, param.maxVal,
+				valueObj.value, valueObj.maxVal,
 				"% - adjusted value when clipmode changed to 'high'".format(testClass)
 			);
 			//Should not run the action when clipmode changed
@@ -513,86 +513,86 @@ TestVTMNumberValue : TestVTMValue {
 			);
 
 			//Should update the lower-than-minVal-value when clipmode changes 'none' to 'low'
-			param.clipmode = \none;
-			param.value = -10.0;
-			param.minVal = -5.5;
-			param.minVal = 0.0;
-			param.clipmode = \low;
+			valueObj.clipmode = \none;
+			valueObj.value = -10.0;
+			valueObj.minVal = -5.5;
+			valueObj.minVal = 0.0;
+			valueObj.clipmode = \low;
 			this.assertEquals(
-				param.value, param.minVal,
+				valueObj.value, valueObj.minVal,
 				"% - adjusted value clipmode changed to 'low'".format(testClass)
 			);
 
 			//Should not adjust value when it is higher than maxVal, and clipmode is set
 			//to 'low'
-			param.clipmode = \none;
-			param.minVal = 0.0;
-			param.maxVal = 1.2;
+			valueObj.clipmode = \none;
+			valueObj.minVal = 0.0;
+			valueObj.maxVal = 1.2;
 			testValue = 112.0;
-			param.value = testValue;
-			param.clipmode = \low;
+			valueObj.value = testValue;
+			valueObj.clipmode = \low;
 			this.assertEquals(
-				param.value, testValue,
+				valueObj.value, testValue,
 				"% - did not adjust higher value when clipmode changed to 'low'".format(testClass)
 			);
 
 			//Should not adjust value when it is lower than minVal, and clipmode is set
 			//to 'high'
-			param.clipmode = \none;
-			param.minVal = -1.0;
-			param.maxVal = 300.0;
+			valueObj.clipmode = \none;
+			valueObj.minVal = -1.0;
+			valueObj.maxVal = 300.0;
 			testValue = -500.0;
-			param.value = testValue;
-			param.clipmode = \high;
+			valueObj.value = testValue;
+			valueObj.clipmode = \high;
 			this.assertEquals(
-				param.value, testValue,
+				valueObj.value, testValue,
 				"% - did not adjust higher value when clipmode changed to 'low'".format(testClass)
 			);
 
 
 			//Should adjust value if value is higher than maxVal and clipmode set to 'both'
-			param.clipmode = \none;
-			param.minVal = 0.0;
-			param.maxVal = 2.0;
-			param.value = 2.222;
-			param.clipmode = \both;
+			valueObj.clipmode = \none;
+			valueObj.minVal = 0.0;
+			valueObj.maxVal = 2.0;
+			valueObj.value = 2.222;
+			valueObj.clipmode = \both;
 			this.assertEquals(
-				param.value, param.maxVal,
+				valueObj.value, valueObj.maxVal,
 				"% adjusted higher value when clipmode set to 'both'".format(testClass)
 			);
 
 			//Should adjust value if value is lower than minVal and clipmode is set to 'both'
-			param.clipmode = \none;
-			param.minVal = -111.0;
-			param.maxVal = 222.0;
-			param.value = -222.999;
-			param.clipmode = \both;
+			valueObj.clipmode = \none;
+			valueObj.minVal = -111.0;
+			valueObj.maxVal = 222.0;
+			valueObj.value = -222.999;
+			valueObj.clipmode = \both;
 			this.assertEquals(
-				param.value, param.minVal,
+				valueObj.value, valueObj.minVal,
 				"% adjusted lower value when clipmode set to 'both'".format(testClass)
 			);
 
 			//Should not adjust higher value in clipmode transition 'low' to 'none'
-			param.clipmode = \low;
-			param.minVal = 0.0;
-			param.maxVal = 11.0;
+			valueObj.clipmode = \low;
+			valueObj.minVal = 0.0;
+			valueObj.maxVal = 11.0;
 			testValue = 99.0;
-			param.value = testValue;
-			param.clipmode = \none;
+			valueObj.value = testValue;
+			valueObj.clipmode = \none;
 			this.assertEquals(
-				param.value, testValue,
+				valueObj.value, testValue,
 				"% kept higher value when clipmode went from 'low' 'none'".format(testClass)
 			);
 
 			//Should not adjust lower value in clipmode transition 'high' to 'none'
-			param.clipmode = \high;
-			param.minVal = -1.0;
-			param.maxVal = 146.0;
+			valueObj.clipmode = \high;
+			valueObj.minVal = -1.0;
+			valueObj.maxVal = 146.0;
 			testValue = -99.0;
-			param.value = testValue;
-			param.clipmode = \none;
+			valueObj.value = testValue;
+			valueObj.clipmode = \none;
 			this.assertEquals(
-				param.value, testValue,
+				valueObj.value, testValue,
 				"% kept higher value when clipmode went from 'low' 'none'".format(testClass)
 			);
 

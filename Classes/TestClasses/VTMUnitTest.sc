@@ -6,8 +6,9 @@ VTMUnitTest : UnitTest {
 	*runAll{arg runScripts = true;
 
 		[
-			VTMParameter,
-			VTMContext,
+			VTMValue,
+			VTMAbstractData,
+			VTMAbstractDataManager,
 			VTMNamedList,
 			// VTMApplication, //buggy testing when using .wait andhaung etc.
 		].do({arg cl;

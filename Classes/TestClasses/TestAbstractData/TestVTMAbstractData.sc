@@ -165,19 +165,13 @@ TestVTMAbstractData : VTMUnitTest {
 				);
 
 				class.parameters.do({arg attrKey;
-					var testVal;
+					var testVal, oldVal;
 					//does it respond to getter and setters for every parameters?
 					this.assert(
 						obj.respondsTo(attrKey),//test getter
 						"[%] - responded to parameters getter '%'".format(
 							class, attrKey) ++ appendString
 					);
-					this.assert(
-						obj.respondsTo(attrKey.asSetter),//test getter
-						"[%] - responded to parameters setter '%'".format(
-							class, attrKey.asSetter) ++ appendString
-					);
-
 					//check if test class has implemented random generation method for it
 					try{
 						testVal = testClass.makeRandomParameter(attrKey);
@@ -192,12 +186,13 @@ TestVTMAbstractData : VTMUnitTest {
 							class, attrKey) ++ appendString
 					);
 
-					//test setting parameters value
+					//Setting parameter values should fail
+					oldVal = obj.get(attrKey);
 					obj.set(attrKey, testVal);
 					this.assertEquals(
 						obj.get(attrKey),
-						testVal,
-						"[%] - setting and getting parameters '%' worked".format(
+						oldVal,
+						"[%] - setting  parameter '%' was correctly prevented".format(
 							class, attrKey) ++ appendString
 					);
 				});

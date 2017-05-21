@@ -5,19 +5,19 @@ TestVTMBooleanValue : TestVTMValue {
 	}
 
 	test_ToggleInvertsValue{
-		var param = VTMBooleanValue.new();
-		param.value = true;
+		var attr = VTMBooleanValue.new();
+		attr.value = true;
 		//toogle should make value false
-		param.toggle;
+		attr.toggle;
 		this.assertEquals(
-			param.value, false,
+			attr.value, false,
 			"BooleanValue toggling value true makes it false."
 		);
 
 		//Should toggle back to true
-		param.toggle;
+		attr.toggle;
 		this.assertEquals(
-			param.value, true,
+			attr.value, true,
 			"BooleanValue toggling value back to true."
 		);
 

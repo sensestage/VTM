@@ -1,4 +1,3 @@
-//children may be Parameter and HardwareDevice
 VTMHardwareDevice : VTMComposableContext {
 	*managerClass{ ^VTMHardwareSetup; }
 
