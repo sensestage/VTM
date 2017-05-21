@@ -15,10 +15,10 @@ VTMTimecodeValue : VTMValue {
 	}
 
 	*new{arg properties;
-		^super.new(properties).initTimecodeParameter;
+		^super.new(properties).initTimecodeValue;
 	}
 
-	initTimecodeParameter{
+	initTimecodeValue{
 	}
 
 	//get only milliseconds as integer
@@ -83,7 +83,7 @@ VTMTimecodeValue : VTMValue {
 			//add back the new millisecond value
 			this.value_(result + val.clip(0.0, 999.999999));
 		}, {
-			"TimecodeParameter:milliseconds_ '%' - ignoring val because of invalid type: '%[%]'".format(
+			"TimecodeValue:milliseconds_ '%' - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -100,7 +100,7 @@ VTMTimecodeValue : VTMValue {
 			result = result + (val.clip(0, 59) * 1000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:seconds_  - ignoring val because of invalid type: '%[%]'".format(
+			"TimecodeValue:seconds_  - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -117,7 +117,7 @@ VTMTimecodeValue : VTMValue {
 			result = result + (val.clip(0, 59) * 60000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:minutes_ - ignoring val because of invalid type: '%[%]'".format(
+			"TimecodeValue:minutes_ - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -134,7 +134,7 @@ VTMTimecodeValue : VTMValue {
 			result = result + (val.clip(0, 23) * 3600000);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:hours_ - ignoring val because of invalid type: '%[%]'".format(
+			"TimecodeValue:hours_ - ignoring val because of invalid type: '%[%]'".format(
 				 val, val.class
 			).warn;
 		});
@@ -151,7 +151,7 @@ VTMTimecodeValue : VTMValue {
 			result = result + (val.clip(0, 364) * 86400000.0);
 			this.value_(result);
 		}, {
-			"TimecodeParameter:days_ - ignoring val because of invalid type: '%[%]'".format(
+			"TimecodeValue:days_ - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});

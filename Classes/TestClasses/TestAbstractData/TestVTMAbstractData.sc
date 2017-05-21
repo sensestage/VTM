@@ -3,7 +3,7 @@ TestVTMAbstractData : VTMUnitTest {
 	*classesForTesting{
 		^[
 			VTMAttribute,
-//			VTMCommand,
+			VTMCommand,
 //			VTMQuery,
 //			VTMMapping,
 //			VTMDefinitionLibrary,

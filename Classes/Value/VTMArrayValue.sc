@@ -1,7 +1,7 @@
 /*
-ArrayParameters has items with a defined type.
-Differing from ListParameter in that it doesn't make the actual internal
-sub-parameters, but rather constructs a subparameter interface
+ArrayValues has items with a defined type.
+Differing from ListValue in that it doesn't make the actual internal
+sub-Values, but rather constructs a subValue interface
 to its internal items(i.e. array elements).
 */
 VTMArrayValue : VTMCollectionValue {
@@ -20,10 +20,10 @@ VTMArrayValue : VTMCollectionValue {
 	}
 
 	*new{arg properties;
-		^super.new(properties).initArrayParameter;
+		^super.new(properties).initArrayValue;
 	}
 
-	initArrayParameter{
+	initArrayValue{
 		if(properties.notEmpty, {
 			if(properties.includesKey(\size), {
 				size = properties[\size];

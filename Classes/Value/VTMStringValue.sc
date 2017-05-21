@@ -9,10 +9,10 @@ VTMStringValue : VTMValue {
 	}
 
 	*new{arg properties;
-		^super.new(properties).initStringParameter;
+		^super.new(properties).initStringValue;
 	}
 
-	initStringParameter{arg stringAttr_;
+	initStringValue{arg stringAttr_;
 		if(properties.notEmpty, {
 			if(properties.includesKey(\pattern), {
 				this.pattern_(properties[\pattern]);
@@ -52,7 +52,7 @@ VTMStringValue : VTMValue {
 				});
 			});
 		}, {
-			"StringParameter:matchPattern_- ignoring val because of non-matching pattern: '%[%]'".format(
+			"StringValue:matchPattern_- ignoring val because of non-matching pattern: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -64,7 +64,7 @@ VTMStringValue : VTMValue {
 		if(val.isString or: {val.isKindOf(Symbol)}, {
 			this.set(\pattern, val.asString);
 		}, {
-			"StringParameter:pattern_ - ignoring val because of invalid type: '%[%]'".format(
+			"StringValue:pattern_ - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -80,7 +80,7 @@ VTMStringValue : VTMValue {
 			if(this.pattern.matchRegexp(inval), {
 				super.defaultValue_(inval);
 			}, {
-				"StringParameter:defaultValue_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+				"StringValue:defaultValue_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
 					inval, this.pattern
 				).warn;
 			});
@@ -98,7 +98,7 @@ VTMStringValue : VTMValue {
 			if(this.pattern.matchRegexp(inval), {
 				super.value_(inval, true);
 			}, {
-				"StringParameter:value_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
+				"StringValue:value_ - ignoring val because of unmatched pattern pattern: '%[%]'".format(
 					inval, this.pattern
 				).warn;
 			});
