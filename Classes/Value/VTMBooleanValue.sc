@@ -34,10 +34,4 @@ VTMBooleanValue : VTMValue {
 	}
 
 	*defaultViewType{ ^\toggle; }
-
-	*makeOSCAPI{arg param;
-		^super.makeOSCAPI(param).putAll(IdentityDictionary[
-			'toggle!' -> {param.toggle;}
-		]);
-	}
 }
