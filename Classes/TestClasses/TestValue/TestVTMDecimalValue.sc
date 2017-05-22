@@ -19,61 +19,61 @@ TestVTMDecimalValue : TestVTMNumberValue {
 			clipmode: \both, minVal: -231, maxVal: 889,
 			stepsize: 88
 		);
-		var param = VTMDecimalValue.new(desc);
+		var valueObj = VTMDecimalValue.new(desc);
 		this.assertEquals(
-			param.value.class, Float,
+			valueObj.value.class, Float,
 			"DecimalValue changed integer value in properties to Float"
 		);
 		this.assertEquals(
-			param.defaultValue.class, Float,
+			valueObj.defaultValue.class, Float,
 			"DecimalValue changed integer defaultValue in properties to Float"
 		);
 		this.assertEquals(
-			param.minVal.class, Float,
+			valueObj.minVal.class, Float,
 			"DecimalValue changed integer minVal in properties to Float"
 		);
 		this.assertEquals(
-			param.maxVal.class, Float,
+			valueObj.maxVal.class, Float,
 			"DecimalValue changed integer maxVal in properties to Float"
 		);
 		this.assertEquals(
-			param.stepsize.class, Float,
+			valueObj.stepsize.class, Float,
 			"DecimalValue changed integer stepsize in properties to Float"
 		);
 
 		//Test the setter methods also
 		testValue = 22;
-		param.value = testValue;
+		valueObj.value = testValue;
 		this.assertEquals(
-			param.value.class, Float,
+			valueObj.value.class, Float,
 			"DecimalValue changed decimal value in setter to Float"
 		);
 
 		testValue = 0;
-		param.defaultValue = testValue;
+		valueObj.defaultValue = testValue;
 		this.assertEquals(
-			param.defaultValue.class, Float,
+			valueObj.defaultValue.class, Float,
 			"DecimalValue changed decimal defaultValue in setter to Float"
 		);
 
 		testValue = -22;
-		param.minVal = testValue;
+		valueObj.minVal = testValue;
 		this.assertEquals(
-			param.minVal.class, Float,
+			valueObj.minVal.class, Float,
 			"DecimalValue changed decimal minVal in setter to Float"
 		);
 
 		testValue = 1232;
-		param.maxVal = testValue;
+		valueObj.maxVal = testValue;
 		this.assertEquals(
-			param.maxVal.class, Float,
+			valueObj.maxVal.class, Float,
 			"DecimalValue changed decimal maxVal in setter to Float"
 		);
 
 		testValue = 122;
-		param.stepsize = testValue;
+		valueObj.stepsize = testValue;
 		this.assertEquals(
-			param.stepsize.class, Float,
+			valueObj.stepsize.class, Float,
 			"DecimalValue changed decimal stepsize in setter to Float"
 		);
 	}

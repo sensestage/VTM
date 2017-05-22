@@ -23,15 +23,15 @@ TestVTMTimecodeValue : TestVTMValue {
 	}
 
 	test_DefaultProperties{
-		var param = VTMTimecodeValue.new;
+		var valueObj = VTMTimecodeValue.new;
 		//Should return 0 as defaultValue
 		this.assertEquals(
-			param.defaultValue, 0,
+			valueObj.defaultValue, 0,
 			"TimecodeValue has defaultValue 0"
 		);
 		//Should return 0 as value
 		this.assertEquals(
-			param.value, 0,
+			valueObj.value, 0,
 			"TimecodeValue has value 0"
 		);
 	}
@@ -40,40 +40,40 @@ TestVTMTimecodeValue : TestVTMValue {
 		var desc = (
 			value: 1000, defaultValue: 3000,
 		);
-		var param = VTMTimecodeValue.new(desc);
+		var valueObj = VTMTimecodeValue.new(desc);
 		this.assertEquals(
-			param.defaultValue, desc[\defaultValue],
+			valueObj.defaultValue, desc[\defaultValue],
 			"TimecodeValue set defaultValue through properties"
 		);
 		this.assertEquals(
-			param.value, desc[\value],
+			valueObj.value, desc[\value],
 			"TimecodeValue set value through properties"
 		);
 	}
 
 	test_GetValueInUnitFormats{
-		var param = VTMTimecodeValue.new();
+		var valueObj = VTMTimecodeValue.new();
 
 		//(275128022.8 * 0.001).asTimeString(0.000001);
-		param.value = 275128022.8;//3 days, 4 hours, 25 minutes 28 seconds and 22.8 ms
+		valueObj.value = 275128022.8;//3 days, 4 hours, 25 minutes 28 seconds and 22.8 ms
 		this.assertFloatEquals(
-			param.milliseconds, 22.8,
+			valueObj.milliseconds, 22.8,
 			"TimecodeValue returned correct milliseconds"
 		);
 		this.assertEquals(
-			param.seconds, 28,
+			valueObj.seconds, 28,
 			"TimecodeValue returned correct seconds"
 		);
 		this.assertEquals(
-			param.minutes, 25,
+			valueObj.minutes, 25,
 			"TimecodeValue returned correct minutes"
 		);
 		this.assertEquals(
-			param.hours, 4,
+			valueObj.hours, 4,
 			"TimecodeValue returned correct hours"
 		);
 		this.assertEquals(
-			param.days, 3,
+			valueObj.days, 3,
 			"TimecodeValue returned correct days"
 		);
 	}
@@ -90,39 +90,39 @@ TestVTMTimecodeValue : TestVTMValue {
 				days: rrand(0, 364)
 			);
 			var testSum;
-			var param = VTMTimecodeValue.new;
+			var valueObj = VTMTimecodeValue.new;
 
-			param.milliseconds_(testValue[\milliseconds]);
+			valueObj.milliseconds_(testValue[\milliseconds]);
 			this.assertFloatEquals(
-				param.milliseconds, testValue[\milliseconds],
+				valueObj.milliseconds, testValue[\milliseconds],
 				"TimecodeValue set the value in milliseconds correctly"
 			);
 
 			//add seconds
-			param.seconds_(testValue[\seconds]);
+			valueObj.seconds_(testValue[\seconds]);
 			this.assertFloatEquals(
-				param.seconds, testValue[\seconds],
+				valueObj.seconds, testValue[\seconds],
 				"TimecodeValue set the value in seconds correctly"
 			);
 
 			//add minutes
-			param.minutes_(testValue[\minutes]);
+			valueObj.minutes_(testValue[\minutes]);
 			this.assertFloatEquals(
-				param.minutes, testValue[\minutes],
+				valueObj.minutes, testValue[\minutes],
 				"TimecodeValue set the value in minutes correctly"
 			);
 
 			//add hours
-			param.hours_(testValue[\hours]);
+			valueObj.hours_(testValue[\hours]);
 			this.assertFloatEquals(
-				param.hours, testValue[\hours],
+				valueObj.hours, testValue[\hours],
 				"TimecodeValue set the value in hours correctly"
 			);
 
 			//add days
-			param.days_(testValue[\days]);
+			valueObj.days_(testValue[\days]);
 			this.assertFloatEquals(
-				param.days, testValue[\days],
+				valueObj.days, testValue[\days],
 				"TimecodeValue set the value in days correctly"
 			);
 
@@ -134,7 +134,7 @@ TestVTMTimecodeValue : TestVTMValue {
 				(testValue[\days] * 1000.0 * 60.0 * 60.0 * 24.0)
 			);
 			this.assertFloatEquals(
-				param.value, testSum,
+				valueObj.value, testSum,
 				"TimecodeValue summed all unit values into correct sum"
 			);
 		};

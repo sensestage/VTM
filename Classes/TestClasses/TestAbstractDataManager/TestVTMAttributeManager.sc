@@ -1,11 +1,11 @@
-TestVTMParameterManager : TestVTMAbstractDataManager {
+TestVTMAttributeManager : TestVTMAbstractDataManager {
 
-	*makeRandomPresetForParameterDeclaration{arg declaration;
+	*makeRandomPresetForAttributeDeclaration{arg declaration;
 		var result = IdentityDictionary.new;
 		declaration.do({arg attr;
 			result.put(
 				attr[\name],
-				TestVTMParameter.testclassForType(attr[\type]).makeRandomValue
+				TestVTMAttribute.testclassForType(attr[\type]).makeRandomValue
 			);
 		});
 		^result.asKeyValuePairs;
@@ -13,17 +13,17 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 
 	//make one of each type for testing
 	*makeTestDeclaration{
-		^TestVTMParameter.testTypes.collect{arg item;
-			TestVTMParameter.makeRandomDeclaration(item)
+		^TestVTMAttribute.testTypes.collect{arg item;
+			TestVTMAttribute.makeRandomDeclaration(item)
 		};
 	}
 
 	*makeRandomPresetForElement{arg element;
 		var result = IdentityDictionary.new;
-		element.parameters.do({arg paramName;
-			var param;
-			param = element.getParameter(paramName);
-			result.put(paramName, TestVTMParameter.testclassForType(param.type).makeRandomValue);
+		element.attributes.do({arg attrName;
+			var attr;
+			attr = element.getAttribute(attrName);
+			result.put(attrName, TestVTMAttribute.testclassForType(attr.type).makeRandomValue);
 		});
 		^result.asKeyValuePairs;
 	}
@@ -36,10 +36,10 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 		^result.asKeyValuePairs;
 	}
 
-	*makeRandomPresetDeclarationForParameterDeclaration{arg declaration;
+	*makeRandomPresetDeclarationForAttributeDeclaration{arg declaration;
 		var result = IdentityDictionary.new;
 		rrand(3,8).do{arg i;
-			result.put(this.makeRandomString, this.makeRandomPresetForParameterDeclaration(declaration));
+			result.put(this.makeRandomString, this.makeRandomPresetForAttributeDeclaration(declaration));
 		};
 		^result.asKeyValuePairs;
 	}
@@ -61,12 +61,12 @@ TestVTMParameterManager : TestVTMAbstractDataManager {
 
 		this.assertEquals(
 			element.presets, testPresetNames,
-			"ParameterManager added preset names correctly"
+			"AttributeManager added preset names correctly"
 		);
 
 		this.assertEquals(
 			element.presetDeclaration, testPresets,
-			"ParameterManager returned preset declaration correctly"
+			"AttributeManager returned preset declaration correctly"
 		);
 
 		element.free;

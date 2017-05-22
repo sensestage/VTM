@@ -7,7 +7,7 @@ VTMValueElement : VTMAbstractData {
 	}
 
 	initValueElement{
-		var valueClass = VTMValue.typeToClass(\integer);
+		var valueClass = VTMValue.typeToClass(declaration[\type]) ? VTMValue;
 		//extract property values from declaration
 		properties = VTMOrderedIdentityDictionary.new;
 		valueClass.propertyKeys.do({arg propKey;

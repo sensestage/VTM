@@ -3,7 +3,7 @@ VTMNumberValue : VTMValue {
 	var <scheduler;//Where instances of VTMNumberInterpolator will be
 
 	*new{arg properties;
-		^super.new(properties).initNumberParameter;
+		^super.new(properties).initNumberValue;
 	}
 
 	isValidType{arg val;
@@ -14,7 +14,7 @@ VTMNumberValue : VTMValue {
 		^true; //TEMP implement checks in subclasses
 	}
 
-	initNumberParameter{
+	initNumberValue{
 		if(properties.notEmpty, {
 			if(properties.includesKey(\clipmode), {
 				this.clipmode = properties[\clipmode];
@@ -123,7 +123,7 @@ VTMNumberValue : VTMValue {
 				this.set(\minVal, val);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"NumberParameter:minVal_ - ignoring val because of invalid type: '%[%]'".format(
+				"NumberValue:minVal_ - ignoring val because of invalid type: '%[%]'".format(
 					val, val.class
 				).warn;
 			});
@@ -139,7 +139,7 @@ VTMNumberValue : VTMValue {
 				this.set(\maxVal, val);
 				this.value_(this.value);//update the value, might be clipped in the value set method
 			}, {
-				"NumberParameter:maxVal_ - ignoring val because of invalid type: '%[%]'".format(
+				"NumberValue:maxVal_ - ignoring val because of invalid type: '%[%]'".format(
 					val, val.class
 				).warn;
 			});
@@ -153,11 +153,11 @@ VTMNumberValue : VTMValue {
 		if(this.isValidType(val), {
 			if(newVal.isNegative, {
 				newVal = newVal.abs;
-				"NumberParameter:stepsize_ - val converted to positive value".warn;
+				"NumberValue:stepsize_ - val converted to positive value".warn;
 			});
 			this.set(\stepsize, newVal);
 		}, {
-			"NumberParameter:stepsize_ - ignoring val because of invalid type: '%[%]'".format(
+			"NumberValue:stepsize_ - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});
@@ -170,7 +170,7 @@ VTMNumberValue : VTMValue {
 			this.set(\clipmode, val.asSymbol);
 			this.value_(this.value);//update the value, might be clipped in the value set method
 		}, {
-			"NumberParameter:clipmode_ - ignoring val because of invalid type: '%[%]'".format(
+			"NumberValue:clipmode_ - ignoring val because of invalid type: '%[%]'".format(
 				val, val.class
 			).warn;
 		});

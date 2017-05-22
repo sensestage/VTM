@@ -1,7 +1,7 @@
 /*
 Not yet an implementation of a standardized schema syntax, but follows similar principles
 as with JSON schema.
-The semantics as for now built on the VTM Parameter settings and types.
+The semantics as for now built on the VTM Value settings and types.
 In the future a translator from/to JSON schema might be made.
 
 properties:
@@ -13,7 +13,7 @@ messages, i.e. they will become fail validation.
 If additionalProperties defines a type, only additionalProperties of that type will be accepted.
 
 string enum:
-Type string enum resolves in VTM to a option-type parameter.
+Type string enum resolves in VTM to a option-type Value.
 
 required:
 Defines the properties that are required for a valid message.

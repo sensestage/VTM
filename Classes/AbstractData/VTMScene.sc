@@ -1,4 +1,3 @@
-//children may be Parameter, Module, ModuleProxy, and Scene
 VTMScene : VTMComposableContext {
 
 	*managerClass{ ^VTMSceneOwner; }

@@ -1,5 +1,5 @@
 VTMBooleanValue : VTMValue {
-	var <doActionOn = \change;
+	var <doActionOn = \change; //\change | \rising | \falling
 
 	*prDefaultValueForType{ ^false; }
 
@@ -10,10 +10,10 @@ VTMBooleanValue : VTMValue {
 	}
 
 	*new{arg properties;
-		^super.new(properties).initBooleanParameter;
+		^super.new(properties).initBooleanValue;
 	}
 
-	initBooleanParameter{
+	initBooleanValue{
 
 	}
 
@@ -34,10 +34,4 @@ VTMBooleanValue : VTMValue {
 	}
 
 	*defaultViewType{ ^\toggle; }
-
-	*makeOSCAPI{arg param;
-		^super.makeOSCAPI(param).putAll(IdentityDictionary[
-			'toggle!' -> {param.toggle;}
-		]);
-	}
 }

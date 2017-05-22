@@ -8,14 +8,6 @@ VTMAttribute : VTMValueElement {
 	initAttribute{
 	}
 
-	*parameterDescriptions{
-		^super.parameterDescriptions.putAll(
-			VTMOrderedIdentityDictionary[
-				\type -> (type: \string, optional: false)//overrides superclass description
-			]
-		);
-	}
-
 	action_{arg val;
 		valueObj.action_(val);
 	}

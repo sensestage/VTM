@@ -2,7 +2,7 @@
 A ListValue will have items with arbitrary types.
 */
 VTMListValue : VTMCollectionValue {
-	var <itemType; //Which parameter type to contain in this class
+	var <itemType; //Which Value type to contain in this class
 	var orderThunk;
 	var itemAtThunk, <prItemDict;
 
@@ -27,11 +27,11 @@ VTMListValue : VTMCollectionValue {
 			});
 		});
 		//Using decimal as default item type so
-		//that list parameter can be made using empty properties.
+		//that list Value can be made using empty properties.
 		itemType = itemType ? \decimal;
 		itemDescription = [ () ];
 
-		//build the internal parameters
+		//build the internal Values
 		this.prBuildItemValues;
 		orderThunk = Thunk{
 			items.collect(_.name);
@@ -45,7 +45,7 @@ VTMListValue : VTMCollectionValue {
 
 	prBuildItemValues{
 		//Check if the items are already built.
-		//This forces you to always make a new list parameter if one is
+		//This forces you to always make a new list Value if one is
 		//already made.
 		if(items.isNil, {
 			var itemClass, itemDescription, propertyKeys;
@@ -53,7 +53,7 @@ VTMListValue : VTMCollectionValue {
 			items = Dictionary.new;
 			itemClass = VTMValue.typeToClass(itemType);
 
-			//all sub parameters have this base item properties
+			//all sub Values have this base item properties
 			baseItemDesc = (
 				isSubValue: true
 			);
@@ -84,13 +84,13 @@ VTMListValue : VTMCollectionValue {
 				Association.new(itemName, newItemDesc);
 			});
 
-			//Build the item parameter objects
+			//Build the item Value objects
 			items = itemDescription.collect({arg itemDesc;
 				VTMValue.makeFromType(properties[\itemType], itemDesc);
 			});
 
 		}, {
-			Error("ListValue items already built, please free current and build a new parameter.").throw;
+			Error("ListValue items already built, please free current and build a new Value.").throw;
 		});
 	}
 

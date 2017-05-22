@@ -48,7 +48,7 @@ VTMValue {
 		if(class.notNil, {
 			^class.new(properties);
 		}, {
-			Error("Unknown type").throw;
+			^this.new(properties);
 		});
 	}
 
@@ -75,41 +75,6 @@ VTMValue {
 	//only non-abstract sub classes will implement this.
 	isValidType{arg val;
 		this.subclassResponsibility(thisMethod);
-	}
-
-	initValueParameter{
-		if(properties.notEmpty, {
-			if(properties.includesKey(\enabled), {
-				//Is enabled by default so only disabled if defined
-				if(properties[\enabled].not, {
-					this.disable;
-				})
-			});
-			if(properties.includesKey(\defaultValue), {
-				this.defaultValue_(properties[\defaultValue]);
-			});
-			if(properties.includesKey(\value), {
-				this.value_(properties[\value]);
-			});
-			if(properties.includesKey(\filterRepetitions), {
-				this.filterRepetitions = properties[\filterRepetitions];
-			});
-			if(properties.includesKey(\enum), {
-				//enums are stored as key value pairs
-				this.enum = VTMNamedList.newFromKeyValuePairs(properties[\enum]);
-			});
-			if(properties.includesKey(\restrictValueToEnum), {
-				this.restrictValueToEnum = properties[\restrictValueToEnum];
-			});
-		});
-		enum = enum ? VTMNamedList();
-		if(this.defaultValue.isNil, {
-			this.defaultValue_(this.prDefaultValueForType.deepCopy);
-		});
-		if(this.value.isNil, {
-			this.value_( this.defaultValue );
-		});
-		scheduler = Routine{};
 	}
 
 	//set value to default

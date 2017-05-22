@@ -1,1 +1,0 @@
-TestVTMParameterProxy : UnitTest {}

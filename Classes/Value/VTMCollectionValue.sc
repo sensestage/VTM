@@ -5,10 +5,10 @@ VTMCollectionValue : VTMValue {
 	var <minLength;
 
 	*new{arg name, properties;
-		^super.new(name, properties).initCollectionParameter;
+		^super.new(name, properties).initCollectionValue;
 	}
 
-	initCollectionParameter{
+	initCollectionValue{
 		if(properties.notEmpty, {
 			if(properties.includesKey(\itemDescription), {
 				itemDescription = properties[\itemDescription];

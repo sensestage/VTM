@@ -3,8 +3,8 @@ TestVTMAbstractData : VTMUnitTest {
 	*classesForTesting{
 		^[
 			VTMAttribute,
-//			VTMCommand,
-//			VTMQuery,
+			VTMCommand,
+			VTMQuery,
 //			VTMMapping,
 //			VTMDefinitionLibrary,
 //			VTMRemoteNetworkNode,
@@ -164,42 +164,28 @@ TestVTMAbstractData : VTMUnitTest {
 					testParameters
 				);
 
-				class.parameters.do({arg attrKey;
-					var testVal;
-					//does it respond to getter and setters for every parameters?
+				class.parameterKeys.do({arg paramKey;
+					var testVal, oldVal;
+					//does it respond to getters for every parameters?
 					this.assert(
-						obj.respondsTo(attrKey),//test getter
+						obj.respondsTo(paramKey),//test getter
 						"[%] - responded to parameters getter '%'".format(
-							class, attrKey) ++ appendString
+							class, paramKey) ++ appendString
 					);
-					this.assert(
-						obj.respondsTo(attrKey.asSetter),//test getter
-						"[%] - responded to parameters setter '%'".format(
-							class, attrKey.asSetter) ++ appendString
-					);
-
 					//check if test class has implemented random generation method for it
 					try{
-						testVal = testClass.makeRandomParameter(attrKey);
+						testVal = testClass.makeRandomParameter(paramKey);
 					} {|err|
 						this.failed(thisMethod,
-							Error("[%] - Error making random parameters value for '%'".format(class, attrKey)).throw;
+							Error("[%] - Error making random parameters value for '%'".format(class, paramKey)).throw;
 						);
 					};
 					this.assert(
 						testVal.notNil,
 						"[%] - test class generated non-nil random value for attr '%'".format(
-							class, attrKey) ++ appendString
+							class, paramKey) ++ appendString
 					);
 
-					//test setting parameters value
-					obj.set(attrKey, testVal);
-					this.assertEquals(
-						obj.get(attrKey),
-						testVal,
-						"[%] - setting and getting parameters '%' worked".format(
-							class, attrKey) ++ appendString
-					);
 				});
 				obj.free;
 			});
