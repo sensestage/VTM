@@ -82,7 +82,7 @@ VTMAbstractData{
 	}
 
 	parameters{
-		^parameters.as(VTMOrderedIdentityDictionary);
+		^parameters.as(VTMParameters);
 	}
 
 	description{

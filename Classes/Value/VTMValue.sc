@@ -48,7 +48,7 @@ VTMValue {
 		if(class.notNil, {
 			^class.new(properties);
 		}, {
-			Error("Unknown type").throw;
+			^this.new(properties);
 		});
 	}
 
