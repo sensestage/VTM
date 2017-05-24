@@ -29,6 +29,10 @@ This code is in a state of severe alpha and early development. That means that r
 
 for more detailed instructions see <https://github.com/blacksound/VTM/wiki/Raspberry-Pi-Instructions>
 
+## examples
+
+see <http://github.com/blacksound/VTMSketches>
+
 ### misc
 
 ![alt text](https://oddodd.org/lib/VTM/VTM.png "VTM")
