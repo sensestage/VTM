@@ -1,6 +1,7 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
 	var properties;
+	var context;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initValueElement;
@@ -16,6 +17,11 @@ VTMValueElement : VTMAbstractData {
 			});
 		});
 		valueObj = VTMValue.makeFromType(declaration[\type], properties);
+		//If this element belongs to a Context we need to contextualize
+		//the actions so that the includes the context as its second argument.
+		if(manager.notNil and: {manager.context.notNil}, {
+			context = manager.context;
+		});
 	}
 
 	prInitValueObject{

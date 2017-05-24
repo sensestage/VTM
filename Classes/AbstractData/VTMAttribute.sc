@@ -6,10 +6,16 @@ VTMAttribute : VTMValueElement {
 	}
 
 	initAttribute{
+		//add the action
+		if(declaration.includesKey(\action), {
+			this.action_(declaration[\action]);
+		});
 	}
 
-	action_{arg val;
-		valueObj.action_(val);
+	action_{arg func;
+		valueObj.action_({
+			func.value(this, context);
+		});
 	}
 
 	value_{arg val;
