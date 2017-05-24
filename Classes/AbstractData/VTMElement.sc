@@ -1,7 +1,7 @@
 VTMElement : VTMAbstractData {
 	var <attributes;
 	var <commands;
-	var <queries;
+	var <returns;
 	var <signals;
 
 	*new{arg name, declaration, manager;
@@ -11,7 +11,7 @@ VTMElement : VTMAbstractData {
 	initElement{
 		this.prInitAttributes;
 		this.prInitSignals;
-		this.prInitQueries;
+		this.prInitReturns;
 		this.prInitCommands;
 
 		//TODO: register with LocalNetworkNode singleton.
@@ -33,9 +33,9 @@ VTMElement : VTMAbstractData {
 		signals = VTMSignalManager(this, itemDeclarations);
 	}
 
-	prInitQueries{
-		var itemDeclarations = this.class.queryDescriptions.deepCopy;
-		queries = VTMQueryManager(this, itemDeclarations);
+	prInitReturns{
+		var itemDeclarations = this.class.returnDescriptions.deepCopy;
+		returns  = VTMReturnManager(this, itemDeclarations);
 	}
 
 	prInitCommands{
@@ -44,7 +44,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	components{
-		^[attributes, queries, signals, commands];
+		^[attributes, returns, signals, commands];
 	}
 
 	free{
@@ -54,7 +54,7 @@ VTMElement : VTMAbstractData {
 
 	*attributeDescriptions{  ^VTMOrderedIdentityDictionary[]; }
 	*commandDescriptions{ ^VTMOrderedIdentityDictionary[]; }
-	*queryDescriptions{ ^VTMOrderedIdentityDictionary[]; }
+	*returnDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 	*signalDescriptions{ ^VTMOrderedIdentityDictionary[]; }
 
 	description{
@@ -63,7 +63,7 @@ VTMElement : VTMAbstractData {
 			\attributes -> this.class.attributeDescriptions,
 			\commands -> this.class.commandDescriptions,
 			\signals -> this.class.signalDescriptions,
-			\queries -> this.class.queryDescriptions
+			\returns -> this.class.returnDescriptions
 		]);
 		^result;
 	}
@@ -91,9 +91,9 @@ VTMElement : VTMAbstractData {
 		commands[key].do(*args);
 	}
 
-	//get query results. Only run-time
+	//get return results. Only run-time
 	query{arg key;
-		^queries[key].value;
+		^returns[key].value;
 	}
 
 	//emits a signal
@@ -102,6 +102,10 @@ VTMElement : VTMAbstractData {
 	//context definition, and still protected from the outside?
 	emit{arg key...args;
 		signals[key].emit(*args);
+	}
+
+	return{arg key ...args;
+		returns[key].value_(*args);
 	}
 
 	onSignal{arg key, func;

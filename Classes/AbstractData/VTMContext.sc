@@ -274,8 +274,8 @@ VTMContext : VTMElement {
 		]);
 	}
 
-	*queryDescriptions{
-		^super.queryDescriptions.putAll( VTMOrderedIdentityDictionary[
+	*returnDescriptions{
+		^super.returnDescriptions.putAll( VTMOrderedIdentityDictionary[
 			\state -> (type: \string)
 		]);
    	}
