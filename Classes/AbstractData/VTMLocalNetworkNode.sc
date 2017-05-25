@@ -1,25 +1,23 @@
 //a Singleton class that communicates with the network and manages Applications
 VTMLocalNetworkNode : VTMAbstractDataManager {
-	classvar <singleton;
+	classvar <>id;
+	classvar <applications;
 
 	*dataClass{ ^VTMApplication; }
-	name{ ^\undefined; }
 
 	*initClass{
 		Class.initClassTree(VTMAbstractData);
 		NetAddr.broadcastFlag = true;
-		singleton = super.new.initLocalNetworkNode;
+		//singleton = super.new.initLocalNetworkNode;
+		id = Pipe("hostname", "r").getLine().postln();
+		VTMLocalNetworkNode.discover();
 	}
 
-	*new{
-		^singleton;
-	}
-
-	getBroadcastIp {
+	*getBroadcastIp {
 		^Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
 	}
 
-	discover {
+	*discover {
 
 		// check BSD, may vary ...
 		var line, lnet = false, lnet_ip;
@@ -42,15 +40,13 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		if(lnet.not) { Error("VTM Error, could not find localnetwork..").throw(); };
 
-		this.sendMsg(this.getBroadcastIp(), 57120, '/discovery',
+		this.sendMsg(VTMLocalNetworkNode.getBroadcastIp(), 57120, '/discovery', id,
 			format("%:%", lnet_ip, 57120));
 	}
 
-	initLocalNetworkNode{}
+	*leadingSeparator { ^$/; }
 
-	leadingSeparator { ^$/; }
-
-	sendMsg{arg hostname, port, path ...data;
+	*sendMsg{arg hostname, port, path ...data;
 		//sending eeeeverything as typed YAML for now.
 		NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
 	}
