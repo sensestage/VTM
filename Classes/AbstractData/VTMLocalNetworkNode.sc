@@ -8,14 +8,14 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	*dataClass{ ^VTMApplication; }
 
 	*initClass{
+
 		Class.initClassTree(VTMAbstractData);
 		Class.initClassTree(VTMNetworkNodeManager);
-		
+
 		NetAddr.broadcastFlag = true;
-		//singleton = super.new.initLocalNetworkNode;
 		hostname = Pipe("hostname", "r").getLine().postln();
 
-		discoveryReplyResponder = Thunk{ 
+		discoveryReplyResponder = Thunk{
 			OSCFunc({arg msg, time, resp, addr;
 				var jsonData = VTMJSON.parse(msg[1]);
 				var hostname, netAddr;
@@ -42,6 +42,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 			}, '/discovery', recvPort: VTMLocalNetworkNode.discoveryPort);
 		};
 		//VTMLocalNetworkNode.discover();
+		StartUp.add { discoveryReplyResponder.value }
 	}
 
 	*getBroadcastIp {
@@ -79,40 +80,23 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	}
 
 	*discover {arg destinationAddr;
+
 		var data;
 		var targetAddr;
 
-
-//		// check BSD, may vary ...
-//		var line, lnet = false, lnet_ip;
-//		var addr_list = Pipe("ifconfig | grep \"inet \" | awk '{print $2}'","r");
-//		line = addr_list.getLine();
-//
-//		while({line.notNil()})
-//		{
-//			lnet = "[0-9]{3}\.[0-9]{3}\.[0-9]{1,}\.[1-9]{1,}"
-//			.matchRegexp(line);
-//
-//			if(lnet)
-//			{
-//				lnet_ip = line;
-//				lnet_ip.postln();
-//			};
-//
-//			line = addr_list.getLine();
-//		};
-//
-//		if(lnet.not) { Error("VTM Error, could not find localnetwork..").throw(); };
 		data = (
-			hostname: hostname, 
+			hostname: hostname,
 			addr: NetAddr(this.getLocalIp, NetAddr.localAddr.port).generateIPString
 		);
+
 		//if the method argument is nil, the message is broadcasted
+
 		if(destinationAddr.isNil, {
 			targetAddr = NetAddr(VTMLocalNetworkNode.getBroadcastIp(), this.discoveryPort);
 		}, {
 			targetAddr = destinationAddr;
 		});
+
 		//Makes the responder if not already made
 		discoveryReplyResponder.value;
 		this.sendMsg(targetAddr.hostname, targetAddr.port, '/discovery', data);
