@@ -5,6 +5,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	classvar <applications;
 	classvar discoveryReplyResponder;
 	classvar <discoveryBroadcastPort = 57200;
+	classvar remoteNetworkNodes;
 
 	*dataClass{ ^VTMApplication; }
 
@@ -15,7 +16,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		NetAddr.broadcastFlag = true;
 		hostname = Pipe("hostname", "r").getLine();
-
+		remoteNetworkNodes = Dictionary.new;
 		discoveryReplyResponder = Thunk {
 
 			OSCFunc({arg msg, time, resp, addr;
@@ -28,7 +29,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 				"We got a discovery message: % %".format(senderHostName, netAddr).postln;
 				"The local Addr: %".format(this.getLocalAddr).postln;
 
-				if(netAddr == this.getLocalAddr) { registered = true };
+				registered = remoteNetworkNodes.includesKey(senderHostName);
 				if(registered)
 				{
 					"Got broadcastfrom local network node: %".format(this.getLocalAddr).postln;
@@ -36,6 +37,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 				// else register new node
 				{
 					"Registering new network node: %".format([senderHostName, netAddr]).postln;
+					remoteNetworkNodes.put(senderHostName, netAddr);
 					VTMLocalNetworkNode.discover(netAddr);
 				};
 			}, '/discovery', recvPort: VTMLocalNetworkNode.discoveryBroadcastPort);
