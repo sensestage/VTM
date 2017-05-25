@@ -1,6 +1,5 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
-	var properties;
 	var context;
 
 	*new{arg name, declaration, manager;
@@ -9,14 +8,14 @@ VTMValueElement : VTMAbstractData {
 
 	initValueElement{
 		var valueClass = VTMValue.typeToClass(declaration[\type]) ? VTMValue;
+		var valueProperties = VTMOrderedIdentityDictionary.new;
 		//extract property values from declaration
-		properties = VTMOrderedIdentityDictionary.new;
 		valueClass.propertyKeys.do({arg propKey;
 			if(declaration.includesKey(propKey), {
-				properties.put(propKey, declaration[propKey]);
+				valueProperties.put(propKey, declaration[propKey]);
 			});
 		});
-		valueObj = VTMValue.makeFromType(declaration[\type], properties);
+		valueObj = VTMValue.makeFromType(declaration[\type], valueProperties);
 		//If this element belongs to a Context we need to contextualize
 		//the actions so that the includes the context as its second argument.
 		if(manager.notNil and: {manager.context.notNil}, {
