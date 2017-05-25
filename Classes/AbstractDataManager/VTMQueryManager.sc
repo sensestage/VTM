@@ -1,3 +1,0 @@
-VTMQueryManager : VTMElementComponent{
-	*dataClass{ ^VTMQuery; }
-}

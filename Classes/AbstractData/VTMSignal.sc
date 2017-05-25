@@ -1,0 +1,3 @@
+VTMSignal : VTMValueElement{
+	*managerClass{ ^VTMSignalManager; }
+}
