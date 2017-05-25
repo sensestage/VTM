@@ -7,8 +7,4 @@ VTMCommand : VTMValueElement {
 	}
 
 	initCommand{}
-
-	action_{arg func;
-		valueObj.action = func;
-	}
 }

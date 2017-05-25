@@ -279,4 +279,16 @@ VTMContext : VTMElement {
 			\state -> (type: \string)
 		]);
    	}
+
+	//Make a function that evaluates in the envir.
+	//This method opens a gaping hole into the context's
+	//innards, so it should not be used by other classes
+	//than VTMElementComponent.
+	prContextualizeFunction{arg func;
+		var result;
+		envir.use{
+			result = func.inEnvir;
+		};
+		^result;
+	}
 }

@@ -69,18 +69,15 @@ VTMElement : VTMAbstractData {
 	}
 
 	//set attribute values.
-	set{arg key, value;
-		var attr = attributes[key];
-		if(attr.notNil, {
-			attr.valueAction_(value);
-		});
+	set{arg key...args;
+		attributes.set(key, *args);
 	}
 
 	//get attribute(init or run-time) or parameter(init-time) values.
 	get{arg key;
-		var attr = attributes[key];
-		if(attr.notNil, {
-			^attr.value;
+		var result = attributes.get(key);
+		if(result.notNil, {
+			^result;
 		});
 		//if no attribute found try getting a parameter
 		^super.get(key);
@@ -88,12 +85,12 @@ VTMElement : VTMAbstractData {
 
 	//do command with possible value args. Only run-time.
 	doCommand{arg key ...args;
-		commands[key].do(*args);
+		commands.doCommand(key, *args);
 	}
 
 	//get return results. Only run-time
 	query{arg key;
-		^returns[key].value;
+		^returns.query(key);
 	}
 
 	//emits a signal
@@ -101,11 +98,11 @@ VTMElement : VTMAbstractData {
 	//TODO: How to make this method esily avilable from within a
 	//context definition, and still protected from the outside?
 	emit{arg key...args;
-		signals[key].emit(*args);
+		signals.emit(key, *args);
 	}
 
 	return{arg key ...args;
-		returns[key].value_(*args);
+		returns.return(key, *args);
 	}
 
 	onSignal{arg key, func;

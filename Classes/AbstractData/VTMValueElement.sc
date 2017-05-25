@@ -1,6 +1,5 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
-	var context;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initValueElement;
@@ -16,17 +15,10 @@ VTMValueElement : VTMAbstractData {
 			});
 		});
 		valueObj = VTMValue.makeFromType(declaration[\type], valueProperties);
-		//If this element belongs to a Context we need to contextualize
-		//the actions so that the includes the context as its second argument.
-		if(manager.notNil and: {manager.context.notNil}, {
-			context = manager.context;
-		});
 	}
 
 	action_{arg func;
-		valueObj.action_({
-			func.value(this, context);
-		});
+		valueObj.action_(func);
 	}
 
 	*parameterDescriptions{
@@ -37,21 +29,12 @@ VTMValueElement : VTMAbstractData {
 		);
 	}
 
-	get{arg key;
-		var result;
-		result = valueObj.get(key);
-		if(result.isNil, {
-			result = super.get(key);
-		});
-		^result;
+	valueAction_{arg ...args;
+		valueObj.valueAction_(*args);
 	}
 
 	value{
 		^valueObj.value;
-	}
-
-	valueAction_{arg ...args;
-		valueObj.valueAction_(*args);
 	}
 
 	free{
@@ -65,4 +48,21 @@ VTMValueElement : VTMAbstractData {
 	declaration{
 		^valueObj.properties.putAll(parameters);
 	}
+
+	//setting the value object properties.
+	set{arg key...args;
+		valueObj.set(key, *args);
+	}
+
+	//getting the vaue object properties, or if not found
+	//try getting the Element parameters
+	get{arg key;
+		var result;
+		result = valueObj.get(key);
+		if(result.isNil, {
+			result = super.get(key);
+		});
+		^result;
+	}
+
 }
