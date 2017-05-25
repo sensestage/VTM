@@ -24,7 +24,10 @@ VTMValueElement : VTMAbstractData {
 		});
 	}
 
-	prInitValueObject{
+	action_{arg func;
+		valueObj.action_({
+			func.value(this, context);
+		});
 	}
 
 	*parameterDescriptions{
@@ -46,6 +49,10 @@ VTMValueElement : VTMAbstractData {
 
 	value{
 		^valueObj.value;
+	}
+
+	valueAction_{arg ...args;
+		valueObj.valueAction_(*args);
 	}
 
 	free{

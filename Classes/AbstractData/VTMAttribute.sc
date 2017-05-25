@@ -12,12 +12,6 @@ VTMAttribute : VTMValueElement {
 		});
 	}
 
-	action_{arg func;
-		valueObj.action_({
-			func.value(this, context);
-		});
-	}
-
 	value_{arg val;
 		valueObj.value_(val);
 	}
