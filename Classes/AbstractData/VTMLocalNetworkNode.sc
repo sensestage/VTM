@@ -14,7 +14,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		Class.initClassTree(VTMNetworkNodeManager);
 
 		NetAddr.broadcastFlag = true;
-		hostname = Pipe("hostname", "r").getLine().postln();
+		hostname = Pipe("hostname", "r").getLine();
 
 		discoveryReplyResponder = Thunk {
 
@@ -22,16 +22,13 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 				var jsonData = VTMJSON.parse(msg[1]);
 				var senderHostName, netAddr, registered = false;
-
-				post("data");
-				postln(jsonData);
 				senderHostName = jsonData["hostname"];
 				topEnvironment[\jsonData] = jsonData;
 				netAddr = NetAddr.newFromIPString(jsonData["addr"].asString);
 				"We got a discovery message: % %".format(senderHostName, netAddr).postln;
 				"The local Addr: %".format(this.getLocalAddr).postln;
 
-				if(netAddr == this.getLocalAddr) { registered = true }
+				if(netAddr == this.getLocalAddr) { registered = true };
 				if(registered)
 				{
 					"Got broadcastfrom local network node: %".format(this.getLocalAddr).postln;
@@ -40,7 +37,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 				{
 					"Registering new network node: %".format([senderHostName, netAddr]).postln;
 					VTMLocalNetworkNode.discover(netAddr);
-				}
+				};
 			}, '/discovery', recvPort: VTMLocalNetworkNode.discoveryBroadcastPort);
 		};
 
@@ -73,7 +70,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 					lnet_ip = lnet_ip.replace("addr:","");
 				});
 
-				lnet_ip.postln();
+				lnet_ip;
 			};
 
 			line = addr_list.getLine();
