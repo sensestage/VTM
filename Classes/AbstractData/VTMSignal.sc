@@ -1,4 +1,6 @@
 VTMSignal : VTMValueElement{
+	*managerClass{ ^VTMSignalManager; }
+
 	emit{arg val;
 		valueObj.valueAction_(val);
 	}
