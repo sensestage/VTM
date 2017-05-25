@@ -108,7 +108,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		//Makes the responder if not already made
 		discoveryReplyResponder.value;
-		this.sendMsg(targetAddr.hostname, targetAddr.port, '/discovery', data);
+		this.sendMsg(targetAddr.hostname, discoveryBroadcastPort, '/discovery', data);
 		postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
 	}
 
