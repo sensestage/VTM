@@ -1,8 +1,8 @@
 VTMElement : VTMAbstractData {
-	var <attributes;
-	var <commands;
-	var <returns;
-	var <signals;
+	var attributes;
+	var commands;
+	var returns;
+	var signals;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initElement;
@@ -112,4 +112,20 @@ VTMElement : VTMAbstractData {
 		});
 	}
 
+	attributes {
+		^attributes.items.collect(_.name);
+	}
+
+	commands{
+		^commands.items.collect(_.name);
+	}
+
+	returns{
+		^returns.items.collect(_.name);
+	}
+
+	signals{
+		^signals.items.collect(_.name);
+	}
 }
+
