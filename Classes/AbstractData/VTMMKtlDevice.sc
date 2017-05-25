@@ -7,7 +7,7 @@ VTMMKtlDevice : VTMHardwareDevice {
 	}
 
 	initMKtlDevice{
-		envir.use({
+		this.envir.use({
 			var attributes,returns, virtualMKtl;
 			virtualMKtl = MKtl( ~self.get( \mktlName ), ~self.get( \mktlDescription ), tryOpenDevice: false );
 
@@ -32,28 +32,14 @@ VTMMKtlDevice : VTMHardwareDevice {
 				);
 			};
 
-			~returns.postcs;
-			returns.postcs;
-
-			~attributes.postcs;
-			attributes.postcs;
-
-			returns.do{ |it|
-				it.postln;
-				~returns.put( it.key, it.value );
-			}.inEnvir;
-			~returns.postcs;
-			attributes.do{ |it|
-				it.postln;
-				~attributes.put( it.key, it.value );
-				// ~attributes.add( it );
-			}.inEnvir;
-			~attributes.postcs;
+			~returns.putAll( VTMOrderedIdentityDictionary.with( *returns ) );
+			~attributes.putAll( VTMOrderedIdentityDictionary.with( *attributes )  );
 
 			~commands.put( \makeGui, ( action: { ~mktl.gui } ) );
 
 			virtualMKtl.free;
 		});
+		this.prInitComponentsWithContextDefinition; /// this seems to fix it!
 		"VTMMKtlDevice initialized".postln;
 	}
 
