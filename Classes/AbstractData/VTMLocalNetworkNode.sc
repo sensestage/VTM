@@ -52,7 +52,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		var res = Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
 
 		// alternative check for raspi??
-		// TODO: get proper safety configurations for different BSDs
+		// TODO: get proper safety configurations for different BSDs...
 
 		res ??
 		{
