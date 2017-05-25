@@ -1,6 +1,5 @@
 VTMValueElement : VTMAbstractData {
 	var <valueObj;//TEMP getter
-	var properties;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initValueElement;
@@ -8,17 +7,18 @@ VTMValueElement : VTMAbstractData {
 
 	initValueElement{
 		var valueClass = VTMValue.typeToClass(declaration[\type]) ? VTMValue;
+		var valueProperties = VTMOrderedIdentityDictionary.new;
 		//extract property values from declaration
-		properties = VTMOrderedIdentityDictionary.new;
 		valueClass.propertyKeys.do({arg propKey;
 			if(declaration.includesKey(propKey), {
-				properties.put(propKey, declaration[propKey]);
+				valueProperties.put(propKey, declaration[propKey]);
 			});
 		});
-		valueObj = VTMValue.makeFromType(declaration[\type], properties);
+		valueObj = VTMValue.makeFromType(declaration[\type], valueProperties);
 	}
 
-	prInitValueObject{
+	action_{arg func;
+		valueObj.action_(func);
 	}
 
 	*parameterDescriptions{
@@ -29,13 +29,8 @@ VTMValueElement : VTMAbstractData {
 		);
 	}
 
-	get{arg key;
-		var result;
-		result = valueObj.get(key);
-		if(result.isNil, {
-			result = super.get(key);
-		});
-		^result;
+	valueAction_{arg ...args;
+		valueObj.valueAction_(*args);
 	}
 
 	value{
@@ -49,5 +44,25 @@ VTMValueElement : VTMAbstractData {
 	type{
 		^this.get(\type);
 	}
-	
+
+	declaration{
+		^valueObj.properties.putAll(parameters);
+	}
+
+	//setting the value object properties.
+	set{arg key...args;
+		valueObj.set(key, *args);
+	}
+
+	//getting the vaue object properties, or if not found
+	//try getting the Element parameters
+	get{arg key;
+		var result;
+		result = valueObj.get(key);
+		if(result.isNil, {
+			result = super.get(key);
+		});
+		^result;
+	}
+
 }

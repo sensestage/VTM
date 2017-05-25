@@ -17,8 +17,8 @@ VTMDefinitionLibrary : VTMElement {
 		);
 	}
 
-	*queryDescriptions{
-		^super.queryDescriptions.putAll(
+	*returnDescriptions{
+		^super.returnDescriptions.putAll(
 		   VTMOrderedIdentityDictionary[
 			   \hasDefinition -> (type: \boolean)
 		   ]

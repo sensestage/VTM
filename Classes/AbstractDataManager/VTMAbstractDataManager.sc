@@ -1,30 +1,35 @@
 VTMAbstractDataManager {
 	var name;
-	var context;
+	var <context;
 	var <items;//TEMP getter
 	var oscInterface;
-	var declaration;
+	var itemDeclarations;
 
 	*dataClass{
 		^this.subclassResponsibility(thisMethod);
 	}
 
-	*new{arg context, declaration;
-		^super.new.initAbstractDataManager(context, declaration);
+	//itemDeclarations is a VTMOrderedIdentityDictionary
+	*new{arg context, itemDeclarations;
+		^super.new.initAbstractDataManager(context, itemDeclarations);
 	}
 
 	//context is an instance of kind VTMContext or a symbol.
-	//declaration is an array of Dictionaries with item declaration.
-	initAbstractDataManager{arg context_, declaration_;
+	//itemDeclarations is an array of Dictionaries.
+	initAbstractDataManager{arg context_, itemDeclarations_;
 		context = context_;
-		declaration = declaration_;
+		itemDeclarations = itemDeclarations_;
 		items = VTMOrderedIdentityDictionary.new;
-		if(declaration_.notNil, {
-			declaration_.do({arg item;
-				var newItem;
-				newItem = this.class.dataClass.newFromDeclaration(item);
-				this.addItem(newItem);
-			});
+		if(itemDeclarations_.notNil, {
+			this.addItemsFromItemDeclarations(itemDeclarations_);
+		});
+	}
+
+	addItemsFromItemDeclarations{arg itemDecls;
+		itemDecls.keysValuesDo({arg itemName, itemDeclaration;
+			var newItem;
+			newItem = this.class.dataClass.new(itemName, itemDeclaration, this);
+			this.addItem(newItem);
 		});
 	}
 
@@ -40,6 +45,10 @@ VTMAbstractDataManager {
 			removedItem = items.removeAt(itemName);
 			removedItem.free;
 		});
+	}
+
+	includes{arg key;
+		^items.includesKey(key);
 	}
 
 	at{arg key;
@@ -60,7 +69,7 @@ VTMAbstractDataManager {
 
 	name{ this.subclassResponsibility(thisMethod); }
 
-	declaration{arg recursive;
+	itemDeclarations{arg recursive;
 		var result;
 		if(recursive, {
 			items.do({arg item;
@@ -112,21 +121,6 @@ VTMAbstractDataManager {
 		});
 	}
 
-	*makeOSCAPI{arg obj;
-		^IdentityDictionary.new;
-	}
-
-	*declarationKeys{
-		^[];
-	}
-
-	*commandNames{
-		^[];
-	}
-
-	*queryNames{
-		^[];
-	}
 
 	*makeDataManagerDeclaration{arg descriptions, valueDeclarations;
 		var result = VTMOrderedIdentityDictionary[];
