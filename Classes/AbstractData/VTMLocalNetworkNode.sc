@@ -48,7 +48,16 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	}
 
 	*getBroadcastIp {
-		^Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
+
+		var res = Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
+
+		// alternative check for raspi??
+		// TODO: get proper safety configurations for different BSDs
+
+		res ??
+		{
+			res = Pipe("ifconfig | egrep broadcast\|Bcast | awk '{print $NF}'", "r").getLine();
+		}
 	}
 
 	*getLocalIp {
