@@ -58,6 +58,8 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		{
 			res = Pipe("ifconfig | egrep broadcast\|Bcast | awk '{print $NF}'", "r").getLine();
 		}
+
+		^res;
 	}
 
 	*getLocalIp {
