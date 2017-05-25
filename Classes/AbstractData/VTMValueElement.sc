@@ -61,5 +61,8 @@ VTMValueElement : VTMAbstractData {
 	type{
 		^this.get(\type);
 	}
-	
+
+	declaration{
+		^valueObj.properties.putAll(parameters);
+	}
 }
