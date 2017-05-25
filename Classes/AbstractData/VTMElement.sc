@@ -87,7 +87,7 @@ VTMElement : VTMAbstractData {
 	}
 
 	//do command with possible value args. Only run-time.
-	do{arg key ...args;
+	doCommand{arg key ...args;
 		commands[key].do(*args);
 	}
 
