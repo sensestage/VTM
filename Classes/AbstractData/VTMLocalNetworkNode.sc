@@ -68,6 +68,11 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 			if(lnet)
 			{
 				lnet_ip = line;
+				if ( lnet_ip.notNil, {
+					// fix for linux
+					lnet_ip = lnet_ip.replace("addr:","");
+				});
+
 				lnet_ip.postln();
 			};
 
