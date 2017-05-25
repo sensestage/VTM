@@ -113,19 +113,19 @@ VTMElement : VTMAbstractData {
 	}
 
 	attributes {
-		^attributes.items.collect(_.name);
+		^attributes.items.keys;
 	}
 
 	commands{
-		^commands.items.collect(_.name);
+		^commands.items.keys;
 	}
 
 	returns{
-		^returns.items.collect(_.name);
+		^returns.items.keys;
 	}
 
 	signals{
-		^signals.items.collect(_.name);
+		^signals.items.keys;
 	}
 }
 
