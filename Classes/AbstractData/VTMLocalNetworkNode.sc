@@ -1,26 +1,42 @@
 //a Singleton class that communicates with the network and manages Applications
 VTMLocalNetworkNode : VTMAbstractDataManager {
-
+	classvar <singleton;
 	classvar <hostname;
-	classvar <applications;
-	classvar discoveryReplyResponder;
 	classvar <discoveryBroadcastPort = 57200;
 	classvar <remoteNetworkNodes;
+	var discoveryReplyResponder;
+	var <networkNodeManager;
+	var <hardwareSetup;
+	var <moduleHost;
+	var <sceneOwner;
+	var <scoreManager;
 
 	*dataClass{ ^VTMApplication; }
 
 	*initClass{
-
 		Class.initClassTree(VTMAbstractData);
 		Class.initClassTree(VTMNetworkNodeManager);
+		hostname = Pipe("hostname", "r").getLine();
+		singleton = super.new.initLocalNetworkNode;
+	}
+
+	*new{
+		^singleton;
+	}
+
+	initLocalNetworkNode{
+		networkNodeManager = VTMNetworkNodeManager.new(this);
+		hardwareSetup = VTMHardwareSetup.new(this);
+		moduleHost = VTMModuleHost.new(this);
+		sceneOwner = VTMSceneOwner.new(this);
+		scoreManager = VTMScoreManager.new(this);
 
 		NetAddr.broadcastFlag = true;
-		hostname = Pipe("hostname", "r").getLine();
-		remoteNetworkNodes = Dictionary.new;
-		discoveryReplyResponder = Thunk {
+	}
 
-			OSCFunc({arg msg, time, resp, addr;
-
+	activate{arg val;
+		if(discoveryReplyResponder.isNil, {
+			discoveryReplyResponder = OSCFunc({arg msg, time, resp, addr;
 				var jsonData = VTMJSON.parse(msg[1]);
 				var senderHostName, netAddr, registered = false;
 				senderHostName = jsonData["hostname"];
@@ -36,22 +52,26 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 					{
 						"Registering new network node: %".format([senderHostName, netAddr]).postln;
 						remoteNetworkNodes.put(senderHostName, netAddr);
-						VTMLocalNetworkNode.discover(netAddr);
+						this.discover(netAddr);
 					};
 				}, {
 					"Got broadcastfrom local network node: %".format(this.getLocalAddr).postln;
 				});
-			}, '/discovery', recvPort: VTMLocalNetworkNode.discoveryBroadcastPort);
-		};
-
-		StartUp.add { discoveryReplyResponder.value }
+			}, '/discovery', recvPort: this.class.discoveryBroadcastPort);
+		});
 	}
 
-	*getBroadcastIp {
+	deactivate{
+		discoveryReplyResponder !? {discoveryReplyResponder.free;};
+	}
+
+	applications{ ^items; }
+
+	getBroadcastIp {
 		^Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
 	}
 
-	*getLocalIp {
+	getLocalIp {
 
 		// check BSD, may vary ...
 		var line, lnet = false, lnet_ip;
@@ -79,15 +99,16 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 			line = addr_list.getLine();
 		};
 
-		if(lnet.not) { Error("VTM - could not find localnetwork..").throw(); };
-		^lnet_ip;
+		//if(lnet.not) { Error("VTM - could not find localnetwork..").throw(); };
+		//^lnet_ip;
+		^"127.0.0.1";
 	}
 
-	*getLocalAddr{
+	getLocalAddr{
 		^NetAddr(this.getLocalIp, NetAddr.localAddr.port);
 	}
 
-	*discover {arg destinationAddr;
+	discover {arg destinationAddr;
 
 		var data, targetAddr;
 
@@ -100,26 +121,40 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		destinationAddr ??
 		{
-			targetAddr = NetAddr(VTMLocalNetworkNode.getBroadcastIp,
-				this.discoveryBroadcastPort);
-		};
+			targetAddr = NetAddr(
+				this.getBroadcastIp,
+				this.class.discoveryBroadcastPort);
+			};
 
-		destinationAddr !?
-		{
-			targetAddr = destinationAddr;
-		};
+			destinationAddr !?
+			{
+				targetAddr = destinationAddr;
+			};
 
-		//Makes the responder if not already made
-		discoveryReplyResponder.value;
-		this.sendMsg(targetAddr.hostname, discoveryBroadcastPort, '/discovery', data);
-		postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
+			//Makes the responder if not already made
+			discoveryReplyResponder.value;
+			this.class.sendMsg(
+				targetAddr.hostname, this.class.discoveryBroadcastPort, '/discovery', data);
+			postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
+		}
+
+		*leadingSeparator { ^$/; }
+
+		*sendMsg{arg hostname, port, path ...data;
+			//sending eeeeverything as typed YAML for now.
+			NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
+		}
+
+		registerUnmanagedContext{arg context;
+			var managerObj;
+			managerObj = switch(context.class,
+				VTMModule, { moduleHost;},
+				VTMHardwareDevice, { hardwareSetup; },
+				VTMScene, { sceneOwner; },
+				VTMScore, { scoreManager; }
+			);
+			managerObj.addItem(context);
+			"registering unmanaged: %".format(context).postln;
+		}
 	}
-
-	*leadingSeparator { ^$/; }
-
-	*sendMsg{arg hostname, port, path ...data;
-		//sending eeeeverything as typed YAML for now.
-		NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
-	}
-}
 

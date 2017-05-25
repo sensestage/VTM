@@ -14,5 +14,15 @@ VTM{
 		);
 	}
 
+	*activate{
+		this.local.activate;
+	}
 
+	*deactivate{
+		this.local.deactivate;
+	}
+
+	*discover{
+		this.local.discover;
+	}
 }

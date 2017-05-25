@@ -36,6 +36,7 @@ VTMContext : VTMElement {
 	}
 
 	initContext{arg definition_;
+		manager = manager ? VTMLocalNetworkNode;
 		stateChangeCallbacks = IdentityDictionary.new;
 		if(definition_.notNil, {
 			//TODO: Make this into a .newFrom or .makeFrom so
@@ -53,6 +54,10 @@ VTMContext : VTMElement {
 		this.prInitScores;
 		this.prInitComponentsWithContextDefinition;
 		this.prChangeState(\didInitialize);
+	}
+
+	isUnmanaged{
+		^manager === VTMLocalNetworkNode;
 	}
 
 	prInitCues{
@@ -99,6 +104,9 @@ VTMContext : VTMElement {
 			//this.enableOSC;
 			this.prChangeState(\didPrepare);
 			action.value(this);
+			if(this.isUnmanaged, {
+				VTMLocalNetworkNode.registerUnmanagedContext(this);
+			});
 		};
 	}
 
