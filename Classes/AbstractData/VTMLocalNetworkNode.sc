@@ -48,7 +48,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 				if(netAddr != this.getLocalAddr, {
 					var registered;
-					registered = remoteNetworkNodes.includesKey(senderHostName);
+					registered = this.class.remoteNetworkNodes.includesKey(senderHostName);
 					if(registered.not)
 					{
 						"Registering new network node: %".format([senderHostName, netAddr]).postln;
@@ -78,7 +78,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		^Platform.case(
 			\osx, { unixCmdGetStdOut(
 				"ifconfig | grep broadcast | awk '{print $NF}'") },
-			\window, { unixCmdGetStdOut(
+			\windows, { unixCmdGetStdOut(
 				"ifconfig | grep broadcast | awk '{print $NF}'") },
 			\linux, { unixCmdGetStdOut(
 				"/sbin/ifconfig | grep Bcast | awk 'BEGIN {FS = \"[ :]+\"}{print $6}'")}
@@ -94,7 +94,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 			\osx, { Pipe(
 				"ifconfig | grep 'inet' | awk '{print $2}'", "r") },
 			\linux, { Pipe (
-				"/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'")},
+				"/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'","r")},
 			\windows, {}
 		);
 
