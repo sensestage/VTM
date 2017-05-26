@@ -159,7 +159,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 	*leadingSeparator { ^$/; }
 
-	*sendMsg{arg hostname, port, path ...data;
+	sendMsg{arg hostname, port, path ...data;
 		//sending eeeeverything as typed YAML for now.
 		NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
 	}
