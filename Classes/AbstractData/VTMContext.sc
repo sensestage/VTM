@@ -96,16 +96,15 @@ VTMContext : VTMElement {
 	}
 
 	prAddComponentsToEnvir{arg componentDeclarations;
-		var compDecl = componentDeclarations;
-		//TODO: This is a temporary hack that checks the type of the argument.
-		if(compDecl.isKindOf(ArrayedCollection), {
-			compDecl = VTMOrderedIdentityDictionary.with( *compDecl );
-		});
 		this.components.do({arg component;
 			var compName = component.name;
-			if(compDecl.includesKey(compName), {
+			if(componentDeclarations.includesKey(compName), {
 				var newItem, itemDeclarations;
-				itemDeclarations = compDecl[compName];
+				itemDeclarations = componentDeclarations[compName];
+				//TODO: This is a temporary hack that checks the type of the argument.
+				if(itemDeclarations.isKindOf(ArrayedCollection), {
+					itemDeclarations  = VTMOrderedIdentityDictionary.with( *itemDeclarations );
+				});
 				component.addItemsFromItemDeclarations(itemDeclarations);
 			});
 		});
