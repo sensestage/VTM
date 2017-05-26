@@ -23,12 +23,13 @@ VTMMKtlDevice : VTMHardwareDevice {
 			};
 
 			attributes = virtualMKtl.outputElements.keys.asArray.sort.collect{ |it|
-				var el = virtualMKtl.inputElements.at( it );
+				var el = virtualMKtl.outputElements.at( it );
 				it -> (
 					type: \float,  // mktl always converts to 0 - 1 range as floats
 					minValue: 0.0, // or el.deviceSpec.minval
 					maxValue: 1.0, // or el.deviceSpec.maxval
 					defaultValue: el.defaultValue,
+					value: el.value
 				);
 			};
 
