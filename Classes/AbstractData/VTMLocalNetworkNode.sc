@@ -81,7 +81,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 			\windows, { unixCmdGetStdOut(
 				"ifconfig | grep broadcast | awk '{print $NF}'") },
 			\linux, { unixCmdGetStdOut(
-				"/sbin/ifconfig | grep Bcast | awk 'BEGIN {FS = \"[ :]+\"}{print $6}'")}
+				"/sbin/ifconfig | grep Bcast | awk 'BEGIN {FS = \"[ :]+\"}{print $6}'").stripWhiteSpace()}
 		);
 	}
 
