@@ -34,7 +34,8 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		NetAddr.broadcastFlag = true;
 	}
 
-	activate{arg val;
+	activate{arg val, discovery = false;
+
 		if(discoveryReplyResponder.isNil, {
 			discoveryReplyResponder = OSCFunc({arg msg, time, resp, addr;
 				var jsonData = VTMJSON.parse(msg[1]);
@@ -59,8 +60,12 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 				}, {
 					"Got broadcastfrom local network node: %".format(this.getLocalAddr).postln;
 				});
+
 			}, '/discovery', recvPort: this.class.discoveryBroadcastPort);
+
 		});
+
+		if(discovery) { this.discover(); }
 	}
 
 	deactivate{
@@ -70,51 +75,54 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	applications{ ^items; }
 
 	getBroadcastIp {
-
-		var res = Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
-
-		// alternative check for raspi??
-		// TODO: get proper safety configurations for different BSDs...
-
-		res ??
-		{
-			res = Pipe("ifconfig | egrep broadcast\|Bcast | awk '{print $NF}'", "r").getLine();
-		}
-
-		^res;
+		^Platform.case(
+			\osx, { unixCmdGetStdOut(
+				"ifconfig | grep broadcast | awk '{print $NF}'") },
+			\window, { unixCmdGetStdOut(
+				"ifconfig | grep broadcast | awk '{print $NF}'") },
+			\linux, { unixCmdGetStdOut(
+				"/sbin/ifconfig | grep Bcast | awk 'BEGIN {FS = \"[ :]+\"}{print $6}'")}
+		);
 	}
 
 	getLocalIp {
 
 		// check BSD, may vary ...
 		var line, lnet = false, lnet_ip;
-		var addr_list = Pipe("ifconfig | grep \"inet \" | awk '{print $2}'","r");
+
+		var addr_list = Platform.case(
+			\osx, { Pipe(
+				"ifconfig | grep 'inet' | awk '{print $2}'", "r") },
+			\linux, { Pipe (
+				"/sbin/ifconfig | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'")},
+			\windows, {}
+		);
+
 		var data;
 		var targetAddr;
+
 		line = addr_list.getLine();
 
 		while({line.notNil()})
 		{
-			lnet = "[0-9]{3}\.[0-9]{3}\.[0-9]{1,}\.[1-9]{1,}"
+			// check ipv4 valid address patterns
+			lnet = "[0-9]{2,}\.[0-9]{1,}\.[0-9]{1,}\.[1-9]{1,}"
 			.matchRegexp(line);
 
+			// if valid, check whether localhost or lnet
 			if(lnet)
 			{
-				lnet_ip = line;
-				if ( lnet_ip.notNil, {
-					// fix for linux
-					lnet_ip = lnet_ip.replace("addr:","");
-				});
-
-				lnet_ip;
+				if(line != "127.0.0.1")
+				{ lnet_ip = line; }
 			};
 
-			line = addr_list.getLine();
+			lnet_ip ?? { line = addr_list.getLine(); };
+			lnet_ip !? { line = nil }
 		};
 
-		//if(lnet.not) { Error("VTM - could not find localnetwork..").throw(); };
-		//^lnet_ip;
-		^"127.0.0.1";
+		lnet_ip !? { ^lnet_ip };
+		lnet_ip ?? { ^"127.0.0.1" };
+
 	}
 
 	getLocalAddr{
@@ -140,7 +148,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		// if the method argument is nil, the message is broadcasted
 
-		if(destinationAddr, {
+		if(destinationAddr.isNil(), {
 			targetAddr = NetAddr(
 				this.getBroadcastIp,
 				this.class.discoveryBroadcastPort
@@ -151,7 +159,7 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		//Makes the responder if not already made
 		discoveryReplyResponder.value;
-		this.class.sendMsg(
+		this.sendMsg(
 			targetAddr.hostname, this.class.discoveryBroadcastPort, '/discovery', data
 		);
 		postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
