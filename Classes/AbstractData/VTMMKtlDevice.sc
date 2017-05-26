@@ -37,14 +37,14 @@ VTMMKtlDevice : VTMHardwareDevice {
 				);
 			};
 
-			~returns.putAll( VTMOrderedIdentityDictionary.with( *returns ) );
-			~attributes.putAll( VTMOrderedIdentityDictionary.with( *attributes )  );
-
-			~commands.put( \makeGui, ( action: { ~mktl.gui } ) );
+			~self.prAddComponentsToEnvir( (
+				returns: returns,
+				attributes: attributes,
+				commands: [ \makeGui -> ( action: { ~mktl.gui } ) ] 
+			) );
 
 			virtualMKtl.free;
 		});
-		this.prInitComponentsWithContextDefinition; /// this seems to fix it!
 		"VTMMKtlDevice initialized".postln;
 	}
 
