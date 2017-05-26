@@ -32,11 +32,14 @@ VTMContext : VTMElement {
 			//   declaration[\definition]); //returns a ContextDefinition obj.
 		});
 		def = definition ? def;
+		//use the local network node as manager
+		//TODO: Will there problems when one class is listed as manager
+		//for multiplie type of objects, in the case of Context/LocalNetworkNode?
+		manager = manager ? VTM.local.findManagerForContextClass(this);
 		^super.new(name, declaration, manager).initContext(def);
 	}
 
 	initContext{arg definition_;
-		manager = manager ? VTMLocalNetworkNode;
 		stateChangeCallbacks = IdentityDictionary.new;
 		if(definition_.notNil, {
 			//TODO: Make this into a .newFrom or .makeFrom so
@@ -57,7 +60,7 @@ VTMContext : VTMElement {
 	}
 
 	isUnmanaged{
-		^manager === VTMLocalNetworkNode;
+		^manager === VTM.local;
 	}
 
 	prInitCues{
@@ -105,7 +108,7 @@ VTMContext : VTMElement {
 			this.prChangeState(\didPrepare);
 			action.value(this);
 			if(this.isUnmanaged, {
-				VTMLocalNetworkNode.registerUnmanagedContext(this);
+				VTM.local.registerUnmanagedContext(this);
 			});
 		};
 	}

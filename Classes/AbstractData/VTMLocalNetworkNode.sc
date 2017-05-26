@@ -51,7 +51,9 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 					if(registered.not)
 					{
 						"Registering new network node: %".format([senderHostName, netAddr]).postln;
-						remoteNetworkNodes.put(senderHostName, netAddr);
+						networkNodeManager.addItemsFromItemDeclarations([
+							netAddr.generateIPString.asSymbol -> (hostname: hostname)
+						]);
 						this.discover(netAddr);
 					};
 				}, {
@@ -119,6 +121,14 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 		^NetAddr(this.getLocalIp, NetAddr.localAddr.port);
 	}
 
+	name{
+		^this.getLocalAddr.generateIPString;
+	}
+
+	fullPath{
+		^'/';
+	}
+
 	discover {arg destinationAddr;
 
 		var data, targetAddr;
@@ -130,42 +140,47 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 
 		// if the method argument is nil, the message is broadcasted
 
-		destinationAddr ??
-		{
+		if(destinationAddr, {
 			targetAddr = NetAddr(
 				this.getBroadcastIp,
-				this.class.discoveryBroadcastPort);
-			};
-
-			destinationAddr !?
-			{
-				targetAddr = destinationAddr;
-			};
-
-			//Makes the responder if not already made
-			discoveryReplyResponder.value;
-			this.class.sendMsg(
-				targetAddr.hostname, this.class.discoveryBroadcastPort, '/discovery', data);
-			postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
-		}
-
-		*leadingSeparator { ^$/; }
-
-		*sendMsg{arg hostname, port, path ...data;
-			//sending eeeeverything as typed YAML for now.
-			NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
-		}
-
-		registerUnmanagedContext{arg context;
-			var managerObj;
-			managerObj = switch(context.class,
-				VTMModule, { moduleHost;},
-				VTMHardwareDevice, { hardwareSetup; },
-				VTMScene, { sceneOwner; },
-				VTMScore, { scoreManager; }
+				this.class.discoveryBroadcastPort
 			);
-			managerObj.addItem(context);
-			"registering unmanaged: %".format(context).postln;
-		}
+		}, {
+			targetAddr = destinationAddr;
+		});
+
+		//Makes the responder if not already made
+		discoveryReplyResponder.value;
+		this.class.sendMsg(
+			targetAddr.hostname, this.class.discoveryBroadcastPort, '/discovery', data
+		);
+		postln([targetAddr.hostname, targetAddr.port, '/discovery', data]);
 	}
+
+	*leadingSeparator { ^$/; }
+
+	*sendMsg{arg hostname, port, path ...data;
+		//sending eeeeverything as typed YAML for now.
+		NetAddr(hostname, port).sendMsg(path, VTMJSON.stringify(data.unbubble));
+	}
+
+	findManagerForContextClass{arg class;
+		var managerObj;
+		managerObj = switch(class,
+			VTMModule, { moduleHost;},
+			VTMHardwareDevice, { hardwareSetup; },
+			VTMScene, { sceneOwner; },
+			VTMScore, { scoreManager; }
+		);
+		"DID I Find: % \n\t%".format(managerObj, class).postln;
+		^managerObj;
+	}
+
+	registerUnmanagedContext{arg context;
+		var managerObj;
+		managerObj = this.findManagerForContextClass(context.class);
+		managerObj.addItem(context);
+		"registering unmanaged: %".format(context).postln;
+	}
+}
 
