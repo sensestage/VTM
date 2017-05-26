@@ -1,5 +1,7 @@
 VTMValueElement : VTMAbstractData {
-	var <valueObj;//TEMP getter
+	var valueObj;
+	var forwardings;
+	var forwarder;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initValueElement;
@@ -15,6 +17,16 @@ VTMValueElement : VTMAbstractData {
 			});
 		});
 		valueObj = VTMValue.makeFromType(declaration[\type], valueProperties);
+		forwardings = VTMOrderedIdentityDictionary.new;
+		forwarder = SimpleController(valueObj).put(\value, {arg theChanged;
+			forwardings.do({arg item;
+				if(item[\vtmJson], {
+					VTM.sendMsg(item[\addr].hostname, item[\addr].port, item[\path], this.value);
+				}, {
+					item[\addr].sendMsg(item[\path], *this.value);
+				});
+			});
+		});
 	}
 
 	action_{arg func;
@@ -33,11 +45,18 @@ VTMValueElement : VTMAbstractData {
 		valueObj.valueAction_(*args);
 	}
 
+	value_{arg ...args;
+		valueObj.value_(*args);
+	}
+
 	value{
 		^valueObj.value;
 	}
 
 	free{
+		forwardings.clear;
+		forwarder.remove(\value);
+		valueObj.release;
 		valueObj = nil;
 	}
 
@@ -63,6 +82,19 @@ VTMValueElement : VTMAbstractData {
 			result = super.get(key);
 		});
 		^result;
+	}
+
+	addForwarding{arg key, addr, path, vtmJson = false;
+		//Observe value object for changng values
+		forwardings.put(key, (addr: addr, path: path, vtmJson: vtmJson));
+	}
+
+	removeForwarding{arg key;
+		forwardings.removeAt(key);
+	}
+
+	removeAllForwardings{
+		forwardings.clear;
 	}
 
 }

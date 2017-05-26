@@ -200,9 +200,11 @@ VTMValue {
 		if(this.restrictValueToEnum, {
 			if(this.enum.includes(val), {
 				this.set(\value, val);
+				this.changed(\value);
 			});
 		}, {
 			this.set(\value, val);
+			this.changed(\value);
 		});
 	}
 
