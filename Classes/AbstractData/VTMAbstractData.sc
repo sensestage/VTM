@@ -26,7 +26,9 @@ VTMAbstractData{
 		manager = manager_;
 		declaration = VTMDeclaration.newFrom(declaration_ ? []);
 		this.prInitParameters;
-		manager.addItem(this);
+		if(manager.notNil, {
+			manager.addItem(this);
+		});
 	}
 
 	prInitParameters{
