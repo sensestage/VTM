@@ -40,7 +40,7 @@ VTMAbstractDataManager {
 	}
 
 	freeItem{arg itemName;
-		if(items.hasItemNamed(itemName), {
+		if(this.hasItemNamed(itemName), {
 			var removedItem;
 			items[itemName].disable;//dissable actions and messages
 			removedItem = items.removeAt(itemName);

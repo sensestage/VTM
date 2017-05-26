@@ -39,7 +39,7 @@ VTMContext : VTMElement {
 		//If the manager has already registered a context of this name then
 		//we free the old context.
 		//TODO: See if this need to be scheduled/synced in some way.
-		if(manager.hasItem(name), {
+		if(manager.hasItemNamed(name), {
 			manager.freeItem(name);
 		});
 		^super.new(name, declaration, manager).initContext(def);
@@ -66,7 +66,7 @@ VTMContext : VTMElement {
 	}
 
 	isUnmanaged{
-		^manager === VTM.local;
+		^manager.context === VTM.local;
 	}
 
 	prInitCues{
@@ -113,9 +113,6 @@ VTMContext : VTMElement {
 			//this.enableOSC;
 			this.prChangeState(\didPrepare);
 			action.value(this);
-			if(this.isUnmanaged, {
-				VTM.local.registerUnmanagedContext(this);
-			});
 		};
 	}
 
