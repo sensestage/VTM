@@ -63,6 +63,14 @@ VTMAbstractData{
 		parameters = VTMParameterManager.newFrom(declaration);
 	}
 
+	disable{
+		this.disableOSC;
+	}
+
+	enable{
+		this.enableOSC;
+	}
+
 	free{
 		this.disableOSC;
 		this.releaseDependants;
@@ -132,9 +140,9 @@ VTMAbstractData{
 	enableOSC{
 		//make OSC interface if not already created
 		if(oscInterface.isNil, {
-			oscInterface = VTMOSCInterface.new(this);
+			//oscInterface = VTMOSCInterface.new(this);//TEMP uncommented
 		});
-		oscInterface.enable;
+		//oscInterface.enable; //TEMP uncommented
 	}
 
 	disableOSC{
