@@ -18,9 +18,9 @@ VTMMKtlDevice : VTMHardwareDevice {
 			returns = virtualMKtl.inputElements.keys.asArray.sort.collect{ |it|
 				var el = virtualMKtl.inputElements.at( it );
 				it -> (
-					type: \float,  // mktl always converts to 0 - 1 range as floats
-					minValue: 0.0, // or el.deviceSpec.minval
-					maxValue: 1.0, // or el.deviceSpec.maxval
+					type: this.class.checkValueType( el.deviceSpec ),  // mktl always converts to 0 - 1 range as floats // FIXME: it could be an integer
+					minValue: el.deviceSpec.unmap( el.deviceSpec.minval ),
+					maxValue: el.deviceSpec.unmap( el.deviceSpec.maxval ), // some specs may not be 0 to 1
 					defaultValue: el.defaultValue,
 					value: el.value
 				)
@@ -29,9 +29,9 @@ VTMMKtlDevice : VTMHardwareDevice {
 			attributes = virtualMKtl.outputElements.keys.asArray.sort.collect{ |it|
 				var el = virtualMKtl.outputElements.at( it );
 				it -> (
-					type: \float,  // mktl always converts to 0 - 1 range as floats
-					minValue: 0.0, // or el.deviceSpec.minval
-					maxValue: 1.0, // or el.deviceSpec.maxval
+					type: this.class.checkValueType( el.deviceSpec ),  // mktl always converts to 0 - 1 range as floats // FIXME: it could be an integer
+					minValue: el.deviceSpec.unmap( el.deviceSpec.minval ),
+					maxValue: el.deviceSpec.unmap( el.deviceSpec.maxval ), // some specs may not be 0 to 1
 					defaultValue: el.defaultValue,
 					value: el.value
 				);
@@ -51,7 +51,7 @@ VTMMKtlDevice : VTMHardwareDevice {
 	prepare {
 		envir.use({
 			// open desired device
-			~mktl = MKtl( 
+			~mktl = MKtl(
 				~self.get( \mktlName ),
 			   	~self.get( \mktlDescription ).asString,
 				multiIndex: ~self.get(\mktlIndex)
@@ -85,7 +85,16 @@ VTMMKtlDevice : VTMHardwareDevice {
 			//TODO: Change the type to symbol when it is implemented
 			\mktlDescription -> (type: \string, optional: false, strictlyTyped: true),
 			\mktlIndex -> (type: \integer, optional: true, strictlyTyped: true)
-	   	]); 
+	   	]);
+	}
+
+	*checkValueType{ |spec|
+		var midvalue = ( spec.minval + spec.maxval )/2;
+		var testval = spec.unmap( midvalue );
+		if ( testval.isKindOf(Integer) ){
+			^\integer;
+		};
+		^\float;
 	}
 
 }
