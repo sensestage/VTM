@@ -70,18 +70,14 @@ VTMLocalNetworkNode : VTMAbstractDataManager {
 	applications{ ^items; }
 
 	getBroadcastIp {
-
-		var res = Pipe("ifconfig | grep broadcast | awk '{print $NF}'", "r").getLine();
-
-		// alternative check for raspi??
-		// TODO: get proper safety configurations for different BSDs...
-
-		res ??
-		{
-			res = Pipe("ifconfig | egrep broadcast\|Bcast | awk '{print $NF}'", "r").getLine();
-		}
-
-		^res;
+		^Platform.case(
+			\osx, { unixCmdGetStdOut(
+				"ifconfig | grep broadcast | awk '{print $NF}'") },
+			\window, { unixCmdGetStdOut(
+				"ifconfig | grep broadcast | awk '{print $NF}'") },
+			\linux, { unixCmdGetStdOut(
+				"/sbin/ifconfig | grep Bcast | awk 'BEGIN {FS = \"[ :]+\"}{print $6}'")}
+		);
 	}
 
 	getLocalIp {
