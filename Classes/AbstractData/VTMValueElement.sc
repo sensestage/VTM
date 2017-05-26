@@ -1,7 +1,7 @@
 VTMValueElement : VTMAbstractData {
-	var <valueObj;//TEMP getter
-	var <forwardings;//TEMP getter
-	var <forwarder;//TEMP getter
+	var valueObj;
+	var forwardings;
+	var forwarder;
 
 	*new{arg name, declaration, manager;
 		^super.new(name, declaration, manager).initValueElement;
@@ -56,6 +56,7 @@ VTMValueElement : VTMAbstractData {
 	free{
 		forwardings.clear;
 		forwarder.remove(\value);
+		valueObj.release;
 		valueObj = nil;
 	}
 
@@ -90,6 +91,10 @@ VTMValueElement : VTMAbstractData {
 
 	removeForwarding{arg key;
 		forwardings.removeAt(key);
+	}
+
+	removeAllForwardings{
+		forwardings.clear;
 	}
 
 }
