@@ -9,7 +9,7 @@ VTMMKtlDevice : VTMHardwareDevice {
 	initMKtlDevice{
 		this.envir.use({
 			var attributes,returns, virtualMKtl;
-			virtualMKtl = MKtl( ~self.get( \mktlName ), ~self.get( \mktlDescription ), tryOpenDevice: false );
+			virtualMKtl = MKtl( ~self.get( \mktlName ), ~self.get( \mktlDescription ).asString, tryOpenDevice: false );
 
 			returns = virtualMKtl.inputElements.keys.asArray.sort.collect{ |it|
 				var el = virtualMKtl.inputElements.at( it );
@@ -46,13 +46,13 @@ VTMMKtlDevice : VTMHardwareDevice {
 	prepare {
 		envir.use({
 			// open desired device
-			~mktl = MKtl( ~self.get( \mktlName ), ~self.get( \mktlDescription ) );
+			~mktl = MKtl( ~self.get( \mktlName ), ~self.get( \mktlDescription ).asString; );
 			// set actions for each control: here an interesting question: do we need to set actions for controls not currently used?
 			~mktl.inputElements.do{ |it|
-				~self.return( it.name ).value_( it.value );
+				~self.return( it.name, it.value );
 				it.action = { |el|
-					~self.return( it.name ).value_( el.value ); // inEnvir?
-				};
+					~self.return( it.name, el.value ); // inEnvir?
+				}.inEnvir;
 			};
 			// create an output action
 			~setMKtlCtl = { |name, val|
@@ -67,6 +67,15 @@ VTMMKtlDevice : VTMHardwareDevice {
 			~mktl.free;
 		});
 		super.free;
+	}
+
+
+	*parameterDescriptions{
+		^super.parameterDescriptions.putAll(VTMOrderedIdentityDictionary[
+			\mktlName -> (type: \string, optional: false),
+			//TODO: Change the type to symbol when it is implemented
+			\mktlDescription -> (type: \string, optional: false, strictlyTyped: true)
+	   	]); 
 	}
 
 }
