@@ -32,6 +32,10 @@ VTMContext : VTMElement {
 			//   declaration[\definition]); //returns a ContextDefinition obj.
 		});
 		def = definition ? def;
+		//use the local network node as manager
+		//TODO: Will there problems when one class is listed as manager
+		//for multiplie type of objects, in the case of Context/LocalNetworkNode?
+		manager = manager ? VTM.local.findManagerForContextClass(this);
 		^super.new(name, declaration, manager).initContext(def);
 	}
 
@@ -53,6 +57,10 @@ VTMContext : VTMElement {
 		this.prInitScores;
 		this.prInitComponentsWithContextDefinition;
 		this.prChangeState(\didInitialize);
+	}
+
+	isUnmanaged{
+		^manager === VTM.local;
 	}
 
 	prInitCues{
@@ -99,6 +107,9 @@ VTMContext : VTMElement {
 			//this.enableOSC;
 			this.prChangeState(\didPrepare);
 			action.value(this);
+			if(this.isUnmanaged, {
+				VTM.local.registerUnmanagedContext(this);
+			});
 		};
 	}
 
